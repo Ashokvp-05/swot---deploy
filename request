@@ -1,319 +1,344 @@
-Below is a **development-oriented functional plan** for the **Employee Onboarding / Employee Management page** in your HR Management System. It focuses on **modules, functionality, and where each feature lives in the application**, not presentation.
+Below is a **development-focused functional description of the Payroll Page** for your **HR Management System**. It explains **what should exist on the payroll page, where elements are located, and what each button/function does**.
 
 ---
 
 # HR Management System
 
-## Employee Onboarding / Employee Management – Development Functional Plan
+# Payroll Page – Functional Specification
 
-## 1. Module Purpose
+## 1. Purpose of Payroll Page
 
-The **Employee Onboarding module** manages the process of registering new employees, collecting required information, verifying documents, and completing onboarding tasks before the employee becomes active in the system.
+The **Payroll Page** is used by HR or payroll administrators to **manage employee salaries, generate payslips, track salary payments, and handle deductions and allowances**.
 
-This module interacts with:
+It allows:
 
-* Employee database
-* Document management system
-* Notification system
-* HR approval workflow
+* Salary calculation
+* Payslip generation
+* Payment tracking
+* Salary history viewing
 
 ---
 
-# 2. Page Structure and Functional Areas
+# 2. Payroll Page Layout Structure
 
-## 2.1 Dashboard Header (Top Section)
+## 2.1 Header Section (Top of Page)
 
 ### Components
 
-* Page Title
-* Search Field
+* Page Title: **Payroll Management**
+* Search Bar
 * Filter Options
-* Add Employee Button
+* Generate Payroll Button
 
 ### Functionalities
 
-**Search Function**
+**Search Bar**
+Location: Top left
+Purpose:
 
-* Search employees by:
+* Search employee payroll records by:
 
-  * Name
+  * Employee name
   * Employee ID
   * Department
 
-**Filter Function**
-
-* Filter employees by:
-
-  * Department
-  * Onboarding Status
-  * Joining Date
-
-**Add Employee**
-
-* Opens the employee creation form
-* Initializes onboarding process
-* Generates onboarding record
-
 ---
 
-# 2.2 Onboarding Statistics Section
+**Filter Options**
+Location: Next to search bar
 
-### Location
+Filters include:
 
-Top dashboard area.
-
-### Data Displayed
-
-* Total employees in onboarding
-* Completed onboarding
-* Pending onboarding
-* Average completion percentage
-
-### Functionalities
-
-* Pull aggregated data from onboarding records
-* Update dynamically when employee status changes
-
----
-
-# 2.3 Employee Onboarding List
-
-### Location
-
-Main content section.
-
-### Table Fields
-
-* Employee Name
+* Month
 * Department
-* Joining Date
-* Onboarding Status
-* Completion Progress
-* Actions
+* Payment Status
 
-### Functionalities
+Purpose:
 
-**View Profile**
-
-* Opens employee onboarding details
-
-**Approve**
-
-* Changes onboarding status to Approved
-
-**Request Correction**
-
-* Sends request to employee to update missing information
+* View payroll for a specific period or team.
 
 ---
 
-# 2.4 Employee Profile / Onboarding Details Page
+**Generate Payroll Button**
+Location: Top right corner
 
-### Location
+Function:
 
-Opened when HR selects **View Profile**
+* Generates salary records for selected employees for the month.
+* Calculates:
 
-### Data Displayed
-
-* Personal Information
-* Department
-* Manager
-* Joining Date
-* Contact Information
-
-### Functionalities
-
-* Edit employee details
-* View onboarding progress
-* Access document verification
+  * Base salary
+  * Allowances
+  * Deductions
+  * Net salary
 
 ---
 
-# 2.5 Document Management
+# 3. Payroll Summary Cards (Below Header)
 
-### Location
+Displays payroll statistics.
 
-Employee onboarding profile page.
+### Cards
 
-### Document Types
+**Total Payroll Amount**
 
-* Government ID
-* Resume
-* Educational Certificates
-* Offer Letter
-* Employment Agreement
+* Total salary expense for the selected month.
 
-### Functionalities
+**Total Employees Paid**
 
-**Upload Document**
+* Number of employees whose salaries were processed.
 
-* Employee uploads documents
+**Pending Payments**
 
-**Verify Document**
+* Employees whose salaries are not yet processed.
 
-* HR reviews uploaded files
+**Total Deductions**
 
-**Approval Status**
+* Total deductions such as tax or insurance.
 
-* Approved
-* Rejected
-* Requires update
+Purpose:
+
+* Provides quick payroll insights.
 
 ---
 
-# 2.6 Onboarding Task Checklist
+# 4. Employee Payroll Table (Main Section)
 
-### Location
+Location: Center of the page.
 
-Employee onboarding profile.
+Each row represents an employee payroll record.
 
-### Tasks
+### Table Columns
 
-* Complete personal details
-* Upload required documents
-* Accept company policies
-* Complete mandatory training
-
-### Functionalities
-
-* Track completion status
-* Update progress percentage
-* Prevent onboarding completion until all tasks are finished
-
----
-
-# 2.7 HR Approval Workflow
-
-### Location
-
-Employee onboarding controls.
-
-### Status Types
-
-* Pending
-* Approved
-* Rejected
-* Correction Required
-
-### Functionalities
-
-* HR reviews onboarding submission
-* HR can approve or reject
-* System records approval timestamp
+Employee Name
+Employee ID
+Department
+Basic Salary
+Allowances
+Deductions
+Net Salary
+Payment Status
+Actions
 
 ---
 
-# 2.8 Activity Timeline
+# 5. Payroll Action Buttons
 
-### Location
-
-Employee onboarding profile.
-
-### Logged Activities
-
-* Employee created
-* Documents uploaded
-* Documents verified
-* HR approval
-
-### Functionalities
-
-* Maintain audit trail
-* Store timestamps for each event
+Located in the **Actions column** of each employee row.
 
 ---
 
-# 2.9 Notification System
+## View Payslip Button
 
-### Location
+Location: Inside the employee row under **Actions**
 
-System-wide notification service.
+Purpose:
 
-### Trigger Events
+* Opens the employee payslip page.
 
-* Missing documents
-* Pending HR approval
-* Incomplete onboarding tasks
-* Onboarding approval
+Displays:
 
-### Functionalities
-
-* Send alerts to employees
-* Send alerts to HR administrators
-* Log notification history
+* Employee salary breakdown
+* Allowances
+* Deductions
+* Net salary
+* Payment date
 
 ---
 
-# 3. System Data Flow
+## Download Payslip Button
 
-Employee creation → onboarding record created
-Employee uploads documents → verification required
-Tasks completed → progress updated
-HR reviews submission → approval workflow triggered
-Employee status updated → onboarding completed
+Location: Next to **View Payslip**
 
----
+Purpose:
 
-# 4. System Integration
+* Downloads the payslip as PDF.
 
-The onboarding module interacts with:
+Used by:
 
-### Employee Management Module
-
-Stores employee profile information.
-
-### Document Storage System
-
-Stores uploaded employee documents.
-
-### Notification Service
-
-Sends alerts to HR and employees.
-
-### Training Module (optional)
-
-Tracks onboarding training completion.
+* Employees for salary proof
+* HR for records
 
 ---
 
-# 5. Security and Access Control
+## Edit Payroll Button
 
-Access levels:
+Location: Actions column.
+
+Purpose:
+
+* Modify payroll components.
+
+Editable fields:
+
+* Bonus
+* Allowances
+* Deductions
+* Tax adjustments
+
+---
+
+## Mark as Paid Button
+
+Location: Actions column.
+
+Purpose:
+
+* Changes payment status to **Paid** after salary transfer.
+
+Updates:
+
+* Payroll status
+* Payment timestamp
+
+---
+
+# 6. Payslip Details Page
+
+Opened when **View Payslip** button is clicked.
+
+---
+
+## Payslip Information Section
+
+Displays:
+
+Employee Name
+Employee ID
+Department
+Pay Period
+Payment Date
+
+---
+
+## Salary Breakdown Section
+
+Shows detailed salary components.
+
+### Earnings
+
+Basic Salary
+Bonus
+Overtime Pay
+Allowances
+
+---
+
+### Deductions
+
+Tax
+Insurance
+Provident Fund
+Other deductions
+
+---
+
+### Net Salary
+
+Final salary after deductions.
+
+---
+
+# 7. Payslip Actions
+
+Located at the **top-right corner of the payslip page**.
+
+### Download Payslip
+
+Downloads payslip in PDF format.
+
+### Print Payslip
+
+Opens print view.
+
+### Send to Employee
+
+Emails payslip to employee.
+
+---
+
+# 8. Payroll History Section
+
+Location: Bottom of payroll page or inside employee profile.
+
+Displays:
+
+Past payroll records.
+
+Fields:
+
+* Month
+* Net Salary
+* Payment Status
+* Payslip link
+
+Purpose:
+
+* Maintain salary history.
+
+---
+
+# 9. Payroll Notifications
+
+Alerts sent when:
+
+Payroll generated
+Payslip available
+Payment completed
+
+Users notified:
+
+* HR
+* Employee
+
+---
+
+# 10. Security and Access Control
 
 **HR Administrator**
 
-* Full onboarding control
-* Approve employees
-* Verify documents
+* Generate payroll
+* Edit salary
+* Approve payments
 
 **Employee**
 
-* Upload documents
-* Complete onboarding tasks
+* View payslip
+* Download payslip
 
 **Manager**
 
-* View onboarding status of team members
+* View team payroll summary (optional)
 
 ---
 
-# 6. Expected System Outcomes
+# 11. Data Flow
 
-The onboarding module enables:
-
-* Structured employee registration
-* Secure document verification
-* Automated onboarding tracking
-* HR approval workflows
-* Real-time onboarding status visibility
+HR generates payroll →
+Salary calculated →
+Payslip created →
+HR approves payment →
+Employee receives payslip →
+Payroll record stored in history.
 
 ---
 
-✅ This **development plan is suitable for:**
+# 12. Benefits of Payroll Page
 
-* System architecture documentation
-* Development roadmap
-* Backend and frontend planning
-* Software design documentation
+* Automated salary processing
+* Transparent payslip generation
+* Easy salary tracking
+* Accurate payroll records
+* Reduced HR manual work
 
+---
 
+✅ This structure is **very similar to payroll modules used in real HR platforms** like
+
+* Zoho Payroll
+* ADP
+* Workday
+
+---
+
+If you want, I can also give **the full HR system page structure (Employee, Attendance, Leave, Payroll, Reports)** so your project looks like a **complete enterprise HR product**.
