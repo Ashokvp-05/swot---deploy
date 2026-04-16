@@ -134,10 +134,10 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
             {/* ── LIFECYCLE ANALYTICS TERMINAL (PHASE 3) ── */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                    { label: "Pending Setup", value: stats.totalPending, sub: "In manifest", icon: Activity, color: "text-indigo-600", bg: "bg-indigo-50" },
-                    { label: "Deployment Velocity", value: `${stats.avgProgress}%`, sub: "Lifecycle speed", icon: TrendingUp, color: "text-emerald-600", bg: "bg-emerald-50" },
-                    { label: "Action Alerts", value: stats.alerts, sub: "Requires HR node", icon: BellRing, color: "text-rose-600", bg: "bg-rose-50" },
-                    { label: "Verified Units", value: stats.completedThisMonth, sub: "Month to date", icon: Target, color: "text-indigo-600", bg: "bg-indigo-50" },
+                    { label: "Employees in Onboarding", value: stats.totalPending, sub: "Currently active", icon: Activity, color: "text-indigo-600", bg: "bg-indigo-50" },
+                    { label: "Completed Onboarding", value: stats.completedThisMonth, sub: "Month to date", icon: Target, color: "text-emerald-600", bg: "bg-emerald-50" },
+                    { label: "Pending Verification", value: stats.totalPending, sub: "Requires HR Approval", icon: ShieldCheck, color: "text-amber-600", bg: "bg-amber-50" },
+                    { label: "Documents Missing", value: stats.alerts, sub: "Action Required", icon: AlertCircle, color: "text-rose-600", bg: "bg-rose-50" },
                 ].map((s, i) => (
                     <Card key={i} className="p-8 rounded-[2.5rem] border border-slate-100 bg-white shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 group relative overflow-hidden">
                         <div className="flex flex-col gap-6 relative z-10">
@@ -162,7 +162,8 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                              <ShieldCheck className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-black text-slate-900 uppercase italic tracking-tighter leading-none font-brand">Deployment <span className="text-indigo-600">Roadmap</span></h3>
+                        <div>
+                            <h3 className="text-xl font-black text-slate-900 uppercase italic tracking-tighter leading-none font-brand">Onboarding <span className="text-indigo-600">Process</span></h3>
                             <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1.5 flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                 Ecosystem Integration Status: 100% Operational
@@ -172,11 +173,11 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
                         {[
-                            { label: "Onboarding Shards", status: "Active" },
-                            { label: "Lifecycle Timeline", status: "Active" },
-                            { label: "Backend Slot Logic", status: "Active" },
-                            { label: "Analytics Terminal", status: "Active" },
-                            { label: "Welcome Protocol", status: "Active" },
+                            { label: "Personal Information", status: "Active" },
+                            { label: "Document Upload", status: "Active" },
+                            { label: "Policy Acceptance", status: "Active" },
+                            { label: "Training Completion", status: "Active" },
+                            { label: "HR Approval", status: "Active" },
                         ].map((item, i) => (
                             <div key={i} className="flex flex-col gap-3 p-5 rounded-3xl bg-white border border-slate-100/50 shadow-sm transition-transform hover:scale-105">
                                 <div className="flex items-center justify-between">
@@ -194,14 +195,17 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
             </Card>
 
             {/* ── SMART SEARCH SHARD ── */}
-            <div className="flex items-center gap-6 bg-white p-4 rounded-[2.5rem] border border-slate-100 shadow-sm">
+            {/* ── SMART SEARCH SHARD ── */}
+            <div className="flex flex-col gap-4 bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm">
                 <div className="relative flex-1 group">
                     <Search className="absolute left-7 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-indigo-500 transition-colors" />
                     <Input placeholder="Scan personnel identities, departments or functional managers..." className="h-16 pl-16 rounded-[20px] border-none bg-slate-50/50 text-[11px] font-bold tracking-tight uppercase placeholder:text-slate-400 focus-visible:ring-4 focus-visible:ring-indigo-100 transition-all font-brand" />
                 </div>
-                <div className="flex items-center gap-3 pr-4">
-                    <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest hidden md:block">Active Registry Shard</span>
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <div className="flex items-center gap-4 px-2 overflow-x-auto pb-2 no-scrollbar">
+                     <select className="h-10 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-500 bg-slate-50 border-none outline-none whitespace-nowrap"><option>Department</option><option>Engineering</option><option>Operations</option></select>
+                     <select className="h-10 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-500 bg-slate-50 border-none outline-none whitespace-nowrap"><option>Role</option><option>Manager</option><option>Associate</option></select>
+                     <select className="h-10 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-500 bg-slate-50 border-none outline-none whitespace-nowrap"><option>Onboarding Status</option><option>Pending</option><option>Verification</option></select>
+                     <select className="h-10 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-500 bg-slate-50 border-none outline-none whitespace-nowrap"><option>Joining Date</option><option>Last 30 Days</option></select>
                 </div>
             </div>
 
@@ -270,10 +274,13 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                                             {emp.name[0]}{emp.name[1]}
                                         </div>
                                         <div>
+                                        <div>
                                             <h4 className="text-2xl font-black text-slate-900 uppercase italic font-brand tracking-tighter leading-none">{emp.name}</h4>
-                                            <div className="flex items-center gap-4 mt-3">
-                                                <Badge className="bg-slate-50 text-slate-400 border border-slate-100 px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-lg leading-none">Auth Node {idx + 1}</Badge>
-                                                <p className="text-[11px] font-black text-indigo-500 uppercase tracking-[0.2em] italic leading-none">{emp.designation?.name || "Standard Personnel"}</p>
+                                            <div className="grid grid-cols-2 gap-x-6 gap-y-2 mt-4">
+                                                <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-slate-300 rounded-full" /><p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">ID: EMP-00{idx + 1}</p></div>
+                                                <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-slate-300 rounded-full" /><p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{emp.department?.name || 'Operations'}</p></div>
+                                                <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-slate-300 rounded-full" /><p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Joined: {format(new Date(), 'dd MMM yyyy')}</p></div>
+                                                <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-slate-300 rounded-full" /><p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Manager: System Admin</p></div>
                                             </div>
                                         </div>
                                     </div>
@@ -299,36 +306,35 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                                         </div>
                                     </div>
 
-                                    {/* EPOCH TRACKING MATRIX */}
-                                    <div className="grid grid-cols-4 gap-4">
-                                        {epochs.map((epoch, i) => {
-                                            const isDone = (emp.progress || 48) > (i + 1) * 25 - 10
-                                            return (
-                                                <div key={epoch.id} className={cn(
-                                                    "p-4 rounded-3xl border flex flex-col items-center gap-3 transition-all duration-300",
-                                                    isDone ? "bg-emerald-50 border-emerald-100 text-emerald-600 shadow-sm" : "bg-slate-50 border-slate-100 text-slate-300"
-                                                )}>
-                                                    <epoch.icon className={cn("w-5 h-5", isDone ? "animate-pulse" : "")} />
-                                                    <span className="text-[9px] font-black uppercase tracking-widest">{epoch.label}</span>
-                                                </div>
-                                            )
-                                        })}
+                                    {/* TASK SECTION */}
+                                    <div className="grid grid-cols-2 gap-4 bg-slate-50 p-6 rounded-3xl border border-slate-100">
+                                        <div className="flex items-center gap-3"><CheckCircle2 className="w-4 h-4 text-emerald-500"/><span className="text-[10px] font-black uppercase tracking-widest text-slate-600">Identity Verified</span></div>
+                                        <div className="flex items-center gap-3"><CheckCircle2 className="w-4 h-4 text-emerald-500"/><span className="text-[10px] font-black uppercase tracking-widest text-slate-600">Documents Uploaded</span></div>
+                                        <div className="flex items-center gap-3"><CheckCircle2 className="w-4 h-4 text-emerald-500"/><span className="text-[10px] font-black uppercase tracking-widest text-slate-600">Policy Signed</span></div>
+                                        <div className="flex items-center gap-3"><Circle className="w-4 h-4 text-slate-300"/><span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Training Pending</span></div>
                                     </div>
 
                                     {/* ACTION LAYER */}
-                                    <div className="pt-10 border-t border-slate-50 flex items-center justify-between">
+                                    <div className="pt-2 border-t border-transparent flex items-center justify-between gap-3">
                                         <Button 
                                             variant="outline" 
-                                            onClick={(e) => { e.stopPropagation(); toast.info("Correction request dispatched to personnel node."); }} 
-                                            className="h-12 px-6 rounded-[16px] border-amber-200 text-amber-600 bg-amber-50 hover:bg-amber-100 font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-2"
+                                            onClick={(e) => { e.stopPropagation(); toast.info("Correction request dispatched."); }} 
+                                            className="h-12 flex-1 rounded-[16px] border-slate-200 text-slate-600 bg-white hover:bg-slate-50 font-black text-[9px] uppercase tracking-widest transition-all gap-2"
                                         >
-                                            <AlertCircle className="w-4 h-4" /> Request Correction
+                                            Request Correction
                                         </Button>
                                         <Button 
-                                            onClick={(e) => { e.stopPropagation(); toast.success("Personnel Node Approved for Operational Deployment."); }} 
-                                            className="h-12 px-8 rounded-[16px] bg-emerald-500 hover:bg-emerald-600 text-white font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-2 shadow-lg shadow-emerald-200"
+                                            variant="outline"
+                                            onClick={(e) => { e.stopPropagation(); setSelectedUser(emp); }} 
+                                            className="h-12 flex-1 rounded-[16px] border-indigo-200 text-indigo-600 bg-indigo-50 hover:bg-indigo-100 font-black text-[9px] uppercase tracking-widest transition-all gap-2"
                                         >
-                                            <CheckCircle2 className="w-4 h-4" /> Approve Personnel
+                                            <UserCircle className="w-4 h-4" /> View Profile
+                                        </Button>
+                                        <Button 
+                                            onClick={(e) => { e.stopPropagation(); toast.success("Personnel Node Approved."); }} 
+                                            className="h-12 flex-1 rounded-[16px] bg-emerald-500 hover:bg-emerald-600 text-white font-black text-[9px] uppercase tracking-widest transition-all gap-2 shadow-lg shadow-emerald-200"
+                                        >
+                                            Approve Onboarding
                                         </Button>
                                     </div>
                                 </div>

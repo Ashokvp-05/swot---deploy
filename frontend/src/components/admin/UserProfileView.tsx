@@ -53,9 +53,10 @@ export default function UserProfileView({ user, token, onClose, onEdit }: UserPr
 
     // Mock lifecycle activities for Phase 2
     const activities = [
-        { title: "Personnel Node Initialized", detail: "System registry entry created by Admin", time: format(new Date(user?.createdAt || Date.now()), 'hh:mm a'), date: format(new Date(user?.createdAt || Date.now()), 'MMM dd, yyyy'), icon: UserPlus, color: "text-indigo-600", bg: "bg-indigo-50" },
-        { title: "Security Clearance Auth", detail: `Role: ${roleName || 'Standard'} assigned`, time: "10:30 AM", date: "Initial Phase", icon: ShieldCheck, color: "text-emerald-600", bg: "bg-emerald-50" },
-        { title: "Identity Shard Verified", detail: "Aadhaar & PAN verification complete", time: "11:15 AM", date: "Phase A", icon: Fingerprint, color: "text-amber-600", bg: "bg-amber-50" },
+        { title: "Employee created", detail: "System registry entry initialized", time: format(new Date(user?.createdAt || Date.now() - 86400000 * 3), 'hh:mm a'), date: format(new Date(user?.createdAt || Date.now()), 'MMM dd, yyyy'), icon: UserPlus, color: "text-indigo-600", bg: "bg-indigo-50" },
+        { title: "Documents uploaded", detail: "Personnel KYC artifacts secured", time: format(new Date(user?.createdAt || Date.now() - 86400000 * 2), 'hh:mm a'), date: format(new Date(user?.createdAt || Date.now()), 'MMM dd, yyyy'), icon: UploadCloud, color: "text-amber-600", bg: "bg-amber-50" },
+        { title: "HR verification", detail: "Internal policy matrix authorized", time: format(new Date(user?.createdAt || Date.now() - 86400000 * 1), 'hh:mm a'), date: format(new Date(user?.createdAt || Date.now()), 'MMM dd, yyyy'), icon: ShieldCheck, color: "text-blue-600", bg: "bg-blue-50" },
+        { title: "Onboarding approved", detail: "Final deployment protocol validated", time: format(new Date(user?.createdAt || Date.now()), 'hh:mm a'), date: format(new Date(user?.createdAt || Date.now()), 'MMM dd, yyyy'), icon: Verified, color: "text-emerald-600", bg: "bg-emerald-50" },
     ]
 
     const renderDataField = (label: string, value: any, icon: any, subtext?: string) => (
@@ -81,9 +82,9 @@ export default function UserProfileView({ user, token, onClose, onEdit }: UserPr
     )
 
     const renderDocumentAction = (label: string, icon: any, statusContext: string, requiresUpload?: boolean) => (
-        <div className="group relative flex flex-col md:flex-row items-start md:items-center justify-between p-5 rounded-3xl border border-slate-100 hover:border-slate-200 transition-all bg-white shadow-sm hover:shadow-xl">
+        <div className="group relative flex flex-col md:flex-row items-start md:items-center justify-between p-5 rounded-3xl border border-slate-100 hover:border-indigo-100 transition-all bg-white shadow-sm hover:shadow-xl">
             <div className="flex items-center gap-4 mb-4 md:mb-0">
-                <div className="p-3 rounded-2xl bg-rose-50 text-rose-500 group-hover:bg-rose-100 transition-colors">
+                <div className="p-3 rounded-2xl bg-indigo-50 text-indigo-500 group-hover:bg-indigo-100 transition-colors">
                     {icon}
                 </div>
                 <div>
@@ -93,12 +94,13 @@ export default function UserProfileView({ user, token, onClose, onEdit }: UserPr
             </div>
             <div className="flex items-center gap-2">
                 {requiresUpload ? (
-                     <Button size="sm" variant="outline" className="h-10 px-5 rounded-xl border-amber-200 text-amber-600 bg-amber-50 hover:bg-amber-100 text-[9px] font-black uppercase tracking-widest"><FilePlus className="w-3 h-3 mr-2"/> Request File</Button>
+                     <Button size="sm" variant="outline" onClick={() => { import('sonner').then(m => m.toast.info("Re-upload requested from personnel node.")); }} className="h-10 px-5 rounded-xl border-amber-200 text-amber-600 bg-amber-50 hover:bg-amber-100 text-[9px] font-black uppercase tracking-widest transition-all hover:scale-105"><FilePlus className="w-3 h-3 mr-2"/> Request File</Button>
                 ) : (
                      <>
-                        <button className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:bg-rose-50 hover:text-rose-600 transition-colors border border-transparent hover:border-rose-100"><XCircle className="w-4 h-4" /></button>
-                        <button className="w-10 h-10 rounded-xl flex items-center justify-center text-emerald-400 hover:bg-emerald-50 hover:text-emerald-500 transition-colors border border-transparent hover:border-emerald-100 bg-emerald-50/30"><CheckCircle2 className="w-4 h-4" /></button>
+                        <button onClick={() => { import('sonner').then(m => m.toast.error("Document Rejected. Context Required.")); }} className="h-10 px-4 rounded-xl flex items-center justify-center text-rose-500 hover:bg-rose-50 border border-slate-100 hover:border-rose-100 bg-white font-black text-[9px] uppercase tracking-widest transition-all gap-2"><XCircle className="w-4 h-4" /> Reject</button>
+                        <button onClick={() => { import('sonner').then(m => m.toast.success("Document Verified.")); }} className="h-10 px-4 rounded-xl flex items-center justify-center text-emerald-600 hover:bg-emerald-600 hover:text-white border border-transparent bg-emerald-50 font-black text-[9px] uppercase tracking-widest transition-all shadow-sm gap-2"><CheckCircle2 className="w-4 h-4" /> Approve</button>
                      </>
+                )}
                 )}
             </div>
         </div>
