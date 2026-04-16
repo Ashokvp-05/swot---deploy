@@ -621,7 +621,6 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
                                 </Button>
                             </div>
                         </div>
-                        </div>
                     </SheetContent>
                 </Sheet>
                 <Button variant="ghost" size="sm" onClick={() => toast.success('Transfer settled. Marked as Paid.')} className="h-8 px-3 rounded-lg text-[9px] font-black uppercase text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 gap-2 border border-transparent hover:border-emerald-100 bg-emerald-50/50 ml-1">
