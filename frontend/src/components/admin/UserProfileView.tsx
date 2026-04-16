@@ -81,24 +81,31 @@ export default function UserProfileView({ user, token, onClose, onEdit }: UserPr
         </div>
     )
 
-    const renderDocumentAction = (label: string, icon: any, statusContext: string, requiresUpload?: boolean) => (
-        <div className="group relative flex flex-col md:flex-row items-start md:items-center justify-between p-5 rounded-3xl border border-slate-100 hover:border-indigo-100 transition-all bg-white shadow-sm hover:shadow-xl">
-            <div className="flex items-center gap-4 mb-4 md:mb-0">
-                <div className="p-3 rounded-2xl bg-indigo-50 text-indigo-500 group-hover:bg-indigo-100 transition-colors">
+    const renderDocumentAction = (label: string, icon: any, statusContext: string, size?: string, uploadedAt?: string, requiresUpload?: boolean) => (
+        <div className="group relative flex flex-col md:flex-row items-start md:items-center justify-between p-6 rounded-[32px] border border-slate-100 hover:border-indigo-100 transition-all bg-white shadow-sm hover:shadow-xl group/doc overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-indigo-50/10 to-transparent opacity-0 group-hover/doc:opacity-100 transition-opacity" />
+            <div className="flex items-center gap-5 mb-4 md:mb-0 relative z-10">
+                <div className="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-500 group-hover/doc:bg-indigo-600 group-hover/doc:text-white transition-all flex items-center justify-center">
                     {icon}
                 </div>
                 <div>
-                    <h4 className="text-[11px] font-black text-slate-900 uppercase font-brand tracking-widest leading-none">{label}</h4>
-                    <p className="text-[9px] font-bold text-slate-400 uppercase mt-1.5 tracking-[0.2em]">{statusContext}</p>
+                    <h4 className="text-[12px] font-black text-slate-900 uppercase font-brand tracking-widest leading-none">{label}</h4>
+                    <div className="flex items-center gap-3 mt-2">
+                        <p className={cn("text-[9px] font-black uppercase tracking-widest", statusContext.includes('Correction') ? "text-rose-500" : "text-slate-400")}>{statusContext}</p>
+                        {size && <span className="w-1 h-1 bg-slate-200 rounded-full" />}
+                        {size && <p className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">{size}</p>}
+                        {uploadedAt && <span className="w-1 h-1 bg-slate-200 rounded-full" />}
+                        {uploadedAt && <p className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">{uploadedAt}</p>}
+                    </div>
                 </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 relative z-10">
                 {requiresUpload ? (
-                     <Button size="sm" variant="outline" onClick={() => { import('sonner').then(m => m.toast.info("Re-upload requested from personnel node.")); }} className="h-10 px-5 rounded-xl border-amber-200 text-amber-600 bg-amber-50 hover:bg-amber-100 text-[9px] font-black uppercase tracking-widest transition-all hover:scale-105"><FilePlus className="w-3 h-3 mr-2"/> Request File</Button>
+                     <Button size="sm" variant="outline" onClick={() => { import('sonner').then(m => m.toast.info("Re-upload requested from personnel node.")); }} className="h-11 px-6 rounded-xl border-amber-200 text-amber-600 bg-amber-50 hover:bg-amber-100 text-[9px] font-black uppercase tracking-widest transition-all hover:scale-105 shadow-sm"><FilePlus className="w-4 h-4 mr-2"/> Request File</Button>
                 ) : (
                      <>
-                        <button onClick={() => { import('sonner').then(m => m.toast.error("Document Rejected. Context Required.")); }} className="h-10 px-4 rounded-xl flex items-center justify-center text-rose-500 hover:bg-rose-50 border border-slate-100 hover:border-rose-100 bg-white font-black text-[9px] uppercase tracking-widest transition-all gap-2"><XCircle className="w-4 h-4" /> Reject</button>
-                        <button onClick={() => { import('sonner').then(m => m.toast.success("Document Verified.")); }} className="h-10 px-4 rounded-xl flex items-center justify-center text-emerald-600 hover:bg-emerald-600 hover:text-white border border-transparent bg-emerald-50 font-black text-[9px] uppercase tracking-widest transition-all shadow-sm gap-2"><CheckCircle2 className="w-4 h-4" /> Approve</button>
+                        <button onClick={() => { import('sonner').then(m => m.toast.error("Document Rejected. Context Required.")); }} className="h-11 px-5 rounded-xl flex items-center justify-center text-rose-500 hover:bg-rose-50 border border-slate-100 hover:border-rose-100 bg-white font-black text-[9px] uppercase tracking-widest transition-all gap-2"><XCircle className="w-4 h-4" /> Reject</button>
+                        <button onClick={() => { import('sonner').then(m => m.toast.success("Document Verified.")); }} className="h-11 px-5 rounded-xl flex items-center justify-center text-emerald-600 hover:bg-emerald-600 hover:text-white border border-transparent bg-emerald-50 font-black text-[9px] uppercase tracking-widest transition-all shadow-sm gap-2"><CheckCircle2 className="w-4 h-4" /> Approve</button>
                      </>
                 )}
             </div>
@@ -276,9 +283,9 @@ export default function UserProfileView({ user, token, onClose, onEdit }: UserPr
                                                 <h3 className="text-[14px] font-black uppercase tracking-[0.2em] text-slate-900 font-brand">Document Manifest</h3>
                                             </div>
                                             <div className="space-y-4">
-                                                {renderDocumentAction("Curriculum Vitae (Resume)", <FileText className="w-full h-full" />, "Status: Pending Review")}
-                                                {renderDocumentAction("Educational Certifications", <GraduationCap className="w-full h-full" />, "Status: Correction Required", true)}
-                                                {renderDocumentAction("Offer Letter & Agreement", <Briefcase className="w-full h-full" />, "Status: Awaiting Verification")}
+                                                {renderDocumentAction("Curriculum Vitae (Resume)", <FileText className="w-full h-full" />, "Status: Pending Review", "1.2 MB", "Uploaded: 2d ago")}
+                                                {renderDocumentAction("Educational Certifications", <GraduationCap className="w-full h-full" />, "Status: Correction Required", "4.8 MB", "Uploaded: 3d ago", true)}
+                                                {renderDocumentAction("Offer Letter & Agreement", <Briefcase className="w-full h-full" />, "Status: Awaiting Verification", "850 KB", "Uploaded: 1h ago")}
                                             </div>
                                         </div>
                                     </>

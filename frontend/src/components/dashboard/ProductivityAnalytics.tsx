@@ -40,7 +40,7 @@ export function ProductivityAnalytics({ token }: { token: string }) {
         return (
             <Card className="h-full premium-card flex flex-col items-center justify-center p-8">
                 <Loader2 className="animate-spin text-indigo-500 w-8 h-8 opacity-20" />
-                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-4 animate-pulse">Synchronizing Intelligence...</p>
+
             </Card>
         )
     }

@@ -157,7 +157,7 @@ export default function ExecutiveHub({ token, hideVitals = false }: { token: str
                     icon={Activity} color="text-emerald-600" bg="bg-emerald-50" trend="up" trendVal={2.1} delay={0.05} />
                 <StatCard label="Pending Leaves" value={pendingLeaves} sub="Awaiting approval"
                     icon={Calendar} color="text-amber-600" bg="bg-amber-50" trend="down" trendVal={1.3} delay={0.1} />
-                <StatCard label="Departments" value={totalDepts} sub="Active org units"
+                <StatCard label="Departments" value={totalDepts} sub="Active departments"
                     icon={Shield} color="text-violet-600" bg="bg-violet-50" delay={0.15} />
             </div>
 

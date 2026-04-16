@@ -209,7 +209,7 @@ export default function AddEmployeeModal({ token, employee, onClose, onSuccess }
                                 <div>
                                     <label className={labelCls}>Department</label>
                                     <select value={form.deptId} onChange={e => set("deptId", e.target.value)} className={selectCls}>
-                                        <option value="">Choose Unit</option>
+                                        <option value="">Choose Department</option>
                                         {depts.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
                                     </select>
                                 </div>

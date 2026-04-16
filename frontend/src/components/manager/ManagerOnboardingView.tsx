@@ -196,10 +196,13 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                     <Input placeholder="Scan personnel identities, departments or functional managers..." className="h-16 pl-16 rounded-[20px] border-none bg-slate-50/50 text-[11px] font-bold tracking-tight uppercase placeholder:text-slate-400 focus-visible:ring-4 focus-visible:ring-indigo-100 transition-all font-brand" />
                 </div>
                 <div className="flex items-center gap-4 px-2 overflow-x-auto pb-2 no-scrollbar">
-                     <select className="h-10 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-500 bg-slate-50 border-none outline-none whitespace-nowrap"><option>Department</option><option>Engineering</option><option>Operations</option></select>
-                     <select className="h-10 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-500 bg-slate-50 border-none outline-none whitespace-nowrap"><option>Role</option><option>Manager</option><option>Associate</option></select>
-                     <select className="h-10 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-500 bg-slate-50 border-none outline-none whitespace-nowrap"><option>Onboarding Status</option><option>Pending</option><option>Verification</option></select>
-                     <select className="h-10 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-500 bg-slate-50 border-none outline-none whitespace-nowrap"><option>Joining Date</option><option>Last 30 Days</option></select>
+                     <div className="flex items-center gap-2 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
+                         <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest pl-3 pr-2">Filter Matrix:</span>
+                         <select className="h-10 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 bg-white border border-slate-100 outline-none transition-all focus:border-indigo-300 focus:ring-4 focus:ring-indigo-100/20"><option>All Departments</option><option>Engineering Shard</option><option>Operations Shard</option></select>
+                         <select className="h-10 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 bg-white border border-slate-100 outline-none transition-all focus:border-indigo-300 focus:ring-4 focus:ring-indigo-100/20"><option>Access Tier</option><option>Manager</option><option>Associate</option></select>
+                         <select className="h-10 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 bg-white border border-slate-100 outline-none transition-all focus:border-indigo-300 focus:ring-4 focus:ring-indigo-100/20"><option>Onboarding Status</option><option>Pending Node</option><option>Verification Shard</option></select>
+                         <select className="h-10 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 bg-white border border-slate-100 outline-none transition-all focus:border-indigo-300 focus:ring-4 focus:ring-indigo-100/20"><option>Joining Sequence</option><option>Last 30 Days</option></select>
+                     </div>
                 </div>
             </div>
 
@@ -300,11 +303,23 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                                     </div>
 
                                     {/* TASK SECTION */}
-                                    <div className="grid grid-cols-2 gap-4 bg-slate-50 p-6 rounded-3xl border border-slate-100">
-                                        <div className="flex items-center gap-3"><CheckCircle2 className="w-4 h-4 text-emerald-500"/><span className="text-[10px] font-black uppercase tracking-widest text-slate-600">Identity Verified</span></div>
-                                        <div className="flex items-center gap-3"><CheckCircle2 className="w-4 h-4 text-emerald-500"/><span className="text-[10px] font-black uppercase tracking-widest text-slate-600">Documents Uploaded</span></div>
-                                        <div className="flex items-center gap-3"><CheckCircle2 className="w-4 h-4 text-emerald-500"/><span className="text-[10px] font-black uppercase tracking-widest text-slate-600">Policy Signed</span></div>
-                                        <div className="flex items-center gap-3"><Circle className="w-4 h-4 text-slate-300"/><span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Training Pending</span></div>
+                                    <div className="grid grid-cols-2 gap-3 bg-slate-50/50 p-6 rounded-[32px] border border-slate-100 relative group/tasks overflow-hidden">
+                                        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover/tasks:opacity-100 transition-opacity" />
+                                        {[
+                                            { label: "Identity Verified", icon: CheckCircle2, status: "complete", color: "text-emerald-500", bg: "bg-emerald-50" },
+                                            { label: "Documents Uploaded", icon: CheckCircle2, status: "complete", color: "text-emerald-500", bg: "bg-emerald-50" },
+                                            { label: "Policy Signed", icon: CheckCircle2, status: "complete", color: "text-emerald-500", bg: "bg-emerald-50" },
+                                            { label: "Training Pending", icon: AlertCircle, status: "pending", color: "text-amber-500", bg: "bg-amber-50" },
+                                        ].map((task, i) => (
+                                            <div key={i} className="flex items-center gap-3 relative z-10 transition-all hover:translate-x-1">
+                                                <div className={cn("w-7 h-7 rounded-lg flex items-center justify-center shadow-sm border border-white", task.bg)}>
+                                                    <task.icon className={cn("w-3.5 h-3.5", task.color)} />
+                                                </div>
+                                                <span className={cn("text-[10px] font-black uppercase tracking-widest font-brand", task.status === 'complete' ? "text-slate-600" : "text-slate-400")}>
+                                                    {task.label}
+                                                </span>
+                                            </div>
+                                        ))}
                                     </div>
 
                                     {/* ACTION LAYER */}

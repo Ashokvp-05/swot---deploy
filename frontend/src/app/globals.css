@@ -262,3 +262,5 @@ h1, h2, h3, h4, h5, h6, .stat-value {
   cursor: default;
   user-select: none;
 }
+
+input::-ms-reveal, input::-ms-clear { display: none !important; } input::-webkit-contacts-auto-fill-button { visibility: hidden !important; display: none !important; pointer-events: none !important; }

@@ -194,7 +194,7 @@ export default function HRManagerDashboardHub({ token, onNavigate }: ManagerDash
                                                 </div>
                                                 <div>
                                                     <h4 className="text-[13px] font-black text-slate-900 dark:text-white uppercase italic tracking-tight">{person.name || 'Personnel'}</h4>
-                                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Personnel Unit</p>
+                                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Personnel Dept</p>
                                                 </div>
                                             </div>
                                             <div className="text-right">

@@ -46,7 +46,7 @@ export default function ManagerDepartmentView({ token }: { token: string }) {
     }
 
     const handleCreate = async () => {
-        if (!newDept.name) return toast.error("Architecture incomplete: Unit Name required")
+        if (!newDept.name) return toast.error("Architecture incomplete: Department Name required")
         setCreating(true)
         try {
             const res = await fetch(`${API_BASE_URL}/organization/departments`, {
@@ -58,12 +58,12 @@ export default function ManagerDepartmentView({ token }: { token: string }) {
                 body: JSON.stringify(newDept)
             })
             if (res.ok) {
-                toast.success("Structural unit constructed successfully")
+                toast.success("Department added successfully")
                 setIsCreateOpen(false)
                 setNewDept({ name: "", description: "" })
                 fetchDepartments()
             } else {
-                toast.error("Structural node deployment failure")
+                toast.error("Department creation failure")
             }
         } catch (e) {
             toast.error("Network synchronization collision")
@@ -81,20 +81,20 @@ export default function ManagerDepartmentView({ token }: { token: string }) {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
                     <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter italic">Organizational <span className="text-indigo-600">Architecture</span></h2>
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Manage departmental units & hierarchy protocols</p>
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Manage departmental groups & hierarchy protocols</p>
                 </div>
                 <Button 
                     onClick={() => setIsCreateOpen(true)}
                     className="h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-10 text-[11px] font-black uppercase tracking-widest gap-3 shadow-xl"
                 >
-                    <Plus className="w-5 h-5" /> Construct Unit
+                    <Plus className="w-5 h-5" /> Add Department
                 </Button>
             </div>
 
             <div className="flex items-center gap-4 bg-white dark:bg-slate-900 p-4 rounded-[2rem] border border-slate-100 dark:border-slate-800">
                 <div className="relative flex-1">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                    <Input placeholder="Filter architecture by unit name or lead..." className="h-12 pl-12 rounded-2xl border-none bg-slate-50 dark:bg-black/20 text-xs font-black uppercase tracking-widest" />
+                    <Input placeholder="Filter architecture by department name or lead..." className="h-12 pl-12 rounded-2xl border-none bg-slate-50 dark:bg-black/20 text-xs font-black uppercase tracking-widest" />
                 </div>
                 <Button variant="ghost" className="h-12 w-12 rounded-2xl p-0"><Filter className="w-5 h-5 text-slate-400" /></Button>
             </div>
@@ -103,7 +103,7 @@ export default function ManagerDepartmentView({ token }: { token: string }) {
                 {loading ? (
                     <div className="col-span-full py-20 flex flex-col items-center justify-center gap-4">
                         <Loader2 className="w-10 h-10 animate-spin text-indigo-500" />
-                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Scanning Unit Topology...</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Scanning Department Hierarchy...</p>
                     </div>
                 ) : departments.length === 0 ? (
                     <div className="col-span-full py-20 text-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-[3rem]">
@@ -121,7 +121,7 @@ export default function ManagerDepartmentView({ token }: { token: string }) {
                             </div>
 
                             <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight italic mb-1">{dept.name}</h3>
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">{dept.description || "Core organizational management unit"}</p>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">{dept.description || "Core organizational management department"}</p>
 
                             <div className="grid grid-cols-2 gap-4 mb-8">
                                 <div className="p-4 rounded-2xl bg-slate-50 dark:bg-black/20">
@@ -148,7 +148,7 @@ export default function ManagerDepartmentView({ token }: { token: string }) {
                                     <div className="w-8 h-8 rounded-full border-2 border-white dark:border-slate-900 bg-indigo-600 flex items-center justify-center text-[10px] font-black text-white">+</div>
                                 </div>
                                 <Button variant="ghost" className="text-[10px] font-black uppercase text-indigo-600 tracking-widest flex items-center gap-2 hover:bg-transparent">
-                                    Unit Details <ExternalLink className="w-3 h-3" />
+                                    Dept Details <ExternalLink className="w-3 h-3" />
                                 </Button>
                             </div>
                         </Card>
@@ -160,13 +160,13 @@ export default function ManagerDepartmentView({ token }: { token: string }) {
             <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                 <DialogContent className="bg-white dark:bg-slate-900 border-none rounded-[3rem] shadow-2xl p-10 max-w-lg font-sans">
                     <DialogHeader>
-                        <DialogTitle className="text-2xl font-black uppercase italic tracking-tighter text-slate-900 dark:text-white">Unit <span className="text-indigo-600">Construction</span></DialogTitle>
-                        <DialogDescription className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">Activate a new organizational node</DialogDescription>
+                        <DialogTitle className="text-2xl font-black uppercase italic tracking-tighter text-slate-900 dark:text-white">Add <span className="text-indigo-600">Department</span></DialogTitle>
+                        <DialogDescription className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">Register a new organizational department</DialogDescription>
                     </DialogHeader>
                     
                     <div className="space-y-6 py-8">
                         <div className="space-y-3">
-                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Unit Name</Label>
+                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Department Name</Label>
                             <Input 
                                 className="h-14 rounded-2xl bg-slate-50 dark:bg-black/40 border-slate-100 dark:border-white/5 px-6 font-bold text-slate-900 dark:text-white focus:ring-4 focus:ring-indigo-600/10 transition-all outline-none" 
                                 placeholder="e.g. Engineering & Cloud"
@@ -198,7 +198,7 @@ export default function ManagerDepartmentView({ token }: { token: string }) {
                             disabled={creating}
                             className="h-14 px-10 rounded-2xl bg-indigo-600 hover:bg-black text-white font-black uppercase text-[11px] tracking-[0.2em] shadow-2xl shadow-indigo-600/20 transition-all active:scale-95"
                         >
-                            {creating ? <Loader2 className="w-5 h-5 animate-spin" /> : "Deploy Unit"}
+                            {creating ? <Loader2 className="w-5 h-5 animate-spin" /> : "Create Department"}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

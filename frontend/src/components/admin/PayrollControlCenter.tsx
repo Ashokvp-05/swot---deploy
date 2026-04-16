@@ -366,8 +366,8 @@ export default function PayrollControlCenter({ token }: { token: string }) {
             )}
 
             {activeTab === 'reports' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                    <Card className="p-10 rounded-[44px] border-slate-50 shadow-sm grow flex flex-col gap-6">
+                <div className="flex justify-center">
+                    <Card className="p-10 rounded-[44px] border-slate-50 shadow-sm max-w-2xl w-full flex flex-col gap-6">
                         <div className="flex items-center gap-4">
                             <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl">
                                 <FileText className="w-6 h-6" />
@@ -384,8 +384,6 @@ export default function PayrollControlCenter({ token }: { token: string }) {
                             </Button>
                         </div>
                     </Card>
-
-
                 </div>
             )}
         </div>

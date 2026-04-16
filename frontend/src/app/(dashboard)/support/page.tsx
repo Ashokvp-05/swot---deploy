@@ -433,9 +433,9 @@ export default function SupportAdminDashboard() {
                         )}
 
                         {currentTab === "logs" && (
-                             <Card className="rounded-[4rem] bg-[#020617] border border-indigo-500/20 shadow-2xl p-1 relative overflow-hidden h-[700px] flex flex-col">
-                                 <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-indigo-500/10 to-transparent pointer-events-none" />
-                                 <div className="flex items-center justify-between px-10 pt-10 pb-8 border-b border-white/5 bg-white/5 backdrop-blur-sm relative z-10">
+                             <Card className="rounded-[4rem] bg-slate-950 border border-indigo-500/20 shadow-2xl p-1 relative overflow-hidden h-[700px] flex flex-col">
+                                 <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-indigo-500/5 to-transparent pointer-events-none" />
+                                 <div className="flex items-center justify-between px-10 pt-10 pb-8 border-b border-indigo-500/10 bg-slate-900/50 backdrop-blur-sm relative z-10">
                                      <div className="flex items-center gap-5">
                                          <div className="w-4 h-4 rounded-full bg-rose-500 animate-pulse shadow-lg shadow-rose-500/50" />
                                          <div>
@@ -454,13 +454,13 @@ export default function SupportAdminDashboard() {
                                  <div className="flex-1 overflow-y-auto p-12 space-y-4 no-scrollbar font-mono relative z-10">
                                      {logs.map((log, i) => (
                                          <div key={i} className={cn(
-                                             "flex items-start gap-6 text-[11px] leading-relaxed group",
-                                             log.type === 'WARN' ? "text-amber-400" : "text-indigo-300"
+                                             "flex items-start gap-6 text-[11px] leading-relaxed group py-1 border-b border-white/5 last:border-none",
+                                             log.type === 'WARN' ? "text-amber-400" : "text-indigo-400"
                                          )}>
-                                             <span className="text-slate-600 font-bold shrink-0 tabular-nums">[{log.time}]</span>
+                                             <span className="text-slate-700 font-bold shrink-0 tabular-nums">[{log.time}]</span>
                                              <span className="font-bold flex-1 tracking-tight">
-                                                 <span className={cn("px-2 py-0.5 rounded-md mr-3 text-[9px] font-black", log.type === 'WARN' ? "bg-amber-400/10 text-amber-500" : "bg-indigo-400/10 text-indigo-400")}>{log.type}</span>
-                                                 &gt; {log.msg} <span className="text-slate-700 italic ml-3 opacity-0 group-hover:opacity-100 transition-opacity">-- shard_cid:{log.id}</span>
+                                                 <span className={cn("px-2 py-0.5 rounded-md mr-3 text-[9px] font-black", log.type === 'WARN' ? "bg-amber-400/10 text-amber-500" : "bg-indigo-500/10 text-indigo-400")}>{log.type}</span>
+                                                 &gt; {log.msg} <span className="text-slate-800 italic ml-3 opacity-0 group-hover:opacity-100 transition-opacity">-- shard_cid:{log.id}</span>
                                              </span>
                                          </div>
                                      ))}

@@ -172,8 +172,9 @@ export const exportStrategicMonthly = async (req: Request, res: Response) => {
             ctx.targetDepartment
         );
 
-        // Analysis Finalization Protocol: Only cut analysis when session is completed (Log out)
-        const report = allReport.filter(e => e.status === 'COMPLETED');
+        // Include both completed and active entries for a comprehensive strategic view
+        // Calculations will safely handle null hoursWorked for active sessions
+        const report = allReport;
 
         const workbook = new ExcelJS.Workbook();
         
@@ -215,8 +216,14 @@ export const exportStrategicMonthly = async (req: Request, res: Response) => {
         ];
 
         const personnelStats = report.reduce((acc: any, curr: any) => {
+            if (!curr.userId) return acc;
             if (!acc[curr.userId]) {
-                acc[curr.userId] = { name: curr.user.name, email: curr.user.email, hours: 0, count: 0 };
+                acc[curr.userId] = { 
+                    name: curr.user?.name || 'Personnel Node', 
+                    email: curr.user?.email || 'N/A', 
+                    hours: 0, 
+                    count: 0 
+                };
             }
             acc[curr.userId].hours += (Number(curr.hoursWorked) || 0);
             acc[curr.userId].count += 1;
@@ -266,11 +273,11 @@ export const exportStrategicMonthly = async (req: Request, res: Response) => {
         deptSheet.getRow(1).font = { color: { argb: 'FFFFFFFF' }, bold: true };
 
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.setHeader('Content-Disposition', `attachment; filename=Strategic_Monthly_Report_${start}.xlsx`);
+        res.setHeader('Content-Disposition', `attachment; filename=Strategic_Analysis_Report_${new Date().getTime()}.xlsx`);
 
         await workbook.xlsx.write(res);
-        res.end();
     } catch (error: any) {
-        res.status(500).json({ error: error.message });
+        console.error('Strategic Export Failure:', error);
+        res.status(500).json({ error: error.message || 'Analysis Generation Failure' });
     }
 };
