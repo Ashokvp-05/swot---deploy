@@ -10,7 +10,7 @@ import {
     Activity, Zap, Database, Lock, Unlock, X, Edit3,
     ArrowLeftCircle, Verified, UserCog, Shield,
     Cpu, Laptop, Layers, Radio, Key, Monitor, History as HistoryIcon,
-    ChevronRight, Clock, CheckCircle2, UserPlus
+    ChevronRight, Clock, CheckCircle2, UserPlus, FileText, GraduationCap
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -233,6 +233,17 @@ export default function UserProfileView({ user, token, onClose }: UserProfileVie
                                                 {renderDataField("National ID (Aadhaar)", user?.profile?.aadhaarNumber, <Verified className="w-full h-full" />)}
                                                 {renderDataField("Tax Identification (PAN)", user?.profile?.panNumber, <HardDrive className="w-full h-full" />)}
                                                 {renderDataField("UAN Infrastructure", user?.profile?.uanNumber, <Zap className="w-full h-full" />)}
+                                            </div>
+                                        </div>
+                                        <div className="space-y-12">
+                                            <div className="flex items-center gap-5 border-b border-slate-50 pb-8">
+                                                <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-600"><FileText className="w-6 h-6" /></div>
+                                                <h3 className="text-[14px] font-black uppercase tracking-[0.2em] text-slate-900 font-brand">Document Manifest</h3>
+                                            </div>
+                                            <div className="space-y-10">
+                                                {renderDataField("Curriculum Vitae (Resume)", "Verified & Secured", <FileText className="w-full h-full" />, "Status: Approved")}
+                                                {renderDataField("Educational Certifications", "Pending Validation", <GraduationCap className="w-full h-full" />, "Status: Requires Update")}
+                                                {renderDataField("Offer Letter & Agreement", "Legally Bound", <Briefcase className="w-full h-full" />, "Status: Approved")}
                                             </div>
                                         </div>
                                     </>

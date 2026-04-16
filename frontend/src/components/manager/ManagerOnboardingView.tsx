@@ -277,16 +277,18 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
 
                                     {/* ACTION LAYER */}
                                     <div className="pt-10 border-t border-slate-50 flex items-center justify-between">
-                                        <div className="flex items-center gap-4">
-                                             <button className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 hover:bg-slate-900 hover:text-white transition-all shadow-sm"><Mail className="w-5 h-5" /></button>
-                                             <button className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 hover:bg-indigo-600 hover:text-white transition-all shadow-sm"><Phone className="w-5 h-5" /></button>
-                                        </div>
                                         <Button 
                                             variant="outline" 
-                                            onClick={() => toast.info("Initializing phase advancement Protocol...")} 
-                                            className="h-14 px-10 rounded-[20px] border-slate-100 text-slate-900 font-black text-[11px] uppercase tracking-[0.2em] hover:bg-slate-950 hover:text-white transition-all group flex items-center gap-4"
+                                            onClick={(e) => { e.stopPropagation(); toast.info("Correction request dispatched to personnel node."); }} 
+                                            className="h-12 px-6 rounded-[16px] border-amber-200 text-amber-600 bg-amber-50 hover:bg-amber-100 font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-2"
                                         >
-                                            Advance Node <ChevronRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
+                                            <AlertCircle className="w-4 h-4" /> Request Correction
+                                        </Button>
+                                        <Button 
+                                            onClick={(e) => { e.stopPropagation(); toast.success("Personnel Node Approved for Operational Deployment."); }} 
+                                            className="h-12 px-8 rounded-[16px] bg-emerald-500 hover:bg-emerald-600 text-white font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-2 shadow-lg shadow-emerald-200"
+                                        >
+                                            <CheckCircle2 className="w-4 h-4" /> Approve Personnel
                                         </Button>
                                     </div>
                                 </div>
