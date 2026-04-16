@@ -1,0 +1,255 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import {
+    X, UserPlus, Mail, Lock, Phone, Building2,
+    Briefcase, Users, Calendar, Eye, EyeOff,
+    CheckCircle2, Loader2, AlertCircle, Shield,
+    Edit3
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { toast } from "sonner"
+import { cn } from "@/lib/utils"
+
+interface AddEmployeeModalProps {
+    token: string
+    employee?: any
+    onClose: () => void
+    onSuccess: () => void
+}
+
+interface SelectOption { id: string; name: string }
+
+const GlobalStyles = () => (
+    <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&display=swap');
+        .font-brand { font-family: 'Plus Jakarta Sans', sans-serif; }
+    `}</style>
+)
+
+export default function AddEmployeeModal({ token, employee, onClose, onSuccess }: AddEmployeeModalProps) {
+    const API = process.env.NEXT_PUBLIC_API_URL
+    const isEditing = !!employee
+
+    const [form, setForm] = useState({
+        name: "", email: "", password: "", phone: "",
+        roleId: "", deptId: "", designationId: "", managerId: "",
+        joiningDate: new Date().toISOString().split("T")[0],
+    })
+    const [showPwd, setShowPwd] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [success, setSuccess] = useState(false)
+    const [error, setError] = useState("")
+
+    const [roles, setRoles] = useState<SelectOption[]>([])
+    const [depts, setDepts] = useState<SelectOption[]>([])
+    const [designations, setDesignations] = useState<SelectOption[]>([])
+    const [managers, setManagers] = useState<SelectOption[]>([])
+
+    const h = { Authorization: `Bearer ${token}` }
+
+    useEffect(() => {
+        if (isEditing) {
+            setForm({
+                name: employee.name || "",
+                email: employee.email || "",
+                password: "",
+                phone: employee.phone || "",
+                roleId: employee.roleId || "",
+                deptId: employee.deptId || "",
+                designationId: employee.designationId || "",
+                managerId: employee.managerId || "",
+                joiningDate: employee.joiningDate ? new Date(employee.joiningDate).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
+            })
+        }
+    }, [employee])
+
+    useEffect(() => {
+        const load = async () => {
+            try {
+                const [rRes, dRes, dgRes, mRes] = await Promise.all([
+                    fetch(`${API}/admin/roles`, { headers: h }),
+                    fetch(`${API}/organization/departments`, { headers: h }),
+                    fetch(`${API}/organization/designations`, { headers: h }),
+                    fetch(`${API}/users?limit=ALL`, { headers: h }),
+                ])
+                if (rRes.ok) setRoles(await rRes.json())
+                if (dRes.ok) setDepts(await dRes.json())
+                if (dgRes.ok) setDesignations(await dgRes.json())
+                if (mRes.ok) {
+                    const d = await mRes.json()
+                    setManagers(Array.isArray(d) ? d : (d.users || []))
+                }
+            } catch { /* silent */ }
+        }
+        load()
+    }, [token])
+
+    const set = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }))
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setError("")
+        
+        if (!form.name.trim()) return setError("Full Name is required")
+        if (!form.email.trim() || !form.email.includes("@")) return setError("A valid Email Address is required")
+        if (!isEditing && (!form.password || form.password.length < 6)) return setError("Password must be at least 6 characters long")
+        if (!form.roleId) return setError("Please select a Role")
+        if (!form.deptId) return setError("Please select a Department")
+
+        setLoading(true)
+        try {
+            const endpoint = isEditing ? `${API}/admin/employees/${employee.id}` : `${API}/admin/employees`
+            const method = isEditing ? "PATCH" : "POST"
+            
+            const payload = { ...form }
+            if (isEditing && !payload.password) delete (payload as any).password
+
+            const res = await fetch(endpoint, {
+                method,
+                headers: { ...h, "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            })
+            const data = await res.json()
+            if (!res.ok) throw new Error(data.error || "Failed to process employee record")
+            
+            setSuccess(true)
+            toast.success(isEditing ? `✅ ${form.name} updated successfully!` : `✅ ${form.name} added successfully!`)
+            setTimeout(() => { onSuccess(); onClose() }, 1500)
+        } catch (err: any) {
+            setError(err.message)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const inputCls = "h-12 bg-slate-50/50 border-slate-100 text-slate-900 placeholder:text-slate-400 rounded-2xl text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all font-medium pr-10"
+    const labelCls = "text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 ml-1 font-brand"
+    const selectCls = "w-full h-12 bg-slate-50/50 border border-slate-100 text-slate-900 rounded-2xl text-sm px-4 focus:ring-4 focus:ring-indigo-500/5 outline-none appearance-none cursor-pointer font-medium transition-all"
+
+    return (
+        <AnimatePresence>
+            <motion.div 
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[400] bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4 font-body"
+            >
+                <GlobalStyles />
+                <motion.div 
+                    initial={{ scale: 0.98, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.98, y: 20 }}
+                    className="bg-white w-full max-w-2xl rounded-[40px] shadow-[0_32px_120px_rgba(0,0,0,0.15)] overflow-hidden border border-white"
+                >
+                    {/* Header */}
+                    <div className="px-10 py-8 border-b border-slate-50 flex justify-between items-center bg-white">
+                        <div className="flex items-center gap-5">
+                            <div className={cn(
+                                "w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-2xl transition-transform hover:scale-110",
+                                isEditing ? "bg-amber-500 shadow-amber-200" : "bg-indigo-600 shadow-indigo-200"
+                            )}>
+                                {isEditing ? <Edit3 className="w-6 h-6" /> : <UserPlus className="w-6 h-6" />}
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter italic font-brand leading-none">
+                                    {isEditing ? "Update Profile" : "Add New Employee"}
+                                </h3>
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2 leading-none">
+                                    {isEditing ? "Modifying existing personnel record" : "Employee Registration · Section A"}
+                                </p>
+                            </div>
+                        </div>
+                        <button onClick={onClose} className="w-10 h-10 flex items-center justify-center hover:bg-slate-50 rounded-xl transition-colors">
+                            <X className="w-5 h-5 text-slate-400" />
+                        </button>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="p-10">
+                        {error && (
+                            <div className="mb-8 p-4 bg-rose-50 border border-rose-100 rounded-2xl flex items-center gap-3 text-rose-600 animate-in fade-in slide-in-from-top-2">
+                                <AlertCircle className="w-4 h-4 shrink-0" />
+                                <p className="text-[10px] font-black uppercase tracking-tight">{error}</p>
+                            </div>
+                        )}
+
+                        <div className="grid grid-cols-2 gap-10 mb-10">
+                            <div className="space-y-6">
+                                <div>
+                                    <label className={labelCls}>Full Name</label>
+                                    <Input value={form.name} onChange={e => set("name", e.target.value)} placeholder="Enter full identity" className={inputCls} />
+                                </div>
+                                <div>
+                                    <label className={labelCls}>Email Address</label>
+                                    <Input value={form.email} onChange={e => set("email", e.target.value)} placeholder="e.g. name@company.com" className={inputCls} />
+                                </div>
+                                {(!isEditing || form.password) && (
+                                    <div className="relative">
+                                        <label className={labelCls}>Password {isEditing && "(Optional)"}</label>
+                                        <div className="relative">
+                                            <Input type={showPwd ? "text" : "password"} value={form.password} onChange={e => set("password", e.target.value)} placeholder="••••••••" className={inputCls} />
+                                            <button type="button" onClick={() => setShowPwd(!showPwd)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-600">
+                                                {showPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                                <div>
+                                    <label className={labelCls}>Phone Number</label>
+                                    <Input value={form.phone} onChange={e => set("phone", e.target.value)} placeholder="+1 000 000 0000" className={inputCls} />
+                                </div>
+                            </div>
+
+                            <div className="space-y-6">
+                                <div>
+                                    <label className={labelCls}>Select Role</label>
+                                    <select value={form.roleId} onChange={e => set("roleId", e.target.value)} className={selectCls}>
+                                        <option value="">Choose Priority</option>
+                                        {roles.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className={labelCls}>Department</label>
+                                    <select value={form.deptId} onChange={e => set("deptId", e.target.value)} className={selectCls}>
+                                        <option value="">Choose Unit</option>
+                                        {depts.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className={labelCls}>Job Designation</label>
+                                    <select value={form.designationId} onChange={e => set("designationId", e.target.value)} className={selectCls}>
+                                        <option value="">Choose Title</option>
+                                        {designations.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className={labelCls}>Reporting Manager</label>
+                                    <select value={form.managerId} onChange={e => set("managerId", e.target.value)} className={selectCls}>
+                                        <option value="">No Direct Manager</option>
+                                        {managers.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-6 border-t border-slate-50">
+                            <div className="flex items-center gap-3">
+                                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Security Protocol Active</span>
+                            </div>
+                            <div className="flex gap-4">
+                                <Button type="button" onClick={onClose} variant="ghost" className="h-12 px-8 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 hover:text-slate-900 transition-all">Cancel</Button>
+                                <Button disabled={loading || success} className={cn(
+                                    "h-12 px-10 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] gap-3 shadow-2xl transition-all active:scale-95",
+                                    isEditing ? "bg-amber-500 hover:bg-amber-600 shadow-amber-100" : "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-100"
+                                )}>
+                                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 
+                                     success ? <CheckCircle2 className="w-4 h-4" /> : 
+                                     isEditing ? "Update Personnel" : "Register Employee"}
+                                </Button>
+                            </div>
+                        </div>
+                    </form>
+                </motion.div>
+            </motion.div>
+        </AnimatePresence>
+    )
+}
