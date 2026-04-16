@@ -25,7 +25,7 @@ const HRManagerDashboardHub = dynamic(() => import("@/components/manager/HRManag
 const AttendanceControl = dynamic(() => import("@/components/admin/AttendanceControlCenter"), { ssr: false })
 const LeaveApprovalCenter = dynamic(() => import("@/components/admin/LeaveApprovalCenter"), { ssr: false })
 const OnboardingManager = dynamic(() => import("@/components/manager/ManagerOnboardingView"), { ssr: false })
-const PayrollCenter = dynamic(() => import("@/components/admin/PayrollControlCenter"), { ssr: false })
+
 const ExecutiveHub = dynamic(() => import("@/components/admin/ExecutiveHub"), { ssr: false })
 const AddEmployeeModal = dynamic(() => import("@/components/admin/AddEmployeeModal"), { ssr: false })
 const DocumentsModule = dynamic(() => import("@/components/admin/DocumentsModule"), { ssr: false })
@@ -89,7 +89,7 @@ export default function HRManagerDashboardPage() {
         { id: "onboarding", label: "Onboarding", icon: UserPlus },
         { id: "attendance", label: "Attendance", icon: Clock },
         { id: "leaves", label: "Leaves", icon: Calendar },
-        { id: "payroll", label: "Payroll", icon: CreditCard },
+
         { id: "departments", label: "Departments", icon: Building2 },
         { id: "documents", label: "Documents", icon: FileText },
         { id: "reports", label: "Reports", icon: BarChart3 },
@@ -181,7 +181,7 @@ export default function HRManagerDashboardPage() {
                             {currentTab === "attendance" && <AttendanceControl token={token} />}
                             {currentTab === "leaves" && <LeaveApprovalCenter token={token} />}
                             {currentTab === "onboarding" && <OnboardingManager token={token} onAddEmployee={() => setIsAddEmployeeOpen(true)} />}
-                            {currentTab === "payroll" && <PayrollCenter token={token} />}
+
                             {currentTab === "departments" && <DepartmentManager token={token} />}
                             {currentTab === "documents" && <DocumentsModule token={token} />}
                             {currentTab === "reports" && <ExecutiveHub token={token} />}
