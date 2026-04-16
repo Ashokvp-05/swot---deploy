@@ -385,20 +385,7 @@ export default function PayrollControlCenter({ token }: { token: string }) {
                         </div>
                     </Card>
 
-                    <Card className="p-10 rounded-[44px] border-slate-50 shadow-sm bg-slate-900 text-white flex flex-col justify-between overflow-hidden relative">
-                        <div className="absolute -top-20 -right-20 w-64 h-64 bg-indigo-500/20 rounded-full blur-[100px]" />
-                        <div className="relative z-10">
-                            <Badge className="bg-indigo-500/20 text-indigo-300 border-none font-black text-[9px] px-3 py-1.5 rounded-full mb-6 uppercase tracking-widest">Compliance Engine Active</Badge>
-                            <h3 className="text-2xl font-black italic uppercase tracking-tighter leading-none mb-4">Statutory <span className="text-indigo-400">Guardian</span></h3>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-loose">Automated verification of PF, ESI, and Professional Tax nodes across all jurisdictions. Real-time reconciliation with local policies.</p>
-                        </div>
-                        <div className="pt-8 flex items-center gap-4 relative z-10">
-                            <div className="flex -space-x-3">
-                                {[1,2,3].map(i => <div key={i} className="w-8 h-8 rounded-full bg-slate-800 border-2 border-slate-900 flex items-center justify-center text-[8px] font-black">AI</div>)}
-                            </div>
-                            <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">Autonomous Validation Engine</span>
-                        </div>
-                    </Card>
+
                 </div>
             )}
         </div>
