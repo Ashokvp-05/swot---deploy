@@ -215,10 +215,6 @@ export default function UserManagementTable({ token }: { token: string }) {
                         user={selectedUser} 
                         token={token}
                         onClose={() => setSelectedUser(null)} 
-                        onEdit={(user) => {
-                            setSelectedUser(null);
-                            setEditUser(user);
-                        }}
                     />
                 )}
             </AnimatePresence>

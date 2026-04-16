@@ -21,7 +21,6 @@ interface UserProfileViewProps {
     user: any
     token: string
     onClose: () => void
-    onEdit?: (user: any) => void
 }
 
 const GlobalStyles = () => (
@@ -35,7 +34,7 @@ const GlobalStyles = () => (
     `}</style>
 )
 
-export default function UserProfileView({ user, token, onClose, onEdit }: UserProfileViewProps) {
+export default function UserProfileView({ user, token, onClose }: UserProfileViewProps) {
     const [privacyShield, setPrivacyShield] = useState(true)
     
     // Determine if this is a high-level admin node
@@ -123,15 +122,6 @@ export default function UserProfileView({ user, token, onClose, onEdit }: UserPr
                             >
                                 {privacyShield ? <Lock className="w-4 h-4 text-indigo-500" /> : <Unlock className="w-4 h-4 text-emerald-500" />}
                                 {privacyShield ? "Decrypt Identification" : "Shield Active"}
-                            </Button>
-                        )}
-                        {!isSuperAdmin && (
-                            <Button 
-                                onClick={() => onEdit?.(user)} 
-                                className="h-14 px-10 bg-slate-900 hover:bg-black text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] gap-3.5 shadow-2xl active:scale-95"
-                            >
-                                <UserCog className="w-5 h-5 text-indigo-400" />
-                                Edit Registry
                             </Button>
                         )}
                     </div>
