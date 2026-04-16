@@ -8,7 +8,7 @@ import {
     Clock, ShieldCheck, Mail, Phone, MoreHorizontal,
     UserCircle, ClipboardCheck, Fingerprint, Shield,
     Activity, GraduationCap, Laptop, ChevronRight,
-    Zap, AlertCircle, TrendingUp, BellRing, Target
+    Zap, AlertCircle, TrendingUp, BellRing, Target, LayoutGrid, List
 } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -38,6 +38,7 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
     const [loading, setLoading] = useState(true)
     const [stats, setStats] = useState({ totalPending: 0, completedThisMonth: 0, avgProgress: 0, alerts: 0 })
     const [selectedUser, setSelectedUser] = useState<any>(null)
+    const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid')
 
     const fetchOnboardingData = async () => {
         try {
@@ -116,6 +117,10 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
+                     <div className="hidden md:flex bg-slate-50 p-1.5 rounded-2xl mr-2 border border-slate-100 items-center">
+                         <button onClick={() => setViewMode('grid')} className={cn("p-2.5 rounded-xl transition-all shadow-sm", viewMode === 'grid' ? "bg-white text-indigo-600 border border-slate-100" : "text-slate-400 hover:text-slate-600 border border-transparent")}><LayoutGrid className="w-4 h-4" /></button>
+                         <button onClick={() => setViewMode('table')} className={cn("p-2.5 rounded-xl transition-all shadow-sm", viewMode === 'table' ? "bg-white text-indigo-600 border border-slate-100" : "text-slate-400 hover:text-slate-600 border border-transparent")}><List className="w-4 h-4" /></button>
+                     </div>
                      <Button variant="ghost" className="h-14 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-400 gap-2 border border-slate-100 hover:bg-slate-50"><Filter className="w-4 h-4" /> Filter Shards</Button>
                      <Button 
                         onClick={onAddEmployee}
@@ -201,7 +206,7 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
             </div>
 
             {/* ── PERSONNEL PROGRESS TERMINAL ── */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pr-2">
+            <div className={cn("pr-2", viewMode === 'grid' ? "grid grid-cols-1 lg:grid-cols-2 gap-8" : "flex flex-col gap-4")}>
                 {loading ? (
                     <div className="col-span-full py-40 flex flex-col items-center justify-center gap-6">
                         <Loader2 className="w-12 h-12 animate-spin text-indigo-500" />
@@ -212,6 +217,41 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                         <UserCircle className="w-20 h-20 text-slate-100 mx-auto mb-8" />
                         <h4 className="text-[15px] font-black text-slate-300 uppercase tracking-[0.4em] italic">Personnel Manifest Validated</h4>
                         <p className="text-[10px] font-bold text-slate-300 mt-3 uppercase tracking-widest">No pending lifecycle nodes detected.</p>
+                    </div>
+                ) : viewMode === 'table' ? (
+                    <div className="col-span-full border border-slate-100 rounded-[2.5rem] bg-white overflow-hidden shadow-sm">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="border-b border-slate-50 bg-slate-50/50 text-[10px] uppercase font-black tracking-widest text-slate-400 font-brand">
+                                    <th className="p-6 font-black">Employee Name</th>
+                                    <th className="p-6 font-black">Department</th>
+                                    <th className="p-6 font-black w-48">Onboarding Matrix</th>
+                                    <th className="p-6 font-black text-right">Active Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {employees.map((emp, idx) => (
+                                    <tr key={emp.id} className="border-b border-slate-50 hover:bg-slate-50/100 transition-colors cursor-pointer group" onClick={() => setSelectedUser(emp)}>
+                                        <td className="p-6">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black italic text-xs shadow-md group-hover:scale-105 transition-transform">{emp.name[0]}{emp.name[1]}</div>
+                                                <span className="font-bold text-sm tracking-tight text-slate-900 italic font-brand uppercase">{emp.name}</span>
+                                            </div>
+                                        </td>
+                                        <td className="p-6 text-[11px] font-bold text-slate-500 uppercase tracking-widest">{emp.designation?.name || "Standard Personnel"}</td>
+                                        <td className="p-6">
+                                            <div className="flex items-center gap-3">
+                                                <div className="flex-1 h-2 rounded-full bg-slate-100 overflow-hidden"><div className="h-full bg-indigo-500" style={{width: `${emp.progress || 48}%`}}/></div>
+                                                <span className="text-[10px] font-black text-slate-500">{emp.progress || 48}%</span>
+                                            </div>
+                                        </td>
+                                        <td className="p-6 text-right">
+                                            <Badge className="bg-emerald-50 text-emerald-600 border-none px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.2em] rounded-md shadow-sm">Operational</Badge>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 ) : (
                     employees.map((emp, idx) => (
@@ -305,6 +345,7 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                         user={selectedUser} 
                         token={token} 
                         onClose={() => setSelectedUser(null)} 
+                        onEdit={() => { setSelectedUser(null); toast.info("Opening Record Modification Framework..."); }}
                     />
                 )}
             </AnimatePresence>

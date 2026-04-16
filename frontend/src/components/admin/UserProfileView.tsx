@@ -10,7 +10,7 @@ import {
     Activity, Zap, Database, Lock, Unlock, X, Edit3,
     ArrowLeftCircle, Verified, UserCog, Shield,
     Cpu, Laptop, Layers, Radio, Key, Monitor, History as HistoryIcon,
-    ChevronRight, Clock, CheckCircle2, UserPlus, FileText, GraduationCap
+    ChevronRight, Clock, CheckCircle2, UserPlus, FileText, GraduationCap, UploadCloud, XCircle, FilePlus
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -21,6 +21,7 @@ interface UserProfileViewProps {
     user: any
     token: string
     onClose: () => void
+    onEdit?: () => void
 }
 
 const GlobalStyles = () => (
@@ -34,7 +35,7 @@ const GlobalStyles = () => (
     `}</style>
 )
 
-export default function UserProfileView({ user, token, onClose }: UserProfileViewProps) {
+export default function UserProfileView({ user, token, onClose, onEdit }: UserProfileViewProps) {
     const [privacyShield, setPrivacyShield] = useState(true)
     
     // Determine if this is a high-level admin node
@@ -79,6 +80,30 @@ export default function UserProfileView({ user, token, onClose }: UserProfileVie
         </div>
     )
 
+    const renderDocumentAction = (label: string, icon: any, statusContext: string, requiresUpload?: boolean) => (
+        <div className="group relative flex flex-col md:flex-row items-start md:items-center justify-between p-5 rounded-3xl border border-slate-100 hover:border-slate-200 transition-all bg-white shadow-sm hover:shadow-xl">
+            <div className="flex items-center gap-4 mb-4 md:mb-0">
+                <div className="p-3 rounded-2xl bg-rose-50 text-rose-500 group-hover:bg-rose-100 transition-colors">
+                    {icon}
+                </div>
+                <div>
+                    <h4 className="text-[11px] font-black text-slate-900 uppercase font-brand tracking-widest leading-none">{label}</h4>
+                    <p className="text-[9px] font-bold text-slate-400 uppercase mt-1.5 tracking-[0.2em]">{statusContext}</p>
+                </div>
+            </div>
+            <div className="flex items-center gap-2">
+                {requiresUpload ? (
+                     <Button size="sm" variant="outline" className="h-10 px-5 rounded-xl border-amber-200 text-amber-600 bg-amber-50 hover:bg-amber-100 text-[9px] font-black uppercase tracking-widest"><FilePlus className="w-3 h-3 mr-2"/> Request File</Button>
+                ) : (
+                     <>
+                        <button className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:bg-rose-50 hover:text-rose-600 transition-colors border border-transparent hover:border-rose-100"><XCircle className="w-4 h-4" /></button>
+                        <button className="w-10 h-10 rounded-xl flex items-center justify-center text-emerald-400 hover:bg-emerald-50 hover:text-emerald-500 transition-colors border border-transparent hover:border-emerald-100 bg-emerald-50/30"><CheckCircle2 className="w-4 h-4" /></button>
+                     </>
+                )}
+            </div>
+        </div>
+    )
+
     return (
         <motion.div 
             initial={{ opacity: 0 }}
@@ -114,6 +139,15 @@ export default function UserProfileView({ user, token, onClose }: UserProfileVie
                     </div>
 
                     <div className="flex items-center gap-5">
+                        {onEdit && (
+                            <Button 
+                                variant="outline" 
+                                onClick={onEdit}
+                                className="h-14 px-8 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] gap-3.5 hover:bg-slate-950 hover:text-white transition-all border border-slate-100 text-slate-900"
+                            >
+                                <Edit3 className="w-4 h-4" /> Modify Record
+                            </Button>
+                        )}
                         {!isSuperAdmin && (
                             <Button 
                                 variant="ghost" 
@@ -240,10 +274,10 @@ export default function UserProfileView({ user, token, onClose }: UserProfileVie
                                                 <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-600"><FileText className="w-6 h-6" /></div>
                                                 <h3 className="text-[14px] font-black uppercase tracking-[0.2em] text-slate-900 font-brand">Document Manifest</h3>
                                             </div>
-                                            <div className="space-y-10">
-                                                {renderDataField("Curriculum Vitae (Resume)", "Verified & Secured", <FileText className="w-full h-full" />, "Status: Approved")}
-                                                {renderDataField("Educational Certifications", "Pending Validation", <GraduationCap className="w-full h-full" />, "Status: Requires Update")}
-                                                {renderDataField("Offer Letter & Agreement", "Legally Bound", <Briefcase className="w-full h-full" />, "Status: Approved")}
+                                            <div className="space-y-4">
+                                                {renderDocumentAction("Curriculum Vitae (Resume)", <FileText className="w-full h-full" />, "Status: Pending Review")}
+                                                {renderDocumentAction("Educational Certifications", <GraduationCap className="w-full h-full" />, "Status: Correction Required", true)}
+                                                {renderDocumentAction("Offer Letter & Agreement", <Briefcase className="w-full h-full" />, "Status: Awaiting Verification")}
                                             </div>
                                         </div>
                                     </>
