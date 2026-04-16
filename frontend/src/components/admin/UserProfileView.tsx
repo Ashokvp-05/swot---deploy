@@ -101,7 +101,6 @@ export default function UserProfileView({ user, token, onClose, onEdit }: UserPr
                         <button onClick={() => { import('sonner').then(m => m.toast.success("Document Verified.")); }} className="h-10 px-4 rounded-xl flex items-center justify-center text-emerald-600 hover:bg-emerald-600 hover:text-white border border-transparent bg-emerald-50 font-black text-[9px] uppercase tracking-widest transition-all shadow-sm gap-2"><CheckCircle2 className="w-4 h-4" /> Approve</button>
                      </>
                 )}
-                )}
             </div>
         </div>
     )

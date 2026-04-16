@@ -162,7 +162,6 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                              <ShieldCheck className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                        <div>
                             <h3 className="text-xl font-black text-slate-900 uppercase italic tracking-tighter leading-none font-brand">Onboarding <span className="text-indigo-600">Process</span></h3>
                             <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1.5 flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -273,7 +272,6 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                                         <div className="w-20 h-20 rounded-[32px] bg-slate-950 flex items-center justify-center text-2xl font-black text-indigo-400 italic shadow-2xl shadow-slate-200 font-brand transition-transform group-hover:scale-105">
                                             {emp.name[0]}{emp.name[1]}
                                         </div>
-                                        <div>
                                         <div>
                                             <h4 className="text-2xl font-black text-slate-900 uppercase italic font-brand tracking-tighter leading-none">{emp.name}</h4>
                                             <div className="grid grid-cols-2 gap-x-6 gap-y-2 mt-4">
