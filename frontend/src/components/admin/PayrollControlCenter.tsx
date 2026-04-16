@@ -551,130 +551,130 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
                                 <Settings className="w-3 h-3" /> Edit Payroll
                             </Button>
                         </SheetTrigger>
-                        <SheetContent className="bg-white border-l border-slate-50 w-[600px] sm:w-[720px] p-0 rounded-l-[50px] shadow-2xl overflow-y-auto custom-scrollbar">
-                        <SheetHeader className="pt-20 px-12 pb-10 border-b border-slate-50/50">
-                            <div className="flex items-center gap-6">
-                                <div className="p-5 bg-indigo-600 rounded-[24px] shadow-xl shadow-indigo-100 rotate-6">
-                                    <FileText className="w-8 h-8 text-white" />
+                        <SheetContent className="bg-white border-l border-slate-50 w-full sm:max-w-[540px] p-0 shadow-2xl overflow-y-auto custom-scrollbar">
+                        <SheetHeader className="pt-12 px-8 pb-8 border-b border-slate-50/50 bg-slate-50/30">
+                            <div className="flex items-center gap-5">
+                                <div className="p-4 bg-indigo-600 rounded-2xl shadow-lg shadow-indigo-100/50 shrink-0">
+                                    <FileText className="w-6 h-6 text-white" />
                                 </div>
                                 <div>
-                                    <SheetTitle className="text-3xl font-black italic uppercase tracking-tighter leading-none mb-2">Compensation <span className="text-indigo-600">Console</span></SheetTitle>
-                                    <SheetDescription className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Deploy financial parameters for {user.name}</SheetDescription>
+                                    <SheetTitle className="text-xl font-black uppercase tracking-tight text-slate-900 leading-tight">Compensation <span className="text-indigo-600">Console</span></SheetTitle>
+                                    <SheetDescription className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mt-1">Deploy parameters for {user.name}</SheetDescription>
                                 </div>
                             </div>
                         </SheetHeader>
 
-                        <div className="p-12 space-y-12">
+                        <div className="p-8 space-y-10">
                             {/* SALARY CONFIG */}
-                            <div className="space-y-8">
-                                <p className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.4em]">1. Salary Structure</p>
-                                <div className="grid grid-cols-2 gap-6">
-                                    <div className="space-y-3">
-                                        <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest pl-1">Basic Monthly Salary (₹)</Label>
+                            <div className="space-y-6">
+                                <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest border-b border-slate-50 pb-2">1. Salary Structure</p>
+                                <div className="grid grid-cols-2 gap-5">
+                                    <div className="space-y-2">
+                                        <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Base Salary (₹)</Label>
                                         <Input 
                                             defaultValue={config?.basicSalary || 0} 
                                             onBlur={(e) => setConfig({ ...config, basicSalary: Number(e.target.value) })}
-                                            className="h-14 bg-slate-50 rounded-2xl border-none text-xs font-black uppercase tracking-widest px-6" 
+                                            className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
                                         />
                                     </div>
-                                    <div className="space-y-3">
-                                        <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest pl-1">HRA (₹)</Label>
+                                    <div className="space-y-2">
+                                        <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">HRA (₹)</Label>
                                         <Input 
                                             defaultValue={config?.hra || 0}
                                             onBlur={(e) => setConfig({ ...config, hra: Number(e.target.value) })}
-                                            className="h-14 bg-slate-50 rounded-2xl border-none text-xs font-black uppercase tracking-widest px-6" 
+                                            className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
                                         />
                                     </div>
-                                    <div className="space-y-3">
-                                        <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest pl-1">PF Deduction (₹)</Label>
+                                    <div className="space-y-2">
+                                        <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">PF Deduction (₹)</Label>
                                         <Input 
                                             defaultValue={config?.pf || 0}
                                             onBlur={(e) => setConfig({ ...config, pf: Number(e.target.value) })}
-                                            className="h-14 bg-slate-50 rounded-2xl border-none text-xs font-black uppercase tracking-widest px-6" 
+                                            className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
                                         />
                                     </div>
-                                    <div className="space-y-3">
-                                        <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest pl-1">Income Tax (₹)</Label>
+                                    <div className="space-y-2">
+                                        <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Income Tax (₹)</Label>
                                         <Input 
                                             defaultValue={config?.tax || 0}
                                             onBlur={(e) => setConfig({ ...config, tax: Number(e.target.value) })}
-                                            className="h-14 bg-slate-50 rounded-2xl border-none text-xs font-black uppercase tracking-widest px-6" 
+                                            className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
                                         />
                                     </div>
                                 </div>
-                                <Button className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest gap-3 shadow-xl shadow-indigo-100" onClick={() => handleSave('salary-config', config)}>
-                                    {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />} Update Structure
+                                <Button className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest gap-2 shadow-lg shadow-indigo-100" onClick={() => handleSave('salary-config', config)}>
+                                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Update Structure
                                 </Button>
                             </div>
 
                             {/* BANK DETAILS */}
-                            <div className="space-y-8">
-                                <p className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.4em]">2. Disbursement Node (Bank)</p>
-                                <div className="grid grid-cols-2 gap-6">
-                                    <div className="space-y-3 col-span-2">
-                                        <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest pl-1">Account Holder Name</Label>
+                            <div className="space-y-6">
+                                <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest border-b border-slate-50 pb-2">2. Disbursement Node</p>
+                                <div className="grid grid-cols-2 gap-5">
+                                    <div className="space-y-2 col-span-2">
+                                        <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Account Holder Name</Label>
                                         <Input 
                                             defaultValue={bank?.accountHolder || user.name}
                                             onBlur={(e) => setBank({ ...bank, accountHolder: e.target.value })}
-                                            className="h-14 bg-slate-50 rounded-2xl border-none text-xs font-black uppercase tracking-widest px-6" 
+                                            className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
                                         />
                                     </div>
-                                    <div className="space-y-3">
-                                        <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest pl-1">Bank Name</Label>
+                                    <div className="space-y-2">
+                                        <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Bank Name</Label>
                                         <Input 
                                             defaultValue={bank?.bankName || ''}
                                             onBlur={(e) => setBank({ ...bank, bankName: e.target.value })}
-                                            className="h-14 bg-slate-50 rounded-2xl border-none text-xs font-black uppercase tracking-widest px-6" 
+                                            className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
                                         />
                                     </div>
-                                    <div className="space-y-3">
-                                        <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest pl-1">IFSC Code</Label>
+                                    <div className="space-y-2">
+                                        <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">IFSC Code</Label>
                                         <Input 
                                             defaultValue={bank?.ifscCode || ''}
                                             onBlur={(e) => setBank({ ...bank, ifscCode: e.target.value })}
-                                            className="h-14 bg-slate-50 rounded-2xl border-none text-xs font-black uppercase tracking-widest px-6" 
+                                            className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
                                         />
                                     </div>
-                                    <div className="space-y-3 col-span-2">
-                                        <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest pl-1">Account Number</Label>
+                                    <div className="space-y-2 col-span-2">
+                                        <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Account Number</Label>
                                         <Input 
                                             defaultValue={bank?.accountNumber || ''}
                                             onBlur={(e) => setBank({ ...bank, accountNumber: e.target.value })}
-                                            className="h-14 bg-slate-50 rounded-2xl border-none text-xs font-black uppercase tracking-widest px-6" 
+                                            className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
                                         />
                                     </div>
                                 </div>
-                                <Button className="w-full h-14 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest gap-3 shadow-xl shadow-emerald-100" onClick={() => handleSave('bank-details', bank)}>
-                                    {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />} Update Disbursement Node
+                                <Button className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest gap-2 shadow-lg shadow-emerald-100" onClick={() => handleSave('bank-details', bank)}>
+                                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Update Disbursement
                                 </Button>
                             </div>
 
                             {/* TAX DETAILS */}
-                            <div className="space-y-8 pb-12">
-                                <p className="text-[10px] font-black text-violet-600 uppercase tracking-[0.4em]">3. Statutory Compliance</p>
-                                <div className="grid grid-cols-2 gap-6">
-                                    <div className="space-y-3">
-                                        <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest pl-1">PAN Identifier</Label>
+                            <div className="space-y-6 pb-8">
+                                <p className="text-[10px] font-black text-violet-600 uppercase tracking-widest border-b border-slate-50 pb-2">3. Statutory Compliance</p>
+                                <div className="grid grid-cols-2 gap-5">
+                                    <div className="space-y-2">
+                                        <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">PAN Identifier</Label>
                                         <Input 
                                             defaultValue={tax?.panNumber || ''}
                                             onBlur={(e) => setTax({ ...tax, panNumber: e.target.value })}
-                                            className="h-14 bg-slate-50 rounded-2xl border-none text-xs font-black uppercase tracking-widest px-6" 
+                                            className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
                                         />
                                     </div>
-                                    <div className="space-y-3">
-                                        <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest pl-1">Tax Regime</Label>
+                                    <div className="space-y-2">
+                                        <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Tax Regime</Label>
                                         <select 
                                             defaultValue={tax?.taxRegime || 'NEW'}
                                             onChange={(e) => setTax({ ...tax, taxRegime: e.target.value })}
-                                            className="w-full h-14 bg-slate-50 rounded-2xl border-none text-[10px] font-black uppercase tracking-widest px-6 outline-none"
+                                            className="w-full h-12 bg-white rounded-xl border border-slate-200 text-xs font-bold px-4 shadow-sm outline-none text-slate-900"
                                         >
                                             <option value="NEW">New Regime (Default)</option>
                                             <option value="OLD">Old Regime</option>
                                         </select>
                                     </div>
                                 </div>
-                                <Button className="w-full h-14 bg-violet-600 hover:bg-violet-700 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest gap-3 shadow-xl shadow-violet-100" onClick={() => handleSave('tax-details', tax)}>
-                                    {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />} Update Compliance Node
+                                <Button className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest gap-2 shadow-lg shadow-violet-100" onClick={() => handleSave('tax-details', tax)}>
+                                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Update Compliance
                                 </Button>
                             </div>
                         </div>
