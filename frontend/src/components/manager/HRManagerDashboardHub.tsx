@@ -93,11 +93,11 @@ export default function HRManagerDashboardHub({ token, onNavigate }: ManagerDash
         <div className="space-y-12 pb-24 font-body">
             
             {/* 1. DASHBOARD OVERVIEW SECTION */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-6 border-b border-slate-50 dark:border-white/5">
                 <div className="space-y-1">
-                    <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter italic">Administrative <span className="text-indigo-600">Pulse</span></h2>
+                    <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter">Dash<span className="text-indigo-600">board</span></h2>
                     <div className="flex items-center gap-3">
-                        <Badge className="bg-emerald-50 text-emerald-600 border-none text-[9px] font-black uppercase tracking-widest px-2.5 py-1">Live Operation active</Badge>
+                        <Badge className="bg-emerald-50 text-emerald-600 border-none text-[9px] font-black uppercase tracking-widest px-2.5 py-1">Shard Integrity: Optimal</Badge>
                         <div className="flex items-center gap-2">
                             <Activity className={cn("w-3 h-3 text-indigo-400", loading && "animate-spin")} />
                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Global Sync: {format(syncTime, 'HH:mm:ss')}</p>
@@ -125,8 +125,12 @@ export default function HRManagerDashboardHub({ token, onNavigate }: ManagerDash
             </div>
 
             {/* 2. STATISTICAL PERFORMANCE GRID */}
-            <div className="grid grid-cols-2 lg:grid-cols-5 gap-5">
-                {[
+            <div className="space-y-6">
+                <div className="flex items-center gap-2">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1 border-l-2 border-indigo-600">3. Administrative Pulse</p>
+                </div>
+                <div className="grid grid-cols-2 lg:grid-cols-5 gap-5">
+                    {[
                     { label: "Personnel Shard", value: stats?.total ?? "...", icon: Users, color: "text-indigo-600", bg: "bg-indigo-50" },
                     { label: "Active Nodes", value: stats?.present ?? "...", icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-50" },
                     { label: "Absent Shards", value: stats?.absent ?? "...", icon: XCircle, color: "text-rose-600", bg: "bg-rose-50" },
@@ -151,6 +155,7 @@ export default function HRManagerDashboardHub({ token, onNavigate }: ManagerDash
                         </Card>
                     </motion.div>
                 ))}
+                </div>
             </div>
 
             {/* 3. HIGH-FIDELITY PRESENCE MATRIX (REAL-TIME) */}
