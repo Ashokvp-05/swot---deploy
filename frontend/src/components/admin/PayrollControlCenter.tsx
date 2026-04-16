@@ -1,6 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { jsPDF } from "jspdf"
+import autoTable from "jspdf-autotable"
 import { motion, AnimatePresence } from "framer-motion"
 import { CreditCard, DollarSign, Loader2, Play, CheckCircle2, AlertCircle, FileText, ChevronRight, Lock, Unlock, Download, Send, Plus, Activity, Users, Clock, TrendingUp, ShieldCheck, Settings, Save, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -449,6 +451,61 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
     const grossVal = basic + hra
     const deductionsVal = pf + taxAmt
     const netVal = grossVal - deductionsVal
+    
+    const generatePayslipPDF = (action: 'download' | 'view' = 'download') => {
+        if (!config) {
+            toast.error("Salary metrics missing configuration");
+            return;
+        }
+        
+        toast.info("Generating Encrypted Document...");
+        const doc = new jsPDF();
+        
+        // Header Formatting
+        doc.setFontSize(22);
+        doc.setTextColor(30, 41, 59);
+        doc.text("SWOT ENTERPRISE", 14, 22);
+        
+        doc.setFontSize(10);
+        doc.setTextColor(148, 163, 184);
+        doc.text("Official Compensation Manifest - " + new Date().toLocaleString('default', { month: 'long', year: 'numeric' }), 14, 30);
+        
+        // Target Node Data
+        doc.setFontSize(12);
+        doc.setTextColor(15, 23, 42);
+        doc.text(`Personnel Node: ${user.name}`, 14, 45);
+        doc.text(`Operational Role: ${user.designation?.name || 'Standard Unit'}`, 14, 52);
+        doc.text(`Disbursement Identifier: ${bank?.accountNumber || 'Pending'} (${bank?.bankName || 'Pending'})`, 14, 59);
+        
+        // Quantitative Matrix
+        autoTable(doc, {
+            startY: 70,
+            head: [['Financial Component', 'Type', 'Amount (INR)']],
+            body: [
+                ['Base Salary Core', 'Earning', `Rs. ${basic.toLocaleString()}`],
+                ['House Rent Allowance (HRA)', 'Earning', `Rs. ${hra.toLocaleString()}`],
+                ['Provident Fund (PF)', 'Deduction', `Rs. ${pf.toLocaleString()}`],
+                ['Income Tax Withholding', 'Deduction', `Rs. ${taxAmt.toLocaleString()}`]
+            ],
+            theme: 'grid',
+            headStyles: { fillColor: [79, 70, 229] },
+            styles: { fontSize: 10, cellPadding: 5 }
+        });
+        
+        const finalY = (doc as any).lastAutoTable?.finalY || 130;
+        
+        // Terminal Calculations
+        doc.setFontSize(14);
+        doc.setTextColor(16, 185, 129);
+        doc.text(`Net Compensation Disbursed: Rs. ${netVal.toLocaleString()}`, 14, finalY + 15);
+        
+        if (action === 'download') {
+            doc.save(`Payslip_${user.name.replace(/\s+/g, '_')}.pdf`);
+            toast.success("Compensation Vault Extracted");
+        } else {
+            window.open(doc.output('bloburl'), '_blank');
+        }
+    }
 
     return (
         <tr className="group hover:bg-slate-50/50 transition-colors">
@@ -482,10 +539,10 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
             </td>
             <td className="px-6 py-4 text-right">
                 <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button variant="ghost" size="sm" onClick={() => toast.info('Preparing Payslip Ledger...')} className="h-8 px-3 rounded-lg text-[9px] font-black uppercase text-slate-400 hover:bg-slate-100 hover:text-indigo-600 gap-2 border border-transparent hover:border-slate-200">
+                    <Button variant="ghost" size="sm" onClick={() => generatePayslipPDF('view')} className="h-8 px-3 rounded-lg text-[9px] font-black uppercase text-slate-400 hover:bg-slate-100 hover:text-indigo-600 gap-2 border border-transparent hover:border-slate-200">
                         <FileText className="w-3 h-3" /> View Payslip
                     </Button>
-                    <Button variant="ghost" size="sm" onClick={() => toast.info('Initiating secure PDF download...')} className="h-8 px-3 rounded-lg text-[9px] font-black uppercase text-slate-400 hover:bg-slate-100 hover:text-slate-900 gap-2 border border-transparent hover:border-slate-200 hidden md:flex">
+                    <Button variant="ghost" size="sm" onClick={() => generatePayslipPDF('download')} className="h-8 px-3 rounded-lg text-[9px] font-black uppercase text-slate-400 hover:bg-slate-100 hover:text-slate-900 gap-2 border border-transparent hover:border-slate-200 hidden md:flex">
                         <Download className="w-3 h-3" />
                     </Button>
                     <Sheet>
