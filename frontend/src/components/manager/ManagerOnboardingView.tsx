@@ -117,11 +117,6 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                     <div className="hidden md:flex bg-slate-50 p-1.5 rounded-2xl mr-2 border border-slate-100 items-center">
-                         <button onClick={() => setViewMode('grid')} className={cn("p-2.5 rounded-xl transition-all shadow-sm", viewMode === 'grid' ? "bg-white text-indigo-600 border border-slate-100" : "text-slate-400 hover:text-slate-600 border border-transparent")}><LayoutGrid className="w-4 h-4" /></button>
-                         <button onClick={() => setViewMode('table')} className={cn("p-2.5 rounded-xl transition-all shadow-sm", viewMode === 'table' ? "bg-white text-indigo-600 border border-slate-100" : "text-slate-400 hover:text-slate-600 border border-transparent")}><List className="w-4 h-4" /></button>
-                     </div>
-                     <Button variant="ghost" className="h-14 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-400 gap-2 border border-slate-100 hover:bg-slate-50"><Filter className="w-4 h-4" /> Filter Shards</Button>
                      <Button 
                         onClick={onAddEmployee}
                         className="h-14 bg-slate-900 hover:bg-black text-white rounded-[20px] px-8 text-[11px] font-black uppercase tracking-[0.2em] gap-3 shadow-2xl active:scale-95 shadow-slate-200"
