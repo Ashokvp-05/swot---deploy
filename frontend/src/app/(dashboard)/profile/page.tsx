@@ -446,9 +446,9 @@ export default function ProfilePage() {
                 }
             })
 
-            toast.success("Identity profile synchronized")
+            toast.success("Personnel identity saved successfully")
         } catch (error: any) {
-            toast.error(error.message || "Cloud synchronization failed")
+            toast.error(error.message || "Registry update failed - Connection unstable")
         } finally {
             setLoading(false)
         }

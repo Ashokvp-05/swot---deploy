@@ -44,8 +44,7 @@ export default function AdminActionCenter({ token, pendingLeaves = [] }: { token
         <div className="space-y-4">
             {localLeaves.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-slate-500 border-2 border-dashed border-slate-100 dark:border-white/5 rounded-[2rem]">
-                    <ShieldCheck className="w-10 h-10 mb-4 opacity-10" />
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em]">All protocols cleared</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em]">All caught up</p>
                 </div>
             ) : (
                 <div className="space-y-4">
@@ -63,7 +62,7 @@ export default function AdminActionCenter({ token, pendingLeaves = [] }: { token
                                 </div>
                                 <div>
                                     <div className="flex items-center gap-2 mb-0.5">
-                                        <h4 className="font-black text-slate-900 dark:text-white uppercase tracking-tight text-sm tracking-wide">{leave.user?.name || "Personnel Identity"}</h4>
+                                        <h4 className="font-black text-slate-900 dark:text-white uppercase tracking-tight text-sm tracking-wide">{leave.user?.name || "User"}</h4>
                                         <Badge className="text-[8px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-500 border-amber-500/10 h-4">Pending</Badge>
                                     </div>
                                     <div className="flex items-center gap-3">
@@ -76,12 +75,8 @@ export default function AdminActionCenter({ token, pendingLeaves = [] }: { token
 
                             <div className="w-full md:w-auto flex items-center justify-end gap-2 pt-4 md:pt-0 border-t md:border-t-0 border-slate-100 dark:border-white/5">
                                 <Button size="sm" variant="outline" className="h-10 border-slate-200 dark:border-white/5 bg-transparent hover:bg-slate-100 dark:hover:bg-white/5 text-[9px] font-black uppercase tracking-widest px-4 rounded-xl">View Details</Button>
-                                <Button onClick={() => handleAction(leave.id, 'REJECTED')} size="icon" variant="ghost" className="h-10 w-10 text-rose-500 hover:bg-rose-500/10 rounded-xl">
-                                    <X className="w-4 h-4" />
-                                </Button>
-                                <Button onClick={() => handleAction(leave.id, 'APPROVED')} size="icon" className="h-10 w-10 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl shadow-lg shadow-emerald-500/20">
-                                    <Check className="w-4 h-4" />
-                                </Button>
+                                <Button onClick={() => handleAction(leave.id, 'REJECTED')} size="sm" variant="ghost" className="h-10 border-slate-200 dark:border-white/5 bg-transparent hover:bg-slate-100 dark:hover:bg-white/5 text-[9px] font-black uppercase tracking-widest px-4 rounded-xl text-rose-500">Reject</Button>
+                                <Button onClick={() => handleAction(leave.id, 'APPROVED')} size="sm" className="h-10 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-[9px] font-black uppercase tracking-widest px-4">Approve</Button>
                             </div>
                         </motion.div>
                     ))}

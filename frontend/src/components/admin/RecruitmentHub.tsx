@@ -117,23 +117,22 @@ export default function RecruitmentHub({ token }: { token: string }) {
             {/* HERO BAR */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter italic">Talent <span className="text-indigo-600">Acquisition</span></h2>
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Strategic recruitment & personnel pipeline</p>
+                    <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter italic font-brand">Recruitment</h2>
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-3 leading-none italic">Manage job openings and candidates.</p>
                 </div>
                 <div className="flex gap-4">
                     <Button
                         variant="ghost"
                         onClick={() => { setView('JOBS'); setSelectedJob(null); }}
-                        className={`text-[10px] font-black uppercase tracking-widest ${view === 'JOBS' ? 'text-indigo-600' : 'text-slate-500'}`}
+                        className={`text-[10px] font-black uppercase tracking-widest ${view === 'JOBS' ? 'text-indigo-600' : 'text-slate-500'} font-brand`}
                     >
-                        Opportunities
+                        Jobs
                     </Button>
                     <Button
                         onClick={() => setIsCreateOpen(true)}
-                        className="h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-10 text-[11px] font-black uppercase tracking-widest gap-3 shadow-xl shadow-indigo-600/20"
+                        className="h-14 bg-indigo-600 hover:bg-black text-white rounded-2xl px-10 text-[11px] font-black uppercase tracking-widest transition-all active:scale-95 font-brand"
                     >
-                        <Plus className="w-5 h-5" />
-                        Provision Job Post
+                        New Job
                     </Button>
                 </div>
             </div>
@@ -151,11 +150,8 @@ export default function RecruitmentHub({ token }: { token: string }) {
                             className="border-2 border-dashed border-slate-100 hover:border-indigo-500 transition-colors bg-white dark:bg-slate-900 rounded-[2.5rem] flex flex-col items-center justify-center p-12 text-center group cursor-pointer" 
                             onClick={() => setIsCreateOpen(true)}
                         >
-                            <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white mb-6">
-                                <Plus className="w-8 h-8" />
-                            </div>
-                            <h4 className="text-sm font-black uppercase tracking-widest text-slate-900 group-hover:text-indigo-600 transition-colors">Register Opportunity</h4>
-                            <p className="text-[10px] text-slate-400 mt-2">Activate a new hiring protocol node</p>
+                            <h4 className="text-sm font-black uppercase tracking-widest text-slate-900 group-hover:text-indigo-600 transition-colors font-brand">Post Job</h4>
+                            <p className="text-[10px] text-slate-400 mt-2 font-body uppercase tracking-widest">Add a new opening</p>
                         </Card>
                         {jobs.map((job) => (
                              <Card key={job.id} className="border-0 shadow-xl bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden group hover:ring-2 hover:ring-indigo-500/20 transition-all cursor-pointer" onClick={() => { setSelectedJob(job); setView('APPLICANTS'); fetchApplicants(job.id); }}>
@@ -181,8 +177,8 @@ export default function RecruitmentHub({ token }: { token: string }) {
                                          </div>
                                      </div>
                                      <div className="pt-6 border-t border-slate-50 dark:border-white/5 flex items-center justify-between">
-                                         <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Modified {new Date(job.updatedAt).toLocaleDateString()}</span>
-                                         <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-indigo-600 transition-colors" />
+                                         <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Updated {new Date(job.updatedAt).toLocaleDateString()}</span>
+                                         <span className="text-[10px] font-black uppercase tracking-widest text-indigo-600 opacity-0 group-hover:opacity-100 transition-all">View</span>
                                      </div>
                                  </CardContent>
                              </Card>
@@ -191,10 +187,10 @@ export default function RecruitmentHub({ token }: { token: string }) {
                 ) : (
                     <div className="space-y-8">
                         <div className="flex items-center gap-4 bg-slate-50 dark:bg-slate-900/50 p-6 rounded-[2rem] border border-slate-200 dark:border-white/5">
-                            <Button variant="ghost" onClick={() => { setView('JOBS'); setSelectedJob(null); }} className="p-2 h-auto text-slate-400 hover:text-indigo-600"><ChevronRight className="rotate-180" /></Button>
-                            <div>
-                                <h4 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider italic">{selectedJob?.title}</h4>
-                                <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Candidate Pool • {applicants.length} Identities</p>
+                            <Button variant="ghost" onClick={() => { setView('JOBS'); setSelectedJob(null); }} className="p-2 h-auto text-slate-400 hover:text-indigo-600">Back</Button>
+                             <div>
+                                <h4 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider italic font-brand">{selectedJob?.title}</h4>
+                                <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest font-body">Applicants • {applicants.length}</p>
                             </div>
                         </div>
 
@@ -207,14 +203,11 @@ export default function RecruitmentHub({ token }: { token: string }) {
                                     className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-white/5 p-6 rounded-[2rem] flex items-center justify-between group hover:shadow-xl transition-all"
                                 >
                                     <div className="flex items-center gap-6">
-                                        <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-black/40 flex items-center justify-center text-slate-400 group-hover:text-indigo-500 border border-slate-100 dark:border-white/5 transition-colors">
-                                            <Users className="w-6 h-6" />
-                                        </div>
                                         <div>
                                             <h4 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">{app.name}</h4>
                                             <div className="flex items-center gap-4 mt-1">
-                                                <span className="flex items-center gap-1.5 text-[9px] font-bold text-slate-400 uppercase tracking-widest"><Mail className="w-3 h-3" /> {app.email}</span>
-                                                <span className="flex items-center gap-1.5 text-[9px] font-bold text-slate-400 uppercase tracking-widest"><Phone className="w-3 h-3" /> {app.phone || "No Pulse"}</span>
+                                                <span className="flex items-center gap-1.5 text-[9px] font-bold text-slate-400 uppercase tracking-widest">{app.email}</span>
+                                                <span className="flex items-center gap-1.5 text-[9px] font-bold text-slate-400 uppercase tracking-widest">{app.phone || "No Pulse"}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -244,7 +237,6 @@ export default function RecruitmentHub({ token }: { token: string }) {
                                                     </Button>
                                                 </>
                                             )}
-                                            <Button variant="ghost" size="icon" className="text-slate-400 hover:text-indigo-600"><FileText className="w-5 h-5" /></Button>
                                         </div>
                                     </div>
                                 </motion.div>
@@ -256,18 +248,18 @@ export default function RecruitmentHub({ token }: { token: string }) {
             
             {/* PROVISIONING DIALOG */}
             <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-                <DialogContent className="bg-white dark:bg-slate-900 border-none rounded-[3rem] shadow-2xl p-10 max-w-2xl font-sans">
+                 <DialogContent className="bg-white dark:bg-slate-900 border-none rounded-[3rem] shadow-2xl p-10 max-w-2xl font-sans">
                     <DialogHeader>
-                        <DialogTitle className="text-2xl font-black uppercase italic tracking-tighter text-slate-900 dark:text-white">Talent Architecture</DialogTitle>
-                        <DialogDescription className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">Configure a new recruitment protocol shard</DialogDescription>
+                        <DialogTitle className="text-2xl font-black uppercase italic tracking-tighter text-slate-900 dark:text-white font-brand">Job Details</DialogTitle>
+                        <DialogDescription className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2 font-body">Fill out the information below</DialogDescription>
                     </DialogHeader>
                     
                     <div className="grid grid-cols-2 gap-6 py-6 font-sans">
-                        <div className="space-y-2 col-span-2">
-                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Opportunity Title</Label>
+                         <div className="space-y-2 col-span-2">
+                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Title</Label>
                             <Input 
                                 className="h-14 rounded-2xl bg-slate-50 dark:bg-black/40 border-slate-100 dark:border-white/5 px-6 font-bold text-slate-900 dark:text-white focus:ring-4 focus:ring-indigo-600/10 transition-all outline-none" 
-                                placeholder="e.g. Senior Logic Architect"
+                                placeholder="e.g. Designer"
                                 value={newJob.title}
                                 onChange={(e) => setNewJob({ ...newJob, title: e.target.value })}
                             />
@@ -299,30 +291,23 @@ export default function RecruitmentHub({ token }: { token: string }) {
                                 onChange={(e) => setNewJob({ ...newJob, salaryRange: e.target.value })}
                             />
                         </div>
-                        <div className="space-y-2 col-span-2">
-                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Operational Description</Label>
+                         <div className="space-y-2 col-span-2">
+                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Job Description</Label>
                             <Textarea 
                                 className="min-h-[120px] rounded-2xl bg-slate-50 dark:bg-black/40 border-slate-100 dark:border-white/5 p-6 font-medium text-slate-900 dark:text-white" 
-                                placeholder="Define the core objectives..."
+                                placeholder="What is the role about?"
                                 value={newJob.description}
                                 onChange={(e) => setNewJob({ ...newJob, description: e.target.value })}
                             />
                         </div>
                     </div>
 
-                    <DialogFooter className="pt-4">
-                        <Button 
-                            variant="ghost" 
-                            onClick={() => setIsCreateOpen(false)}
-                            className="h-14 px-8 rounded-2xl font-black uppercase text-[11px] tracking-widest text-slate-400"
-                        >
-                            Abort
-                        </Button>
+                     <DialogFooter className="pt-4">
                         <Button 
                             onClick={handleCreateJob}
-                            className="h-14 px-10 rounded-2xl bg-indigo-600 hover:bg-black text-white font-black uppercase text-[11px] tracking-[0.2em] shadow-2xl shadow-indigo-600/20 transition-all active:scale-95"
+                            className="h-14 w-full bg-indigo-600 hover:bg-black text-white font-black uppercase text-[11px] tracking-[0.2em] transition-all active:scale-95 font-brand"
                         >
-                            Deploy Protocol
+                            Activate Recruitment Node
                         </Button>
                     </DialogFooter>
                 </DialogContent>

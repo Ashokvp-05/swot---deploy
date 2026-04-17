@@ -31,14 +31,16 @@ const getAvatarColor = (name: string) => {
     return AVATAR_COLORS[charCode % AVATAR_COLORS.length]
 }
 
-export default function UserManagementTable({ token }: { token: string }) {
+export default function UserManagementTable({ token, userRole }: { token: string, userRole: string }) {
     const API = process.env.NEXT_PUBLIC_API_URL
+    const isAuthorized = ['SUPER_ADMIN', 'HR_MANAGER', 'HR_ADMIN'].includes(userRole.toUpperCase())
     const [users, setUsers] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const [search, setSearch] = useState("")
     const [selectedUser, setSelectedUser] = useState<any>(null)
     const [editUser, setEditUser] = useState<any>(null)
     const [deleteUser, setDeleteUser] = useState<any>(null)
+    const [isAddOpen, setIsAddOpen] = useState(false)
 
     const fetchUsers = async () => {
         setLoading(true)
@@ -84,8 +86,10 @@ export default function UserManagementTable({ token }: { token: string }) {
                             className="pl-11 h-12 bg-slate-50 border-none rounded-2xl text-xs font-bold focus-visible:ring-2 focus-visible:ring-indigo-100 transition-all"
                         />
                     </div>
-                    <Button className="h-12 px-6 bg-slate-900 hover:bg-black text-white rounded-2xl font-black text-[10px] uppercase tracking-widest gap-2 shadow-xl shadow-slate-100">
-                        <Plus className="w-4 h-4" />
+                    <Button 
+                        onClick={() => setIsAddOpen(true)}
+                        className="h-14 bg-slate-900 hover:bg-black text-white rounded-2xl px-10 text-[11px] font-black uppercase tracking-widest shadow-xl transition-all active:scale-95"
+                    >
                         Add Employee
                     </Button>
                 </div>
@@ -132,19 +136,32 @@ export default function UserManagementTable({ token }: { token: string }) {
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 whileHover={{ scale: 0.998 }}
-                                onClick={() => setSelectedUser(user)}
-                                className="px-8 py-5 grid grid-cols-[1fr_200px_140px_140px] items-center hover:bg-indigo-50/50 transition-all cursor-pointer group/row border border-transparent hover:border-indigo-100"
+                                onClick={() => {
+                                    if (isAuthorized) {
+                                        setSelectedUser(user)
+                                    } else {
+                                        toast.error("Restricted Executive Access: Only HR & Super Admin can view personnel dossiers.")
+                                    }
+                                }}
+                                className={cn(
+                                    "px-8 py-5 grid grid-cols-[1fr_200px_140px_140px] items-center transition-all group/row border border-transparent",
+                                    isAuthorized ? "cursor-pointer hover:bg-indigo-50/50 hover:border-indigo-100" : "cursor-not-allowed opacity-80"
+                                )}
                             >
                                 {/* Employee Info with Diverse Colors */}
                                 <div className="flex items-center gap-5">
                                     <div className={cn(
-                                        "h-12 w-12 rounded-[18px] border flex items-center justify-center font-black text-sm shrink-0 transition-all group-hover/row:scale-110",
-                                        getAvatarColor(user.name)
+                                        "h-12 w-12 rounded-[18px] border flex items-center justify-center font-black text-sm shrink-0 transition-all",
+                                        getAvatarColor(user.name),
+                                        isAuthorized && "group-hover/row:scale-110"
                                     )}>
                                         {user.name?.[0]?.toUpperCase() || "U"}
                                     </div>
                                     <div className="min-w-0">
-                                        <p className="text-[14px] font-bold text-slate-900 group-hover/row:text-indigo-600 transition-colors uppercase tracking-tight truncate">{user.name}</p>
+                                        <p className={cn(
+                                            "text-[14px] font-bold text-slate-900 transition-colors uppercase tracking-tight truncate",
+                                            isAuthorized && "group-hover/row:text-indigo-600 group-hover/row:underline underline-offset-4 decoration-indigo-200"
+                                        )}>{user.name}</p>
                                         <p className="text-[11px] text-slate-400 font-medium lowercase mt-0.5 truncate">{user.email}</p>
                                     </div>
                                 </div>
@@ -220,20 +237,24 @@ export default function UserManagementTable({ token }: { token: string }) {
             </AnimatePresence>
 
             <AnimatePresence>
-                {(editUser || deleteUser) && (
+                {(isAddOpen || editUser || deleteUser) && (
                     <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-                        {editUser && (
+                        {(isAddOpen || editUser) && (
                             <AddEmployeeModal 
                                 token={token} 
                                 employee={editUser} 
-                                onClose={() => setEditUser(null)} 
+                                onClose={() => {
+                                    setEditUser(null);
+                                    setIsAddOpen(false);
+                                }} 
                                 onSuccess={() => {
                                     setEditUser(null);
+                                    setIsAddOpen(false);
                                     fetchUsers();
                                 }} 
                             />
                         )}
-                        {/* Placeholder for Delete confirmation if needed, handled by toast/browser for now or dedicated modal */}
+                        {/* Placeholder for Delete confirmation if needed */}
                     </div>
                 )}
             </AnimatePresence>

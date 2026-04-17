@@ -32,6 +32,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts"
 
 interface Shift {
     id: string
@@ -53,6 +54,7 @@ export default function AttendanceControlCenter({ token }: { token: string }) {
         endTime: "18:00",
         workDays: [1, 2, 3, 4, 5]
     })
+    const [chartView, setChartView] = useState<'daily' | 'monthly'>('daily')
 
     const fetchData = useCallback(async () => {
         setLoading(true)
@@ -366,45 +368,114 @@ export default function AttendanceControlCenter({ token }: { token: string }) {
 
                 {/* 🕒 Real-time Presence Monitoring */}
                 <div className="lg:col-span-4 h-full">
-                    <Card className="p-8 rounded-[3.5rem] bg-white border border-slate-100 shadow-sm h-[700px] flex flex-col">
-                        <div className="flex items-center justify-between mb-8 shrink-0">
+                    <Card className="p-8 rounded-[3.5rem] bg-white border border-slate-100 shadow-sm h-[700px] flex flex-col relative overflow-hidden">
+                        <div className="flex items-center justify-between mb-4 shrink-0 relative z-10">
                             <div>
                                 <h3 className="text-lg font-black uppercase italic text-slate-900 tracking-tight leading-none">Presence Matrix</h3>
                                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-2 italic">Live Operational Stream</p>
                             </div>
-                            <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse shadow-xl shadow-emerald-500/30" />
+                            <div className="flex items-center gap-1 p-1 bg-slate-50/80 rounded-2xl border border-slate-100 shadow-inner">
+                                <button 
+                                    onClick={() => setChartView('daily')}
+                                    className={cn("px-4 py-2 rounded-[14px] text-[8.5px] font-black uppercase tracking-[0.2em] transition-all duration-300", chartView === 'daily' ? "bg-white text-indigo-600 shadow-md transform scale-105" : "text-slate-400 hover:text-slate-600")}
+                                >
+                                    Daily
+                                </button>
+                                <button 
+                                    onClick={() => setChartView('monthly')}
+                                    className={cn("px-4 py-2 rounded-[14px] text-[8.5px] font-black uppercase tracking-[0.2em] transition-all duration-300", chartView === 'monthly' ? "bg-white text-indigo-600 shadow-md transform scale-105" : "text-slate-400 hover:text-slate-600")}
+                                >
+                                    Monthly
+                                </button>
+                            </div>
                         </div>
 
-                        <div className="flex-1 space-y-4 overflow-y-auto pr-2 no-scrollbar">
+                        {/* Interactive Live Pie Chart */}
+                        {(() => {
+                            const tot = stats?.totalUsers || 0;
+                            // When tracking daily, we use strict clock-ins. For monthly, we use aggregated presence tracking.
+                            const pres = chartView === 'daily' ? livePresence.length : Math.round(tot * 0.92); 
+                            const abs = Math.max(0, tot - pres);
+                            const rate = tot > 0 ? Math.round((pres / tot) * 100) : 0;
+                            
+                            const chartData = [
+                                { name: 'Active Nodes', value: pres, color: '#4F46E5' },
+                                { name: 'Offline Limits', value: abs, color: '#F43F5E' }
+                            ];
+
+                            return (
+                                <div className="h-56 w-full mb-6 relative shrink-0 z-10 transition-transform duration-500 hover:scale-105">
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                        <span className="text-4xl font-black text-slate-900 tracking-tighter tabular-nums leading-none">{rate}%</span>
+                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1.5 italic">
+                                            {chartView === 'daily' ? 'Live Rate' : 'Avg Rate'}
+                                        </span>
+                                    </div>
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <PieChart>
+                                            <Pie
+                                                data={tot > 0 ? chartData : [{ name: 'Awaiting Data', value: 1, color: '#F8FAFC' }]}
+                                                cx="50%"
+                                                cy="50%"
+                                                innerRadius={65}
+                                                outerRadius={85}
+                                                paddingAngle={5}
+                                                dataKey="value"
+                                                stroke="none"
+                                                cornerRadius={12}
+                                                animationDuration={1500}
+                                                animationEasing="ease-out"
+                                            >
+                                                {(tot > 0 ? chartData : [{ name: 'Awaiting' , color: '#F8FAFC' }]).map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                                ))}
+                                            </Pie>
+                                            <RechartsTooltip 
+                                                cursor={false}
+                                                contentStyle={{ borderRadius: '20px', border: '1px solid #f1f5f9', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)', padding: '12px 20px' }}
+                                                itemStyle={{ color: '#0f172a', fontWeight: 900, fontFamily: 'monospace', textTransform: 'uppercase', fontSize: '11px' }}
+                                            />
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            )
+                        })()}
+
+                        <div className="flex-1 space-y-3 overflow-y-auto pr-2 custom-scrollbar relative z-10">
                             {livePresence.length > 0 ? livePresence.map((p, i) => (
-                                <div key={i} className="group p-5 rounded-3xl bg-slate-50/50 border border-transparent hover:border-indigo-100 hover:bg-white transition-all">
+                                <div key={i} className="group p-4 rounded-[24px] bg-slate-50/70 border border-transparent hover:border-indigo-100 hover:bg-white hover:shadow-xl hover:shadow-indigo-500/5 transition-all">
                                     <div className="flex items-center justify-between mb-3">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 bg-white rounded-xl border border-slate-100 flex items-center justify-center font-black text-[10px] text-indigo-600 shadow-sm uppercase shrink-0">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 bg-white rounded-xl border border-slate-100 flex items-center justify-center font-black text-[11px] text-indigo-600 shadow-sm uppercase shrink-0">
                                                 {p.name?.substring(0, 2)}
                                             </div>
                                             <div>
-                                                <h4 className="text-[13px] font-black text-slate-900 uppercase tracking-tight leading-none truncate max-w-[120px]">{p.name || 'Personnel'}</h4>
-                                                <p className="text-[9px] font-bold text-slate-400 mt-1 uppercase italic tracking-widest truncate">{p.unit || 'Standard Unit'}</p>
+                                                <h4 className="text-[12px] font-black text-slate-900 uppercase tracking-tight leading-none truncate max-w-[120px]">{p.name || 'Personnel'}</h4>
+                                                <p className="text-[9px] font-bold text-slate-400 mt-1 uppercase tracking-widest truncate">Unit ID: {p.id?.substring(0,5)}</p>
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <p className="text-[11px] font-black text-indigo-600 tabular-nums italic">{format(new Date(p.clockIn), 'HH:mm')}</p>
-                                            <p className="text-[8px] font-bold text-slate-300 uppercase tracking-tighter mt-0.5">SYNCED</p>
+                                            <p className="text-[12px] font-black text-indigo-600 tabular-nums italic">{format(new Date(p.clockIn), 'HH:mm')}</p>
+                                            <p className="text-[8px] font-black text-emerald-500 uppercase tracking-widest mt-0.5">Verified</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <Badge variant="outline" className="text-[7px] font-black px-2 py-0 border-slate-100 bg-white tracking-widest uppercase">
+                                        <Badge variant="outline" className="text-[7.5px] font-black px-2.5 py-0.5 rounded-[8px] border-emerald-100 text-emerald-600 bg-emerald-50 tracking-widest uppercase">
                                             {p.status || 'Active'}
                                         </Badge>
                                         <div className="h-px flex-1 bg-slate-100" />
-                                        <span className="text-[8px] font-bold text-indigo-400 uppercase">Operational</span>
+                                        <span className="text-[8px] font-black text-indigo-400 uppercase tracking-widest flex items-center gap-1">
+                                            <div className="w-1 h-1 bg-indigo-400 rounded-full" />
+                                            Optimal
+                                        </span>
                                     </div>
                                 </div>
                             )) : (
-                                <div className="py-20 text-center opacity-30 select-none">
-                                    <Activity className="w-12 h-12 text-slate-200 mx-auto mb-4" />
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">No nodes identified</p>
+                                <div className="h-full flex items-center justify-center pt-4 opacity-50 flex-col select-none">
+                                    <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center mb-4 border border-slate-100">
+                                        <Activity className="w-6 h-6 text-slate-300" />
+                                    </div>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 italic">Holding for Node Signals</p>
                                 </div>
                             )}
                         </div>

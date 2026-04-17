@@ -155,9 +155,9 @@ export default function SupportControlCenter({ token }: { token: string }) {
                         <Headphones className="w-6 h-6" />
                     </div>
                     <div>
-                        <h3 className="text-xl font-bold text-slate-900 tracking-tight font-brand">Support Service Terminal</h3>
+                        <h3 className="text-xl font-bold text-slate-900 tracking-tight font-brand uppercase italic">Support Center</h3>
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">
-                            {activeNodesCount} Active Nodes · {tickets.length} Registered Units
+                            {activeNodesCount} Open · {tickets.length} Total
                         </p>
                     </div>
                 </div>
@@ -199,8 +199,8 @@ export default function SupportControlCenter({ token }: { token: string }) {
                                 <ShieldAlert className="w-10 h-10 text-indigo-600 relative z-10" />
                             </div>
                             <div className="text-center">
-                                <p className="text-[12px] font-black uppercase tracking-[0.5em] text-slate-800">Operational Vacancy</p>
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">No active ticket nodes match your filter</p>
+                                <p className="text-[12px] font-black uppercase tracking-[0.5em] text-slate-800">Nothing Found</p>
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2 font-body">No tickets match your filter</p>
                             </div>
                         </div>
                     ) : (
@@ -216,10 +216,8 @@ export default function SupportControlCenter({ token }: { token: string }) {
             {/* ── FOOTER PROTOCOL (LEAVE STYLE) ── */}
             <div className="p-6 border-t border-slate-50 bg-white flex justify-between items-center px-10 shrink-0">
                 <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Shard Integrity Validated 100%</span>
-                <button onClick={fetchData} className="flex items-center gap-2.5 text-[10px] font-black text-indigo-600 uppercase tracking-widest transition-all hover:scale-105 active:scale-95 group">
-                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                    Registry Re-sync
-                    <RefreshCcw className={cn("w-3.5 h-3.5 group-hover:rotate-180 transition-transform duration-700", loading && "animate-spin")} />
+                <button onClick={fetchData} className="flex items-center gap-2.5 text-[10px] font-black text-indigo-600 uppercase tracking-widest transition-all hover:scale-105 active:scale-95 group font-brand">
+                    Refresh
                 </button>
             </div>
         </div>
@@ -320,9 +318,9 @@ function TicketCard({ ticket, token, onUpdate }: { ticket: TicketData, token: st
                             <Button 
                                 onClick={handleQuickResolve} 
                                 disabled={actionLoading}
-                                className="h-12 px-8 bg-slate-900 hover:bg-black text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-xl shadow-lg transition-all active:scale-95 group/btn shrink-0"
+                                className="h-12 px-8 bg-slate-900 hover:bg-black text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-xl transition-all active:scale-95 font-brand"
                             >
-                                {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Settle Ticket"}
+                                {actionLoading ? "..." : "Resolve"}
                             </Button>
                         )}
                         
@@ -399,8 +397,8 @@ function TicketDetailSheet({ ticket, token, onUpdate }: { ticket: TicketData, to
     return (
         <Sheet>
             <SheetTrigger asChild>
-                <Button variant="ghost" className="h-12 px-8 text-indigo-600 hover:bg-indigo-50 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all border border-indigo-100/30">
-                    Investigate Node
+                <Button variant="ghost" className="h-12 px-8 text-indigo-600 hover:bg-indigo-50 rounded-xl text-[10px] font-black uppercase tracking-[0.4em] transition-all border border-indigo-100/30 font-brand">
+                    View
                 </Button>
             </SheetTrigger>
             <SheetContent className="bg-white border-l border-slate-50 w-[600px] sm:w-[720px] p-0 rounded-l-[60px] shadow-2xl overflow-y-auto custom-scrollbar font-body">
@@ -408,9 +406,6 @@ function TicketDetailSheet({ ticket, token, onUpdate }: { ticket: TicketData, to
                     <div className="flex flex-col gap-8">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-6">
-                                <div className="p-5 bg-indigo-600 rounded-[28px] shadow-2xl shadow-indigo-200 rotate-6 group">
-                                    <Headphones className="w-9 h-9 text-white group-hover:scale-110 transition-transform" />
-                                </div>
                                 <div>
                                     <div className="flex items-center gap-4 mb-3">
                                         <Badge className={cn("text-[10px] font-black uppercase tracking-[0.3em] px-5 py-2 rounded-full border-none ring-4 ring-white/80 shadow-sm", statusColor[ticket.status])}>{ticket.status}</Badge>
@@ -458,7 +453,6 @@ function TicketDetailSheet({ ticket, token, onUpdate }: { ticket: TicketData, to
                     {/* CORE DESCRIPTION */}
                     <div className="space-y-6">
                         <div className="flex items-center gap-3 pl-1">
-                            <MessageSquare className="w-4 h-4 text-indigo-500" />
                             <Label className="text-[11px] font-black text-indigo-600 uppercase tracking-[0.5em]">Packet Payload (Description)</Label>
                         </div>
                         <div className="p-12 bg-slate-50/50 rounded-[50px] text-sm font-semibold text-slate-700 leading-relaxed border border-slate-100 italic shadow-[inset_0_4px_12px_rgba(0,0,0,0.02)]">
@@ -469,11 +463,11 @@ function TicketDetailSheet({ ticket, token, onUpdate }: { ticket: TicketData, to
                     {/* ORCHESTRATION CONTROLS */}
                     <div className="space-y-8">
                         <Label className="text-[11px] font-black text-amber-600 uppercase tracking-[0.5em] pl-1">Lifecycle Orchestration</Label>
-                        <div className="grid grid-cols-3 gap-6">
+                        <div className="grid grid-cols-3 gap-4">
                             {[
-                                { s: 'OPEN', icon: Play, label: 'Initialize' },
-                                { s: 'IN_PROGRESS', icon: Activity, label: 'Investigate' },
-                                { s: 'RESOLVED', icon: CheckCircle2, label: 'Resolve' }
+                                { s: 'OPEN', label: 'Open' },
+                                { s: 'IN_PROGRESS', label: 'Working' },
+                                { s: 'RESOLVED', label: 'Done' }
                             ].map((action) => (
                                 <Button 
                                     key={action.s}
@@ -484,7 +478,6 @@ function TicketDetailSheet({ ticket, token, onUpdate }: { ticket: TicketData, to
                                     )}
                                     onClick={() => handleUpdate({ status: action.s })}
                                 >
-                                    <action.icon className={cn("w-5 h-5", ticket.status === action.s ? "text-indigo-600" : "text-slate-300")} />
                                     <span className={cn("text-[10px] font-black uppercase tracking-widest", ticket.status === action.s ? "text-slate-900" : "text-slate-400")}>{action.label}</span>
                                 </Button>
                             ))}
@@ -523,7 +516,7 @@ function TicketDetailSheet({ ticket, token, onUpdate }: { ticket: TicketData, to
                         <div className="space-y-6 pt-6 border-t border-slate-50 sticky bottom-0 bg-white pb-6 z-10">
                             <div className="relative group">
                                 <Input 
-                                    placeholder="INITIATE DATA TRANSFERENCE (MESSAGE)..." 
+                                    placeholder="Write a message..." 
                                     className="h-24 bg-slate-50/80 border-none rounded-[40px] px-12 text-[13px] font-bold tracking-widest uppercase italic shadow-[inset_0_4px_16px_rgba(0,0,0,0.03)] focus-visible:ring-indigo-600/10 placeholder:text-slate-200"
                                     value={comment}
                                     onChange={(e) => setComment(e.target.value)}
@@ -535,21 +528,19 @@ function TicketDetailSheet({ ticket, token, onUpdate }: { ticket: TicketData, to
                                         className="h-16 w-16 rounded-[28px] bg-white shadow-xl border border-slate-50 hover:bg-amber-50 group/internal active:scale-95 transition-all"
                                         onClick={() => addComment(true)}
                                     >
-                                        <Lock className="w-6 h-6 text-slate-300 group-hover/internal:text-amber-500 transition-colors" />
+                                        Lock
                                     </Button>
                                     <Button 
                                         disabled={submitting || !comment} 
                                         className="h-16 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[28px] px-10 gap-4 group/send shadow-2xl shadow-indigo-200 active:scale-95 transition-all"
                                         onClick={() => addComment(false)}
                                     >
-                                        {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-6 h-6 group-hover/send:translate-x-1.5 transition-transform" />}
-                                        <span className="text-[10px] font-black uppercase tracking-widest">Deploy</span>
+                                        <span className="text-[10px] font-black uppercase tracking-widest">{submitting ? "..." : "Send"}</span>
                                     </Button>
                                 </div>
                             </div>
                             <div className="flex items-center gap-3 px-8">
-                                <ShieldAlert className="w-4 h-4 text-amber-400" />
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic opacity-70">Internal logs (lock icon) are sequestered from the requestor node.</p>
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic opacity-70">Internal notes are private.</p>
                             </div>
                         </div>
                     </div>

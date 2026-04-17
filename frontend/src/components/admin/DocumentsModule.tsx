@@ -33,6 +33,44 @@ const GlobalStyles = () => (
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600;700&display=swap');
         .font-brand { font-family: 'Plus Jakarta Sans', sans-serif; }
         .font-body { font-family: 'Inter', sans-serif; }
+
+        .focus-shard {
+            background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
+            border-color: #6366f1 !important;
+            box-shadow: 0 40px 80px -20px rgba(99, 102, 241, 0.12), 0 0 0 1px rgba(99, 102, 241, 0.1);
+        }
+
+        .matrix-gradient {
+            background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.03), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.02), transparent 400px);
+        }
+
+        .vault-card {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .vault-card:hover:not(.focus-shard) {
+            transform: translateY(-2px);
+            border-color: #e2e8f0;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.05);
+        }
+
+        .glass-slot {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .status-pulse-red {
+            box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.4);
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(244, 63, 94, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
+        }
     `}</style>
 )
 
@@ -115,9 +153,9 @@ export default function DocumentsModule({ token }: { token: string }) {
                         <Database className="w-7 h-7" />
                     </div>
                     <div>
-                        <h3 className="text-2xl font-black text-slate-900 tracking-tighter italic uppercase font-brand leading-none">Identity <span className="text-indigo-600">Vault</span></h3>
+                        <h3 className="text-2xl font-black text-slate-900 tracking-tighter italic uppercase font-brand leading-none">Personnel <span className="text-indigo-600">Records</span></h3>
                         <p className="text-[10px] font-black text-slate-400 font-brand uppercase tracking-[0.2em] mt-2.5">
-                            {docs.length} Synchronized Records · {users.length} Authorized Nodes
+                            {docs.length} Synchronized Records · Restricted Executive Access
                         </p>
                     </div>
                 </div>
@@ -151,6 +189,41 @@ export default function DocumentsModule({ token }: { token: string }) {
                             const userDocs = docs.filter(d => d.userId === user.id || d.employeeId === user.id)
                             const isExpanded = expandedID === user.id
 
+                            const triggerDownload = (fileUrl: string, fileName: string, isDownload: boolean = false) => {
+                                if (!fileUrl) return;
+                                try {
+                                    // If it's base64, create a blob to bypass browser URL limits
+                                    if (fileUrl.startsWith('data:')) {
+                                        const parts = fileUrl.split(';base64,');
+                                        const contentType = parts[0].split(':')[1];
+                                        const raw = window.atob(parts[1]);
+                                        const rawLength = raw.length;
+                                        const uInt8Array = new Uint8Array(rawLength);
+                                        for (let i = 0; i < rawLength; ++i) { uInt8Array[i] = raw.charCodeAt(i); }
+                                        const blob = new Blob([uInt8Array], { type: contentType });
+                                        const url = URL.createObjectURL(blob);
+                                        
+                                        const a = document.createElement('a');
+                                        a.href = url;
+                                        if (isDownload) a.download = fileName;
+                                        else a.target = '_blank';
+                                        
+                                        document.body.appendChild(a);
+                                        a.click();
+                                        document.body.removeChild(a);
+                                        setTimeout(() => URL.revokeObjectURL(url), 100);
+                                    } else {
+                                        const a = document.createElement('a');
+                                        a.href = fileUrl;
+                                        if (isDownload) a.download = fileName;
+                                        else a.target = '_blank';
+                                        a.click();
+                                    }
+                                } catch (e) {
+                                    toast.error("Telemetry error: Failed to decode artifact");
+                                }
+                            }
+
                             return (
                                 <motion.div 
                                     key={user.id} 
@@ -158,8 +231,8 @@ export default function DocumentsModule({ token }: { token: string }) {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: idx * 0.05 }}
                                     className={cn(
-                                        "bg-white rounded-[32px] border border-slate-100 overflow-hidden transition-all duration-500",
-                                        isExpanded ? "ring-4 ring-indigo-500/5 border-indigo-100 shadow-2xl -translate-y-1" : "hover:shadow-xl hover:border-slate-200"
+                                        "vault-card bg-white rounded-[32px] border border-slate-100 overflow-hidden",
+                                        isExpanded ? "focus-shard" : ""
                                     )}
                                 >
                                     <button 
@@ -178,13 +251,13 @@ export default function DocumentsModule({ token }: { token: string }) {
                                                     <h4 className="text-xl font-black text-slate-900 tracking-tighter uppercase italic font-brand leading-none group-hover:text-indigo-600 transition-colors">
                                                         {user.name}
                                                     </h4>
-                                                    <Badge className="bg-slate-100 text-slate-400 text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-lg border-none">
+                                                    <Badge className="bg-white/50 backdrop-blur-md text-slate-400 text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-lg border border-slate-100">
                                                         {user.role?.name || user.role}
                                                     </Badge>
                                                 </div>
                                                 <div className="flex items-center gap-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
                                                     <span className="italic truncate">{user.email}</span>
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-slate-100" />
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />
                                                     <span className={cn(
                                                         "flex items-center gap-2",
                                                         userDocs.length > 0 ? "text-indigo-600" : "text-slate-300"
@@ -196,9 +269,12 @@ export default function DocumentsModule({ token }: { token: string }) {
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-8">
-                                            <div className="hidden md:flex items-center gap-3 px-5 h-11 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100">
-                                                <CheckCircle2 className="w-4 h-4" />
-                                                <span className="text-[10px] font-black uppercase tracking-widest">Verified Identity</span>
+                                            <div className={cn(
+                                                "hidden md:flex items-center gap-3 px-5 h-11 rounded-2xl border transition-all",
+                                                userDocs.length >= 4 ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-amber-50 text-amber-600 border-amber-100"
+                                            )}>
+                                                {userDocs.length >= 4 ? <CheckCircle2 className="w-4 h-4" /> : <ShieldAlert className="w-4 h-4" />}
+                                                <span className="text-[10px] font-black uppercase tracking-widest">{userDocs.length >= 4 ? "COMPLETE RECORD" : "INCOMPLETE DOSSIER"}</span>
                                             </div>
                                             <div className={cn(
                                                 "w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 transition-all group-hover:bg-indigo-600 group-hover:text-white group-hover:shadow-lg shadow-indigo-100",
@@ -215,47 +291,55 @@ export default function DocumentsModule({ token }: { token: string }) {
                                                 initial={{ height: 0, opacity: 0 }}
                                                 animate={{ height: "auto", opacity: 1 }}
                                                 exit={{ height: 0, opacity: 0 }}
-                                                className="border-t border-slate-50"
+                                                className="border-t border-slate-100"
                                             >
-                                                <div className="bg-slate-50/50 p-10 space-y-10">
+                                                <div className="matrix-gradient p-10 space-y-10">
                                                     
                                                     {/* CRITICAL DOCUMENT MANIFEST SHARDS */}
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                                                         {criticalSlots.map((slot) => {
-                                                            const exists = userDocs.some(d => d.type === slot.category || d.name?.includes(slot.label))
+                                                            const docObj = userDocs.find(d => d.type === slot.category || d.name?.includes(slot.label));
+                                                            const exists = !!docObj;
                                                             return (
-                                                                <div key={slot.id} className="p-6 rounded-[28px] bg-white border border-slate-100 shadow-sm flex flex-col gap-5 group/slot hover:border-indigo-200 transition-all">
+                                                                <div key={slot.id} className={cn(
+                                                                    "p-7 rounded-[32px] transition-all duration-300 flex flex-col gap-6 group/slot",
+                                                                    exists ? "bg-white border border-slate-100 shadow-sm hover:border-emerald-200" : "bg-white/40 border border-rose-100/50 hover:border-rose-200"
+                                                                )}>
                                                                     <div className="flex items-center justify-between">
-                                                                        <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover/slot:bg-indigo-50 group-hover/slot:text-indigo-600 transition-colors">
-                                                                            <slot.icon className="w-5 h-5" />
+                                                                        <div className={cn(
+                                                                            "w-12 h-12 rounded-2xl flex items-center justify-center transition-colors",
+                                                                            exists ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-500"
+                                                                        )}>
+                                                                            <slot.icon className="w-6 h-6" />
                                                                         </div>
                                                                         {exists ? (
-                                                                            <div className="w-6 h-6 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600">
-                                                                                <Check className="w-3.5 h-3.5" />
+                                                                            <div className="w-7 h-7 bg-emerald-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-emerald-100">
+                                                                                <Check className="w-4 h-4" />
                                                                             </div>
                                                                         ) : (
-                                                                            <div className="w-6 h-6 bg-rose-50 rounded-full flex items-center justify-center text-rose-500">
-                                                                                <AlertCircle className="w-3.5 h-3.5" />
+                                                                            <div className="w-7 h-7 bg-rose-500 rounded-full flex items-center justify-center text-white status-pulse-red">
+                                                                                <AlertCircle className="w-4 h-4" />
                                                                             </div>
                                                                         )}
                                                                     </div>
                                                                     <div>
-                                                                        <h5 className="text-[12px] font-black text-slate-900 uppercase italic font-brand tracking-tight mb-1">{slot.label}</h5>
+                                                                        <h5 className="text-[13px] font-black text-slate-900 uppercase italic font-brand tracking-tight mb-1">{slot.label}</h5>
                                                                         <div className="flex items-center gap-2">
-                                                                            <div className={cn("w-1.5 h-1.5 rounded-full animate-pulse", exists ? "bg-emerald-500" : "bg-rose-500")} />
+                                                                            <div className={cn("w-1.5 h-1.5 rounded-full", exists ? "bg-emerald-500" : "bg-rose-500 animate-pulse")} />
                                                                             <span className={cn("text-[9px] font-black uppercase tracking-widest", exists ? "text-emerald-600" : "text-rose-500")}>
-                                                                                {exists ? "Verified Shard" : "Missing Fragment"}
+                                                                                {exists ? "Verified Identity" : "Missing Fragment"}
                                                                             </span>
                                                                         </div>
                                                                     </div>
                                                                     <Button 
-                                                                        variant="ghost" 
+                                                                        disabled={!exists}
+                                                                        onClick={() => exists && triggerDownload(docObj.fileUrl, docObj.name)}
                                                                         className={cn(
-                                                                            "w-full h-11 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] gap-2 border border-dashed transition-all",
-                                                                            exists ? "bg-slate-50 border-slate-100 text-slate-400 hover:bg-slate-100" : "bg-indigo-50 border-indigo-200 text-indigo-600 hover:bg-indigo-100"
+                                                                            "w-full h-12 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] gap-2 transition-all shadow-lg",
+                                                                            exists ? "bg-slate-900 text-white border-none hover:bg-slate-800" : "bg-slate-100 border border-slate-200 text-slate-300 cursor-not-allowed"
                                                                         )}
                                                                     >
-                                                                        {exists ? <><Eye className="w-3 h-3" /> View Record</> : <><Upload className="w-3 h-3" /> Upload Document</>}
+                                                                        {exists ? <><Eye className="w-4 h-4 text-white" /> View Document</> : <><Lock className="w-4 h-4" /> Pending Action</>}
                                                                     </Button>
                                                                 </div>
                                                             )
@@ -264,18 +348,18 @@ export default function DocumentsModule({ token }: { token: string }) {
 
                                                     {/* STANDARD DOCUMENT REGISTER */}
                                                     <div className="space-y-4">
-                                                        <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] font-brand italic ml-1">Synchronized Artifact Registry</h5>
+                                                        <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] font-brand italic ml-1">Personnel Document Registry</h5>
                                                         {userDocs.length === 0 ? (
                                                             <div className="py-16 flex flex-col items-center justify-center gap-4 bg-white rounded-[32px] border border-dashed border-slate-200">
                                                                 <Archive className="w-12 h-12 text-slate-100" />
-                                                                <p className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-300 italic">Global Vault Synchronized: Zero Assets Found</p>
+                                                                <p className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-300 italic">Global Vault Synchronized: No Documents Found</p>
                                                             </div>
                                                         ) : (
                                                             <div className="bg-white rounded-[32px] border border-slate-100 overflow-hidden shadow-sm">
                                                                 <table className="w-full text-left">
                                                                     <thead>
                                                                         <tr className="bg-slate-50/50 border-b border-slate-100">
-                                                                            <th className="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-widest font-brand">Asset Identity</th>
+                                                                            <th className="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-widest font-brand">Document Name</th>
                                                                             <th className="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-widest font-brand text-center">Category</th>
                                                                             <th className="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-widest font-brand text-right">Connectivity</th>
                                                                         </tr>
@@ -301,8 +385,8 @@ export default function DocumentsModule({ token }: { token: string }) {
                                                                                 </td>
                                                                                 <td className="px-8 py-6 text-right">
                                                                                      <div className="flex items-center justify-end gap-3 translate-x-4 opacity-0 group-hover/doc:opacity-100 group-hover/doc:translate-x-0 transition-all duration-300 pr-4">
-                                                                                        <Button variant="ghost" onClick={() => window.open(doc.fileUrl, '_blank')} className="h-11 w-11 rounded-xl bg-slate-100 hover:bg-slate-900 hover:text-white"><Eye className="w-5 h-5" /></Button>
-                                                                                        <Button variant="ghost" className="h-11 w-11 rounded-xl bg-slate-100 hover:bg-indigo-600 hover:text-white"><Download className="w-5 h-5" /></Button>
+                                                                                        <Button variant="ghost" onClick={() => triggerDownload(doc.fileUrl, doc.name)} className="h-11 w-11 rounded-xl bg-slate-100 hover:bg-slate-900 hover:text-white"><Eye className="w-5 h-5" /></Button>
+                                                                                        <Button variant="ghost" onClick={() => triggerDownload(doc.fileUrl, doc.name, true)} className="h-11 w-11 rounded-xl bg-slate-100 hover:bg-indigo-600 hover:text-white"><Download className="w-5 h-5" /></Button>
                                                                                      </div>
                                                                                 </td>
                                                                             </tr>

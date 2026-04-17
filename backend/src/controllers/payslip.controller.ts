@@ -99,8 +99,8 @@ export const generatePayslip = async (req: Request, res: Response) => {
         const { userId, month, year, amount, hra, da, bonus, otherAllowances, pf, tax } = req.body;
         const { id: adminId, companyId } = (req as any).user;
 
-        if (!userId || !month || !year || !amount) {
-            return res.status(400).json({ error: "Missing required fields" });
+        if (!userId || !month || !year || amount === undefined) {
+            return res.status(400).json({ error: "Missing required fields: salary amount must be established" });
         }
 
         const payslip = await payslipService.generatePayslipFromTemplate(

@@ -227,7 +227,9 @@ export default function LeaveApprovalCenter({ token }: { token: string }) {
                                                     <Input autoFocus value={rejectReason} onChange={e => setRejectReason(e.target.value)} placeholder="Personnel Insight..."
                                                         className="h-10 w-full sm:w-64 bg-slate-50 border-slate-100 rounded-lg text-xs font-bold" />
                                                     <Button onClick={() => reject(leave.id)} disabled={actionLoading === leave.id} className="h-10 bg-rose-600 text-white font-bold rounded-lg px-6 text-xs">Commit</Button>
-                                                    <Button onClick={() => setRejectId(null)} variant="ghost" className="h-10 text-slate-400 px-3 text-xs">Esc</Button>
+                                                    <Button onClick={() => setRejectId(null)} variant="ghost" className="h-10 w-10 p-0 text-slate-400 hover:text-slate-900 rounded-lg">
+                                                        <XCircle className="w-5 h-5" />
+                                                    </Button>
                                                 </div>
                                             ) : (
                                                 <>

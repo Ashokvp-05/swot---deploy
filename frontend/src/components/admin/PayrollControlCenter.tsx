@@ -4,7 +4,8 @@ import { useState, useEffect } from "react"
 import { jsPDF } from "jspdf"
 import autoTable from "jspdf-autotable"
 import { motion, AnimatePresence } from "framer-motion"
-import { CreditCard, DollarSign, Loader2, Play, CheckCircle2, AlertCircle, FileText, ChevronRight, Lock, Unlock, Download, Send, Plus, Activity, Users, Clock, TrendingUp, ShieldCheck, Settings, Save, Trash2 } from "lucide-react"
+import { CreditCard, DollarSign, Loader2, Play, CheckCircle2, AlertCircle, FileText, ChevronRight, Lock, Unlock, Download, Send, Plus, Activity, Users, Clock, TrendingUp, ShieldCheck, Settings, Save, Trash2, Zap } from "lucide-react"
+import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -63,7 +64,9 @@ export default function PayrollControlCenter({ token }: { token: string }) {
             const data = await res.json()
             if (res.ok) {
                 const userData = data.data || data.users || data;
-                setUsers(Array.isArray(userData) ? userData : []);
+                const filteredUsers = (Array.isArray(userData) ? userData : [])
+                    .filter((u: any) => u.role !== 'SUPER_ADMIN' && u.role !== 'SUPPORT_ADMIN');
+                setUsers(filteredUsers);
             }
         } catch (e) {
             console.error("User sync error:", e);
@@ -162,8 +165,8 @@ export default function PayrollControlCenter({ token }: { token: string }) {
                         <DollarSign className="w-7 h-7 text-white" />
                     </div>
                     <div>
-                        <h2 className="text-3xl font-black text-slate-900 border-none uppercase tracking-tighter italic leading-none">Fiscal Terminal</h2>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mt-2">Financial Settlement & Organizational Liquidity protocols</p>
+                        <h2 className="text-3xl font-black text-slate-900 border-none uppercase tracking-tighter italic leading-none font-brand">Payroll</h2>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mt-3 leading-none italic font-body">Manage employee salaries and payments.</p>
                     </div>
                 </div>
                 
@@ -215,10 +218,10 @@ export default function PayrollControlCenter({ token }: { token: string }) {
                         <Button
                             onClick={createBatch}
                             disabled={processing !== null}
-                            className="h-14 bg-slate-900 hover:bg-black text-white rounded-[20px] px-10 text-[11px] font-black uppercase tracking-widest gap-3 shadow-2xl shadow-slate-900/10 transition-all active:scale-95"
+                            className="h-14 bg-slate-900 hover:bg-black text-white rounded-[20px] px-10 text-[11px] font-black uppercase tracking-widest transition-all active:scale-95 font-brand"
                         >
-                            {processing === "creating" ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
-                            Initialize New Batch
+                            {processing === "creating" && <Loader2 className="w-5 h-5 animate-spin mr-3" />}
+                            New Payroll
                         </Button>
                     </div>
 
@@ -231,8 +234,7 @@ export default function PayrollControlCenter({ token }: { token: string }) {
                             </div>
                         ) : batches.length === 0 ? (
                             <div className="col-span-full h-80 flex flex-col items-center justify-center gap-6 text-slate-400 bg-white border-[3px] border-dashed border-slate-100 rounded-[50px] opacity-60">
-                                <CreditCard className="w-16 h-16 opacity-10" />
-                                <p className="text-[11px] font-black uppercase tracking-[0.4em]">Awaiting fiscal cycle initialization</p>
+                                <p className="text-[11px] font-black uppercase tracking-[0.4em]">No payroll batches yet.</p>
                             </div>
                         ) : (
                             batches.map((batch, idx) => (
@@ -258,7 +260,7 @@ export default function PayrollControlCenter({ token }: { token: string }) {
                                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{batch._count?.payslips || 0} Registered Personnel Units</p>
                                         </div>
                                         <div className="p-4 bg-slate-50 rounded-[20px] mb-6 group-hover:bg-emerald-50 transition-colors">
-                                            <DollarSign className="w-6 h-6 text-emerald-500" />
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{batch._count?.payslips || 0} Employees</p>
                                         </div>
                                     </div>
 
@@ -268,10 +270,9 @@ export default function PayrollControlCenter({ token }: { token: string }) {
                                                 <Button
                                                     onClick={() => runCalculation(batch.id)}
                                                     disabled={processing === batch.id}
-                                                    className="w-full h-14 bg-slate-50 hover:bg-slate-100 text-slate-900 rounded-[18px] text-[10px] font-black uppercase tracking-widest gap-3 transition-all border border-slate-100/50"
+                                                    className="w-full h-14 bg-slate-50 hover:bg-slate-100 text-slate-900 rounded-[18px] text-[10px] font-black uppercase tracking-widest transition-all border border-slate-100/50"
                                                 >
-                                                    {processing === batch.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <Play className="w-4 h-4 text-emerald-500 fill-emerald-500" />}
-                                                    Run Calculation Cycle
+                                                    Calculate
                                                 </Button>
                                             )}
 
@@ -279,10 +280,9 @@ export default function PayrollControlCenter({ token }: { token: string }) {
                                                 <Button
                                                     onClick={() => updateStatus(batch.id, 'APPROVED')}
                                                     disabled={processing === batch.id}
-                                                    className="w-full h-14 bg-slate-900 hover:bg-black text-white rounded-[18px] text-[10px] font-black uppercase tracking-widest gap-3 shadow-xl shadow-slate-900/10 transition-all active:scale-95"
+                                                    className="w-full h-14 bg-slate-900 hover:bg-black text-white rounded-[18px] text-[10px] font-black uppercase tracking-widest transition-all active:scale-95"
                                                 >
-                                                    {processing === batch.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle2 className="w-5 h-5" />}
-                                                    Authorize Batch
+                                                    Approve
                                                 </Button>
                                             )}
 
@@ -290,20 +290,16 @@ export default function PayrollControlCenter({ token }: { token: string }) {
                                                 <Button
                                                     onClick={() => updateStatus(batch.id, 'RELEASED')}
                                                     disabled={processing === batch.id}
-                                                    className="w-full h-14 bg-emerald-600 hover:bg-emerald-700 text-white rounded-[18px] text-[10px] font-black uppercase tracking-widest gap-3 shadow-xl shadow-emerald-500/10 transition-all active:scale-95"
+                                                    className="w-full h-14 bg-emerald-600 hover:bg-emerald-700 text-white rounded-[18px] text-[10px] font-black uppercase tracking-widest transition-all active:scale-95"
                                                 >
-                                                    {processing === batch.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
-                                                    Release to Fleet
+                                                    Release All
                                                 </Button>
                                             )}
 
                                             {batch.status === 'RELEASED' && (
                                                 <div className="p-8 bg-emerald-50 rounded-[28px] border border-emerald-100/50 flex flex-col items-center gap-4 text-center">
-                                                    <div className="p-3 bg-white rounded-2xl shadow-sm">
-                                                        <CheckCircle2 className="w-6 h-6 text-emerald-500" />
-                                                    </div>
                                                     <div>
-                                                        <p className="text-emerald-600 text-[12px] font-black uppercase tracking-tight italic">Liquidity Consummated</p>
+                                                        <p className="text-emerald-600 text-[12px] font-black uppercase tracking-tight italic">Paid</p>
                                                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Released: {new Date(batch.releasedAt).toLocaleDateString()}</p>
                                                     </div>
                                                 </div>
@@ -312,10 +308,10 @@ export default function PayrollControlCenter({ token }: { token: string }) {
 
                                         <div className="pt-8 border-t border-slate-50 flex items-center justify-between">
                                             <button className="text-[10px] font-black uppercase text-slate-400 hover:text-indigo-600 transition-all flex items-center gap-2 group/link">
-                                                Intelligence Ledger <ChevronRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
+                                                View Details
                                             </button>
                                             <button className="text-[10px] font-black uppercase text-slate-400 hover:text-emerald-600 transition-all flex items-center gap-2">
-                                                Export CSV <Download className="w-4 h-4" />
+                                                Export CSV
                                             </button>
                                         </div>
                                     </div>
@@ -345,9 +341,9 @@ export default function PayrollControlCenter({ token }: { token: string }) {
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead>
-                                <tr className="bg-slate-50/50">
-                                    <th className="px-6 py-6 text-left text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] w-[20%]">Personnel Node</th>
-                                    <th className="px-4 py-6 text-left text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Base Struct</th>
+                                <tr className="bg-slate-50/50 font-brand italic">
+                                    <th className="px-6 py-6 text-left text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] w-[20%]">User</th>
+                                    <th className="px-4 py-6 text-left text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Base Salary</th>
                                     <th className="px-4 py-6 text-left text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Allowances</th>
                                     <th className="px-4 py-6 text-left text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Deductions</th>
                                     <th className="px-4 py-6 text-left text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Net Salary</th>
@@ -372,15 +368,15 @@ export default function PayrollControlCenter({ token }: { token: string }) {
                             <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl">
                                 <FileText className="w-6 h-6" />
                             </div>
-                            <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight">Financial Intelligence Exports</h3>
+                            <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight font-brand italic">Payroll Reports</h3>
                         </div>
                         <p className="text-xs text-slate-400 leading-relaxed uppercase font-bold tracking-tight">Generate high-fidelity snapshots of organizational payroll, tax liability, and statutory compliance for external audits.</p>
                         <div className="grid grid-cols-2 gap-4 mt-4">
-                            <Button className="h-14 rounded-2xl bg-white border border-slate-100 text-slate-600 hover:bg-slate-50 text-[10px] font-black uppercase tracking-widest gap-2">
-                                <Download className="w-4 h-4" /> Annual Summary
+                            <Button className="h-14 rounded-2xl bg-white border border-slate-100 text-slate-600 hover:bg-slate-50 text-[10px] font-black uppercase tracking-widest font-brand">
+                                Annual Summary
                             </Button>
-                            <Button className="h-14 rounded-2xl bg-white border border-slate-100 text-slate-600 hover:bg-slate-50 text-[10px] font-black uppercase tracking-widest gap-2">
-                                <Download className="w-4 h-4" /> Tax Manifest
+                            <Button className="h-14 rounded-2xl bg-white border border-slate-100 text-slate-600 hover:bg-slate-50 text-[10px] font-black uppercase tracking-widest font-brand">
+                                Tax Manifest
                             </Button>
                         </div>
                     </Card>
@@ -395,17 +391,27 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
     const [bank, setBank] = useState<any>(null)
     const [tax, setTax] = useState<any>(null)
     const [saving, setSaving] = useState(false)
+    const [releasing, setReleasing] = useState(false)
+    const [payslipStatus, setPayslipStatus] = useState<string | null>(null)
 
     const fetchDetails = async () => {
         try {
-            const [cRes, bRes, tRes] = await Promise.all([
+            const [cRes, bRes, tRes, pRes] = await Promise.all([
                 fetch(`${API_BASE_URL}/payroll/salary-config/${user.id}`, { headers: { Authorization: `Bearer ${token}` } }),
                 fetch(`${API_BASE_URL}/payroll/bank-details/${user.id}`, { headers: { Authorization: `Bearer ${token}` } }),
-                fetch(`${API_BASE_URL}/payroll/tax-details/${user.id}`, { headers: { Authorization: `Bearer ${token}` } })
+                fetch(`${API_BASE_URL}/payroll/tax-details/${user.id}`, { headers: { Authorization: `Bearer ${token}` } }),
+                fetch(`${API_BASE_URL}/payroll/my-payslips?userId=${user.id}`, { headers: { Authorization: `Bearer ${token}` } })
             ])
             if (cRes.ok) setConfig(await cRes.json())
             if (bRes.ok) setBank(await bRes.json())
             if (tRes.ok) setTax(await tRes.json())
+            if (pRes.ok) {
+                const slips = await pRes.json()
+                const currentMonth = format(new Date(), 'MMMM')
+                const currentYear = new Date().getFullYear()
+                const currentSlip = slips.find((s: any) => s.month === currentMonth && s.year === currentYear)
+                if (currentSlip) setPayslipStatus(currentSlip.status)
+            }
         } catch (e) {}
     }
 
@@ -436,6 +442,54 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
     const grossVal = basic + hra
     const deductionsVal = pf + taxAmt
     const netVal = grossVal - deductionsVal
+
+    const handleRelease = async () => {
+        if (!config) {
+            toast.error("Salary metrics missing configuration. Cannot release.")
+            return
+        }
+        
+        setReleasing(true)
+        try {
+            // 1. Generate the Payslip record
+            const genRes = await fetch(`${API_BASE_URL}/payslips/generate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                body: JSON.stringify({
+                    userId: user.id,
+                    month: format(new Date(), 'MMMM'),
+                    year: new Date().getFullYear(),
+                    amount: netVal,
+                    hra: hra,
+                    pf: pf,
+                    tax: taxAmt
+                })
+            })
+            
+            if (!genRes.ok) {
+                const err = await genRes.json()
+                throw new Error(err.error || "Generation phase failed")
+            }
+            const newSlip = await genRes.json()
+
+            // 2. Release it to the dashboard
+            const relRes = await fetch(`${API_BASE_URL}/payslips/${newSlip.id}/release`, {
+                method: 'PATCH',
+                headers: { Authorization: `Bearer ${token}` }
+            })
+
+            if (relRes.ok) {
+                toast.success(`Payslip for ${user.name} released successfully.`)
+                onUpdate()
+            } else {
+                throw new Error("Release synchronization failed")
+            }
+        } catch (e: any) { 
+            toast.error(e.message || "Process error: Verification cluster unavailable") 
+        } finally { 
+            setReleasing(false) 
+        }
+    }
     
     const generatePayslipPDF = (action: 'download' | 'view' = 'download') => {
         if (!config) {
@@ -458,7 +512,7 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
         // Target Node Data
         doc.setFontSize(12);
         doc.setTextColor(15, 23, 42);
-        doc.text(`Personnel Node: ${user.name}`, 14, 45);
+        doc.text(`User: ${user.name}`, 14, 45);
         doc.text(`Operational Role: ${user.designation?.name || 'Standard Unit'}`, 14, 52);
         doc.text(`Disbursement Identifier: ${bank?.accountNumber || 'Pending'} (${bank?.bankName || 'Pending'})`, 14, 59);
         
@@ -518,22 +572,26 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
                 <span className="text-[12px] font-black uppercase text-indigo-600 italic">₹{netVal.toLocaleString()}</span>
             </td>
             <td className="px-4 py-4">
-                <Badge className={cn("text-[8px] font-black uppercase tracking-[0.2em] px-2 py-1 border-none shadow-none", config ? "bg-amber-50 text-amber-600" : "bg-slate-100 text-slate-400")}>
-                    {config ? "Pending" : "Missing Config"}
+                <Badge className={cn(
+                    "text-[8px] font-black uppercase tracking-[0.2em] px-2 py-1 border-none shadow-none",
+                    payslipStatus === 'RELEASED' ? "bg-emerald-50 text-emerald-600" :
+                    config ? "bg-amber-50 text-amber-600" : "bg-slate-100 text-slate-400"
+                )}>
+                    {payslipStatus === 'RELEASED' ? "Released" : config ? "Pending" : "Missing Config"}
                 </Badge>
             </td>
             <td className="px-6 py-4 text-right">
                 <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Button variant="ghost" size="sm" onClick={() => generatePayslipPDF('view')} className="h-8 px-3 rounded-lg text-[9px] font-black uppercase text-slate-400 hover:bg-slate-100 hover:text-indigo-600 gap-2 border border-transparent hover:border-slate-200">
-                        <FileText className="w-3 h-3" /> View Payslip
+                        View Payslip
                     </Button>
                     <Button variant="ghost" size="sm" onClick={() => generatePayslipPDF('download')} className="h-8 px-3 rounded-lg text-[9px] font-black uppercase text-slate-400 hover:bg-slate-100 hover:text-slate-900 gap-2 border border-transparent hover:border-slate-200 hidden md:flex">
-                        <Download className="w-3 h-3" />
+                        Export
                     </Button>
                     <Sheet>
                         <SheetTrigger asChild>
                             <Button variant="ghost" size="sm" className="h-8 px-3 rounded-lg text-[9px] font-black uppercase text-slate-400 hover:bg-slate-100 hover:text-slate-900 gap-2 border border-transparent hover:border-slate-200">
-                                <Settings className="w-3 h-3" /> Edit Payroll
+                                Edit Payroll
                             </Button>
                         </SheetTrigger>
                         <SheetContent className="bg-white border-l border-slate-50 w-full sm:max-w-[540px] p-0 shadow-2xl overflow-y-auto custom-scrollbar">
@@ -588,7 +646,7 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
                                     </div>
                                 </div>
                                 <Button className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest gap-2 shadow-lg shadow-indigo-100" onClick={() => handleSave('salary-config', config)}>
-                                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Update Structure
+                                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Update Structure"}
                                 </Button>
                             </div>
 
@@ -630,7 +688,7 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
                                     </div>
                                 </div>
                                 <Button className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest gap-2 shadow-lg shadow-emerald-100" onClick={() => handleSave('bank-details', bank)}>
-                                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Update Disbursement
+                                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Update Disbursement"}
                                 </Button>
                             </div>
 
@@ -659,14 +717,27 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
                                     </div>
                                 </div>
                                 <Button className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest gap-2 shadow-lg shadow-violet-100" onClick={() => handleSave('tax-details', tax)}>
-                                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Update Compliance
+                                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Update Compliance"}
                                 </Button>
                             </div>
                         </div>
                     </SheetContent>
                 </Sheet>
-                <Button variant="ghost" size="sm" onClick={() => toast.success('Transfer settled. Marked as Paid.')} className="h-8 px-3 rounded-lg text-[9px] font-black uppercase text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 gap-2 border border-transparent hover:border-emerald-100 bg-emerald-50/50 ml-1">
-                    <CheckCircle2 className="w-3 h-3" /> Mark Paid
+                <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={handleRelease} 
+                    disabled={releasing || !config || payslipStatus === 'RELEASED'}
+                    className={cn(
+                        "h-8 px-4 rounded-lg text-[9px] font-black uppercase transition-all ml-1 font-brand border gap-2 shadow-sm",
+                        releasing ? "bg-slate-100 text-slate-400 border-slate-200" : 
+                        payslipStatus === 'RELEASED' ? "bg-emerald-50 text-emerald-600 border-emerald-100 cursor-default" :
+                        "text-emerald-600 hover:bg-emerald-600 hover:text-white bg-emerald-50 border-emerald-100"
+                    )}
+                >
+                    {releasing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 
+                     payslipStatus === 'RELEASED' ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Zap className="w-3.5 h-3.5" />}
+                    {releasing ? "Deploying" : payslipStatus === 'RELEASED' ? "Released" : "Release"}
                 </Button>
                 </div>
             </td>

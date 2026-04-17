@@ -1,19 +1,18 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import {
     Users, Calendar, Clock,
     LayoutDashboard, UserPlus, CreditCard,
-    FileText, BarChart3,
+    FileText, BarChart3, TrendingUp, HelpCircle, Settings,
     Building2, ChevronRight, Activity, Radio, ShieldCheck
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 import dynamic from 'next/dynamic'
@@ -31,6 +30,10 @@ const ExecutiveHub = dynamic(() => import("@/components/admin/ExecutiveHub"), { 
 const AddEmployeeModal = dynamic(() => import("@/components/admin/AddEmployeeModal"), { ssr: false })
 const DocumentsModule = dynamic(() => import("@/components/admin/DocumentsModule"), { ssr: false })
 const DepartmentManager = dynamic(() => import("@/components/manager/ManagerDepartmentView"), { ssr: false })
+const UserManagementTable = dynamic(() => import("@/components/admin/UserManagementTable"), { ssr: false })
+const SupportControlCenter = dynamic(() => import("@/components/admin/SupportControlCenter"), { ssr: false })
+const SecurityAuditLogs = dynamic(() => import("@/components/admin/SecurityAuditLogs").then(m => m.SecurityAuditLogs), { ssr: false })
+const SystemSettingsCenter = dynamic(() => import("@/components/admin/SystemSettingsCenter").then(m => m.SystemSettingsCenter), { ssr: false })
 
 const GlobalStyles = () => (
     <style jsx global>{`
@@ -62,6 +65,7 @@ export default function HRManagerDashboardPage() {
     const [currentTab, setCurrentTab] = useState(searchParams?.get("tab") || "dashboard")
     const [isAddEmployeeOpen, setIsAddEmployeeOpen] = useState(false)
     const [hasMounted, setHasMounted] = useState(false)
+    const scrollRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         setHasMounted(true)
@@ -74,7 +78,12 @@ export default function HRManagerDashboardPage() {
         if (typeof window !== 'undefined') {
             (window as any).setIsAddEmployeeOpen = setIsAddEmployeeOpen
         }
-    }, [authStatus, router, searchParams])
+
+        // 🚀 Reset scroll position on tab change for professional UX
+        if (scrollRef.current) {
+            scrollRef.current.scrollTo({ top: 0, behavior: "smooth" })
+        }
+    }, [authStatus, router, searchParams, currentTab])
 
     const handleTabChange = (tab: string) => {
         setCurrentTab(tab)
@@ -87,14 +96,18 @@ export default function HRManagerDashboardPage() {
 
     const navItems = [
         { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+        { id: "employees", label: "Employee Management", icon: Users },
         { id: "onboarding", label: "Onboarding", icon: UserPlus },
         { id: "attendance", label: "Attendance", icon: Clock },
         { id: "leaves", label: "Leaves", icon: Calendar },
         { id: "payroll", label: "Payroll", icon: CreditCard },
-
+        { id: "performance", label: "Performance", icon: TrendingUp },
         { id: "departments", label: "Departments", icon: Building2 },
         { id: "documents", label: "Documents", icon: FileText },
         { id: "reports", label: "Reports", icon: BarChart3 },
+        { id: "support", label: "Support Desk", icon: HelpCircle },
+        { id: "user-management", label: "User Management", icon: ShieldCheck },
+        { id: "settings", label: "Settings", icon: Settings },
     ]
 
     if (!hasMounted) return <div className="min-h-screen bg-[#fcfdff]" />
@@ -111,24 +124,24 @@ export default function HRManagerDashboardPage() {
                     <div className="w-8 h-1 bg-indigo-600 mt-4 rounded-full" />
                 </div>
 
-                <nav className="flex-1 space-y-2 overflow-y-auto custom-scrollbar pr-2">
+                <nav className="flex-1 space-y-1.5 overflow-y-auto custom-scrollbar pr-2 h-full">
                     {navItems.map((item) => (
                         <button
                             key={item.id}
                             onClick={() => handleTabChange(item.id)}
                             className={cn(
-                                "w-full flex items-center justify-between px-4 py-3.5 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all duration-300 font-brand",
+                                "w-full flex items-center justify-between px-5 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all duration-300 font-brand group relative",
                                 currentTab === item.id 
-                                    ? "nav-item-active" 
-                                    : "text-slate-400 nav-item-hover hover:text-slate-900"
+                                    ? "bg-slate-900 text-white shadow-2xl shadow-slate-200" 
+                                    : "text-slate-400 hover:text-slate-900 hover:bg-slate-50"
                             )}
                         >
-                            <div className="flex items-center gap-4">
-                                <item.icon className={cn("w-4 h-4 shrink-0 transition-transform", currentTab === item.id ? "text-white scale-110" : "text-slate-300")} />
-                                <span>{item.label}</span>
+                            <div className="flex items-center gap-4 w-full">
+                                <item.icon className={cn("w-4 h-4 shrink-0 transition-all", currentTab === item.id ? "text-indigo-400 scale-110" : "text-slate-300 group-hover:text-indigo-600")} />
+                                <span className="text-left">{item.label}</span>
                             </div>
                             {currentTab === item.id && (
-                                <motion.div layoutId="activeNavPoint" className="w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_8px_white]" />
+                                <motion.div layoutId="activeNavPoint" className="absolute right-4 w-1.5 h-1.5 bg-indigo-400 rounded-full shadow-[0_0_8px_rgba(129,140,248,0.8)]" />
                             )}
                         </button>
                     ))}
@@ -145,34 +158,41 @@ export default function HRManagerDashboardPage() {
 
             {/* ── HIGH-DENSITY MAIN TERMINAL ── */}
             <main className="flex-1 flex flex-col h-full overflow-hidden">
-                <ScrollArea className="flex-1 h-full">
+                <div 
+                    ref={scrollRef}
+                    className="flex-1 h-full overflow-y-auto custom-scrollbar"
+                >
                     <div className="p-8 lg:p-12 pb-32 space-y-12 max-w-[1600px] mx-auto w-full">
                         
-                        {/* Clinical Section Header */}
-                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-8 border-b border-slate-100">
+                        {/* 🏢 Sticky Clinical Section Header */}
+                        <div className="sticky top-0 z-40 bg-slate-50/95 backdrop-blur-xl border-b border-slate-100 -mx-8 lg:-mx-12 px-8 lg:px-12 py-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 shadow-sm transition-all">
                             <div className="flex items-center gap-6">
-                                <div className="w-14 h-14 bg-slate-900 rounded-2xl flex items-center justify-center shrink-0 shadow-2xl shadow-slate-200 transition-transform hover:scale-105">
+                                <div className="w-16 h-16 bg-slate-900 rounded-[22px] flex items-center justify-center shrink-0 shadow-2xl shadow-indigo-100 transition-transform hover:rotate-3">
                                     {(() => {
                                         const Icon = navItems.find(i => i.id === currentTab)?.icon || Users;
-                                        return <Icon className="w-6 h-6 text-indigo-400" />
+                                        return <Icon className="w-7 h-7 text-indigo-400" />
                                     })()}
                                 </div>
                                 <div>
-                                    <h1 className="text-3xl font-black text-slate-900 tracking-tighter leading-tight font-brand uppercase italic">
+                                    <h1 className="text-4xl font-black text-slate-900 tracking-tighter leading-none font-brand uppercase italic">
                                         {navItems.find(i => i.id === currentTab)?.label || "Dashboard Hub"}
                                     </h1>
-                                    <div className="flex items-center gap-3 mt-1.5">
-                                        <Badge className="bg-slate-50 text-slate-400 border-none text-[9px] font-black uppercase px-2 py-0.5 rounded-md leading-none">Authorized Control</Badge>
-                                        <div className="w-1 h-1 bg-slate-200 rounded-full" />
-                                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest italic leading-none">Execution Shard: {currentTab}</p>
+                                    <div className="flex items-center gap-4 mt-3">
+                                        <Badge className="bg-indigo-600 text-white border-none text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-lg shadow-indigo-200">Authorized Agent</Badge>
+                                        <div className="w-1.5 h-1.5 bg-slate-200 rounded-full" />
+                                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] italic leading-none">Security Shard: {currentTab.toUpperCase()}</p>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="flex items-center gap-4">
-                                <div className="hidden xl:flex items-center gap-4 px-6 py-3 bg-white border border-slate-50 rounded-2xl shadow-sm">
-                                    <Radio className="w-4 h-4 text-emerald-500 animate-pulse" />
-                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Shard Integrity: Optimal</span>
+                                <div className="hidden xl:flex items-center gap-4 px-8 py-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
+                                    <div className="flex items-center gap-2">
+                                        <Radio className="w-4 h-4 text-emerald-500 animate-pulse" />
+                                        <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Protocol: Online</span>
+                                    </div>
+                                    <div className="w-px h-4 bg-slate-100 mx-2" />
+                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">MS: 12ms</span>
                                 </div>
                             </div>
                         </div>
@@ -180,17 +200,27 @@ export default function HRManagerDashboardPage() {
                         {/* CONTENT MANIFEST */}
                         <div className="animate-in fade-in slide-in-from-bottom-3 duration-700">
                             {currentTab === "dashboard" && <HRManagerDashboardHub token={token} onNavigate={handleTabChange} />}
+                            {currentTab === "employees"   && <UserManagementTable token={token} userRole={(session?.user?.role || "MANAGER").toUpperCase()} />}
+                            {currentTab === "onboarding" && <OnboardingManager token={token} onAddEmployee={() => setIsAddEmployeeOpen(true)} />}
                             {currentTab === "attendance" && <AttendanceControl token={token} />}
                             {currentTab === "leaves" && <LeaveApprovalCenter token={token} />}
-                            {currentTab === "onboarding" && <OnboardingManager token={token} onAddEmployee={() => setIsAddEmployeeOpen(true)} />}
                             {currentTab === "payroll" && <PayrollCenter token={token} />}
-
+                            {currentTab === "performance"  && (
+                                <div className="flex flex-col items-center justify-center p-20 text-center">
+                                    <TrendingUp className="w-16 h-16 text-indigo-200 mb-4" />
+                                    <h2 className="text-2xl font-black text-slate-800 uppercase italic tracking-tight">Performance Tracking</h2>
+                                    <p className="text-sm font-bold text-slate-400 mt-2 uppercase tracking-widest">Module under construction</p>
+                                </div>
+                            )}
                             {currentTab === "departments" && <DepartmentManager token={token} />}
                             {currentTab === "documents" && <DocumentsModule token={token} />}
                             {currentTab === "reports" && <ExecutiveHub token={token} />}
+                            {currentTab === "support"      && <SupportControlCenter token={token} />}
+                            {currentTab === "user-management"   && <SecurityAuditLogs token={token} />}
+                            {currentTab === "settings"     && <SystemSettingsCenter token={token} />}
                         </div>
                     </div>
-                </ScrollArea>
+                </div>
             </main>
 
             {/* INTEGRATED MODALS */}

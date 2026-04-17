@@ -154,17 +154,16 @@ export default function UserManagement({ token }: { token: string }) {
 
                     <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
                         <DialogTrigger asChild>
-                            <Button className="h-12 px-6 bg-white text-black hover:bg-slate-200 rounded-[14px] shadow-xl shadow-white/5 font-black uppercase text-[10px] tracking-widest gap-2 flex-1 lg:flex-none">
-                                <UserPlus className="w-4 h-4" />
-                                Onboard Employee
+                            <Button className="h-12 px-6 bg-white text-black hover:bg-slate-200 rounded-[14px] shadow-xl shadow-white/5 font-black uppercase text-[10px] tracking-widest flex-1 lg:flex-none font-brand">
+                                Add Employee
                             </Button>
                         </DialogTrigger>
                         <DialogContent className="bg-slate-950 border-white/10 text-white max-w-2xl rounded-[32px] overflow-hidden p-0 shadow-2xl">
                             <form onSubmit={handleAddUser}>
                                 <div className="p-8 border-b border-white/5 bg-slate-900/50">
                                     <DialogHeader>
-                                        <DialogTitle className="text-2xl font-black uppercase tracking-tight italic font-brand">Personnel Provisioning</DialogTitle>
-                                        <DialogDescription className="text-slate-500 font-bold text-[10px] uppercase tracking-widest mt-1">Register a new identity within the secure platform hierarchy.</DialogDescription>
+                                        <DialogTitle className="text-2xl font-black uppercase tracking-tight italic font-brand">Add Employee</DialogTitle>
+                                        <DialogDescription className="text-slate-500 font-bold text-[10px] uppercase tracking-widest mt-2">Fill out the form below.</DialogDescription>
                                     </DialogHeader>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 p-8">
@@ -226,9 +225,8 @@ export default function UserManagement({ token }: { token: string }) {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="p-8 bg-slate-900/50 flex gap-4">
-                                    <Button type="button" variant="outline" onClick={() => setIsAddOpen(false)} className="flex-1 h-12 border-white/10 bg-transparent text-slate-400 hover:text-white rounded-xl font-black uppercase text-[10px] tracking-widest">Cancel</Button>
-                                    <Button type="submit" className="flex-1 bg-white text-black hover:bg-slate-200 h-12 rounded-xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-white/5 transition-transform active:scale-95">Complete Provisioning</Button>
+                                <div className="p-8 bg-slate-900/50 flex font-brand">
+                                    <Button type="submit" className="w-full bg-white text-black hover:bg-slate-200 h-14 rounded-2xl font-black uppercase text-[11px] tracking-widest shadow-xl shadow-white/5 transition-transform active:scale-95">Complete Provisioning</Button>
                                 </div>
                             </form>
                         </DialogContent>
@@ -236,7 +234,7 @@ export default function UserManagement({ token }: { token: string }) {
                 </div>
             </div>
 
-            {/* PERSONNEL REGISTRY LIST */}
+            {/* EMPLOYEE LIST */}
             <div className="bg-slate-950/40 border border-white/5 rounded-[32px] overflow-hidden shadow-2xl relative">
                 <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent" />
 
@@ -258,11 +256,11 @@ export default function UserManagement({ token }: { token: string }) {
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="border-b border-white/5 bg-slate-900/40">
-                                    <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest font-brand italic">Identity Designation</th>
-                                    <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest font-brand italic">Organization Unit</th>
-                                    <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest font-brand italic">Platform Status</th>
-                                    <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest font-brand italic">Timeline</th>
+                                <tr className="border-b border-white/5 bg-slate-900/40 font-brand italic">
+                                    <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Name</th>
+                                    <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Department</th>
+                                    <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Status</th>
+                                    <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Date</th>
                                     <th className="px-8 py-5 text-right"></th>
                                 </tr>
                             </thead>

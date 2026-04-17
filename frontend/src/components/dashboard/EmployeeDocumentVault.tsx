@@ -96,7 +96,7 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
                 throw new Error(err.error || "Upload failed")
             }
 
-            toast.success("Document uploaded successfully! HR can now view it.")
+            toast.success("Document uploaded successfully! The HR Manager can now view it.")
             setShowModal(false)
             setFile(null)
             setDocName("")
@@ -136,6 +136,40 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
         }
     }
 
+    const triggerDownload = (fileUrl: string, fileName: string, isDownload: boolean = false) => {
+        if (!fileUrl) return;
+        try {
+            if (fileUrl.startsWith('data:')) {
+                const parts = fileUrl.split(';base64,');
+                const contentType = parts[0].split(':')[1];
+                const raw = window.atob(parts[1]);
+                const rawLength = raw.length;
+                const uInt8Array = new Uint8Array(rawLength);
+                for (let i = 0; i < rawLength; ++i) { uInt8Array[i] = raw.charCodeAt(i); }
+                const blob = new Blob([uInt8Array], { type: contentType });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                if (isDownload) a.download = fileName;
+                else a.target = '_blank';
+                
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(url), 100);
+            } else {
+                const a = document.createElement('a');
+                a.href = fileUrl;
+                if (isDownload) a.download = fileName;
+                else a.target = '_blank';
+                a.click();
+            }
+        } catch (e) {
+            toast.error("Failed to decode document");
+        }
+    }
+
     return (
         <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden min-h-[400px]">
             {/* Header */}
@@ -147,7 +181,7 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
                     <div>
                         <h3 className="text-base font-black text-slate-900 uppercase italic tracking-tight">My Document Vault</h3>
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-0.5">
-                            {docs.length} Artifact{docs.length !== 1 ? "s" : ""} · Secure Personnel Records
+                            {docs.length} Artifact{docs.length !== 1 ? "s" : ""} · Secure Manager Records
                         </p>
                     </div>
                 </div>
@@ -192,7 +226,7 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
                             <div className="flex-1 min-w-0">
                                 <p className="text-[13px] font-black text-slate-900 uppercase italic tracking-tight truncate group-hover:text-indigo-600 transition-colors">{doc.name}</p>
                                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mt-0.5">
-                                    {new Date(doc.createdAt).toLocaleDateString()} · Synced to HR Portal
+                                    {new Date(doc.createdAt).toLocaleDateString()} · Synced to HR Manager Portal
                                 </p>
                             </div>
                             <Badge className={cn("border text-[8px] font-black uppercase tracking-widest px-2 h-5 shrink-0", TYPE_COLORS[doc.type] || TYPE_COLORS.Other)}>
@@ -200,15 +234,26 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
                             </Badge>
                             <div className="flex items-center gap-1 shrink-0">
                                 {doc.fileUrl && (
-                                    <a href={doc.fileUrl} download={doc.name} target="_blank" rel="noreferrer">
-                                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-all border border-slate-100 hover:border-indigo-100 shadow-sm bg-white">
+                                    <>
+                                        <Button 
+                                            variant="ghost" size="icon" 
+                                            className="h-8 w-8 rounded-lg text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-all border border-slate-100 hover:border-indigo-100 shadow-sm bg-white"
+                                            onClick={() => triggerDownload(doc.fileUrl, doc.name)}
+                                        >
+                                            <Eye className="w-3.5 h-3.5" />
+                                        </Button>
+                                        <Button 
+                                            variant="ghost" size="icon" 
+                                            className="h-8 w-8 rounded-lg text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-all border border-slate-100 hover:border-indigo-100 shadow-sm bg-white"
+                                            onClick={() => triggerDownload(doc.fileUrl, doc.name, true)}
+                                        >
                                             <Download className="w-3.5 h-3.5" />
                                         </Button>
-                                    </a>
+                                    </>
                                 )}
                                 <Button
                                     variant="ghost" size="icon"
-                                    className="h-8 w-8 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all"
+                                    className="h-8 w-8 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all ml-1"
                                     onClick={() => handleDelete(doc.id)}
                                 >
                                     <Trash2 className="w-3.5 h-3.5" />
@@ -244,7 +289,7 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
                                     </div>
                                     <div>
                                         <h2 className="text-lg font-black text-slate-900 uppercase italic tracking-tight">Upload Document</h2>
-                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Secure · Encrypted · HR Visible</p>
+                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Secure · Encrypted · ONLY HR MANAGER VISIBLE</p>
                                     </div>
                                 </div>
                                 <button
@@ -334,29 +379,21 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
                                 <div className="flex items-start gap-3 p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
                                     <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                                     <p className="text-[10px] font-bold text-emerald-700 leading-relaxed">
-                                        This document will be <span className="font-black">immediately visible</span> to your HR admin for review and download.
+                                        This document will be <span className="font-black">immediately visible</span> to the <span className="font-black text-indigo-700">HR Manager</span> for review and download.
                                     </p>
                                 </div>
 
                                 {/* Actions */}
-                                <div className="flex gap-3 pt-2">
-                                    <Button
-                                        type="button"
-                                        variant="ghost"
-                                        onClick={() => setShowModal(false)}
-                                        className="flex-1 h-11 rounded-xl text-slate-500 hover:text-slate-900 font-black uppercase text-[10px] tracking-widest"
-                                    >
-                                        Cancel
-                                    </Button>
+                                <div className="flex pt-2">
                                     <Button
                                         type="button"
                                         onClick={() => handleUpload()}
                                         disabled={uploading || !file}
-                                        className="flex-1 h-11 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg shadow-indigo-200 transition-all disabled:opacity-50"
+                                        className="w-full h-11 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg shadow-indigo-200 transition-all disabled:opacity-50"
                                     >
                                         {uploading
                                             ? <><Loader2 className="w-4 h-4 animate-spin mr-2 inline" />Uploading...</>
-                                            : <><Upload className="w-4 h-4 mr-2 inline" />Submit to HR</>
+                                            : <><Upload className="w-4 h-4 mr-2 inline" />Submit to HR Port</>
                                         }
                                     </Button>
                                 </div>

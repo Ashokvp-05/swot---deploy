@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { authenticate } from '../middleware/auth.middleware';
+import { authenticate, authorize } from '../middleware/auth.middleware';
 import prisma from '../config/db';
 
 const router = Router();
 
-// ─── GET /documents — Admin/HR: fetch all company documents with user info ───
-router.get('/', authenticate as any, async (req: any, res) => {
+// ─── GET /documents — Restricted to SUPER_ADMIN and HR_MANAGER ───
+router.get('/', authenticate as any, authorize(['SUPER_ADMIN', 'HR_MANAGER']), async (req: any, res) => {
     try {
         const companyId = req.user.companyId;
         const docs = await prisma.employeeDocument.findMany({
@@ -59,7 +59,7 @@ router.post('/', authenticate as any, async (req: any, res) => {
     }
 });
 
-// ─── DELETE /documents/:id — Employee deletes own document ───
+// ─── DELETE /documents/:id — Employee deletes own document or Admin/HR Manager ───
 router.delete('/:id', authenticate as any, async (req: any, res) => {
     try {
         const userId = req.user.id;
@@ -67,7 +67,7 @@ router.delete('/:id', authenticate as any, async (req: any, res) => {
 
         const doc = await prisma.employeeDocument.findUnique({ where: { id } });
         if (!doc) return res.status(404).json({ error: 'Document not found' });
-        if (doc.userId !== userId && req.user.role !== 'SUPER_ADMIN' && req.user.role !== 'HR') {
+        if (doc.userId !== userId && req.user.role !== 'SUPER_ADMIN' && req.user.role !== 'HR_MANAGER') {
             return res.status(403).json({ error: 'Forbidden' });
         }
 

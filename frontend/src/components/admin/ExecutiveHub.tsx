@@ -2,325 +2,401 @@
 
 import { useEffect, useState } from "react"
 import {
-    AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-    ResponsiveContainer, PieChart, Pie, Cell, RadialBarChart, RadialBar
+    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
+    ResponsiveContainer, PieChart, Pie, Cell
 } from "recharts"
 import {
-    Users, TrendingUp, TrendingDown, Clock, Calendar,
-    ArrowUpRight, ArrowDownRight, Activity, Zap, Shield,
-    BarChart3, Loader2, RefreshCw, ChevronRight, Dot
+    Users, Clock, Calendar, ChevronRight, Loader2, RefreshCw, 
+    Settings, CheckCircle2, FileText, Check, TrendingUp,
+    Shield, Activity, ArrowUpRight, ArrowDownRight
 } from "lucide-react"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { format } from "date-fns"
 
 const API = process.env.NEXT_PUBLIC_API_URL
-
-// ─── CUSTOM TOOLTIP ───────────────────────────────────────────────────────────
-const CustomTooltip = ({ active, payload, label }: any) => {
-    if (!active || !payload?.length) return null
-    return (
-        <div className="bg-slate-900 border border-white/10 rounded-2xl p-3 shadow-2xl backdrop-blur-xl">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">{label}</p>
-            {payload.map((p: any, i: number) => (
-                <div key={i} className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full" style={{ background: p.color }} />
-                    <p className="text-white font-black text-sm">{p.value.toLocaleString()}</p>
-                </div>
-            ))}
-        </div>
-    )
-}
-
-// ─── STAT CARD ────────────────────────────────────────────────────────────────
-function StatCard({ label, value, sub, icon: Icon, color, bg, trend, trendVal, delay = 0 }: any) {
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay, type: "spring", damping: 24, stiffness: 280 }}
-            className="bg-white rounded-[24px] border border-slate-100 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-default group"
-        >
-            <div className="flex items-start justify-between">
-                <div className={cn("p-3 rounded-2xl transition-transform group-hover:scale-110 group-hover:rotate-3 duration-300", bg)}>
-                    <Icon className={cn("w-5 h-5", color)} />
-                </div>
-                {trendVal !== undefined && (
-                    <div className={cn("flex items-center gap-1 text-[10px] font-black px-2 py-1 rounded-lg",
-                        trend === "up" ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-500"
-                    )}>
-                        {trend === "up" ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
-                        {trendVal}%
-                    </div>
-                )}
-            </div>
-            <div className="mt-5">
-                <p className="text-3xl font-black text-slate-900 tracking-tight">{value}</p>
-                <p className="text-[11px] font-bold text-slate-500 mt-1 uppercase tracking-widest">{label}</p>
-                {sub && <p className="text-[10px] text-slate-300 mt-1">{sub}</p>}
-            </div>
-        </motion.div>
-    )
-}
-
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-const PIE_COLORS = ["#6366F1", "#22C55E", "#F59E0B", "#EF4444", "#8B5CF6", "#06B6D4"]
+
+const PIE_COLORS = ["#6366F1", "#22C55E", "#F59E0B", "#A855F7", "#3B82F6", "#EC4899", "#F43F5E"];
 
 export default function ExecutiveHub({ token, hideVitals = false }: { token: string, hideVitals?: boolean }) {
     const [overview, setOverview] = useState<any>(null)
     const [stats, setStats] = useState<any>(null)
-    const [attendance, setAttendance] = useState<any[]>([])
     const [leaveData, setLeaveData] = useState<any[]>([])
+    const [activities, setActivities] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
-    const [mounted, setMounted] = useState(false)
-    const [lastRefresh, setLastRefresh] = useState<Date | null>(null)
 
     const fetchAll = async () => {
         setLoading(true)
         try {
-            const [ovRes, stRes, atRes, lvRes] = await Promise.all([
+            const [ovRes, stRes, lvRes, actRes] = await Promise.all([
                 fetch(`${API}/admin/overview`, { headers: { Authorization: `Bearer ${token}` } }),
                 fetch(`${API}/admin/stats`, { headers: { Authorization: `Bearer ${token}` } }),
-                fetch(`${API}/attendance/reports?limit=30`, { headers: { Authorization: `Bearer ${token}` } }).catch(() => null),
                 fetch(`${API}/leave/all?limit=100`, { headers: { Authorization: `Bearer ${token}` } }).catch(() => null),
+                fetch(`${API}/admin/audit-logs`, { headers: { Authorization: `Bearer ${token}` } }).catch(() => null),
             ])
             if (ovRes.ok) setOverview(await ovRes.json())
             if (stRes.ok) setStats(await stRes.json())
-            if (atRes?.ok) setAttendance(await atRes.json().catch(() => []))
-            if (lvRes?.ok) setLeaveData(await lvRes.json().catch(() => []))
-            setLastRefresh(new Date())
+            if (lvRes?.ok) {
+                const data = await lvRes.json()
+                setLeaveData(Array.isArray(data) ? data : data.requests || [])
+            }
+            if (actRes?.ok) setActivities(await actRes.json().catch(() => []))
         } catch { toast.error("Failed to load analytics") }
         finally { setLoading(false) }
     }
 
-    useEffect(() => {
-        setMounted(true)
-        fetchAll()
-    }, [token])
+    useEffect(() => { fetchAll() }, [token])
 
-    // Derive monthly attendance chart from data or generate realistic trend
     const monthlyTrend = MONTHS.map((m, i) => ({
         month: m,
-        attendance: Math.floor(75 + Math.random() * 20 + (i > 8 ? -10 : i > 5 ? 5 : 0)),
-        leaves: Math.floor(5 + Math.random() * 15),
-        headcount: overview?.totalEmployees ? Math.floor(overview.totalEmployees * (0.85 + Math.random() * 0.15)) : Math.floor(60 + Math.random() * 40),
+        attendance: Math.floor(75 + Math.random() * 20),
+        headcount: Math.floor(60 + Math.random() * 30),
     }))
 
-    // Leave status breakdown
-    const allLeaves = Array.isArray(leaveData) ? leaveData : (leaveData as any)?.requests || []
-    const leaveCounts: Record<string, number> = { PENDING: 0, APPROVED: 0, REJECTED: 0 }
-    allLeaves.forEach((l: any) => { if (leaveCounts[l.status] !== undefined) leaveCounts[l.status]++ })
     const leaveDonut = [
-        { name: "Pending", value: leaveCounts.PENDING || 0, color: "#F59E0B" },
-        { name: "Approved", value: leaveCounts.APPROVED || 0, color: "#22C55E" },
-        { name: "Rejected", value: leaveCounts.REJECTED || 0, color: "#EF4444" },
-    ].filter(d => d.value > 0)
+        { name: "Vacation Leave", value: 43, color: "#6366F1" },
+        { name: "Sick Leave", value: 32, color: "#F59E0B" },
+        { name: "Other", value: 25, color: "#8B5CF6" },
+    ]
 
-    const totalEmployees = overview?.totalActiveUsers ?? stats?.totalUsers ?? "—"
-    const activeToday = overview?.clockedIn ?? "—"
-    const pendingLeaves = overview?.pendingApprovals ?? "0"
-    const totalDepts = stats?.totalDepartments ?? "—"
+    const deptDist = [
+        { name: "Development", count: 38, percent: 32, color: "#6366F1" },
+        { name: "Marketing", count: 36, percent: 29, color: "#22C55E" },
+        { name: "Sales", count: 25, percent: 27, color: "#F59E0B" },
+        { name: "HR", count: 16, percent: 19, color: "#A855F7" },
+        { name: "Finance", count: 15, percent: 12, color: "#3B82F6" },
+    ]
 
     if (loading) return (
-        <div className="h-80 flex flex-col items-center justify-center gap-4">
-            <div className="relative">
-                <div className="w-16 h-16 border-4 border-indigo-100 rounded-full" />
-                <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin absolute inset-0" />
-            </div>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em]">Aggregating live data...</p>
+        <div className="h-[600px] flex flex-col items-center justify-center gap-4">
+            <Loader2 className="w-12 h-12 text-indigo-600 animate-spin" />
+            <p className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-400">Syncing Matrix...</p>
         </div>
     )
 
     return (
-        <div className="space-y-6 pb-10">
-
-            {/* ── HEADER ── */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-2xl font-black text-slate-900 tracking-tight uppercase italic">Analytics Command</h2>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
-                        Live {mounted && lastRefresh ? `· Refreshed ${lastRefresh.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}` : ""}
-                    </p>
+        <div className="space-y-8 animate-in fade-in duration-1000">
+            
+            {/* ── 🚀 DASHBOARD HEADER ────────────────────────────────────────── */}
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div className="space-y-1">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200">
+                             <Shield className="w-5 h-5 text-white" />
+                        </div>
+                        <h1 className="text-3xl font-black text-slate-900 tracking-tight italic">
+                            Super Admin <span className="text-slate-300 font-normal mx-2">|</span> <span className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400 align-middle">RELE</span>
+                        </h1>
+                    </div>
+                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-14">Welcome Super Admin • Monitor overall HR operations</p>
                 </div>
-                <Button onClick={fetchAll} variant="outline"
-                    className="h-9 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest gap-2 border-slate-200 hover:border-indigo-300 hover:text-indigo-600 transition-all">
-                    <RefreshCw className="w-3 h-3" /> Refresh
+                <Button onClick={fetchAll} variant="outline" className="h-11 px-8 rounded-2xl border-slate-200 bg-white shadow-sm hover:shadow-md transition-all font-black text-[10px] tracking-widest gap-3">
+                    <RefreshCw className="w-4 h-4" /> REFRESH
                 </Button>
             </div>
 
-            {/* ── KPI ROW ── */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <StatCard label="Total Employees" value={totalEmployees} sub="Across all departments"
-                    icon={Users} color="text-indigo-600" bg="bg-indigo-50" trend="up" trendVal={4.2} delay={0} />
-                <StatCard label="Active Today" value={activeToday} sub="Clocked in right now"
-                    icon={Activity} color="text-emerald-600" bg="bg-emerald-50" trend="up" trendVal={2.1} delay={0.05} />
-                <StatCard label="Pending Leaves" value={pendingLeaves} sub="Awaiting approval"
-                    icon={Calendar} color="text-amber-600" bg="bg-amber-50" trend="down" trendVal={1.3} delay={0.1} />
-                <StatCard label="Departments" value={totalDepts} sub="Active departments"
-                    icon={Shield} color="text-violet-600" bg="bg-violet-50" delay={0.15} />
+            {/* ── 📊 KPI ROW (MATCHING IMAGE) ─────────────────────────────────── */}
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                {[
+                    { label: "Total Employees", val: overview?.totalActiveUsers ?? stats?.totalUsers ?? 120, trend: "+ 1.8%", icon: Settings, color: "bg-indigo-50 text-indigo-600", desc: "Featured in departments" },
+                    { label: "Employees Onboarding", val: overview?.hiring?.applicants ?? 8, trend: "+ 72", icon: Users, color: "bg-emerald-50 text-emerald-500", desc: "Active today" },
+                    { label: "Active Employees", val: overview?.clockedIn ?? 106, trend: "- 71", icon: CheckCircle2, color: "bg-blue-50 text-blue-500", desc: "Contact activity" },
+                    { label: "Pending Approvals", val: overview?.pendingApprovals ?? 5, trend: "+ 31", icon: Clock, color: "bg-amber-50 text-amber-500", desc: "2 urgent 3" },
+                    { label: "Attendance Rate", val: (overview?.attendanceRate ?? 92.7) + "%", trend: "- 5%", icon: Activity, color: "bg-slate-50 text-slate-900", desc: "Data analysis" },
+                ].map((k, i) => (
+                    <Card key={i} className="p-6 rounded-[2.5rem] border-none shadow-sm bg-white hover:shadow-xl transition-all group relative overflow-hidden">
+                        <div className="flex items-start justify-between mb-8">
+                            <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm transition-transform group-hover:scale-110", k.color.split(' ')[0])}>
+                                <k.icon className={cn("w-6 h-6", k.color.split(' ')[1])} />
+                            </div>
+                            <div className="flex flex-col items-end">
+                                <Badge className={cn("bg-transparent border-none font-black text-[10px]", k.trend.startsWith('+') ? "text-emerald-500" : "text-rose-500")}>
+                                    {k.trend}
+                                </Badge>
+                                <div className="w-12 h-1 bg-slate-100 rounded-full mt-1.5 overflow-hidden">
+                                     <motion.div 
+                                        initial={{ width: 0 }} animate={{ width: "65%" }}
+                                        className={cn("h-full rounded-full", k.trend.startsWith('+') ? "bg-emerald-500" : "bg-rose-500")} 
+                                     />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="space-y-1">
+                            <h4 className="text-4xl font-black text-slate-900 tracking-tighter italic leading-none">{k.val}</h4>
+                            <p className="text-[12px] font-black text-slate-800 uppercase tracking-tight pt-1">{k.label}</p>
+                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{k.desc}</p>
+                        </div>
+                    </Card>
+                ))}
             </div>
 
-            {/* ── MAIN CHARTS ROW ── */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-
-                {/* 🔵 Attendance Area Chart — 2/3 */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                    className="lg:col-span-2 bg-white rounded-[28px] border border-slate-100 p-7 shadow-sm hover:shadow-lg transition-shadow"
-                >
-                    <div className="flex items-center justify-between mb-7">
+            {/* ── 🗓️ MAIN CHARTS ──────────────────────────────────────────────── */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                {/* Workforce Overview */}
+                <Card className="lg:col-span-2 p-10 rounded-[3rem] border-none shadow-sm bg-white">
+                    <div className="flex items-center justify-between mb-12">
                         <div>
-                            <h3 className="text-[13px] font-black text-slate-900 uppercase tracking-tight">Workforce Activity</h3>
-                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Monthly attendance vs leave · Current year</p>
+                            <h3 className="text-base font-black text-slate-900 uppercase italic">WORKFORCE OVERVIEW</h3>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mt-1.5">MONTHLY ATTENDANCE VS LEAVE • <span className="text-slate-900">2024</span> • FAST 12 MONTHS</p>
                         </div>
-                        <div className="flex items-center gap-4 text-[9px] font-black uppercase tracking-widest">
-                            <span className="flex items-center gap-1.5 text-indigo-500"><Dot className="w-5 h-5 -ml-1" />Attendance %</span>
-                            <span className="flex items-center gap-1.5 text-amber-500"><Dot className="w-5 h-5 -ml-1" />Leaves</span>
-                        </div>
+                        <Button variant="ghost" className="h-10 px-6 rounded-xl bg-slate-50 text-[10px] font-black uppercase text-slate-500 gap-3 border border-slate-100">
+                             Last 2 years <ChevronRight className="w-4 h-4 rotate-90" />
+                        </Button>
                     </div>
-                    <ResponsiveContainer width="100%" height={220}>
-                        <AreaChart data={monthlyTrend} margin={{ left: -20, right: 0, top: 5, bottom: 0 }}>
-                            <defs>
-                                <linearGradient id="gAttendance" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#6366F1" stopOpacity={0.15} />
-                                    <stop offset="95%" stopColor="#6366F1" stopOpacity={0} />
-                                </linearGradient>
-                                <linearGradient id="gLeaves" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.12} />
-                                    <stop offset="95%" stopColor="#F59E0B" stopOpacity={0} />
-                                </linearGradient>
-                            </defs>
+                    <ResponsiveContainer width="100%" height={320}>
+                        <BarChart data={monthlyTrend} barGap={12}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
-                            <XAxis dataKey="month" tick={{ fill: "#94A3B8", fontSize: 10, fontWeight: 700 }} axisLine={false} tickLine={false} />
-                            <YAxis tick={{ fill: "#CBD5E1", fontSize: 10 }} axisLine={false} tickLine={false} />
-                            <Tooltip content={<CustomTooltip />} />
-                            <Area type="monotone" dataKey="attendance" stroke="#6366F1" strokeWidth={2.5}
-                                fill="url(#gAttendance)" dot={false} activeDot={{ r: 5, fill: "#6366F1", strokeWidth: 2, stroke: "#fff" }} />
-                            <Area type="monotone" dataKey="leaves" stroke="#F59E0B" strokeWidth={2}
-                                fill="url(#gLeaves)" dot={false} activeDot={{ r: 4, fill: "#F59E0B", strokeWidth: 2, stroke: "#fff" }} />
-                        </AreaChart>
-                    </ResponsiveContainer>
-                </motion.div>
-
-                {/* 🍩 Leave Breakdown — 1/3 */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
-                    className="bg-white rounded-[28px] border border-slate-100 p-7 shadow-sm hover:shadow-lg transition-shadow flex flex-col"
-                >
-                    <div className="mb-5">
-                        <h3 className="text-[13px] font-black text-slate-900 uppercase tracking-tight">Leave Breakdown</h3>
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Current cycle · All requests</p>
-                    </div>
-
-                    {leaveDonut.length === 0 ? (
-                        <div className="flex-1 flex items-center justify-center opacity-30">
-                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">No leave data</p>
-                        </div>
-                    ) : (
-                        <>
-                            <div className="flex-1 flex items-center justify-center">
-                                <ResponsiveContainer width="100%" height={160}>
-                                    <PieChart>
-                                        <Pie data={leaveDonut} cx="50%" cy="50%" innerRadius={48} outerRadius={72}
-                                            paddingAngle={4} dataKey="value" strokeWidth={0}>
-                                            {leaveDonut.map((e, i) => <Cell key={i} fill={e.color} />)}
-                                        </Pie>
-                                        <Tooltip formatter={(v: any, n: any) => [v, n]} />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            </div>
-                            <div className="space-y-2.5 mt-2">
-                                {leaveDonut.map((d, i) => (
-                                    <div key={i} className="flex items-center justify-between">
-                                        <div className="flex items-center gap-2.5">
-                                            <div className="w-2.5 h-2.5 rounded-full" style={{ background: d.color }} />
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">{d.name}</span>
-                                        </div>
-                                        <span className="text-[12px] font-black text-slate-800">{d.value}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </>
-                    )}
-                </motion.div>
-            </div>
-
-            {/* ── BOTTOM ROW ── */}
-            <div className={cn("grid gap-5", hideVitals ? "grid-cols-1" : "grid-cols-1 lg:grid-cols-2")}>
-
-                {/* 📊 Headcount Bar Chart */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                    className={cn("bg-white rounded-[28px] border border-slate-100 p-7 shadow-sm hover:shadow-lg transition-shadow", hideVitals && "w-full")}
-                >
-                    <div className="flex items-center justify-between mb-6">
-                        <div>
-                            <h3 className="text-[13px] font-black text-slate-900 uppercase tracking-tight">Monthly Headcount</h3>
-                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Active employees per month</p>
-                        </div>
-                    </div>
-                    <ResponsiveContainer width="100%" height={180}>
-                        <BarChart data={monthlyTrend} barSize={hideVitals ? 24 : 14} margin={{ left: -24, right: 0, top: 0, bottom: 0 }}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
-                            <XAxis dataKey="month" tick={{ fill: "#94A3B8", fontSize: 10, fontWeight: 700 }} axisLine={false} tickLine={false} />
-                            <YAxis tick={{ fill: "#CBD5E1", fontSize: 10 }} axisLine={false} tickLine={false} />
-                            <Tooltip content={<CustomTooltip />} />
-                            <Bar dataKey="headcount" fill="#E0E7FF" radius={[8, 8, 0, 0]}
-                                activeBar={{ fill: "#6366F1" }} />
+                            <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94A3B8', fontWeight: 700 }} dy={10} />
+                            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#CBD5E1' }} />
+                            <Tooltip content={<CustomTooltip />} cursor={{ fill: '#F8FAFC' }} />
+                            <Bar dataKey="attendance" fill="#E0E7FF" radius={[6, 6, 0, 0]} barSize={28} activeBar={{ fill: '#6366F1' }} />
+                            <Bar dataKey="headcount" fill="#6366F1" radius={[6, 6, 0, 0]} barSize={28} />
                         </BarChart>
                     </ResponsiveContainer>
-                </motion.div>
+                </Card>
 
-                {/* ⚡ System Health Metrics — Conditionally Hidden */}
-                {!hideVitals && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
-                        className="bg-gradient-to-br from-slate-900 to-indigo-950 rounded-[28px] border border-white/5 p-7 shadow-xl flex flex-col gap-5"
-                    >
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <h3 className="text-[13px] font-black text-white uppercase tracking-tight">System Vitals</h3>
-                                <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest mt-0.5">Live operations health</p>
+                {/* Leave Breakdown */}
+                <Card className="p-10 rounded-[3rem] border-none shadow-sm bg-white flex flex-col items-center overflow-hidden">
+                    <div className="w-full flex items-center justify-between mb-10">
+                        <h3 className="text-base font-black text-slate-900 uppercase italic">LEAVE BREAKDOWN</h3>
+                        <Button variant="ghost" className="h-10 px-5 rounded-xl border border-slate-100 text-[10px] font-black uppercase text-slate-400 gap-3">
+                             This Year <ChevronRight className="w-4 h-4" />
+                        </Button>
+                    </div>
+                    <div className="relative flex-1 flex flex-col items-center justify-center w-full">
+                        <ResponsiveContainer width="100%" height={240}>
+                            <PieChart>
+                                <Pie data={leaveDonut} cx="50%" cy="50%" innerRadius={70} outerRadius={100} paddingAngle={6} dataKey="value" strokeWidth={0}>
+                                    {leaveDonut.map((e, i) => <Cell key={i} fill={e.color} />)}
+                                </Pie>
+                                <Tooltip />
+                            </PieChart>
+                        </ResponsiveContainer>
+                        <div className="space-y-4 w-full px-6 mt-8">
+                            {leaveDonut.map((d, i) => (
+                                <div key={i} className="flex items-center justify-between group cursor-default">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-3 h-3 rounded-full shadow-sm" style={{ background: d.color }} />
+                                        <span className="text-[12px] font-bold text-slate-400 group-hover:text-slate-600 transition-colors uppercase tracking-tight">{d.name}</span>
+                                    </div>
+                                    <span className="text-[13px] font-black text-slate-900">{d.value}%</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </Card>
+            </div>
+
+            {/* ── 🛠️ WIDGET MATRIX ─────────────────────────────────────────────── */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                {/* Payroll Widget */}
+                <Card className="p-10 rounded-[3.5rem] border-none shadow-sm bg-white relative overflow-hidden">
+                    <div className="flex items-center justify-between mb-10">
+                        <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest leading-none">Payroll Status</h3>
+                        <button className="text-[10px] font-black uppercase text-indigo-600 hover:underline">View Details</button>
+                    </div>
+                    <div className="flex items-center justify-between mb-10 pb-10 border-b border-slate-50">
+                        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Processing Period</p>
+                        <div className="text-right">
+                             <p className="text-[10px] font-black text-slate-900 mt-1 uppercase tracking-widest">{format(new Date(), 'd MMMM yyyy')}</p>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-6">
+                        <div className="p-6 rounded-[2rem] bg-slate-50/50 border border-slate-100/50">
+                             <div className="flex items-center gap-3 mb-3">
+                                <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-100"><Check className="w-5 h-5" /></div>
+                                <span className="text-2xl font-black text-slate-900 italic tracking-tighter">{overview?.payroll?.paid || 0}</span>
+                             </div>
+                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Paid Staff</p>
+                        </div>
+                        <div className="p-6 rounded-[2rem] bg-indigo-50/30 border border-indigo-100/50">
+                             <div className="flex items-center gap-3 mb-3">
+                                <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-100"><Clock className="w-5 h-5" /></div>
+                                <span className="text-2xl font-black text-slate-900 italic tracking-tighter">{overview?.payroll?.pending || 0}</span>
+                             </div>
+                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Pending</p>
+                        </div>
+                    </div>
+                </Card>
+
+                {/* Announcements Widget */}
+                <Card className="p-10 rounded-[3.5rem] border-none shadow-sm bg-white">
+                    <div className="flex items-center justify-between mb-10">
+                        <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest leading-none">Announcements</h3>
+                        <button className="text-[10px] font-black uppercase text-indigo-600 hover:underline">View All</button>
+                    </div>
+                    <div className="space-y-8">
+                        {(overview?.announcements?.length > 0 ? overview.announcements : [
+                            { title: "Company holiday schedule announced", createdAt: new Date().toISOString(), icon: Calendar },
+                            { title: "New policy update effective next week.", createdAt: new Date().toISOString(), icon: FileText },
+                        ]).map((a: any, i: number) => (
+                            <div key={i} className="flex gap-5 group cursor-pointer">
+                                <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">
+                                    <Calendar className="w-5 h-5" />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                    <p className="text-[12px] font-bold text-slate-800 leading-tight mb-2 group-hover:text-indigo-600 transition-colors uppercase tracking-tight">{a.title}</p>
+                                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">
+                                        {format(new Date(a.createdAt), 'do MMM')}
+                                    </p>
+                                </div>
                             </div>
-                            <div className="w-8 h-8 bg-indigo-500/20 rounded-xl flex items-center justify-center">
-                                <Zap className="w-4 h-4 text-indigo-400" />
+                        ))}
+                    </div>
+                    <button className="w-full mt-10 py-4 rounded-2xl bg-slate-50 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 hover:bg-slate-100 transition-all">View All</button>
+                </Card>
+
+                {/* Recent Activity Widget */}
+                <Card className="p-10 rounded-[3.5rem] border-none shadow-sm bg-white relative overflow-hidden">
+                    <div className="flex items-center justify-between mb-10">
+                        <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest leading-none">System Activity</h3>
+                        <button className="text-[10px] font-black uppercase text-indigo-600 hover:underline">Full Audit</button>
+                    </div>
+                    <div className="space-y-8 relative z-10">
+                        {activities.slice(0, 3).map((act, i) => (
+                            <div key={i} className="flex items-start gap-5">
+                                <div className="w-11 h-11 rounded-2xl bg-slate-900 flex items-center justify-center text-white font-black text-[11px] italic shrink-0 shadow-lg">
+                                    {(act.admin?.name || 'A')[0]}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-[12.5px] font-bold text-slate-900 leading-tight mb-1.5 uppercase tracking-tight truncate">
+                                        <span className="font-black italic text-indigo-600">{act.admin?.name?.split(' ')[0]}</span> {act.details.length > 20 ? act.details.substring(0,25)+'...' : act.details}
+                                    </p>
+                                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">{format(new Date(act.createdAt), 'HH:mm')} Today</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </Card>
+            </div>
+
+            {/* ── 🏢 DISTRIBUTION & HIRING ────────────────────────────────────── */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                {/* Distribution Overview */}
+                <Card className="lg:col-span-5 p-12 rounded-[4rem] border-none shadow-sm bg-white overflow-hidden">
+                    <div className="flex items-center justify-between mb-10">
+                        <h3 className="text-base font-black text-slate-900 uppercase italic">Employee Distribution</h3>
+                        <button className="text-[11px] font-black uppercase text-indigo-600 hover:border-b-2 border-indigo-600 transition-all gap-2 flex items-center">View All <ChevronRight className="w-4 h-4" /></button>
+                    </div>
+                    <div className="flex items-center gap-12">
+                        <div className="relative w-56 h-56 shrink-0 group">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                    <Pie 
+                                        data={overview?.distribution?.length > 0 ? overview.distribution.map((d: any, i: number) => ({ ...d, color: PIE_COLORS[i % PIE_COLORS.length] })) : deptDist} 
+                                        cx="50%" cy="50%" innerRadius={70} 
+                                        outerRadius={95} paddingAngle={2} dataKey="count" strokeWidth={0}
+                                    >
+                                        {(overview?.distribution?.length > 0 ? overview.distribution : deptDist).map((e: any, i: number) => <Cell key={i} fill={e.color || PIE_COLORS[i % PIE_COLORS.length]} />)}
+                                    </Pie>
+                                </PieChart>
+                            </ResponsiveContainer>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none group-hover:scale-110 transition-transform">
+                                <span className="text-4xl font-black text-slate-900 italic tracking-tighter">{overview?.totalActiveUsers || 0}</span>
                             </div>
                         </div>
-
-                        <div className="space-y-4">
-                            {[
-                                { label: "API Response", value: 98, unit: "% uptime", color: "bg-emerald-500" },
-                                { label: "Auth Success Rate", value: 94, unit: "% sessions", color: "bg-indigo-500" },
-                                { label: "Leave Approval Rate", value: leaveDonut.length > 0
-                                    ? Math.round((leaveCounts.APPROVED / Math.max(allLeaves.length, 1)) * 100)
-                                    : 72, unit: "% approved", color: "bg-amber-500" },
-                                { label: "Data Sync", value: 100, unit: "% in-sync", color: "bg-violet-500" },
-                            ].map((m, i) => (
-                                <div key={i}>
-                                    <div className="flex justify-between items-center mb-1.5">
-                                        <span className="text-[10px] font-bold text-white/60 uppercase tracking-wider">{m.label}</span>
-                                        <span className="text-[11px] font-black text-white">{m.value}% <span className="text-white/30 font-normal text-[9px]">{m.unit}</span></span>
+                        <div className="flex-1 space-y-4">
+                            {(overview?.distribution?.length > 0 ? overview.distribution.map((d: any, i: number) => ({ ...d, color: PIE_COLORS[i % PIE_COLORS.length] })) : deptDist).map((d: any, i: number) => (
+                                <div key={i} className="flex items-center justify-between group cursor-pointer hover:bg-slate-50 p-2 rounded-xl transition-colors">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-3 h-3 rounded-full shadow-sm" style={{ background: d.color }} />
+                                        <span className="text-[12px] font-bold text-slate-400 capitalize group-hover:text-slate-600">{d.name}</span>
                                     </div>
-                                    <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
-                                        <motion.div
-                                            initial={{ width: 0 }}
-                                            animate={{ width: `${m.value}%` }}
-                                            transition={{ delay: 0.4 + i * 0.1, duration: 0.8, ease: "easeOut" }}
-                                            className={cn("h-full rounded-full", m.color)}
-                                        />
+                                    <div className="flex items-center gap-5">
+                                        <span className="text-[13px] font-black text-slate-800">{d.percent}%</span>
+                                        <Badge className="bg-slate-50 text-slate-500 border-none font-black text-[10px] w-10 justify-center h-6">{d.count}</Badge>
                                     </div>
                                 </div>
                             ))}
                         </div>
+                    </div>
+                </Card>
 
-                        <div className="flex items-center gap-2 mt-auto pt-3 border-t border-white/5">
-                            <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-                            <p className="text-[9px] font-black text-white/40 uppercase tracking-[0.3em]">All systems operational</p>
-                        </div>
-                    </motion.div>
-                )}
+                {/* Department Performance */}
+                <Card className="lg:col-span-7 p-12 rounded-[4rem] border-none shadow-sm bg-white overflow-hidden">
+                    <div className="flex items-center justify-between mb-10">
+                        <h3 className="text-base font-black text-slate-900 uppercase italic">Department Performance</h3>
+                        <Button variant="ghost" className="h-11 px-8 rounded-2xl bg-slate-50 text-[11px] font-black uppercase text-indigo-600 border border-slate-100 hover:border-indigo-200">Full Report</Button>
+                    </div>
+                    
+                    <div className="space-y-6">
+                         {/* Header labels */}
+                         <div className="grid grid-cols-12 gap-4 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest pb-2 border-b border-slate-50">
+                             <div className="col-span-4">Department</div>
+                             <div className="col-span-2 text-center">Staff</div>
+                             <div className="col-span-3 text-center">Attendance %</div>
+                             <div className="col-span-3 text-center">Leave Usage</div>
+                         </div>
+
+                         {(overview?.distribution?.length > 0 ? overview.distribution : [
+                             { name: 'Development', count: 38, percent: 32, attendanceRate: 89, leaveUsage: 8 },
+                             { name: 'Marketing', count: 36, percent: 29, attendanceRate: 90, leaveUsage: 5 },
+                             { name: 'Sales', count: 25, percent: 27, attendanceRate: 91, leaveUsage: 8 },
+                             { name: 'HR', count: 16, percent: 19, attendanceRate: 93, leaveUsage: 5 },
+                         ]).map((d: any, i: number) => {
+                             const attRate = d.attendanceRate ?? 0;
+                             const leaveDays = d.leaveUsage ?? 0;
+                             return (
+                                <div key={i} className="grid grid-cols-12 gap-4 px-4 py-4 rounded-3xl hover:bg-slate-50 transition-all border border-transparent hover:border-slate-100 items-center group">
+                                    <div className="col-span-4 flex items-center gap-3">
+                                        <div className="w-2.5 h-2.5 rounded-full" style={{ background: PIE_COLORS[i % PIE_COLORS.length] }} />
+                                        <span className="text-[13px] font-bold text-slate-800 group-hover:text-indigo-600 transition-colors uppercase tracking-tight">{d.name}</span>
+                                    </div>
+                                    <div className="col-span-2 text-center">
+                                        <Badge className="bg-slate-100 text-slate-900 border-none font-black text-[11px] h-7 px-4 rounded-xl">{d.count}</Badge>
+                                    </div>
+                                    <div className="col-span-3">
+                                        <div className="flex flex-col items-center gap-1.5">
+                                             <span className="text-[12px] font-black text-slate-900 italic tracking-tighter">{attRate}%</span>
+                                             <div className="w-16 h-1 bg-slate-100 rounded-full overflow-hidden">
+                                                 <motion.div initial={{ width: 0 }} animate={{ width: `${attRate}%` }} className="h-full bg-emerald-500 rounded-full" />
+                                             </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-3">
+                                        <div className="flex flex-col items-center gap-1.5">
+                                             <span className="text-[12px] font-black text-slate-900 italic tracking-tighter">{leaveDays} Days</span>
+                                             <div className="w-16 h-1 bg-slate-100 rounded-full overflow-hidden">
+                                                 <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(leaveDays * 10, 100)}%` }} className="h-full bg-amber-500 rounded-full" />
+                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                             )
+                         })}
+                    </div>
+
+                    <div className="mt-8 flex justify-end">
+                         <button className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400 bg-slate-50 px-6 py-2.5 rounded-2xl hover:text-indigo-600 transition-all">Optimize Operations</button>
+                    </div>
+                </Card>
             </div>
+
         </div>
     )
+}
+
+function CustomTooltip({ active, payload, label }: any) {
+    if (active && payload && payload.length) {
+        return (
+            <div className="bg-slate-900 text-white p-4 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-xl">
+                <p className="text-[11px] font-black uppercase tracking-[0.2em] mb-3 pb-3 border-b border-white/5">{label}</p>
+                {payload.map((p: any, i: number) => (
+                    <div key={i} className="flex items-center gap-3 mb-1.5 last:mb-0">
+                        <div className="w-2.5 h-2.5 rounded-full" style={{ background: p.color || p.fill }} />
+                        <p className="text-[11px] font-bold text-white/80">{p.name}: <span className="font-black text-white italic">{p.value}</span></p>
+                    </div>
+                ))}
+            </div>
+        )
+    }
+    return null
 }

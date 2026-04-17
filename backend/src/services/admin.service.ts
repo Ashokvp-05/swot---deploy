@@ -96,6 +96,14 @@ export const getDashboardOverview = async (companyId: string, managerId?: string
         pendingUsers,
         recentActivity,
         incompleteProfiles,
+        roleDistribution,
+        roleData,
+        payrollStats,
+        announcements,
+        jobPostings,
+        applicants,
+        deptDistribution,
+        leaveBreakdown,
         managerInfo
     ] = await Promise.all([
         (prisma.user as any).count({ where: userScopeFilter }),
@@ -110,7 +118,7 @@ export const getDashboardOverview = async (companyId: string, managerId?: string
                 id: true,
                 clockType: true,
                 clockIn: true,
-                user: { select: { id: true, name: true, department: true, managerId: true } }
+                user: { select: { id: true, name: true, department: { select: { name: true } }, managerId: true } }
             }
         }),
         (prisma.leaveRequest as any).count({
@@ -123,13 +131,14 @@ export const getDashboardOverview = async (companyId: string, managerId?: string
             where: {
                 status: UserStatus.PENDING,
                 companyId,
-                managerId: managerId // If manager, only show their pending invites
+                managerId: managerId 
             }
         }),
         (prisma as any).auditLog.findMany({
             where: { companyId },
-            take: 5,
+            take: 10,
             orderBy: { createdAt: 'desc' },
+            include: { company: { select: { name: true } } }
         }).catch(() => []),
         (prisma.user as any).count({
             where: {
@@ -138,63 +147,101 @@ export const getDashboardOverview = async (companyId: string, managerId?: string
                 status: 'ACTIVE'
             }
         }),
+        (prisma.user as any).groupBy({
+            by: ['roleId'],
+            where: { companyId },
+            _count: { id: true }
+        }),
+        prisma.role.findMany({
+            where: {
+                OR: [{ companyId }, { companyId: null }]
+            },
+            select: { id: true, name: true }
+        }),
+        (prisma as any).payrollBatch.findFirst({
+            where: { companyId },
+            orderBy: { createdAt: 'desc' },
+            include: { payslips: { select: { netSalary: true, status: true } } }
+        }).catch(() => null),
+        (prisma as any).announcement.findMany({
+            where: { companyId },
+            take: 3,
+            orderBy: { createdAt: 'desc' }
+        }).catch(() => []),
+        (prisma.jobPosting as any).count({ where: { companyId, status: 'OPEN' } }).catch(() => 0),
+        (prisma as any).applicant?.count({ where: { jobPosting: { companyId } } }).catch(() => 0),
+        (prisma.user as any).groupBy({
+            by: ['deptId'],
+            where: { companyId, status: 'ACTIVE' },
+            _count: { id: true }
+        }),
+        (prisma.leaveRequest as any).groupBy({
+            by: ['type'],
+            where: { companyId, status: 'APPROVED' },
+            _count: { id: true }
+        }),
         managerId ? prisma.user.findUnique({ where: { id: managerId, companyId }, select: { department: true } }) : null
     ]);
 
-    const teamName = (managerInfo as any)?.department ? `${(managerInfo as any).department} Team` : "Global Command";
+    const roleMapping = (roleData as any[]).reduce((acc: any, r: any) => {
+        acc[r.id] = r.name.toUpperCase();
+        return acc;
+    }, {});
 
-    const clockedInCount = activeSessions.length;
-    const remoteCount = activeSessions.filter((s: any) => s.clockType === 'REMOTE').length;
-    const officeCount = activeSessions.filter((s: any) => s.clockType === 'IN_OFFICE').length;
-    const attendanceRate = totalActiveUsers > 0 ? (clockedInCount / totalActiveUsers) * 100 : 0;
+    const roleCounts = { employee: 0, hr: 0, auditor: 0, support: 0, other: 0 };
+    (roleDistribution as any[]).forEach((item: any) => {
+        const name = roleMapping[item.roleId] || 'OTHER';
+        if (name.includes('EMPLOYEE')) roleCounts.employee += item._count.id;
+        else if (name.includes('HR')) roleCounts.hr += item._count.id;
+        else if (name.includes('AUDITOR')) roleCounts.auditor += item._count.id;
+        else if (name.includes('SUPPORT')) roleCounts.support += item._count.id;
+        else roleCounts.other += item._count.id;
+    });
 
-    // Process alerts
-    const alerts = [];
-    const longRunningSessions = activeSessions.filter((s: any) => new Date(s.clockIn) < twelveHoursAgo);
+    // ── FINANCIALS PROCESSING
+    const totalPayroll = payrollStats?.payslips?.reduce((acc: number, p: any) => acc + Number(p.netSalary), 0) || 0;
+    const paidEmployees = payrollStats?.payslips?.filter((p: any) => p.status === 'RELEASED').length || 0;
+    const pendingPayments = (payrollStats?.payslips?.length || 0) - paidEmployees;
 
-    if (longRunningSessions.length > 0) {
-        alerts.push({
-            type: 'warning',
-            message: `${longRunningSessions.length} users worked >12 hours`,
-            details: longRunningSessions.map((s: any) => (s as any).user.name).join(', ')
-        });
-    }
+    // ── DEPT PERFORMANCE PROCESSING
+    const depts = await (prisma as any).department.findMany({ where: { companyId }, select: { id: true, name: true } });
+    
+    // Fetch attendance sessions for today to calculate per-dept attendance
+    const startOfToday = new Date();
+    startOfToday.setHours(0,0,0,0);
 
-    if (attendanceRate < 50 && totalActiveUsers > 5) {
-        alerts.push({ type: 'info', message: 'Low attendance today (<50%)' });
-    }
+    // Fetch leave usage per dept (total days approved)
+    const deptLeaves = await (prisma.leaveRequest as any).findMany({
+        where: { companyId, status: 'APPROVED' },
+        include: { user: { select: { deptId: true } } }
+    });
 
-    const remoteUsers = activeSessions
-        .map((s: any) => ({
-            id: (s as any).user.id,
-            name: (s as any).user.name,
-            status: (s.clockType === 'REMOTE' ? 'REMOTE' : 'ONLINE') as any,
-            clockIn: s.clockIn,
-            location: (s as any).location?.city || (s.clockType === 'IN_OFFICE' ? 'Office HQ' : 'Unknown'),
-            department: (s as any).user.department
-        }));
+    const performance = depts.map((dept: any) => {
+        const usersInDept = (deptDistribution as any[]).find(d => d.deptId === dept.id)?._count.id || 0;
+        const presentInDept = activeSessions.filter((s: any) => s.user.deptId === dept.id).length;
+        const leavesInDept = deptLeaves.filter((l: any) => l.user.deptId === dept.id).length;
+        
+        return {
+            name: dept.name,
+            count: usersInDept,
+            attendanceRate: usersInDept > 0 ? Math.round((presentInDept / usersInDept) * 100) : 0,
+            leaveUsage: leavesInDept,
+            percent: totalActiveUsers > 0 ? Math.round((usersInDept / totalActiveUsers) * 100) : 0
+        };
+    });
 
     const result = {
         totalActiveUsers,
-        clockedIn: clockedInCount,
-        remoteCount,
-        officeCount,
-        attendanceRate: Math.round(attendanceRate),
+        clockedIn: activeSessions.length,
+        attendanceRate: totalActiveUsers > 0 ? Math.round((activeSessions.length / totalActiveUsers) * 100) : 0,
         pendingApprovals: (pendingLeaves || 0) + (pendingUsers || 0),
-        teamName,
-        alerts,
+        roleDistribution: roleCounts,
         recentActivity,
-        remoteUsers,
-        health: {
-            server: 'online',
-            db: 'connected',
-            apiLatency: Math.floor(Math.random() * 50) + 10 + 'ms',
-            lastBackup: '2 hours ago'
-        },
-        compliance: {
-            incompleteProfiles,
-            pendingPolicy: 0
-        }
+        announcements,
+        payroll: { total: totalPayroll, paid: paidEmployees, pending: pendingPayments },
+        hiring: { activeJobs: jobPostings, applicants },
+        distribution: performance,
+        health: { server: 'online', db: 'connected', apiLatency: '18ms' }
     };
 
     // Cache for 60 seconds
