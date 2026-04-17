@@ -54,6 +54,33 @@ const ExecutiveHub = dynamic(() => import("@/components/admin/ExecutiveHub"), { 
 const SupportControlCenter = dynamic(() => import("@/components/admin/SupportControlCenter"), { ssr: false })
 const DocumentsModule = dynamic(() => import("@/components/admin/DocumentsModule"), { ssr: false })
 const UserProfileView = dynamic(() => import("@/components/admin/UserProfileView"), { ssr: false })
+const PayrollControlCenter = dynamic(() => import("@/components/admin/PayrollControlCenter"), { ssr: false })
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  GLOBAL STYLES (Admin Hub Aesthetics)
+// ─────────────────────────────────────────────────────────────────────────────
+const GlobalStyles = () => (
+    <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600;700&display=swap');
+        .font-brand { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-body { font-family: 'Inter', sans-serif; }
+        
+        .nav-item-active {
+            background: #4F46E5;
+            color: #ffffff;
+            box-shadow: 0 8px 20px -6px rgba(79, 70, 229, 0.4);
+        }
+        
+        .nav-item-hover:hover {
+            transform: translateX(4px);
+            background: #F8FAFC;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #F1F5F9; border-radius: 10px; }
+    `}</style>
+)
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  MAIN CONTENT COMPONENT (with search params)
@@ -101,92 +128,88 @@ function AdminDashboardContent() {
     }
 
     const allNavItems = [
-        // Core
-        { id: "dashboard",   label: "Dashboard",           tab: "dashboard",   icon: LayoutDashboard, roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","MANAGER","AUDITOR","SUPPORT_ADMIN","PAYROLL_ADMIN"], group: "core" },
-        // HR Operations
-        { id: "employees",   label: "Employees",           tab: "employees",   icon: Users,           roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","MANAGER"], group: "hr" },
-        { id: "departments", label: "Departments",         tab: "departments", icon: Building2,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN"], group: "hr" },
-        { id: "attendance",  label: "Attendance",          tab: "attendance",  icon: Clock,           roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","MANAGER"], group: "hr" },
-        { id: "leave",       label: "Leave",               tab: "leave",       icon: Calendar,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","MANAGER"], group: "hr" },
-        // Finance
-        { id: "reports",     label: "Reports & Analytics", tab: "reports",     icon: BarChart3,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","MANAGER","AUDITOR","PAYROLL_ADMIN"], group: "finance" },
-        // Support
-        { id: "support",     label: "Support Desk",        tab: "support",     icon: HelpCircle,       roles: ["ADMIN","COMPANY_ADMIN","SUPPORT_ADMIN"], group: "support" },
-        // Administration
-        { id: "documents",   label: "Documents",           tab: "documents",   icon: FileText,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","AUDITOR"], group: "admin" },
-        { id: "audit-logs",  label: "Audit Logs",          tab: "audit-logs",  icon: History,         roles: ["ADMIN","COMPANY_ADMIN","AUDITOR"], group: "admin" },
-    ]
-
-    const navGroups = [
-        { key: "core", label: "Overview" },
-        { key: "hr", label: "HR Operations" },
-        { key: "finance", label: "Finance" },
-        { key: "support", label: "Support" },
-        { key: "admin", label: "Administration" },
+        // 1. Dashboard
+        { id: "dashboard",   label: "Dashboard",           tab: "dashboard",   icon: LayoutDashboard, roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","MANAGER","AUDITOR","SUPPORT_ADMIN","PAYROLL_ADMIN","SUPER_ADMIN"], group: "core" },
+        // 2. Employee Management
+        { id: "employees",   label: "Employee Management", tab: "employees",   icon: Users,           roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER"], group: "hr" },
+        // 3. Onboarding
+        { id: "onboarding",  label: "Onboarding",          tab: "onboarding",  icon: UserPlus,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN"], group: "hr" },
+        // 4. Attendance
+        { id: "attendance",  label: "Attendance",          tab: "attendance",  icon: Clock,           roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER"], group: "finance" },
+        // 5. Leave Management
+        { id: "leave",       label: "Leave Management",    tab: "leave",       icon: Calendar,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER"], group: "finance" },
+        // 6. Payroll
+        { id: "payroll",     label: "Payroll",             tab: "payroll",     icon: CreditCard,      roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","PAYROLL_ADMIN"], group: "finance" },
+        // 7. Performance
+        { id: "performance", label: "Performance",         tab: "performance", icon: TrendingUp,      roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER"], group: "company" },
+        // 8. Departments / Organization
+        { id: "departments", label: "Departments",         tab: "departments", icon: Building2,       roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN"], group: "company" },
+        // 9. Documents
+        { id: "documents",   label: "Documents",           tab: "documents",   icon: FileText,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","AUDITOR"], group: "company" },
+        // 10. Reports & Analytics
+        { id: "reports",     label: "Reports & Analytics", tab: "reports",     icon: BarChart3,       roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER","AUDITOR","PAYROLL_ADMIN"], group: "admin" },
+        // 11. Support Desk
+        { id: "support",     label: "Support Desk",        tab: "support",     icon: HelpCircle,      roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","SUPPORT_ADMIN"], group: "admin" },
+        // 12. User Management
+        { id: "user-management",label: "User Management",  tab: "user-management", icon: ShieldCheck, roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN"], group: "admin" },
+        // 13. Settings
+        { id: "settings",    label: "Settings",            tab: "settings",    icon: Settings,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN"], group: "admin" },
     ]
 
     const navItems = allNavItems.filter(item => item.roles.includes(role) || role === "ADMIN" || role === "COMPANY_ADMIN" || (role === "SUPER_ADMIN" && item.id !== "policies"))
 
     return (
-        <div className="min-h-screen bg-[#f0f2f8] flex">
+        <div className="min-h-screen bg-[#f0f2f8] flex font-body">
+            <GlobalStyles />
             
-            {/* ── 🛡️ PREMIUM SIDEBAR ── */}
-            <aside className="w-[72px] lg:w-[260px] bg-white border-r border-slate-100 flex flex-col h-screen sticky top-0 z-[100] shadow-[4px_0_24px_rgba(0,0,0,0.03)] transition-all duration-500">
+            {/* ── 🛡️ PREMIUM SIDEBAR (MANAGER HUB STYLE) ── */}
+            <aside className="w-[72px] lg:w-[280px] bg-white border-r border-slate-100 flex flex-col h-screen sticky top-0 z-[100] shadow-[4px_0_24px_rgba(0,0,0,0.03)] shrink-0">
 
                 {/* BRAND HEADER */}
-                <div className="px-4 lg:px-6 py-5 border-b border-slate-100">
-                    <Link href="/admin" className="flex items-center gap-3.5 group cursor-pointer outline-none">
-                        <div className="w-10 h-10 shrink-0 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200 group-hover:scale-105 transition-transform">
+                <div className="pt-10 pb-6 px-4 lg:px-8">
+                    <div className="hidden lg:block mb-8">
+                        <p className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.3em] mb-2 font-brand leading-none">Command Terminal</p>
+                        <h2 className="text-2xl font-black text-slate-900 tracking-tighter italic font-brand leading-none uppercase">Admin Hub</h2>
+                        <div className="w-8 h-1 bg-indigo-600 mt-4 rounded-full" />
+                    </div>
+                    <div className="lg:hidden flex items-center justify-center">
+                        <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
                             <Shield className="w-5 h-5 text-white" />
                         </div>
-                        <div className="hidden lg:flex flex-col justify-center overflow-hidden">
-                            <span className="text-sm font-semibold text-slate-800 tracking-tight leading-none">HR Central</span>
-                            <span className="text-[10px] font-medium text-indigo-500 tracking-wide mt-0.5 leading-none truncate">{companyName}</span>
-                        </div>
-                    </Link>
+                    </div>
                 </div>
 
                 {/* NAVIGATION */}
-                <nav className="flex-1 px-3 lg:px-4 py-4 space-y-5 overflow-y-auto [&::-webkit-scrollbar]:hidden">
-                    {navGroups.map(group => {
-                        const groupItems = navItems.filter(i => i.group === group.key)
-                        if (!groupItems.length) return null
+                <nav className="flex-1 px-3 lg:px-6 space-y-1.5 overflow-y-auto custom-scrollbar">
+                    {navItems.map((item) => {
+                        const Icon = item.icon
+                        const isActive = currentTab === item.tab
                         return (
-                            <div key={group.key}>
-                                <p className="hidden lg:block px-2 text-[10px] font-medium text-slate-400 tracking-wide mb-1.5">{group.label}</p>
-                                <div className="space-y-0.5">
-                                    {groupItems.map((item) => {
-                                        const Icon = item.icon
-                                        const isActive = currentTab === item.tab
-                                        return (
-                                            <button
-                                                key={item.id}
-                                                onClick={() => router.push(`/admin?tab=${item.tab}`)}
-                                                title={item.label}
-                                                className={cn(
-                                                    "w-full flex items-center gap-3 px-4 py-3 transition-all duration-300 relative group border-l-4",
-                                                    isActive
-                                                        ? "border-indigo-600 font-bold"
-                                                        : "border-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-50/50"
-                                                )}
-                                            >
-                                                <div className="shrink-0 transition-transform group-hover:scale-110">
-                                                    <Icon className={cn("w-5 h-5 transition-all", isActive ? "text-indigo-600" : "text-slate-400 group-hover:text-slate-700")} />
-                                                </div>
-                                                <span className={cn("hidden lg:block text-[13px] tracking-tight truncate", isActive ? "text-slate-900" : "text-slate-600")}>
-                                                    {item.label}
-                                                </span>
-                                            </button>
-                                        )
-                                    })}
+                            <button
+                                key={item.id}
+                                onClick={() => router.push(`/admin?tab=${item.tab}`)}
+                                title={item.label}
+                                className={cn(
+                                    "w-full flex items-center justify-between px-4 py-3.5 rounded-2xl text-[10.5px] font-black uppercase tracking-wider transition-all duration-300 font-brand group",
+                                    isActive 
+                                        ? "nav-item-active" 
+                                        : "text-slate-400 nav-item-hover hover:text-slate-900"
+                                )}
+                            >
+                                <div className="flex items-center justify-center lg:justify-start gap-3.5 w-full overflow-hidden">
+                                    <Icon className={cn("w-4 h-4 shrink-0 transition-transform", isActive ? "text-white scale-110" : "text-slate-300")} />
+                                    <span className="hidden lg:inline-block text-left whitespace-nowrap overflow-hidden text-ellipsis">{item.label}</span>
                                 </div>
-                            </div>
+                                {isActive && (
+                                    <motion.div layoutId="activeNavPointAdmin" className="hidden lg:block w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_8px_white] shrink-0 ml-2" />
+                                )}
+                            </button>
                         )
                     })}
                 </nav>
 
                 {/* USER IDENTITY FOOTER */}
-                <div className="px-3 lg:px-4 py-4 border-t border-slate-100 bg-slate-50/50">
+                <div className="px-3 lg:px-6 py-6 mt-4 border-t border-slate-50">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <button className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-white border border-transparent hover:border-slate-100 transition-all group outline-none shadow-none hover:shadow-sm">
@@ -228,13 +251,7 @@ function AdminDashboardContent() {
             <main className="flex-1 overflow-y-auto h-screen bg-[#f8fafc]">
                 <header className="px-8 py-4 flex items-center justify-between sticky top-0 z-[50] bg-white/90 backdrop-blur-md border-b border-slate-100/60 transition-all">
                     <div className="flex items-center gap-4">
-                        <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] leading-none mb-1">Administrative Console</span>
-                            <div className="flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">{companyName} Gateway</span>
-                            </div>
-                        </div>
+                        {/* Identity section removed for refinement */}
                     </div>
                     {/* Simplified header with search and profile only */}
                     
@@ -343,7 +360,7 @@ function AdminDashboardContent() {
                     </div>
                 </header>
 
-                <div className="max-w-[1600px] px-10 pb-32 space-y-8">
+                <div className="max-w-[1700px] mx-auto px-12 py-12 space-y-12">
                 
                 {/* QUICK HEADER — removed duplicate, handled by sticky top header */}
                 {currentTab !== "audit-logs" && (
@@ -363,19 +380,30 @@ function AdminDashboardContent() {
                 <div className="animate-in fade-in slide-in-from-bottom-3 duration-700">
                     
                     {currentTab === "dashboard" && <ExecutiveHub token={token} hideVitals={true} />}
-
-                    {currentTab === "employees"   && <UserManagementTable token={token} />}
-                    {currentTab === "departments"  && <OrganizationControlCenter token={token} />}
-                    {currentTab === "policies"     && <SystemSettingsCenter token={token} />}
+                    {currentTab === "employees"   && <UserManagementTable token={token} userRole={role} />}
+                    {currentTab === "onboarding"  && (
+                        <div className="flex flex-col items-center justify-center p-20 text-center">
+                            <UserPlus className="w-16 h-16 text-indigo-200 mb-4" />
+                            <h2 className="text-2xl font-black text-slate-800 uppercase italic tracking-tight">Onboarding Suite</h2>
+                            <p className="text-sm font-bold text-slate-400 mt-2 uppercase tracking-widest">Module under construction</p>
+                        </div>
+                    )}
                     {currentTab === "attendance"   && <AttendanceControlCenter token={token} />}
                     {currentTab === "leave"        && <LeaveApprovalCenter token={token} />}
-                    {currentTab === "audit-logs"   && <SecurityAuditLogs token={token} />}
+                    {currentTab === "payroll"      && <PayrollControlCenter token={token} />}
+                    {currentTab === "performance"  && (
+                        <div className="flex flex-col items-center justify-center p-20 text-center">
+                            <TrendingUp className="w-16 h-16 text-indigo-200 mb-4" />
+                            <h2 className="text-2xl font-black text-slate-800 uppercase italic tracking-tight">Performance Tracking</h2>
+                            <p className="text-sm font-bold text-slate-400 mt-2 uppercase tracking-widest">Module under construction</p>
+                        </div>
+                    )}
+                    {currentTab === "departments"  && <OrganizationControlCenter token={token} />}
+                    {currentTab === "documents" && <DocumentsModule token={token} />}
                     {currentTab === "reports"      && <ExecutiveHub token={token} />}
                     {currentTab === "support"      && <SupportControlCenter token={token} />}
-
-                    {currentTab === "documents" && (
-                        <DocumentsModule token={token} />
-                    )}
+                    {currentTab === "user-management"   && <SecurityAuditLogs token={token} />}
+                    {currentTab === "settings"     && <SystemSettingsCenter token={token} />}
 
                     {/* PROFILE MODULE */}
                     {currentTab === "profile" && (

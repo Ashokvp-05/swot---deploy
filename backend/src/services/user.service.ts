@@ -84,6 +84,10 @@ export const getUserById = async (id: string, companyId: string) => {
             branch: true,
             profile: true,
             assets: true,
+            leaveBalances: {
+                include: { leaveTypeConfig: true }
+            },
+            onboardingSteps: true,
             manager: { select: { id: true, name: true, email: true } }
         } as any
     });

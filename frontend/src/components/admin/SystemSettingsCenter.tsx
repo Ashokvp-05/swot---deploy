@@ -7,7 +7,7 @@ import {
     Lock, Eye, Cpu, HardDrive, ShieldAlert, CheckCircle2, ChevronRight, Save,
     Smartphone, Moon, Sun, Languages, Bell, Key, CreditCard, HelpCircle,
     MessageSquare, AlertTriangle, Monitor, Smartphone as Phone, Mail as MailIcon,
-    Loader2
+    Loader2, Clock, Calendar, FileText, Building2, Users, UploadCloud
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils"
 
 export function SystemSettingsCenter({ token }: { token: string }) {
     const [isSaving, setIsSaving] = useState(false)
-    const [activeSection, setActiveSection] = useState("general")
+    const [activeSection, setActiveSection] = useState("company")
 
     const [governanceSettings, setGovernanceSettings] = useState({
         predictive: true,
@@ -37,19 +37,21 @@ export function SystemSettingsCenter({ token }: { token: string }) {
 
     const handleSave = () => {
         setIsSaving(true)
-        const toastId = toast.loading("Deploying new governance protocols...")
+        const toastId = toast.loading("Deploying new HR parameters...")
         setTimeout(() => {
             setIsSaving(false)
-            toast.success("Governance parameters updated successfully", { id: toastId })
+            toast.success("HR settings updated successfully", { id: toastId })
         }, 1500)
     }
 
     const sections = [
-        { id: "general", label: "General", icon: Globe },
-        { id: "security", label: "Security", icon: ShieldCheck },
-        { id: "notifications", label: "Alerts", icon: Bell },
-        { id: "infrastructure", label: "Infrastructure", icon: Database },
-        { id: "billing", label: "Billing", icon: CreditCard }
+        { id: "company", label: "Company Settings", icon: Building2 },
+        { id: "roles", label: "Roles & Permissions", icon: ShieldCheck },
+        { id: "attendance", label: "Attendance Settings", icon: Clock },
+        { id: "leave", label: "Leave Policy", icon: Calendar },
+        { id: "payroll", label: "Payroll Settings", icon: CreditCard },
+        { id: "notifications", label: "Notification Settings", icon: Bell },
+        { id: "documents", label: "Document Settings", icon: FileText }
     ]
 
     return (
@@ -117,53 +119,183 @@ export function SystemSettingsCenter({ token }: { token: string }) {
                 <div className="flex-1 p-12 bg-white custom-scrollbar overflow-y-auto">
                     <div className="max-w-3xl space-y-12 pb-20">
                         <AnimatePresence mode="wait">
-                            {activeSection === "general" && (
-                                <motion.div key="general" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-12">
+                            {activeSection === "company" && (
+                                <motion.div key="company" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-12">
                                     <div className="space-y-8">
                                         <div className="flex items-center justify-between">
                                             <h4 className="text-[11px] font-black text-slate-300 uppercase tracking-[0.4em]">Organization Identity</h4>
-                                            <Badge className="bg-slate-50 text-slate-400 text-[8px] border-none font-black shadow-none">ID: 5A0A-B392</Badge>
+                                            <Badge className="bg-slate-50 text-slate-400 text-[8px] border-none font-black shadow-none">CORE FOUNDATION</Badge>
                                         </div>
                                         <div className="grid grid-cols-2 gap-8">
                                             <div className="space-y-3">
-                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Entity Alias</label>
-                                                <Input className="bg-slate-50 border-none h-14 rounded-2xl px-6 font-black text-slate-900 uppercase tracking-tight text-lg shadow-inner focus:ring-2 focus:ring-indigo-100 transition-all outline-none" placeholder="e.g. Acme Corp" defaultValue="Default Company" />
+                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Company Name</label>
+                                                <Input className="bg-slate-50 border-none h-14 rounded-2xl px-6 font-black text-slate-900 uppercase tracking-tight text-lg shadow-inner focus:ring-2 focus:ring-indigo-100 transition-all outline-none" defaultValue="Default Company" />
                                             </div>
                                             <div className="space-y-3">
-                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Primary Domain Node</label>
-                                                <Input className="bg-slate-50 border-none h-14 rounded-2xl px-6 font-black text-slate-900 lowercase tracking-tighter text-lg shadow-inner focus:ring-2 focus:ring-indigo-100 transition-all outline-none" placeholder="domain.internal" defaultValue="hr-governance.internal" />
+                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Time Zone</label>
+                                                <select className="w-full bg-slate-50 border-none h-14 rounded-2xl px-6 font-black text-slate-900 tracking-tight text-[13px] shadow-inner focus:ring-2 focus:ring-indigo-100 transition-all outline-none appearance-none">
+                                                    <option>UTC+05:30 Asia/Kolkata (IST)</option>
+                                                    <option>UTC+00:00 GMT</option>
+                                                    <option>UTC-05:00 Eastern Time</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col md:flex-row gap-8">
+                                            <div className="space-y-3 md:w-1/2">
+                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Corporate Emblem (Logo)</label>
+                                                <div className="h-32 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center hover:border-indigo-300 hover:bg-slate-100 transition-all cursor-pointer group">
+                                                    <UploadCloud className="w-8 h-8 text-slate-300 group-hover:text-indigo-500 transition-colors" />
+                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">Upload Branding</p>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-3 md:w-1/2">
+                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Office Locations</label>
+                                                <Input className="bg-slate-50 border-none h-14 rounded-2xl px-6 font-black text-slate-900 uppercase tracking-tight text-[12px] shadow-inner focus:ring-2 focus:ring-indigo-100 transition-all outline-none" defaultValue="HQ - Cyber Hub, Sub-node Alpha" />
+                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 mt-6 block">Standard Workweek</label>
+                                                <div className="flex gap-2">
+                                                    {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, idx) => (
+                                                        <div key={idx} className={cn("w-10 h-10 rounded-xl flex items-center justify-center text-[11px] font-black", idx < 5 ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-400")}>{day}</div>
+                                                    ))}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                </motion.div>
+                            )}
 
-                                    <div className="space-y-8 pt-8 border-t border-slate-50">
-                                        <h4 className="text-[11px] font-black text-slate-300 uppercase tracking-[0.4em]">Environmental Override Nodes</h4>
+                            {activeSection === "roles" && (
+                                <motion.div key="roles" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-12">
+                                    <div className="space-y-8">
+                                        <div className="flex items-center justify-between mb-8">
+                                            <h4 className="text-[11px] font-black text-slate-300 uppercase tracking-[0.4em]">Roles & Permissions</h4>
+                                            <Badge className="bg-emerald-50 text-emerald-600 text-[9px] font-black uppercase px-4 h-8 border-none shadow-none">Security Core</Badge>
+                                        </div>
+
                                         {[
-                                            { id: "predictive", label: "Predictive Analytics V2", sub: "Enable neural-based personnel flow forecasting", state: governanceSettings.predictive, icon: Zap, color: "indigo" },
-                                            { id: "darkMode", label: "Dark Interface Override", sub: "Force high-fidelity monochromatic aesthetics global-wide", state: governanceSettings.darkMode, icon: Moon, color: "slate" },
-                                            { id: "presenceAudit", label: "Automated Presence Audit", sub: "AI-driven identity verification through geofencing", state: governanceSettings.presenceAudit, icon: UserCheck, color: "emerald" }
-                                        ].map((pref, i) => (
-                                            <div 
-                                                key={i} 
-                                                onClick={() => handleToggle(pref.id as any)}
-                                                className="flex items-center justify-between p-6 bg-slate-50/50 border border-slate-50 rounded-[28px] hover:border-indigo-100 transition-all group cursor-pointer shadow-sm hover:shadow-xl"
-                                            >
-                                                <div className="flex items-center gap-5">
-                                                    <div className="p-4 bg-white rounded-2xl shadow-sm transition-transform group-hover:scale-110">
-                                                        <pref.icon className={cn("w-6 h-6", `text-${pref.color}-500`)} />
+                                            { role: "Super Admin", sub: "Absolute system override, settings control", users: 2, icon: ShieldCheck, color: "rose" },
+                                            { role: "HR Controller", sub: "Personnel, payroll, and policy management", users: 4, icon: Users, color: "indigo" },
+                                            { role: "Department Manager", sub: "Team oversight, leave approval, attendance", users: 12, icon: Globe, color: "emerald" },
+                                            { role: "Standard Employee", sub: "Basic dashboard, leave application", users: 142, icon: UserCheck, color: "slate" }
+                                        ].map((r, i) => (
+                                            <div key={i} className="flex items-start justify-between p-6 bg-white border border-slate-100 rounded-[32px] shadow-sm hover:shadow-xl transition-all group cursor-pointer hover:border-indigo-100">
+                                                <div className="flex gap-6 items-center">
+                                                    <div className={`p-4 bg-${r.color}-50 text-${r.color}-500 rounded-[22px] transition-all`}>
+                                                        <r.icon className="w-6 h-6" />
                                                     </div>
-                                                    <div>
-                                                        <p className="text-[12px] font-black text-slate-900 uppercase tracking-tight leading-none">{pref.label}</p>
-                                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.1em] mt-2 italic">{pref.sub}</p>
+                                                    <div className="space-y-1">
+                                                        <p className="text-[14px] font-black text-slate-900 uppercase tracking-tight">{r.role}</p>
+                                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{r.sub}</p>
                                                     </div>
                                                 </div>
-                                                <Switch 
-                                                    checked={pref.state} 
-                                                    onCheckedChange={() => handleToggle(pref.id as any)}
-                                                    className="data-[state=checked]:bg-indigo-600 scale-125 transition-all" 
-                                                />
+                                                <div className="flex flex-col items-end">
+                                                    <Badge className="bg-slate-50 text-slate-600 border-none font-black text-[10px] uppercase">Nodes: {r.users}</Badge>
+                                                    <span className="text-[9px] font-black text-indigo-500 uppercase tracking-widest mt-2 hover:underline">Edit Privileges</span>
+                                                </div>
                                             </div>
                                         ))}
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {activeSection === "attendance" && (
+                                <motion.div key="attendance" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-12">
+                                    <div className="space-y-8">
+                                        <div className="flex items-center justify-between">
+                                            <h4 className="text-[11px] font-black text-slate-300 uppercase tracking-[0.4em]">Attendance Logic Configuration</h4>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-8">
+                                            <div className="space-y-3">
+                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Standard Work Shift Start</label>
+                                                <Input type="time" className="bg-slate-50 border-none h-14 rounded-2xl px-6 font-black text-slate-900 text-lg shadow-inner outline-none" defaultValue="09:00" />
+                                            </div>
+                                            <div className="space-y-3">
+                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Standard Work Shift End</label>
+                                                <Input type="time" className="bg-slate-50 border-none h-14 rounded-2xl px-6 font-black text-slate-900 text-lg shadow-inner outline-none" defaultValue="18:00" />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-6 pt-4 border-t border-slate-50">
+                                            <div className="flex items-center justify-between p-6 bg-slate-50/50 border border-slate-50 rounded-[28px]">
+                                                <div>
+                                                    <p className="text-[12px] font-black text-slate-900 uppercase tracking-tight">Late Mark Rules</p>
+                                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.1em] mt-1">Deduct half-day after 3 late anomalies</p>
+                                                </div>
+                                                <Switch checked={true} className="data-[state=checked]:bg-indigo-600 scale-125" />
+                                            </div>
+                                            <div className="flex items-center justify-between p-6 bg-slate-50/50 border border-slate-50 rounded-[28px]">
+                                                <div>
+                                                    <p className="text-[12px] font-black text-slate-900 uppercase tracking-tight">Overtime Logistics</p>
+                                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.1em] mt-1">Calculate extra compensation post 6:30 PM</p>
+                                                </div>
+                                                <Switch checked={false} className="data-[state=checked]:bg-indigo-600 scale-125" />
+                                            </div>
+                                            <div className="space-y-3">
+                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Break Time Duration</label>
+                                                <select className="w-full bg-slate-50 border-none h-14 rounded-2xl px-6 font-black text-slate-900 tracking-tight text-[13px] shadow-inner outline-none appearance-none">
+                                                    <option>60 Minutes (Standard)</option>
+                                                    <option>45 Minutes</option>
+                                                    <option>30 Minutes</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {activeSection === "leave" && (
+                                <motion.div key="leave" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-12">
+                                    <div className="space-y-8">
+                                        <h4 className="text-[11px] font-black text-slate-300 uppercase tracking-[0.4em]">Leave Policy & Limits</h4>
+                                        <div className="grid grid-cols-3 gap-6">
+                                            {[
+                                                { type: "Sick Leave", count: 12, cf: "0 allowed" },
+                                                { type: "Casual Leave", count: 12, cf: "0 allowed" },
+                                                { type: "Paid Leave (Earned)", count: 15, cf: "Max 30 carried" }
+                                            ].map((lv, i) => (
+                                                <div key={i} className="p-6 bg-slate-50 rounded-[32px] border border-slate-100 flex flex-col items-center justify-center text-center">
+                                                    <span className="text-[14px] font-black text-slate-900 uppercase tracking-tight">{lv.type}</span>
+                                                    <span className="text-3xl font-black text-indigo-600 tracking-tighter mt-4 leading-none">{lv.count}</span>
+                                                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-2">{lv.cf}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="flex items-center justify-between p-6 bg-slate-50/50 border border-slate-50 rounded-[28px] mt-6">
+                                            <div>
+                                                <p className="text-[12px] font-black text-slate-900 uppercase tracking-tight">Multi-tier Approval Workflow</p>
+                                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.1em] mt-1">Requires Manager AND HR validation</p>
+                                            </div>
+                                            <Switch checked={true} className="data-[state=checked]:bg-indigo-600 scale-125" />
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {activeSection === "payroll" && (
+                                <motion.div key="payroll" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-12">
+                                    <div className="space-y-8">
+                                        <h4 className="text-[11px] font-black text-slate-300 uppercase tracking-[0.4em]">Compensation Logistics</h4>
+                                        <div className="grid grid-cols-2 gap-8">
+                                            <div className="space-y-3">
+                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Salary Structure</label>
+                                                <select className="w-full bg-slate-50 border-none h-14 rounded-2xl px-6 font-black text-slate-900 tracking-tight text-[13px] shadow-inner outline-none appearance-none">
+                                                    <option>Standard (Basic + HRA + Allowances)</option>
+                                                    <option>Consolidated Hourly</option>
+                                                </select>
+                                            </div>
+                                            <div className="space-y-3">
+                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Payment Cycle</label>
+                                                <select className="w-full bg-slate-50 border-none h-14 rounded-2xl px-6 font-black text-slate-900 tracking-tight text-[13px] shadow-inner outline-none appearance-none">
+                                                    <option>Monthly (1st of every month)</option>
+                                                    <option>Bi-Weekly</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center justify-between p-6 bg-slate-50/50 border border-slate-50 rounded-[28px]">
+                                            <div>
+                                                <p className="text-[12px] font-black text-slate-900 uppercase tracking-tight">Automate Tax Deductions (TDS)</p>
+                                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.1em] mt-1">System calculates slabs automatically</p>
+                                            </div>
+                                            <Switch checked={true} className="data-[state=checked]:bg-indigo-600 scale-125" />
+                                        </div>
                                     </div>
                                 </motion.div>
                             )}
@@ -172,95 +304,57 @@ export function SystemSettingsCenter({ token }: { token: string }) {
                                 <motion.div key="notifications" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-12">
                                     <div className="space-y-8">
                                         <div className="flex items-center justify-between">
-                                            <h4 className="text-[11px] font-black text-slate-300 uppercase tracking-[0.4em]">Alert Distribution Vectors</h4>
-                                            <Badge className="bg-amber-50 text-amber-600 text-[8px] border-none font-black shadow-none">Pulse: Responsive</Badge>
+                                            <h4 className="text-[11px] font-black text-slate-300 uppercase tracking-[0.4em]">Alert Hub</h4>
                                         </div>
                                         
-                                        <div className="grid grid-cols-1 gap-6">
+                                        <div className="grid grid-cols-1 gap-4">
                                             {[
-                                                { id: "inAppTelemetry", label: "In-App Telemetry", sub: "Global dashboard notifications & pop-up alerts", icon: Monitor, state: governanceSettings.inAppTelemetry },
-                                                { id: "mobilePush", label: "Mobile Push Hub", sub: "Personnel status updates via smartphone nodes", icon: Phone, state: governanceSettings.mobilePush },
-                                                { id: "directMail", label: "Direct Mail Protocol", sub: "Email manifest for compliance & security reports", icon: MailIcon, state: governanceSettings.directMail },
-                                                { id: "massBroadcast", label: "Mass Broadcast System", sub: "Emergency broadcast to all organizational staff", icon: AlertTriangle, state: governanceSettings.massBroadcast }
+                                                { label: "Email Notifications", sub: "Leave approvals, Payroll processed, Urgent notes", state: true, icon: MailIcon },
+                                                { label: "In-App Alerts", sub: "System events, document expirations", state: true, icon: Monitor },
+                                                { label: "Reminder Settings", sub: "Pending tasks, pending onboarding documents", state: false, icon: Bell }
                                             ].map((alert, i) => (
-                                                <div 
-                                                    key={i} 
-                                                    onClick={() => handleToggle(alert.id as any)}
-                                                    className="flex items-center justify-between p-8 bg-white border border-slate-50 rounded-[32px] shadow-sm hover:shadow-2xl transition-all group cursor-pointer border-l-[6px] border-l-amber-200 hover:border-l-amber-500"
-                                                >
+                                                <div key={i} className="flex items-center justify-between p-6 bg-white border border-slate-100 rounded-[32px] shadow-sm group">
                                                     <div className="flex items-center gap-6">
-                                                        <div className="p-4 bg-amber-50 text-amber-600 rounded-2xl group-hover:bg-amber-100 transition-all">
-                                                            <alert.icon className="w-6 h-6" />
-                                                        </div>
+                                                        <div className="p-4 bg-amber-50 text-amber-600 rounded-2xl"><alert.icon className="w-5 h-5" /></div>
                                                         <div>
                                                             <p className="text-[13px] font-black text-slate-900 uppercase tracking-tight">{alert.label}</p>
                                                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{alert.sub}</p>
                                                         </div>
                                                     </div>
-                                                    <div className="flex items-center gap-4">
-                                                        <span className="text-[9px] font-black text-slate-300 uppercase hidden sm:block">{alert.state ? "Broadcasting" : "Offline"}</span>
-                                                        <Switch 
-                                                            checked={alert.state} 
-                                                            onCheckedChange={() => handleToggle(alert.id as any)}
-                                                            className="data-[state=checked]:bg-amber-500 scale-110" 
-                                                        />
-                                                    </div>
+                                                    <Switch checked={alert.state} className="data-[state=checked]:bg-amber-500 scale-110" />
                                                 </div>
                                             ))}
                                         </div>
                                     </div>
-                                    
-                                    <div className="p-10 bg-slate-50 rounded-[44px] border border-slate-100/50 flex flex-col md:flex-row items-center gap-8">
-                                        <div className="p-5 bg-white rounded-3xl shadow-sm">
-                                            <MessageSquare className="w-8 h-8 text-indigo-500" />
-                                        </div>
-                                        <div className="flex-1 text-center md:text-left">
-                                            <h5 className="text-[14px] font-black text-slate-900 uppercase tracking-tight">Rapid Communications Node</h5>
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2 leading-relaxed">Configure specialized automated responses for payroll cycles and onboarding manifests.</p>
-                                        </div>
-                                        <Button variant="outline" className="h-12 border-slate-200 text-indigo-600 font-black text-[10px] uppercase tracking-widest px-8 rounded-2xl hover:bg-white shadow-sm transition-all active:scale-95">Configure Node</Button>
-                                    </div>
                                 </motion.div>
                             )}
 
-                            {activeSection === "security" && (
-                                <motion.div key="security" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-12">
+                            {activeSection === "documents" && (
+                                <motion.div key="documents" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-12">
                                     <div className="space-y-8">
-                                        <div className="flex items-center justify-between mb-8">
-                                            <h4 className="text-[11px] font-black text-slate-300 uppercase tracking-[0.4em]">Security Protocols</h4>
-                                            <Badge className="bg-emerald-50 text-emerald-600 text-[9px] font-black uppercase px-4 h-8 border-none shadow-none">Protocol Secure v8.4.1</Badge>
-                                        </div>
-
-                                        {[
-                                            { label: "Universal MFA Enforcement", sub: "Require authentication tokens for all clearance levels", icon: ShieldCheck, color: "indigo" },
-                                            { label: "Endpoint Encryption Hub", sub: "Quantum-ready 256-bit encryption for data in transit", icon: Lock, color: "emerald" },
-                                            { label: "Identity Audit Stream", sub: "Live activity telemetry with anomaly detection neural net", icon: Eye, color: "amber" }
-                                        ].map((sec, i) => (
-                                            <div key={i} className="flex items-start justify-between p-8 bg-white border border-slate-100 rounded-[32px] shadow-sm hover:shadow-2xl transition-all group hover:-translate-y-1">
-                                                <div className="flex gap-6">
-                                                    <div className={`p-4 bg-slate-50 rounded-[22px] text-slate-600 group-hover:bg-indigo-50 transition-all`}>
-                                                        <sec.icon className="w-7 h-7 text-indigo-600" />
-                                                    </div>
-                                                    <div className="space-y-2">
-                                                        <p className="text-[13px] font-black text-slate-900 uppercase tracking-tight">{sec.label}</p>
-                                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed max-w-sm">{sec.sub}</p>
-                                                    </div>
-                                                </div>
-                                                <Button variant="ghost" className="text-indigo-600 text-[9px] font-black uppercase tracking-widest hover:bg-slate-50 rounded-[14px] px-6 h-10 border border-slate-50">Configure Hub</Button>
+                                        <h4 className="text-[11px] font-black text-slate-300 uppercase tracking-[0.4em]">Documentation Protocols</h4>
+                                        <div className="grid grid-cols-2 gap-8">
+                                            <div className="space-y-3">
+                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Maximum Upload Matrix (Size)</label>
+                                                <Input className="bg-slate-50 border-none h-14 rounded-2xl px-6 font-black text-slate-900 tracking-tight text-lg shadow-inner outline-none" defaultValue="10 MB Limit" />
                                             </div>
-                                        ))}
-                                    </div>
-                                </motion.div>
-                            )}
-                            
-                            {["infrastructure", "billing"].includes(activeSection) && (
-                                <motion.div key="fallback" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-96 flex flex-col items-center justify-center gap-8 opacity-40">
-                                    <div className="w-24 h-24 bg-slate-50 border border-slate-100 rounded-[44px] flex items-center justify-center animate-bounce duration-[2000ms]">
-                                        <HelpCircle className="w-12 h-12 text-slate-200" />
-                                    </div>
-                                    <div className="text-center">
-                                        <p className="text-[12px] font-black uppercase tracking-[0.6em] text-slate-400">Section manifest initialization required</p>
-                                        <p className="text-[9px] font-bold text-slate-300 uppercase tracking-widest mt-2 italic">Awaiting high-fidelity module injection for {activeSection}...</p>
+                                            <div className="space-y-3">
+                                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Verification Rules</label>
+                                                <select className="w-full bg-slate-50 border-none h-14 rounded-2xl px-6 font-black text-slate-900 tracking-tight text-[13px] shadow-inner outline-none appearance-none">
+                                                    <option>Strict (HR Manual Approval)</option>
+                                                    <option>Automated (AI Parsing)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div className="p-8 bg-slate-50 rounded-[32px] border border-slate-100 mt-6">
+                                            <h5 className="text-[12px] font-black text-slate-900 uppercase tracking-tight mb-4">Core Required Documents</h5>
+                                            <div className="flex flex-wrap gap-3">
+                                                {['Aadhar Card', 'PAN Card', 'Bank Passbook', 'Degree Cert', 'Relieving Letter'].map(doc => (
+                                                    <Badge key={doc} className="bg-white border-slate-200 text-slate-600 px-4 py-2 uppercase tracking-widest text-[9px] font-black shadow-sm">{doc}</Badge>
+                                                ))}
+                                                <Button variant="outline" className="h-8 border-dashed border-slate-300 text-slate-400 bg-transparent uppercase tracking-widest text-[9px] font-black">+ Add Document</Button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </motion.div>
                             )}

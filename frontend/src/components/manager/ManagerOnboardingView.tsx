@@ -104,16 +104,16 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
     ]
 
     return (
-        <div className="space-y-12 font-body">
+        <div className="space-y-8 font-body">
             <GlobalStyles />
             
             {/* ── HIGH-FIDELITY LIFECYCLE HEADER ── */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div className="space-y-1">
-                    <h2 className="text-3xl font-black text-slate-900 uppercase italic tracking-tighter font-brand leading-none">Onboarding <span className="text-indigo-600">Personnel</span></h2>
+                    <h2 className="text-3xl font-black text-slate-900 uppercase italic tracking-tighter font-brand leading-none">Onboarding <span className="text-indigo-600">People</span></h2>
                     <div className="flex items-center gap-3">
-                        <Badge className="bg-indigo-50 text-indigo-600 border-none text-[9px] font-black uppercase tracking-widest px-2.5 py-1.5 leading-none">Lifecycle stage 03</Badge>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Global Personnel Deployment & Identity Verification Hub</p>
+                        <Badge className="bg-indigo-50 text-indigo-600 border-none text-[9px] font-black uppercase tracking-widest px-2.5 py-1.5 leading-none">Phase 3</Badge>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Verify Identity & Setup New Members</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -129,10 +129,10 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
             {/* ── LIFECYCLE ANALYTICS TERMINAL (PHASE 3) ── */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                    { label: "Employees in Onboarding", value: stats.totalPending, sub: "Currently active", icon: Activity, color: "text-indigo-600", bg: "bg-indigo-50" },
-                    { label: "Completed Onboarding", value: stats.completedThisMonth, sub: "Month to date", icon: Target, color: "text-emerald-600", bg: "bg-emerald-50" },
-                    { label: "Pending Verification", value: stats.totalPending, sub: "Requires HR Approval", icon: ShieldCheck, color: "text-amber-600", bg: "bg-amber-50" },
-                    { label: "Documents Missing", value: stats.alerts, sub: "Action Required", icon: AlertCircle, color: "text-rose-600", bg: "bg-rose-50" },
+                    { label: "Members in Onboarding", value: stats.totalPending, sub: "Currently active", icon: Activity, color: "text-indigo-600", bg: "bg-indigo-50" },
+                    { label: "Completed", value: stats.completedThisMonth, sub: "Month to date", icon: Target, color: "text-blue-600", bg: "bg-blue-50" },
+                    { label: "Needs Approval", value: stats.totalPending, sub: "Action Required", icon: ShieldCheck, color: "text-amber-600", bg: "bg-amber-50" },
+                    { label: "Missing Files", value: stats.alerts, sub: "Fix Now", icon: AlertCircle, color: "text-rose-600", bg: "bg-rose-50" },
                 ].map((s, i) => (
                     <Card key={i} className="p-8 rounded-[2.5rem] border border-slate-100 bg-white shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 group relative overflow-hidden">
                         <div className="flex flex-col gap-6 relative z-10">
@@ -157,10 +157,10 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                              <ShieldCheck className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-black text-slate-900 uppercase italic tracking-tighter leading-none font-brand">Onboarding <span className="text-indigo-600">Process</span></h3>
+                            <h3 className="text-xl font-black text-slate-900 uppercase italic tracking-tighter leading-none font-brand">Setup <span className="text-indigo-600">Status</span></h3>
                             <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1.5 flex items-center gap-2">
-                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                Ecosystem Integration Status: 100% Operational
+                                <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+                                System Status: 100% Operational
                             </div>
                         </div>
                     </div>
@@ -175,10 +175,10 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                         ].map((item, i) => (
                             <div key={i} className="flex flex-col gap-3 p-5 rounded-3xl bg-white border border-slate-100/50 shadow-sm transition-transform hover:scale-105">
                                 <div className="flex items-center justify-between">
-                                    <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
-                                         <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                                    <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center">
+                                         <CheckCircle2 className="w-4 h-4 text-indigo-500" />
                                     </div>
-                                    <Badge className="bg-emerald-50 text-emerald-600 border-none text-[8px] font-black uppercase px-2 py-0.5">Validated</Badge>
+                                    <Badge className="bg-indigo-50 text-indigo-600 border-none text-[8px] font-black uppercase px-2 py-0.5">Ready</Badge>
                                 </div>
                                 <p className="text-[10px] font-black text-slate-800 uppercase tracking-tight italic mt-1 font-brand">{item.label}</p>
                             </div>
@@ -188,26 +188,9 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                 <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 blur-[120px] rounded-full" />
             </Card>
 
-            {/* ── SMART SEARCH SHARD ── */}
-            {/* ── SMART SEARCH SHARD ── */}
-            <div className="flex flex-col gap-4 bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm">
-                <div className="relative flex-1 group">
-                    <Search className="absolute left-7 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-indigo-500 transition-colors" />
-                    <Input placeholder="Scan personnel identities, departments or functional managers..." className="h-16 pl-16 rounded-[20px] border-none bg-slate-50/50 text-[11px] font-bold tracking-tight uppercase placeholder:text-slate-400 focus-visible:ring-4 focus-visible:ring-indigo-100 transition-all font-brand" />
-                </div>
-                <div className="flex items-center gap-4 px-2 overflow-x-auto pb-2 no-scrollbar">
-                     <div className="flex items-center gap-2 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
-                         <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest pl-3 pr-2">Filter Matrix:</span>
-                         <select className="h-10 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 bg-white border border-slate-100 outline-none transition-all focus:border-indigo-300 focus:ring-4 focus:ring-indigo-100/20"><option>All Departments</option><option>Engineering Shard</option><option>Operations Shard</option></select>
-                         <select className="h-10 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 bg-white border border-slate-100 outline-none transition-all focus:border-indigo-300 focus:ring-4 focus:ring-indigo-100/20"><option>Access Tier</option><option>Manager</option><option>Associate</option></select>
-                         <select className="h-10 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 bg-white border border-slate-100 outline-none transition-all focus:border-indigo-300 focus:ring-4 focus:ring-indigo-100/20"><option>Onboarding Status</option><option>Pending Node</option><option>Verification Shard</option></select>
-                         <select className="h-10 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 bg-white border border-slate-100 outline-none transition-all focus:border-indigo-300 focus:ring-4 focus:ring-indigo-100/20"><option>Joining Sequence</option><option>Last 30 Days</option></select>
-                     </div>
-                </div>
-            </div>
 
             {/* ── PERSONNEL PROGRESS TERMINAL ── */}
-            <div className={cn("pr-2", viewMode === 'grid' ? "grid grid-cols-1 lg:grid-cols-2 gap-8" : "flex flex-col gap-4")}>
+            <div className={cn("pr-2", viewMode === 'grid' ? "grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6" : "flex flex-col gap-4")}>
                 {loading ? (
                     <div className="col-span-full py-40 flex flex-col items-center justify-center gap-6">
                         <Loader2 className="w-12 h-12 animate-spin text-indigo-500" />
@@ -247,7 +230,7 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                                             </div>
                                         </td>
                                         <td className="p-6 text-right">
-                                            <Badge className="bg-emerald-50 text-emerald-600 border-none px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.2em] rounded-md shadow-sm">Operational</Badge>
+                                            <Badge className="bg-indigo-50 text-indigo-600 border-none px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.2em] rounded-md shadow-sm">Active</Badge>
                                         </td>
                                     </tr>
                                 ))}
@@ -264,7 +247,7 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                             onClick={() => setSelectedUser(emp)}
                             className="cursor-pointer"
                         >
-                            <Card className="p-10 rounded-[40px] border border-slate-100 bg-white shadow-sm hover:shadow-2xl hover:border-indigo-100 transition-all duration-500 group relative">
+                            <Card className="p-7 rounded-[40px] border border-slate-100 bg-white shadow-sm hover:shadow-2xl hover:border-indigo-100 transition-all duration-500 group relative">
                                 <div className="flex justify-between items-start mb-10">
                                     <div className="flex items-center gap-7">
                                         <div className="w-20 h-20 rounded-[32px] bg-slate-950 flex items-center justify-center text-2xl font-black text-indigo-400 italic shadow-2xl shadow-slate-200 font-brand transition-transform group-hover:scale-105">
@@ -281,7 +264,7 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                                         </div>
                                     </div>
                                     <div className="flex flex-col items-end gap-2">
-                                         <Badge className="bg-emerald-50 text-emerald-600 border-none px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] rounded-full shadow-sm">Operational</Badge>
+                                         <Badge className="bg-indigo-50 text-indigo-600 border-none px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] rounded-full shadow-sm">Active</Badge>
                                          <p className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">Sync Active</p>
                                     </div>
                                 </div>
@@ -306,9 +289,9 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                                     <div className="grid grid-cols-2 gap-3 bg-slate-50/50 p-6 rounded-[32px] border border-slate-100 relative group/tasks overflow-hidden">
                                         <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover/tasks:opacity-100 transition-opacity" />
                                         {[
-                                            { label: "Identity Verified", icon: CheckCircle2, status: "complete", color: "text-emerald-500", bg: "bg-emerald-50" },
-                                            { label: "Documents Uploaded", icon: CheckCircle2, status: "complete", color: "text-emerald-500", bg: "bg-emerald-50" },
-                                            { label: "Policy Signed", icon: CheckCircle2, status: "complete", color: "text-emerald-500", bg: "bg-emerald-50" },
+                                            { label: "Identity Verified", icon: CheckCircle2, status: "complete", color: "text-indigo-500", bg: "bg-indigo-50" },
+                                            { label: "Documents Uploaded", icon: CheckCircle2, status: "complete", color: "text-indigo-500", bg: "bg-indigo-50" },
+                                            { label: "Policy Signed", icon: CheckCircle2, status: "complete", color: "text-indigo-500", bg: "bg-indigo-50" },
                                             { label: "Training Pending", icon: AlertCircle, status: "pending", color: "text-amber-500", bg: "bg-amber-50" },
                                         ].map((task, i) => (
                                             <div key={i} className="flex items-center gap-3 relative z-10 transition-all hover:translate-x-1">
@@ -323,26 +306,28 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                                     </div>
 
                                     {/* ACTION LAYER */}
-                                    <div className="pt-2 border-t border-transparent flex items-center justify-between gap-3">
+                                    <div className="pt-4 border-t border-slate-50 dark:border-white/5 space-y-3">
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <Button 
+                                                variant="outline" 
+                                                onClick={(e) => { e.stopPropagation(); toast.info("Correction request dispatched."); }} 
+                                                className="h-11 rounded-xl border-slate-200 text-slate-500 bg-white hover:bg-slate-50 font-black text-[8px] uppercase tracking-widest transition-all px-2"
+                                            >
+                                                Request Correction
+                                            </Button>
+                                            <Button 
+                                                variant="outline"
+                                                onClick={(e) => { e.stopPropagation(); setSelectedUser(emp); }} 
+                                                className="h-11 rounded-xl border-indigo-100 text-indigo-600 bg-indigo-50/50 hover:bg-indigo-100 font-black text-[8px] uppercase tracking-widest transition-all gap-2 px-2"
+                                            >
+                                                <UserCircle className="w-3.5 h-3.5" /> View Profile
+                                            </Button>
+                                        </div>
                                         <Button 
-                                            variant="outline" 
-                                            onClick={(e) => { e.stopPropagation(); toast.info("Correction request dispatched."); }} 
-                                            className="h-12 flex-1 rounded-[16px] border-slate-200 text-slate-600 bg-white hover:bg-slate-50 font-black text-[9px] uppercase tracking-widest transition-all gap-2"
+                                            onClick={(e) => { e.stopPropagation(); toast.success("Member Approved."); }} 
+                                            className="w-full h-12 rounded-xl bg-indigo-600 hover:bg-slate-950 text-white font-black text-[9px] uppercase tracking-widest transition-all gap-2 shadow-lg shadow-indigo-100"
                                         >
-                                            Request Correction
-                                        </Button>
-                                        <Button 
-                                            variant="outline"
-                                            onClick={(e) => { e.stopPropagation(); setSelectedUser(emp); }} 
-                                            className="h-12 flex-1 rounded-[16px] border-indigo-200 text-indigo-600 bg-indigo-50 hover:bg-indigo-100 font-black text-[9px] uppercase tracking-widest transition-all gap-2"
-                                        >
-                                            <UserCircle className="w-4 h-4" /> View Profile
-                                        </Button>
-                                        <Button 
-                                            onClick={(e) => { e.stopPropagation(); toast.success("Personnel Node Approved."); }} 
-                                            className="h-12 flex-1 rounded-[16px] bg-emerald-500 hover:bg-emerald-600 text-white font-black text-[9px] uppercase tracking-widest transition-all gap-2 shadow-lg shadow-emerald-200"
-                                        >
-                                            Approve Onboarding
+                                            Confirm Onboarding
                                         </Button>
                                     </div>
                                 </div>

@@ -275,9 +275,8 @@ export default function ClockWidget({ token, initialData }: { token: string, ini
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleClockOut} className="bg-indigo-600">
-                            Confirm
+                        <AlertDialogAction onClick={handleClockOut} className="w-full bg-indigo-600 hover:bg-black text-white h-12 rounded-xl font-bold transition-all active:scale-95">
+                            Confirm Session End
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

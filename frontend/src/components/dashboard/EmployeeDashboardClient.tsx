@@ -34,6 +34,7 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
     const [mounted, setMounted] = useState(false)
     const [summary, setSummary] = useState(initialData?.summary || { totalHours: "0", overtimeHours: "0", daysWorked: 0, chartData: [] })
     const announcements = initialData?.announcements || []
+    const [latestPayslip, setLatestPayslip] = useState(initialData?.latestPayslip || null)
     const [liveTime, setLiveTime] = useState<Date | null>(null)
 
     useEffect(() => {
@@ -97,7 +98,17 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
     useEffect(() => {
         const controller = new AbortController()
         fetchLiveData(controller.signal)
-        pollRef.current = setInterval(() => fetchLiveData(), 30_000)
+        pollRef.current = setInterval(() => {
+            fetchLiveData()
+            // Also refresh dashboard data for payslips etc
+            fetch(`${API_BASE_URL}/dashboard/employee`, {
+                headers: { Authorization: `Bearer ${token}` }
+            }).then(r => r.ok && r.json()).then(d => {
+                if (d) {
+                    setLatestPayslip(d.latestPayslip)
+                }
+            })
+        }, 30000)
         return () => {
             controller.abort()
             if (pollRef.current) clearInterval(pollRef.current)
@@ -427,6 +438,47 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                                 </motion.div>
                             ))}
                         </div>
+
+                        {/* ── COMPENSATION SEGMENT (LATEST PAYSLIP) ── */}
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.98 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden"
+                        >
+                            <div className="flex flex-col md:flex-row">
+                                <div className="flex-1 p-6 flex items-center justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <div className="p-3 rounded-xl bg-emerald-50">
+                                            <Zap className="w-5 h-5 text-emerald-600" />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-sm font-bold text-slate-900 leading-tight">Latest Disbursement</h3>
+                                            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest mt-0.5">
+                                                {latestPayslip ? `${latestPayslip.month} ${latestPayslip.year}` : "Cycle Pending"}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="text-2xl font-black text-slate-900 tracking-tight">
+                                            {latestPayslip ? `₹${latestPayslip.amount.toLocaleString()}` : "₹0.00"}
+                                        </p>
+                                        <Badge className={cn(
+                                            "text-[8px] font-black uppercase px-2 py-0.5 mt-1 border-none shadow-none",
+                                            latestPayslip ? "bg-emerald-50 text-emerald-600" : "bg-slate-100 text-slate-400"
+                                        )}>
+                                            {latestPayslip ? "Released" : "In Queue"}
+                                        </Badge>
+                                    </div>
+                                </div>
+                                <div className="bg-slate-50 border-l border-slate-100 p-4 md:w-48 flex items-center justify-center">
+                                    <Link href="/payslip" className="w-full">
+                                        <Button variant="outline" className="w-full h-10 rounded-xl text-[10px] font-black uppercase tracking-widest border-slate-200 bg-white hover:bg-white hover:border-indigo-200 hover:text-indigo-600 shadow-sm">
+                                            View Slip
+                                        </Button>
+                                    </Link>
+                                </div>
+                            </div>
+                        </motion.div>
 
                         {/* Weekly Calendar */}
                         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">

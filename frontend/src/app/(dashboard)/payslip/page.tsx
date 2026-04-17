@@ -294,7 +294,14 @@ export default function PayslipPage() {
                                 </CardHeader>
                                 <CardContent className="p-0">
                                     {payslips.length === 0 ? (
-                                        <div className="p-20 text-center text-slate-400 font-bold uppercase text-[10px] tracking-widest">No matching documents in vault</div>
+                                        <div className="p-20 text-center space-y-4">
+                                            <div className="w-16 h-16 rounded-3xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-white/5 flex items-center justify-center mx-auto mb-6">
+                                                <FileText className="w-8 h-8 text-slate-200 dark:text-slate-700" />
+                                            </div>
+                                            <h3 className="text-sm font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest leading-none">No Released Payslips</h3>
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Synchronizing with HR Manager Vault</p>
+                                            <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest italic pt-4">Your payslips will appear here once released by HR.</p>
+                                        </div>
                                     ) : (
                                         <table className="w-full text-left">
                                             <thead className="bg-slate-50/50 dark:bg-slate-800/20">

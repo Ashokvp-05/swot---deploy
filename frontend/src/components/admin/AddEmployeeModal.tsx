@@ -143,23 +143,17 @@ export default function AddEmployeeModal({ token, employee, onClose, onSuccess }
                     {/* Header */}
                     <div className="px-10 py-8 border-b border-slate-50 flex justify-between items-center bg-white">
                         <div className="flex items-center gap-5">
-                            <div className={cn(
-                                "w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-2xl transition-transform hover:scale-110",
-                                isEditing ? "bg-amber-500 shadow-amber-200" : "bg-indigo-600 shadow-indigo-200"
-                            )}>
-                                {isEditing ? <Edit3 className="w-6 h-6" /> : <UserPlus className="w-6 h-6" />}
-                            </div>
                             <div>
                                 <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter italic font-brand leading-none">
-                                    {isEditing ? "Update Profile" : "Add New Employee"}
+                                    {isEditing ? "Edit Details" : "Add Employee"}
                                 </h3>
                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2 leading-none">
-                                    {isEditing ? "Modifying existing personnel record" : "Employee Registration · Section A"}
+                                    {isEditing ? "Change information" : "Fill out the form below"}
                                 </p>
                             </div>
                         </div>
-                        <button onClick={onClose} className="w-10 h-10 flex items-center justify-center hover:bg-slate-50 rounded-xl transition-colors">
-                            <X className="w-5 h-5 text-slate-400" />
+                        <button onClick={onClose} className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all">
+                            <X className="w-5 h-5" />
                         </button>
                     </div>
 
@@ -174,12 +168,12 @@ export default function AddEmployeeModal({ token, employee, onClose, onSuccess }
                         <div className="grid grid-cols-2 gap-10 mb-10">
                             <div className="space-y-6">
                                 <div>
-                                    <label className={labelCls}>Full Name</label>
-                                    <Input value={form.name} onChange={e => set("name", e.target.value)} placeholder="Enter full identity" className={inputCls} />
+                                    <label className={labelCls}>Name</label>
+                                    <Input value={form.name} onChange={e => set("name", e.target.value)} placeholder="Full Name" className={inputCls} />
                                 </div>
                                 <div>
                                     <label className={labelCls}>Email Address</label>
-                                    <Input value={form.email} onChange={e => set("email", e.target.value)} placeholder="e.g. name@company.com" className={inputCls} />
+                                    <Input value={form.email} onChange={e => set("email", e.target.value)} placeholder="name@company.com" className={inputCls} />
                                 </div>
                                 {(!isEditing || form.password) && (
                                     <div className="relative">
@@ -198,32 +192,32 @@ export default function AddEmployeeModal({ token, employee, onClose, onSuccess }
                                 </div>
                             </div>
 
-                            <div className="space-y-6">
+                             <div className="space-y-6">
                                 <div>
-                                    <label className={labelCls}>Select Role</label>
+                                    <label className={labelCls}>Role</label>
                                     <select value={form.roleId} onChange={e => set("roleId", e.target.value)} className={selectCls}>
-                                        <option value="">Choose Priority</option>
-                                        {roles.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+                                        <option value="">Select Role</option>
+                                        {roles.filter(r => r.name !== 'SUPER_ADMIN').map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
                                     </select>
                                 </div>
                                 <div>
                                     <label className={labelCls}>Department</label>
                                     <select value={form.deptId} onChange={e => set("deptId", e.target.value)} className={selectCls}>
-                                        <option value="">Choose Department</option>
+                                        <option value="">Select Department</option>
                                         {depts.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
                                     </select>
                                 </div>
                                 <div>
-                                    <label className={labelCls}>Job Designation</label>
+                                    <label className={labelCls}>Job Title</label>
                                     <select value={form.designationId} onChange={e => set("designationId", e.target.value)} className={selectCls}>
-                                        <option value="">Choose Title</option>
+                                        <option value="">Select Title</option>
                                         {designations.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
                                     </select>
                                 </div>
                                 <div>
-                                    <label className={labelCls}>Reporting Manager</label>
+                                    <label className={labelCls}>Manager</label>
                                     <select value={form.managerId} onChange={e => set("managerId", e.target.value)} className={selectCls}>
-                                        <option value="">No Direct Manager</option>
+                                        <option value="">No Manager</option>
                                         {managers.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
                                     </select>
                                 </div>
@@ -232,18 +226,15 @@ export default function AddEmployeeModal({ token, employee, onClose, onSuccess }
 
                         <div className="flex items-center justify-between pt-6 border-t border-slate-50">
                             <div className="flex items-center gap-3">
-                                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Security Protocol Active</span>
+                                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Security Active</span>
                             </div>
                             <div className="flex gap-4">
-                                <Button type="button" onClick={onClose} variant="ghost" className="h-12 px-8 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 hover:text-slate-900 transition-all">Cancel</Button>
                                 <Button disabled={loading || success} className={cn(
-                                    "h-12 px-10 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] gap-3 shadow-2xl transition-all active:scale-95",
+                                    "h-14 px-12 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 font-brand",
                                     isEditing ? "bg-amber-500 hover:bg-amber-600 shadow-amber-100" : "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-100"
                                 )}>
-                                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 
-                                     success ? <CheckCircle2 className="w-4 h-4" /> : 
-                                     isEditing ? "Update Personnel" : "Register Employee"}
+                                    {loading ? "..." : success ? "Done" : isEditing ? "Save Parameters" : "Provision Employee"}
                                 </Button>
                             </div>
                         </div>

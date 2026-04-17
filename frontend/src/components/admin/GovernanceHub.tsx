@@ -31,9 +31,9 @@ export default function GovernanceHub({ token }: { token: string }) {
             {/* GOVERNANCE METRICS */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {[
-                    { label: "Active Project Nodes", value: projects.length, icon: Briefcase, color: "text-indigo-500" },
-                    { label: "Cultural Stability Index", value: `${stats.avgWellness}%`, icon: Heart, color: "text-rose-500" },
-                    { label: "Tactical Ticket Load", value: stats.activeTickets, icon: AlertCircle, color: "text-amber-500" }
+                    { label: "Working Projects", value: projects.length, icon: Briefcase, color: "text-indigo-500" },
+                    { label: "Team Happiness", value: `${stats.avgWellness}%`, icon: Heart, color: "text-rose-500" },
+                    { label: "Active Tickets", value: stats.activeTickets, icon: AlertCircle, color: "text-amber-500" }
                 ].map((m, i) => (
                     <Card key={i} className="bg-white dark:bg-slate-900 border-slate-100 dark:border-white/5 shadow-2xl rounded-[2.5rem] overflow-hidden group hover:ring-2 hover:ring-indigo-500/20 transition-all">
                         <CardContent className="p-8">
@@ -55,8 +55,8 @@ export default function GovernanceHub({ token }: { token: string }) {
             <div className="space-y-6">
                 <div className="flex justify-between items-center px-4">
                     <h3 className="text-xl font-black italic uppercase text-slate-900 dark:text-white">Project <span className="text-indigo-600">Oversight</span></h3>
-                    <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest gap-2">
-                        <Plus className="w-4 h-4" /> Initialize Protocol
+                    <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest gap-2 font-brand">
+                        New Project
                     </Button>
                 </div>
 

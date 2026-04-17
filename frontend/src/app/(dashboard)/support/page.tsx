@@ -98,10 +98,10 @@ export default function SupportAdminDashboard() {
                     const newLog = {
                         id: `EV-${Math.floor(Math.random() * 10000)}`,
                         msg: [
-                            "Identity Node Verified", 
-                            "Packet Transmission Stable", 
-                            "Shard Decryption Active", 
-                            "Infrastructure Pulse: Optimal"
+                            "User security checked", 
+                            "Connection is stable", 
+                            "Data encryption active", 
+                            "System is running perfectly"
                         ][Math.floor(Math.random() * 4)],
                         time: new Date().toLocaleTimeString(),
                         type: Math.random() > 0.8 ? 'WARN' : 'INFO'
@@ -119,8 +119,8 @@ export default function SupportAdminDashboard() {
 
     const [tickets, setTickets] = useState<any[]>([])
     const [logs, setLogs] = useState([
-        { id: "EV-001", msg: "Support Console Handshake Established", time: "12:00:01", type: "INFO" },
-        { id: "EV-002", msg: "Strategic Oversight Shard Synchronized", time: "12:00:03", type: "INFO" }
+        { id: "EV-001", msg: "Support screen is ready", time: "12:00:01", type: "INFO" },
+        { id: "EV-002", msg: "Information successfully synced", time: "12:00:03", type: "INFO" }
     ])
     const [filterState, setFilterState] = useState('PENDING')
     const [resolvingId, setResolvingId] = useState<string | null>(null)
@@ -130,7 +130,7 @@ export default function SupportAdminDashboard() {
         if (!token) return
 
         setResolvingId(id)
-        toast.loading(`Deploying Fix to ${id}...`)
+        toast.loading(`Fixing issue ${id}...`)
         
         try {
             const res = await fetch(`${API_BASE_URL}/tickets/${id}`, {
@@ -143,7 +143,7 @@ export default function SupportAdminDashboard() {
             })
 
             if (res.ok) {
-                toast.success(`Node ${id} Integrity Restored`)
+                toast.success(`Issue ${id} has been fixed`)
                 fetchTickets()
                 fetchAnalytics()
             } else {
@@ -172,11 +172,10 @@ export default function SupportAdminDashboard() {
     }
 
     const navItems = [
-        { id: "dashboard", label: "Control Hub", icon: LayoutDashboard },
+        { id: "dashboard", label: "Overview", icon: LayoutDashboard },
         { id: "tickets", label: "Support Tickets", icon: Ticket },
-        { id: "users", label: "User Management", icon: Users },
-        { id: "system", label: "System Health", icon: Activity },
-        { id: "logs", label: "Diagnostic Logs", icon: SearchCheck },
+        { id: "users", label: "Staff Management", icon: Users },
+        { id: "logs", label: "System History", icon: SearchCheck },
     ]
 
     if (!hasMounted) return <div className="min-h-screen bg-slate-50 dark:bg-slate-950" />
@@ -187,8 +186,8 @@ export default function SupportAdminDashboard() {
             {/* Professional Sidebar */}
             <aside className="w-64 h-full hidden lg:flex flex-col bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 py-8 px-4 z-50">
                 <div className="mb-8 px-3">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Support Administration</p>
-                    <h2 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">Support Console</h2>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Support Management</p>
+                    <h2 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">Support Desk</h2>
                 </div>
 
                 <nav className="flex-1 space-y-1 overflow-y-auto">
@@ -244,9 +243,9 @@ export default function SupportAdminDashboard() {
                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                                  {[
                                      { label: "Active Tickets", value: stats.tickets, icon: Ticket, color: "text-rose-600", bg: "bg-rose-50" },
-                                     { label: "Nodes Resolved", value: stats.resolved, icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-50" },
+                                     { label: "Issues Fixed", value: stats.resolved, icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-50" },
                                      { label: "System Load", value: stats.load, icon: Activity, color: "text-indigo-600", bg: "bg-indigo-50" },
-                                     { label: "Agent Power", value: stats.power, icon: Zap, color: "text-amber-600", bg: "bg-amber-50" },
+                                     { label: "Team Power", value: stats.power, icon: Zap, color: "text-amber-600", bg: "bg-amber-50" },
                                  ].map((stat, i) => (
                                      <Card key={i} className="p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group active:scale-95">
                                          <div className={cn("w-12 h-12 rounded-[1.25rem] flex items-center justify-center mb-6 transition-transform group-hover:scale-110", stat.bg)}>
@@ -267,8 +266,8 @@ export default function SupportAdminDashboard() {
                                             <SearchCheck className="w-8 h-8 text-white" />
                                         </div>
                                         <div>
-                                            <h2 className="text-2xl font-black tracking-tighter text-slate-900 dark:text-white uppercase leading-none italic">Ticket <span className="text-indigo-600">Registry</span></h2>
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mt-3">Active Troubleshooting Matrix</p>
+                                             <h2 className="text-2xl font-black tracking-tighter text-slate-900 dark:text-white uppercase leading-none italic">Ticket <span className="text-indigo-600">List</span></h2>
+                                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mt-3">Active Issues to Solve</p>
                                         </div>
                                     </div>
 
@@ -295,12 +294,12 @@ export default function SupportAdminDashboard() {
                                             <div className={cn("w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6", filterState === 'RESOLVED' ? 'bg-indigo-50' : 'bg-emerald-50')}>
                                                 {filterState === 'RESOLVED' ? <Clock className="w-10 h-10 text-indigo-400" /> : <CheckCircle2 className="w-10 h-10 text-emerald-500" />}
                                             </div>
-                                            <h3 className="text-xl font-black text-slate-900 uppercase italic tracking-tighter">
-                                                {filterState === 'RESOLVED' ? 'No Historical Data' : 'All Nodes Verified'}
-                                            </h3>
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2 italic">
-                                                {filterState === 'RESOLVED' ? 'All diagnostic fixes are currently pending' : 'Infrastructure operational integrity is optimal'}
-                                            </p>
+                                             <h3 className="text-xl font-black text-slate-900 uppercase italic tracking-tighter">
+                                                 {filterState === 'RESOLVED' ? 'No Finished Work' : 'Everything is Solved'}
+                                             </h3>
+                                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2 italic">
+                                                 {filterState === 'RESOLVED' ? 'You have no resolved tickets yet' : 'The system is running perfectly'}
+                                             </p>
                                         </div>
                                     ) : (
                                         filteredTickets.map((ticket, i) => (
@@ -352,7 +351,7 @@ export default function SupportAdminDashboard() {
                                                                 </>
                                                             ) : (
                                                                 <>
-                                                                    <ShieldCheck className="w-4 h-4 mr-2" /> Resolve Node
+                                                                     <ShieldCheck className="w-4 h-4 mr-2" /> Mark as Fixed
                                                                 </>
                                                             )}
                                                         </Button>
@@ -363,10 +362,10 @@ export default function SupportAdminDashboard() {
                                     )}
                                 </div>
                                 <div className="mt-12 pt-8 border-t border-slate-50 flex items-center justify-between">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2 leading-none italic">
-                                        <Database className="w-3.5 h-3.5" /> Node integrity finalized: 100%
-                                    </p>
-                                    <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest italic">Encrypted Shard Session</p>
+                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2 leading-none italic">
+                                         <Database className="w-3.5 h-3.5" /> All issues checked: 100%
+                                     </p>
+                                     <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest italic">Secure Support Session</p>
                                 </div>
                             </Card>
                         )}
@@ -375,11 +374,11 @@ export default function SupportAdminDashboard() {
                              <Card className="p-12 rounded-[4rem] bg-white dark:bg-slate-900 border border-slate-100 shadow-2xl shadow-indigo-100/10">
                                  <div className="flex items-center justify-between mb-12">
                                      <div>
-                                         <h2 className="text-2xl font-black italic text-slate-900 uppercase tracking-tighter">Identity Registry</h2>
-                                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">Managing 1,248 Organizational Shards</p>
+                                         <h2 className="text-2xl font-black italic text-slate-900 uppercase tracking-tighter">Staff List</h2>
+                                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">Managing 1,248 Team Members</p>
                                      </div>
                                      <Button variant="outline" className="rounded-2xl font-black uppercase text-[9px] tracking-widest px-8 h-12 border-slate-100">
-                                         Export Shards
+                                         Export List
                                      </Button>
                                  </div>
                                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -410,57 +409,37 @@ export default function SupportAdminDashboard() {
                              </Card>
                         )}
 
-                        {currentTab === "system" && (
-                             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                                 {[
-                                     { label: "Identity Node A1", status: "Synchronized", uptime: "99.9%" },
-                                     { label: "Payroll Cluster", status: "Active", uptime: "100%" },
-                                     { label: "Auth Gateway", status: "Pulse Found", uptime: "99.4%" },
-                                 ].map((node, i) => (
-                                     <Card key={i} className="p-12 rounded-[4rem] bg-white border border-slate-50 shadow-xl shadow-indigo-100/10 text-center">
-                                         <div className="w-20 h-20 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-8 animate-pulse shadow-inner">
-                                             <ShieldCheck className="w-10 h-10 text-emerald-500" />
-                                         </div>
-                                         <h3 className="text-xl font-black text-slate-900 uppercase italic tracking-tighter">{node.label}</h3>
-                                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-3 mb-8">{node.status}</p>
-                                         <div className="pt-8 border-t border-slate-50">
-                                             <p className="text-4xl font-black text-slate-900 italic tracking-tighter tabular-nums">{node.uptime}</p>
-                                             <p className="text-[9px] font-black text-indigo-400 uppercase tracking-[0.2em] mt-2">Operational Integrity</p>
-                                         </div>
-                                     </Card>
-                                 ))}
-                             </div>
-                        )}
+
 
                         {currentTab === "logs" && (
-                             <Card className="rounded-[4rem] bg-slate-950 border border-indigo-500/20 shadow-2xl p-1 relative overflow-hidden h-[700px] flex flex-col">
-                                 <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-indigo-500/5 to-transparent pointer-events-none" />
-                                 <div className="flex items-center justify-between px-10 pt-10 pb-8 border-b border-indigo-500/10 bg-slate-900/50 backdrop-blur-sm relative z-10">
+                             <Card className="rounded-[4rem] bg-white border border-slate-200 shadow-xl p-1 relative overflow-hidden h-[700px] flex flex-col">
+                                 <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-indigo-50 to-transparent pointer-events-none" />
+                                 <div className="flex items-center justify-between px-10 pt-10 pb-8 border-b border-slate-100 bg-white/50 backdrop-blur-sm relative z-10">
                                      <div className="flex items-center gap-5">
-                                         <div className="w-4 h-4 rounded-full bg-rose-500 animate-pulse shadow-lg shadow-rose-500/50" />
+                                         <div className="w-4 h-4 rounded-full bg-indigo-500 animate-pulse shadow-lg shadow-indigo-500/20" />
                                          <div>
-                                             <h2 className="text-sm font-black text-white uppercase tracking-[0.2em] italic leading-none">Diagnostic Stream</h2>
-                                             <p className="text-[10px] font-black text-indigo-400/60 uppercase tracking-widest mt-2">Live Shard Feed // SEC-OPS-04</p>
+                                             <h2 className="text-sm font-black text-slate-900 uppercase tracking-[0.2em] italic leading-none">System Logs</h2>
+                                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">Real-time updates // Monitoring</p>
                                          </div>
                                      </div>
                                      <div className="flex items-center gap-8">
                                          <div className="flex items-center gap-2">
                                              <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                                             <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">Connected</span>
+                                             <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">Connected</span>
                                          </div>
-                                         <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest italic">{logs.length} Operations Indexed</span>
+                                         <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest italic">{logs.length} Logged Activities</span>
                                      </div>
                                  </div>
                                  <div className="flex-1 overflow-y-auto p-12 space-y-4 no-scrollbar font-mono relative z-10">
                                      {logs.map((log, i) => (
                                          <div key={i} className={cn(
-                                             "flex items-start gap-6 text-[11px] leading-relaxed group py-1 border-b border-white/5 last:border-none",
-                                             log.type === 'WARN' ? "text-amber-400" : "text-indigo-400"
+                                             "flex items-start gap-6 text-[11px] leading-relaxed group py-1 border-b border-slate-50 last:border-none",
+                                             log.type === 'WARN' ? "text-amber-600" : "text-indigo-600"
                                          )}>
-                                             <span className="text-slate-700 font-bold shrink-0 tabular-nums">[{log.time}]</span>
+                                             <span className="text-slate-400 font-bold shrink-0 tabular-nums">[{log.time}]</span>
                                              <span className="font-bold flex-1 tracking-tight">
-                                                 <span className={cn("px-2 py-0.5 rounded-md mr-3 text-[9px] font-black", log.type === 'WARN' ? "bg-amber-400/10 text-amber-500" : "bg-indigo-500/10 text-indigo-400")}>{log.type}</span>
-                                                 &gt; {log.msg} <span className="text-slate-800 italic ml-3 opacity-0 group-hover:opacity-100 transition-opacity">-- shard_cid:{log.id}</span>
+                                                 <span className={cn("px-2 py-0.5 rounded-md mr-3 text-[9px] font-black", log.type === 'WARN' ? "bg-amber-100 text-amber-700" : "bg-indigo-100 text-indigo-700")}>{log.type}</span>
+                                                 &gt; {log.msg} <span className="text-slate-300 italic ml-3 opacity-0 group-hover:opacity-100 transition-opacity">-- log_id:{log.id}</span>
                                              </span>
                                          </div>
                                      ))}

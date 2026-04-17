@@ -94,19 +94,19 @@ const getBasicItems = (role?: string) => {
 }
 
 const adminDropdownItems = [
-    { name: "Executive Hub", href: "/admin/dashboard", icon: LayoutDashboard },
-    { name: "Organization Control", href: "/admin/organization", icon: Building2 },
-    { name: "Intelligence Reports", href: "/admin/reports", icon: BarChart3 },
-    { name: "Security Audit Logs", href: "/admin/audit-logs", icon: ShieldCheck },
-    { name: "System Settings", href: "/admin/settings", icon: Settings },
-    { name: "Database Vault", href: "/admin/database", icon: Database },
+    { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
+    { name: "Organization", href: "/admin/organization", icon: Building2 },
+    { name: "Reports", href: "/admin/reports", icon: BarChart3 },
+    { name: "Audit Logs", href: "/admin/audit-logs", icon: ShieldCheck },
+    { name: "Settings", href: "/admin/settings", icon: Settings },
+    { name: "Database", href: "/admin/database", icon: Database },
 ]
 
 const getRoleDropdown = (role?: string) => {
     const r = role?.toUpperCase()
     if (!r) return null
     if (r === "MANAGER" || r === "HR" || r === "HR_MANAGER" || r === "AUDITOR" || r === "SUPPORT" || r === "SUPPORT_ADMIN") return null
-    if (r === "ADMIN" || r === "COMPANY_ADMIN" || r === "SUPER_ADMIN") return { label: "Governance Portal", items: adminDropdownItems }
+    if (r === "ADMIN" || r === "COMPANY_ADMIN" || r === "SUPER_ADMIN") return { label: "Portal", items: adminDropdownItems }
     return null
 }
 

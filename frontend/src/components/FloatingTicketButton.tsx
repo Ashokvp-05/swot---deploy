@@ -223,15 +223,14 @@ export default function FloatingTicketButton() {
                                 onChange={(e) => setNewTicket({ ...newTicket, attachments: e.target.value })}
                             />
                         </div>
-                        <div className="pt-2 flex justify-end gap-3">
-                            <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
+                        <div className="pt-2">
                             <Button
                                 onClick={handleSubmit}
-                                className="bg-indigo-600 hover:bg-indigo-700 min-w-[120px]"
+                                className="w-full bg-indigo-600 hover:bg-black text-white h-12 rounded-xl font-bold transition-all active:scale-95"
                                 disabled={submitting}
                             >
                                 {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <PlusCircle className="w-4 h-4 mr-2" />}
-                                {submitting ? "Submitting..." : "Submit Ticket"}
+                                {submitting ? "Transmitting..." : "Initialize Support Ticket"}
                             </Button>
                         </div>
                     </TabsContent>
