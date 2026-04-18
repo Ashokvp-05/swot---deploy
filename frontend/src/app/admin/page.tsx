@@ -133,13 +133,12 @@ function AdminDashboardContent() {
         // 2. Employee Management
         { id: "employees",   label: "Employee Management", tab: "employees",   icon: Users,           roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER"], group: "hr" },
         // 3. Onboarding
-        { id: "onboarding",  label: "Onboarding",          tab: "onboarding",  icon: UserPlus,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN"], group: "hr" },
+        { id: "onboarding",  label: "Onboarding",          tab: "onboarding",  icon: UserPlus,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR"], group: "hr" },
         // 4. Attendance
         { id: "attendance",  label: "Attendance",          tab: "attendance",  icon: Clock,           roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER"], group: "finance" },
         // 5. Leave Management
         { id: "leave",       label: "Leave Management",    tab: "leave",       icon: Calendar,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER"], group: "finance" },
-        // 6. Payroll
-        { id: "payroll",     label: "Payroll",             tab: "payroll",     icon: CreditCard,      roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","PAYROLL_ADMIN"], group: "finance" },
+        { id: "payroll",     label: "Payroll",             tab: "payroll",     icon: CreditCard,      roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","PAYROLL_ADMIN"], group: "finance" },
         // 7. Performance
         { id: "performance", label: "Performance",         tab: "performance", icon: TrendingUp,      roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER"], group: "company" },
         // 8. Departments / Organization
@@ -156,7 +155,7 @@ function AdminDashboardContent() {
         { id: "settings",    label: "Settings",            tab: "settings",    icon: Settings,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN"], group: "admin" },
     ]
 
-    const navItems = allNavItems.filter(item => item.roles.includes(role) || role === "ADMIN" || role === "COMPANY_ADMIN" || (role === "SUPER_ADMIN" && item.id !== "policies"))
+    const navItems = allNavItems.filter(item => item.roles.includes(role) || role === "ADMIN" || role === "COMPANY_ADMIN" || (role === "SUPER_ADMIN" && item.id !== "policies" && item.id !== "onboarding" && item.id !== "payroll"))
 
     return (
         <div className="min-h-screen bg-[#f0f2f8] flex font-body">

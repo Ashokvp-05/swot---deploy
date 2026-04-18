@@ -64,35 +64,23 @@ export default function UserManagementTable({ token, userRole }: { token: string
     return (
         <div className="bg-white border border-slate-100 rounded-[32px] overflow-hidden shadow-sm h-full flex flex-col font-body">
             
-            {/* SEARCH & COMMAND BAR */}
-            <div className="p-8 border-b border-slate-50 flex flex-col md:flex-row justify-between items-center gap-6 bg-white shrink-0">
-                <div className="flex items-center gap-5">
-                    <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-100">
-                        <UserCheck className="w-6 h-6" />
-                    </div>
-                    <div>
-                        <h3 className="text-xl font-bold text-slate-900 tracking-tight font-brand uppercase">Personnel Roster</h3>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Strategic Talent Inventory · {users.length} Total</p>
-                    </div>
+            {/* FUNCTIONAL COMMAND BAR */}
+            <div className="p-6 border-b border-slate-50 flex justify-between items-center gap-6 bg-white shrink-0">
+                <div className="relative flex-1 max-w-md group">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-indigo-500 transition-colors" />
+                    <Input 
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        placeholder="Filter personnel registry..."
+                        className="pl-11 h-12 bg-slate-50 border-none rounded-2xl text-xs font-bold focus-visible:ring-2 focus-visible:ring-indigo-100 transition-all"
+                    />
                 </div>
-
-                <div className="flex items-center gap-4 w-full md:w-auto">
-                    <div className="relative flex-1 md:w-80 group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-indigo-500 transition-colors" />
-                        <Input 
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Filter by name or email..."
-                            className="pl-11 h-12 bg-slate-50 border-none rounded-2xl text-xs font-bold focus-visible:ring-2 focus-visible:ring-indigo-100 transition-all"
-                        />
-                    </div>
-                    <Button 
-                        onClick={() => setIsAddOpen(true)}
-                        className="h-14 bg-slate-900 hover:bg-black text-white rounded-2xl px-10 text-[11px] font-black uppercase tracking-widest shadow-xl transition-all active:scale-95"
-                    >
-                        Add Employee
-                    </Button>
-                </div>
+                <Button 
+                    onClick={() => setIsAddOpen(true)}
+                    className="h-12 bg-slate-900 hover:bg-black text-white rounded-xl px-8 text-[10px] font-black uppercase tracking-widest shadow-xl transition-all active:scale-95"
+                >
+                    Add Employee
+                </Button>
             </div>
 
             {/* TABLE MANIFEST - ADDED COLOR DIVERSITY & CLARITY */}

@@ -174,7 +174,6 @@ export default function PayrollControlCenter({ token }: { token: string }) {
                     {[
                         { id: 'batches', label: 'Batches', icon: CreditCard },
                         { id: 'salary', label: 'Salary Structures', icon: FileText },
-                        { id: 'reports', label: 'Reports', icon: Activity },
                     ].map((t) => (
                         <button
                             key={t.id}
@@ -361,27 +360,7 @@ export default function PayrollControlCenter({ token }: { token: string }) {
                 </div>
             )}
 
-            {activeTab === 'reports' && (
-                <div className="flex justify-center">
-                    <Card className="p-10 rounded-[44px] border-slate-50 shadow-sm max-w-2xl w-full flex flex-col gap-6">
-                        <div className="flex items-center gap-4">
-                            <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl">
-                                <FileText className="w-6 h-6" />
-                            </div>
-                            <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight font-brand italic">Payroll Reports</h3>
-                        </div>
-                        <p className="text-xs text-slate-400 leading-relaxed uppercase font-bold tracking-tight">Generate high-fidelity snapshots of organizational payroll, tax liability, and statutory compliance for external audits.</p>
-                        <div className="grid grid-cols-2 gap-4 mt-4">
-                            <Button className="h-14 rounded-2xl bg-white border border-slate-100 text-slate-600 hover:bg-slate-50 text-[10px] font-black uppercase tracking-widest font-brand">
-                                Annual Summary
-                            </Button>
-                            <Button className="h-14 rounded-2xl bg-white border border-slate-100 text-slate-600 hover:bg-slate-50 text-[10px] font-black uppercase tracking-widest font-brand">
-                                Tax Manifest
-                            </Button>
-                        </div>
-                    </Card>
-                </div>
-            )}
+
         </div>
     )
 }

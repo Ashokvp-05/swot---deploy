@@ -179,7 +179,7 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
 
     return (
         <div className="min-h-screen bg-[#F4F6FA]">
-            <main className="max-w-[1360px] mx-auto px-6 py-8 lg:px-10 lg:py-10">
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 lg:px-8">
 
                 {/* ── ANNOUNCEMENT BANNER ── */}
                 <AnimatePresence>
@@ -205,29 +205,29 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                 </AnimatePresence>
 
                 {/* ── PAGE HEADER ── */}
-                <div className="mb-8 flex items-end justify-between">
+                <div className="mb-7 flex items-end justify-between gap-4">
                     <div>
                         <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1">
                             {liveTime ? format(liveTime, "EEEE, MMMM dd, yyyy") : ""}
                         </p>
-                        <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
+                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
                             {greeting},{" "}
-                            <span className="text-indigo-600">Personnel</span>
+                            <span className="text-indigo-600">{firstName}</span>
                         </h1>
                     </div>
                     {liveTime && (
-                        <div className="hidden md:flex items-baseline gap-1.5 bg-white rounded-2xl px-6 py-3 border border-slate-100 shadow-sm">
-                            <span className="text-3xl font-black tabular-nums text-slate-900 tracking-tighter">
+                        <div className="hidden md:flex items-baseline gap-1 bg-white rounded-2xl px-5 py-2.5 border border-slate-100 shadow-sm">
+                            <span className="text-2xl font-black tabular-nums text-slate-900 tracking-tighter">
                                 {format(liveTime, "hh:mm")}
                             </span>
-                            <span className="text-lg font-black tabular-nums text-indigo-500 tracking-tighter">
+                            <span className="text-base font-black tabular-nums text-indigo-500 tracking-tighter">
                                 :{format(liveTime, "ss")}
                             </span>
                             <div className="ml-1 flex flex-col items-start">
                                 <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">
                                     {format(liveTime, "a")}
                                 </span>
-                                <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest leading-none mt-1">
+                                <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest leading-none mt-0.5">
                                     IST
                                 </span>
                             </div>
@@ -242,17 +242,17 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                     <div className="lg:col-span-4 xl:col-span-3 space-y-5">
 
                         {/* Profile Card */}
-                        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
-                            <div className="flex items-center gap-4 mb-5">
+                        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+                            <div className="flex items-start gap-4">
                                 <Avatar className="w-14 h-14 border-2 border-indigo-50 shrink-0">
                                     <AvatarImage src={userData?.avatarUrl || user?.image} className="object-cover" />
                                     <AvatarFallback className="bg-indigo-600 text-white font-black text-lg">
-                                        P
+                                        {initials}
                                     </AvatarFallback>
                                 </Avatar>
-                                <div className="min-w-0">
+                                <div className="min-w-0 flex-1">
                                     <h2 className="text-base font-bold text-slate-900 truncate leading-tight">
-                                        Personnel Shard
+                                        {userData?.name || user?.name || "Employee"}
                                     </h2>
                                     <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mt-0.5 truncate">
                                         {roleName}
@@ -270,7 +270,7 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                                     </div>
                                 </div>
                             </div>
-                            <div className="border-t border-slate-50 pt-4 flex items-center justify-between">
+                            <div className="border-t border-slate-100 mt-4 pt-4 flex items-center justify-between">
                                 <div className="flex items-center gap-2 text-slate-400">
                                     <Building2 className="w-3.5 h-3.5" />
                                     <span className="text-[11px] font-medium">Company</span>
@@ -382,7 +382,7 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                     <div className="lg:col-span-8 xl:col-span-9 space-y-6">
 
                         {/* Stat Cards */}
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             {[
                                 {
                                     label: "Total Hours",
@@ -411,19 +411,19 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                                     initial={{ opacity: 0, y: 12 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: i * 0.07 }}
-                                    className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 flex items-start justify-between group hover:shadow-md transition-shadow"
+                                    className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex items-start justify-between group hover:shadow-md transition-shadow"
                                 >
-                                    <div>
-                                        <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-3">
+                                    <div className="flex-1">
+                                        <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
                                             {stat.label}
                                         </p>
-                                        <p className="text-[32px] font-black text-slate-900 tabular-nums leading-none">
+                                        <p className="text-3xl font-black text-slate-900 tabular-nums leading-none">
                                             {stat.value}
                                         </p>
-                                        <p className="text-[10px] text-slate-400 font-medium mt-2">{stat.sub}</p>
+                                        <p className="text-[10px] text-slate-400 font-medium mt-1">{stat.sub}</p>
                                     </div>
                                     <div className={cn(
-                                        "w-11 h-11 rounded-xl flex items-center justify-center shrink-0",
+                                        "w-10 h-10 rounded-xl flex items-center justify-center shrink-0",
                                         stat.accent === 'indigo' && "bg-indigo-50",
                                         stat.accent === 'emerald' && "bg-emerald-50",
                                         stat.accent === 'amber' && "bg-amber-50",
@@ -439,50 +439,10 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                             ))}
                         </div>
 
-                        {/* ── COMPENSATION SEGMENT (LATEST PAYSLIP) ── */}
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.98 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden"
-                        >
-                            <div className="flex flex-col md:flex-row">
-                                <div className="flex-1 p-6 flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <div className="p-3 rounded-xl bg-emerald-50">
-                                            <Zap className="w-5 h-5 text-emerald-600" />
-                                        </div>
-                                        <div>
-                                            <h3 className="text-sm font-bold text-slate-900 leading-tight">Latest Disbursement</h3>
-                                            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest mt-0.5">
-                                                {latestPayslip ? `${latestPayslip.month} ${latestPayslip.year}` : "Cycle Pending"}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="text-2xl font-black text-slate-900 tracking-tight">
-                                            {latestPayslip ? `₹${latestPayslip.amount.toLocaleString()}` : "₹0.00"}
-                                        </p>
-                                        <Badge className={cn(
-                                            "text-[8px] font-black uppercase px-2 py-0.5 mt-1 border-none shadow-none",
-                                            latestPayslip ? "bg-emerald-50 text-emerald-600" : "bg-slate-100 text-slate-400"
-                                        )}>
-                                            {latestPayslip ? "Released" : "In Queue"}
-                                        </Badge>
-                                    </div>
-                                </div>
-                                <div className="bg-slate-50 border-l border-slate-100 p-4 md:w-48 flex items-center justify-center">
-                                    <Link href="/payslip" className="w-full">
-                                        <Button variant="outline" className="w-full h-10 rounded-xl text-[10px] font-black uppercase tracking-widest border-slate-200 bg-white hover:bg-white hover:border-indigo-200 hover:text-indigo-600 shadow-sm">
-                                            View Slip
-                                        </Button>
-                                    </Link>
-                                </div>
-                            </div>
-                        </motion.div>
 
                         {/* Weekly Calendar */}
-                        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
-                            <div className="flex items-center justify-between mb-6">
+                        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+                            <div className="flex items-center justify-between mb-4">
                                 <div>
                                     <h3 className="text-sm font-bold text-slate-900">This Week</h3>
                                     <p className="text-[11px] text-slate-400 font-medium mt-0.5">Your attendance overview</p>
@@ -502,7 +462,7 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                                     const hasHours = dayData?.hours > 0
                                     return (
                                         <div key={idx} className={cn(
-                                            "flex flex-col items-center py-4 px-2 rounded-xl border transition-all",
+                                            "flex flex-col items-center py-3 px-1 rounded-xl border transition-all",
                                             isToday
                                                 ? "bg-indigo-600 border-indigo-600 shadow-lg shadow-indigo-200"
                                                 : hasHours
@@ -510,19 +470,19 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                                                     : "bg-slate-50 border-transparent"
                                         )}>
                                             <p className={cn(
-                                                "text-[9px] font-bold uppercase tracking-widest mb-2",
+                                                "text-[9px] font-bold uppercase tracking-widest mb-1.5",
                                                 isToday ? "text-indigo-200" : "text-slate-400"
                                             )}>
                                                 {format(day, 'eee')}
                                             </p>
                                             <span className={cn(
-                                                "text-sm font-black mb-2.5",
+                                                "text-sm font-black",
                                                 isToday ? "text-white" : "text-slate-800"
                                             )}>
                                                 {format(day, 'dd')}
                                             </span>
                                             <div className={cn(
-                                                "w-1.5 h-1.5 rounded-full",
+                                                "w-1.5 h-1.5 rounded-full mt-1.5",
                                                 hasHours
                                                     ? "bg-emerald-400"
                                                     : isToday
@@ -541,7 +501,7 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                                 <h3 className="text-sm font-bold text-slate-900">Quick Access</h3>
                                 <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">4 modules</span>
                             </div>
-                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                                 {[
                                     {
                                         label: "Leave Request",
@@ -585,18 +545,18 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                                             whileHover={{ y: -2 }}
                                             whileTap={{ scale: 0.98 }}
                                             className={cn(
-                                                "bg-white rounded-2xl border border-slate-100 p-5 cursor-pointer transition-all hover:shadow-md",
+                                                "bg-white rounded-2xl border border-slate-100 p-4 cursor-pointer transition-all hover:shadow-md",
                                                 hub.border
                                             )}
                                         >
                                             <div className={cn(
-                                                "w-10 h-10 rounded-xl flex items-center justify-center mb-4",
+                                                "w-9 h-9 rounded-xl flex items-center justify-center mb-3",
                                                 hub.bg
                                             )}>
-                                                <hub.icon className={cn("w-5 h-5", hub.color)} />
+                                                <hub.icon className={cn("w-4 h-4", hub.color)} />
                                             </div>
                                             <h4 className="text-[12px] font-bold text-slate-900 leading-tight">{hub.label}</h4>
-                                            <p className="text-[10px] text-slate-400 font-medium mt-1 leading-tight">{hub.sub}</p>
+                                            <p className="text-[10px] text-slate-400 font-medium mt-0.5 leading-tight">{hub.sub}</p>
                                         </motion.div>
                                     </Link>
                                 ))}

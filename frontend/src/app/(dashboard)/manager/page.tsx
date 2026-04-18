@@ -94,7 +94,9 @@ export default function HRManagerDashboardPage() {
 
     const token = (session?.user as any)?.accessToken || ""
 
-    const navItems = [
+    const role = (session?.user as any)?.role
+
+    const allNavItems = [
         { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
         { id: "employees", label: "Employee Management", icon: Users },
         { id: "onboarding", label: "Onboarding", icon: UserPlus },
@@ -109,6 +111,11 @@ export default function HRManagerDashboardPage() {
         { id: "user-management", label: "User Management", icon: ShieldCheck },
         { id: "settings", label: "Settings", icon: Settings },
     ]
+
+    // Only SUPER_ADMIN can see User Management
+    const navItems = allNavItems.filter(item => 
+        item.id !== "user-management" || role === "SUPER_ADMIN"
+    )
 
     if (!hasMounted) return <div className="min-h-screen bg-[#fcfdff]" />
 
@@ -132,17 +139,15 @@ export default function HRManagerDashboardPage() {
                             className={cn(
                                 "w-full flex items-center justify-between px-5 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all duration-300 font-brand group relative",
                                 currentTab === item.id 
-                                    ? "bg-slate-900 text-white shadow-2xl shadow-slate-200" 
+                                    ? "text-indigo-600" 
                                     : "text-slate-400 hover:text-slate-900 hover:bg-slate-50"
                             )}
                         >
                             <div className="flex items-center gap-4 w-full">
-                                <item.icon className={cn("w-4 h-4 shrink-0 transition-all", currentTab === item.id ? "text-indigo-400 scale-110" : "text-slate-300 group-hover:text-indigo-600")} />
+                                <item.icon className={cn("w-4 h-4 shrink-0 transition-all", currentTab === item.id ? "text-indigo-600 scale-110" : "text-slate-300 group-hover:text-indigo-600")} />
                                 <span className="text-left">{item.label}</span>
                             </div>
-                            {currentTab === item.id && (
-                                <motion.div layoutId="activeNavPoint" className="absolute right-4 w-1.5 h-1.5 bg-indigo-400 rounded-full shadow-[0_0_8px_rgba(129,140,248,0.8)]" />
-                            )}
+                            {/* Active indicator dot removed for a cleaner look */}
                         </button>
                     ))}
                 </nav>
@@ -177,23 +182,14 @@ export default function HRManagerDashboardPage() {
                                     <h1 className="text-4xl font-black text-slate-900 tracking-tighter leading-none font-brand uppercase italic">
                                         {navItems.find(i => i.id === currentTab)?.label || "Dashboard Hub"}
                                     </h1>
-                                    <div className="flex items-center gap-4 mt-3">
-                                        <Badge className="bg-indigo-600 text-white border-none text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-lg shadow-indigo-200">Authorized Agent</Badge>
-                                        <div className="w-1.5 h-1.5 bg-slate-200 rounded-full" />
-                                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] italic leading-none">Security Shard: {currentTab.toUpperCase()}</p>
+                                    <div className="flex items-center gap-3 mt-3.5">
+                                        <Badge className="bg-indigo-600 text-white border-none text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-lg shadow-indigo-200 shrink-0">Authorized Agent</Badge>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="flex items-center gap-4">
-                                <div className="hidden xl:flex items-center gap-4 px-8 py-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
-                                    <div className="flex items-center gap-2">
-                                        <Radio className="w-4 h-4 text-emerald-500 animate-pulse" />
-                                        <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Protocol: Online</span>
-                                    </div>
-                                    <div className="w-px h-4 bg-slate-100 mx-2" />
-                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">MS: 12ms</span>
-                                </div>
+                                {/* Protocol indicators removed for a cleaner administrative frame */}
                             </div>
                         </div>
 

@@ -128,15 +128,7 @@ export default function LeaveApprovalCenter({ token }: { token: string }) {
 
             {/* HIGH-DENSITY HEADER */}
             <div className="p-6 md:p-8 border-b border-slate-50 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 bg-white shrink-0">
-                <div className="flex items-center gap-5">
-                    <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-50">
-                        <ClipboardList className="w-6 h-6" />
-                    </div>
-                    <div>
-                        <h3 className="text-xl font-bold text-slate-900 tracking-tight font-brand">Leave Approval Registry</h3>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">{pendingCount} Active Tags · {leaves.length} Recorded Units</p>
-                    </div>
-                </div>
+                {/* Module-specific filters remain active for high-density control */}
 
                 <div className="flex items-center gap-2 bg-slate-50 p-1.5 rounded-xl border border-slate-100 w-full xl:w-auto overflow-x-auto no-scrollbar">
                     {(["PENDING", "APPROVED", "REJECTED", "ALL"] as const).map(s => (

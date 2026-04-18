@@ -82,23 +82,7 @@ export default function ExecutiveHub({ token, hideVitals = false }: { token: str
     return (
         <div className="space-y-8 animate-in fade-in duration-1000">
             
-            {/* ── 🚀 DASHBOARD HEADER ────────────────────────────────────────── */}
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                <div className="space-y-1">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200">
-                             <Shield className="w-5 h-5 text-white" />
-                        </div>
-                        <h1 className="text-3xl font-black text-slate-900 tracking-tight italic">
-                            Super Admin <span className="text-slate-300 font-normal mx-2">|</span> <span className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400 align-middle">RELE</span>
-                        </h1>
-                    </div>
-                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-14">Welcome Super Admin • Monitor overall HR operations</p>
-                </div>
-                <Button onClick={fetchAll} variant="outline" className="h-11 px-8 rounded-2xl border-slate-200 bg-white shadow-sm hover:shadow-md transition-all font-black text-[10px] tracking-widest gap-3">
-                    <RefreshCw className="w-4 h-4" /> REFRESH
-                </Button>
-            </div>
+            {/* Executive Internal Header removed for high-fidelity frame integration */}
 
             {/* ── 📊 KPI ROW (MATCHING IMAGE) ─────────────────────────────────── */}
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">

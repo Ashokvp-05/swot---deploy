@@ -93,37 +93,7 @@ export default function HRManagerDashboardHub({ token, onNavigate }: ManagerDash
     return (
         <div className="space-y-12 pb-24 font-body">
             
-            {/* 1. DASHBOARD OVERVIEW SECTION */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-6 border-b border-slate-50 dark:border-white/5">
-                <div className="space-y-1">
-                    <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter">Dash<span className="text-indigo-600">board</span></h2>
-                    <div className="flex items-center gap-3">
-                        <Badge className="bg-emerald-50 text-emerald-600 border-none text-[9px] font-black uppercase tracking-widest px-2.5 py-1">System Status: Online</Badge>
-                        <div className="flex items-center gap-2">
-                            <Activity className={cn("w-3 h-3 text-indigo-400", loading && "animate-spin")} />
-                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Last Sync: {format(syncTime, 'HH:mm:ss')}</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div className="flex items-center gap-3 p-1.5 bg-white dark:bg-slate-950 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm">
-                    <button 
-                        onClick={() => {
-                            const win = window as any;
-                            if(win.setIsAddEmployeeOpen) win.setIsAddEmployeeOpen(true);
-                        }}
-                        className="px-8 py-2.5 rounded-[14px] bg-slate-900 text-[10px] font-black uppercase text-white tracking-widest hover:bg-black transition-all active:scale-95"
-                    >
-                        Add Employee
-                    </button>
-                    <button 
-                         onClick={() => { fetchAll(); toast.success("Real-time Matrix Synchronized") }}
-                         className="p-2.5 rounded-[14px] bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-all active:scale-90"
-                    >
-                         <Zap className="w-4 h-4" />
-                    </button>
-                </div>
-            </div>
+            {/* Top header removed to favor global sticky frame */}
 
             {/* 2. OVERVIEW METRICS */}
             <div className="space-y-6">
