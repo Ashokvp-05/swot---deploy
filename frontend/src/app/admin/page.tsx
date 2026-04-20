@@ -59,6 +59,8 @@ const PayrollControlCenter = dynamic(() => import("@/components/admin/PayrollCon
 const BroadcastCenter = dynamic(() => import("@/components/admin/BroadcastCenter").then(m => m.BroadcastCenter), { ssr: false })
 const DepartmentReports = dynamic(() => import("@/components/admin/DepartmentReports"), { ssr: false })
 const ManagerReports = dynamic(() => import("@/components/manager/ManagerReports"), { ssr: false })
+const OnboardingSuite = dynamic(() => import("@/components/admin/OnboardingSuite"), { ssr: false })
+const PerformanceHub = dynamic(() => import("@/components/admin/PerformanceHub"), { ssr: false })
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  GLOBAL STYLES (Admin Hub Aesthetics)
@@ -127,7 +129,7 @@ function AdminDashboardContent() {
         // 2. Employee Management
         { id: "employees",   label: "Employee Management", tab: "employees",   icon: Users,           roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER"], group: "hr" },
         // 3. Onboarding
-        { id: "onboarding",  label: "Onboarding",          tab: "onboarding",  icon: UserPlus,        roles: ["SUPER_ADMIN"], group: "hr" },
+        { id: "onboarding",  label: "Personnel & Onboarding", tab: "onboarding",  icon: UserPlus,        roles: ["SUPER_ADMIN", "HR_ADMIN", "HR", "COMPANY_ADMIN", "ADMIN"], group: "hr" },
         // 4. Attendance
         { id: "attendance",  label: "Attendance",          tab: "attendance",  icon: Clock,           roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER"], group: "finance" },
         // 5. Leave Management
@@ -279,23 +281,11 @@ function AdminDashboardContent() {
                     
                     {currentTab === "dashboard" && <ExecutiveHub token={token} hideVitals={true} />}
                     {currentTab === "employees"   && <UserManagementTable token={token} userRole={role} />}
-                    {currentTab === "onboarding"  && (
-                        <div className="flex flex-col items-center justify-center p-20 text-center">
-                            <UserPlus className="w-16 h-16 text-indigo-200 mb-4" />
-                            <h2 className="text-2xl font-black text-slate-800 uppercase italic tracking-tight">Onboarding Suite</h2>
-                            <p className="text-sm font-bold text-slate-400 mt-2 uppercase tracking-widest">Module under construction</p>
-                        </div>
-                    )}
+                    {currentTab === "onboarding"  && <OnboardingSuite token={token} />}
                     {currentTab === "attendance"   && <AttendanceControlCenter token={token} />}
                     {currentTab === "leave"        && <LeaveApprovalCenter token={token} />}
                     {currentTab === "payroll"      && <PayrollControlCenter token={token} />}
-                    {currentTab === "performance"  && (
-                        <div className="flex flex-col items-center justify-center p-20 text-center">
-                            <TrendingUp className="w-16 h-16 text-indigo-200 mb-4" />
-                            <h2 className="text-2xl font-black text-slate-800 uppercase italic tracking-tight">Performance Tracking</h2>
-                            <p className="text-sm font-bold text-slate-400 mt-2 uppercase tracking-widest">Module under construction</p>
-                        </div>
-                    )}
+                    {currentTab === "performance"  && <PerformanceHub token={token} />}
                     {currentTab === "departments"  && <OrganizationControlCenter token={token} />}
                     {currentTab === "documents" && <DocumentsModule token={token} />}
                     {currentTab === "reports"      && <ManagerReports token={token} />}

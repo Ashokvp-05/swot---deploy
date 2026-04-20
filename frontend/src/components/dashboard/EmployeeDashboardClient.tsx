@@ -164,6 +164,10 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
             } else {
                 const err = await res.json().catch(() => ({}))
                 toast.error(err.message || err.error || "Something went wrong")
+                if (err.message === 'Already clocked in') {
+                    // Force refresh to sync state
+                    window.location.reload()
+                }
                 setStatus(isIn ? 'IDLE' : 'ACTIVE')
             }
         } catch {

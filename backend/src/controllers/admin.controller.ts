@@ -3,6 +3,7 @@ import * as adminService from '../services/admin.service';
 import * as googleSheets from '../services/googleSheets.service';
 import * as configService from '../services/config.service';
 import * as auditService from '../services/audit.service';
+import * as leaveV2Service from '../services/leave-v2.service';
 import bcrypt from 'bcryptjs';
 import prisma from '../config/db';
 
@@ -271,7 +272,7 @@ export const createEmployee = async (req: Request, res: Response) => {
         const { id: adminId, companyId } = (req as any).user;
         if (!companyId) return res.status(401).json({ error: 'Unauthorized: no company found' });
 
-        const { name, email, password, roleId, deptId, designationId, managerId, joiningDate, phone } = req.body;
+        const { name, email, password, roleId, deptId, designationId, managerId, joiningDate, phone, leaves } = req.body;
         if (!name || !email || !password) return res.status(400).json({ error: 'Name, email and password are required' });
 
         // Check duplicate
@@ -303,6 +304,9 @@ export const createEmployee = async (req: Request, res: Response) => {
         });
 
         auditService.logAction('EMPLOYEE_CREATE', adminId, companyId, employee.id, `Created employee ${name} (${email})`);
+        
+        // Auto-initialize leave balances based on company policy (with optional overrides)
+        await leaveV2Service.initializeBalancesForUser(employee.id, companyId, leaves);
 
         // Remove password from response
         const { password: _, ...safeEmployee } = employee as any;
@@ -334,6 +338,53 @@ export const updateEmployee = async (req: Request, res: Response) => {
 
         const { password: _, ...safe } = updated as any;
         res.json(safe);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// Get leave balances for a specific employee
+export const getEmployeeLeaveBalances = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { companyId } = (req as any).user;
+
+        const balances = await (prisma as any).leaveBalance.findMany({
+            where: { userId: id, companyId, year: new Date().getFullYear() },
+            include: {
+                leaveTypeConfig: { select: { name: true, code: true } }
+            }
+        });
+
+        res.json(balances);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// Update leave balances for a specific employee (HR adjustments)
+export const updateEmployeeLeaveBalances = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { id: adminId, companyId } = (req as any).user;
+        const { balances } = req.body; // Array: [{ leaveBalanceId, total }]
+
+        if (!Array.isArray(balances)) {
+            return res.status(400).json({ error: 'balances must be an array' });
+        }
+
+        const updates = await Promise.all(
+            balances.map((b: { id: string; total: number }) =>
+                (prisma as any).leaveBalance.update({
+                    where: { id: b.id },
+                    data: { total: b.total }
+                })
+            )
+        );
+
+        auditService.logAction('LEAVE_BALANCE_UPDATE', adminId, companyId, id, `HR adjusted leave balances for user ${id}`);
+
+        res.json({ message: 'Leave balances updated', updates });
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }

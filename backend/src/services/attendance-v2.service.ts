@@ -1,4 +1,5 @@
 import prisma from '../config/db';
+import cache from '../config/cache';
 import { format, parseISO, isWithinInterval } from 'date-fns';
 
 export const createShift = async (companyId: string, data: { name: string, startTime: string, endTime: string, workDays: number[] }) => {
@@ -52,6 +53,9 @@ export const clockInV2 = async (userId: string, companyId: string, location?: { 
     });
 
     if (activeEntry) throw new Error('Already clocked in');
+    
+    // Invalidate dashboard cache
+    cache.del(`dashboard_data_${userId}`);
 
     return (prisma as any).timeEntry.create({
         data: {
@@ -80,6 +84,9 @@ export const clockOutV2 = async (userId: string, companyId: string) => {
     const clockOut = new Date();
     const diff = clockOut.getTime() - activeEntry.clockIn.getTime();
     const hoursWorked = Number((diff / (1000 * 60 * 60)).toFixed(2));
+    
+    // Invalidate dashboard cache
+    cache.del(`dashboard_data_${userId}`);
 
     return prisma.timeEntry.update({
         where: { id: activeEntry.id },

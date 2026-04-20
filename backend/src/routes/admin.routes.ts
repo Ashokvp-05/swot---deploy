@@ -43,4 +43,8 @@ router.delete('/users/:id', authorize(['ADMIN', 'SUPER_ADMIN', 'COMPANY_ADMIN'])
 router.patch('/employees/:id', authorize(WRITE_ROLES), adminController.updateEmployee);
 router.delete('/employees/:id', authorize(['ADMIN', 'SUPER_ADMIN', 'COMPANY_ADMIN']), adminController.deleteUser);
 
+// Leave balance management (HR)
+router.get('/employees/:id/leave-balances', authorize(ADMIN_ROLES), adminController.getEmployeeLeaveBalances);
+router.patch('/employees/:id/leave-balances', authorize(WRITE_ROLES), adminController.updateEmployeeLeaveBalances);
+
 export default router;

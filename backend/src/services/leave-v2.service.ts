@@ -15,23 +15,33 @@ export const getLeaveTypes = async (companyId: string) => {
     });
 };
 
-export const initializeBalancesForUser = async (userId: string, companyId: string) => {
+export const initializeBalancesForUser = async (userId: string, companyId: string, overrides?: { sick?: number, casual?: number, earned?: number }) => {
     const configs = await (prisma as any).leaveTypeConfig.findMany({
         where: { companyId }
     });
-
+ 
     const currentYear = new Date().getFullYear();
+ 
+    const balances = configs.map((config: any) => {
+        let total = Number(config.totalDays);
+        if (overrides) {
+            const code = (config.code || "").toUpperCase();
+            if (code === 'SICK' && overrides.sick !== undefined) total = overrides.sick;
+            if (code === 'CASUAL' && overrides.casual !== undefined) total = overrides.casual;
+            if (code === 'EARNED' && overrides.earned !== undefined) total = overrides.earned;
+        }
 
-    const balances = configs.map((config: any) => ({
-        userId,
-        companyId,
-        leaveTypeId: config.id,
-        total: Number(config.totalDays),
-        used: 0,
-        pending: 0,
-        year: currentYear
-    }));
-
+        return {
+            userId,
+            companyId,
+            leaveTypeId: config.id,
+            total,
+            used: 0,
+            pending: 0,
+            year: currentYear
+        };
+    });
+ 
     return (prisma as any).leaveBalance.createMany({
         data: balances,
         skipDuplicates: true
