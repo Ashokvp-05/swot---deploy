@@ -372,16 +372,7 @@ export default function PayslipPage() {
                                             </CardTitle>
                                             <CardDescription className="text-slate-400 font-bold uppercase text-[10px] tracking-widest mt-1">Pending Release Queue</CardDescription>
                                         </div>
-                                        <div className="relative">
-                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
-                                            <input
-                                                type="text"
-                                                placeholder="Filter Identity..."
-                                                value={searchQuery}
-                                                onChange={(e) => setSearchQuery(e.target.value)}
-                                                className="bg-white/5 border-white/10 rounded-xl pl-9 pr-4 py-2 text-[10px] font-black uppercase focus:outline-none focus:ring-2 ring-indigo-500 w-48 transition-all"
-                                            />
-                                        </div>
+
                                     </div>
                                 </CardHeader>
                                 <CardContent className="p-0">

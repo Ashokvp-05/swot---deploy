@@ -84,8 +84,8 @@ export const exportExcel = async (req: Request, res: Response) => {
 
         report.forEach((entry: any) => {
             worksheet.addRow({
-                name: entry.user.name,
-                email: entry.user.email,
+                name: entry.user?.name || 'Unknown',
+                email: entry.user?.email || 'N/A',
                 date: entry.clockIn.toISOString().split('T')[0],
                 clockIn: entry.clockIn.toLocaleTimeString(),
                 clockOut: entry.clockOut ? entry.clockOut.toLocaleTimeString() : 'N/A',
@@ -131,7 +131,7 @@ export const exportPDF = async (req: Request, res: Response) => {
         doc.text(`Period: ${start} to ${end}`, 14, 30);
 
         const tableData = report.map((entry: any) => [
-            entry.user.name,
+            entry.user?.name || 'Unknown',
             entry.clockIn.toISOString().split('T')[0],
             entry.clockIn.toLocaleTimeString(),
             entry.clockOut ? entry.clockOut.toLocaleTimeString() : 'N/A',
@@ -253,7 +253,7 @@ export const exportStrategicMonthly = async (req: Request, res: Response) => {
         ];
 
         const deptStats = report.reduce((acc: any, curr: any) => {
-            const dept = curr.user.department?.name || 'Unassigned';
+            const dept = curr.user?.department?.name || 'Unassigned';
             if (!acc[dept]) acc[dept] = { hours: 0, staff: new Set() };
             acc[dept].hours += (Number(curr.hoursWorked) || 0);
             acc[dept].staff.add(curr.userId);
@@ -276,6 +276,7 @@ export const exportStrategicMonthly = async (req: Request, res: Response) => {
         res.setHeader('Content-Disposition', `attachment; filename=Strategic_Analysis_Report_${new Date().getTime()}.xlsx`);
 
         await workbook.xlsx.write(res);
+        res.end();
     } catch (error: any) {
         console.error('Strategic Export Failure:', error);
         res.status(500).json({ error: error.message || 'Analysis Generation Failure' });

@@ -195,7 +195,8 @@ export const generatePayslipFromTemplate = async (
         year,
         amount,
         pdfBuffer,
-        `Payslip_${user.name.replace(/\s+/g, '_')}_${month}_${year}.pdf`
+        `Payslip_${user.name.replace(/\s+/g, '_')}_${month}_${year}.pdf`,
+        user.companyId
     );
 };
 
@@ -210,7 +211,8 @@ export const uploadPayslip = async (
     year: number,
     amount: number,
     fileBuffer: Buffer,
-    filename: string
+    filename: string,
+    companyId?: string
 ) => {
     const safeFilename = `${userId}_${Date.now()}.pdf`;
     const storagePath = `${year}/${month}/${safeFilename}`;
@@ -249,7 +251,7 @@ export const uploadPayslip = async (
 
     // 3. Database Entry
     const existing = await prisma.payslip.findFirst({
-        where: { userId, month, year }
+        where: { userId, month, year, companyId }
     });
 
     if (existing) {
@@ -295,6 +297,7 @@ export const uploadPayslip = async (
             userId,
             month,
             year,
+            companyId,
             basicSalary: amount,
             netSalary: amount,
             grossSalary: amount,
@@ -438,8 +441,8 @@ export const getMyPayslips = async (userId: string, companyId: string) => {
     return mappedSlips;
 };
 
-export const getAllPayslips = async (companyId: string, year?: number, month?: string, status?: string) => {
-    const cacheKey = `all_payslips_${companyId}_${year}_${month}_${status}`;
+export const getAllPayslips = async (companyId: string, year?: number, month?: string, status?: string, userId?: string) => {
+    const cacheKey = `all_payslips_${companyId}_${year}_${month}_${status}_${userId}`;
     const cached = cache.get(cacheKey);
     if (cached) return cached as any;
 
@@ -447,6 +450,7 @@ export const getAllPayslips = async (companyId: string, year?: number, month?: s
     if (year) whereClause.year = year;
     if (month) whereClause.month = month;
     if (status) whereClause.status = status;
+    if (userId) whereClause.userId = userId;
 
     const slips = await prisma.payslip.findMany({
         where: whereClause,

@@ -14,6 +14,7 @@ import {
 } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import TopHeader from "@/components/layout/TopHeader"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -55,30 +56,23 @@ const SupportControlCenter = dynamic(() => import("@/components/admin/SupportCon
 const DocumentsModule = dynamic(() => import("@/components/admin/DocumentsModule"), { ssr: false })
 const UserProfileView = dynamic(() => import("@/components/admin/UserProfileView"), { ssr: false })
 const PayrollControlCenter = dynamic(() => import("@/components/admin/PayrollControlCenter"), { ssr: false })
+const BroadcastCenter = dynamic(() => import("@/components/admin/BroadcastCenter").then(m => m.BroadcastCenter), { ssr: false })
+const DepartmentReports = dynamic(() => import("@/components/admin/DepartmentReports"), { ssr: false })
+const ManagerReports = dynamic(() => import("@/components/manager/ManagerReports"), { ssr: false })
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  GLOBAL STYLES (Admin Hub Aesthetics)
 // ─────────────────────────────────────────────────────────────────────────────
 const GlobalStyles = () => (
     <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
         .font-brand { font-family: 'Plus Jakarta Sans', sans-serif; }
         .font-body { font-family: 'Inter', sans-serif; }
         
-        .nav-item-active {
-            background: #4F46E5;
-            color: #ffffff;
-            box-shadow: 0 8px 20px -6px rgba(79, 70, 229, 0.4);
-        }
-        
-        .nav-item-hover:hover {
-            transform: translateX(4px);
-            background: #F8FAFC;
-        }
-
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #F1F5F9; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        .custom-scrollbar:hover::-webkit-scrollbar-thumb { background: #cbd5e1; }
     `}</style>
 )
 
@@ -133,14 +127,14 @@ function AdminDashboardContent() {
         // 2. Employee Management
         { id: "employees",   label: "Employee Management", tab: "employees",   icon: Users,           roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER"], group: "hr" },
         // 3. Onboarding
-        { id: "onboarding",  label: "Onboarding",          tab: "onboarding",  icon: UserPlus,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR"], group: "hr" },
+        { id: "onboarding",  label: "Onboarding",          tab: "onboarding",  icon: UserPlus,        roles: ["SUPER_ADMIN"], group: "hr" },
         // 4. Attendance
         { id: "attendance",  label: "Attendance",          tab: "attendance",  icon: Clock,           roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER"], group: "finance" },
         // 5. Leave Management
         { id: "leave",       label: "Leave Management",    tab: "leave",       icon: Calendar,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER"], group: "finance" },
         { id: "payroll",     label: "Payroll",             tab: "payroll",     icon: CreditCard,      roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","PAYROLL_ADMIN"], group: "finance" },
         // 7. Performance
-        { id: "performance", label: "Performance",         tab: "performance", icon: TrendingUp,      roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER"], group: "company" },
+        { id: "performance", label: "Performance",         tab: "performance", icon: TrendingUp,      roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","MANAGER"], group: "company" },
         // 8. Departments / Organization
         { id: "departments", label: "Departments",         tab: "departments", icon: Building2,       roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN"], group: "company" },
         // 9. Documents
@@ -153,230 +147,135 @@ function AdminDashboardContent() {
         { id: "user-management",label: "User Management",  tab: "user-management", icon: ShieldCheck, roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN"], group: "admin" },
         // 13. Settings
         { id: "settings",    label: "Settings",            tab: "settings",    icon: Settings,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN"], group: "admin" },
+        // 14. Announcements
+        { id: "announcements", label: "Announcements",     tab: "broadcasts",  icon: Megaphone,       roles: ["SUPER_ADMIN"], group: "company" },
+        // 15. Dept Reports
+        { id: "dept-reports",  label: "Dept Reports",      tab: "dept-reports", icon: BarChart3,       roles: ["SUPER_ADMIN"], group: "company" },
     ]
 
-    const navItems = allNavItems.filter(item => item.roles.includes(role) || role === "ADMIN" || role === "COMPANY_ADMIN" || (role === "SUPER_ADMIN" && item.id !== "policies" && item.id !== "onboarding" && item.id !== "payroll"))
+    const navItems = allNavItems.filter(item => item.roles.includes(role) || role === "ADMIN" || role === "COMPANY_ADMIN" || (role === "SUPER_ADMIN" && item.id !== "policies" && item.id !== "onboarding" && item.id !== "payroll" && item.id !== "departments" && item.id !== "performance"))
 
     return (
         <div className="min-h-screen bg-[#f0f2f8] flex font-body">
             <GlobalStyles />
             
-            {/* ── 🛡️ PREMIUM SIDEBAR (MANAGER HUB STYLE) ── */}
-            <aside className="w-[72px] lg:w-[280px] bg-white border-r border-slate-100 flex flex-col h-screen sticky top-0 z-[100] shadow-[4px_0_24px_rgba(0,0,0,0.03)] shrink-0">
+            {/* ── 🛡️ PROFESSIONAL SIDEBAR ── */}
+            <aside className="w-[72px] lg:w-[280px] bg-[#ffffff] border-r border-slate-200/80 flex flex-col h-screen sticky top-0 z-[100] shrink-0">
 
                 {/* BRAND HEADER */}
-                <div className="pt-10 pb-6 px-4 lg:px-8">
-                    <div className="hidden lg:block mb-8">
-                        <p className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.3em] mb-2 font-brand leading-none">Command Terminal</p>
-                        <h2 className="text-2xl font-black text-slate-900 tracking-tighter italic font-brand leading-none uppercase">Admin Hub</h2>
-                        <div className="w-8 h-1 bg-indigo-600 mt-4 rounded-full" />
+                <div className="pt-8 pb-8 px-4 lg:px-7 border-b border-slate-100/60">
+                    <div className="hidden lg:flex items-center gap-3.5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-[12px] flex items-center justify-center shadow-[0_8px_16px_-6px_rgba(79,70,229,0.4)]">
+                            <Shield className="w-5 h-5 text-white" strokeWidth={2.5} />
+                        </div>
+                        <div>
+                            <h2 className="text-[18px] font-extrabold text-slate-900 tracking-tight font-brand leading-none">Rudratic</h2>
+                            <p className="text-[10px] font-semibold text-indigo-600 uppercase tracking-widest mt-1.5 leading-none bg-indigo-50 px-1.5 py-0.5 rounded pl-1.5 inline-block">Admin Workspace</p>
+                        </div>
                     </div>
                     <div className="lg:hidden flex items-center justify-center">
-                        <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-[12px] flex items-center justify-center shadow-lg">
                             <Shield className="w-5 h-5 text-white" />
                         </div>
                     </div>
                 </div>
 
                 {/* NAVIGATION */}
-                <nav className="flex-1 px-3 lg:px-6 space-y-1.5 overflow-y-auto custom-scrollbar">
-                    {navItems.map((item) => {
-                        const Icon = item.icon
-                        const isActive = currentTab === item.tab
-                        return (
-                            <button
-                                key={item.id}
-                                onClick={() => router.push(`/admin?tab=${item.tab}`)}
-                                title={item.label}
-                                className={cn(
-                                    "w-full flex items-center justify-between px-4 py-3.5 rounded-2xl text-[10.5px] font-black uppercase tracking-wider transition-all duration-300 font-brand group",
-                                    isActive 
-                                        ? "nav-item-active" 
-                                        : "text-slate-400 nav-item-hover hover:text-slate-900"
-                                )}
-                            >
-                                <div className="flex items-center justify-center lg:justify-start gap-3.5 w-full overflow-hidden">
-                                    <Icon className={cn("w-4 h-4 shrink-0 transition-transform", isActive ? "text-white scale-110" : "text-slate-300")} />
-                                    <span className="hidden lg:inline-block text-left whitespace-nowrap overflow-hidden text-ellipsis">{item.label}</span>
+                <nav className="flex-1 px-3 lg:px-5 py-6 overflow-y-auto custom-scrollbar">
+                    <div className="space-y-8">
+                        {['core', 'hr', 'finance', 'company', 'admin'].map(group => {
+                            const groupItems = navItems.filter(i => i.group === group)
+                            if(groupItems.length === 0) return null
+
+                            const groupLabels: Record<string, string> = {
+                                'core': 'Overview',
+                                'hr': 'Personnel',
+                                'finance': 'Operations & Pay',
+                                'company': 'Organization',
+                                'admin': 'System & Security'
+                            }
+
+                            return (
+                                <div key={group} className="space-y-1.5">
+                                    <p className="hidden lg:block text-[10px] font-bold text-slate-400/80 uppercase tracking-widest px-3 mb-3 font-brand ml-1">{groupLabels[group]}</p>
+                                    {groupItems.map(item => {
+                                        const Icon = item.icon
+                                        const isActive = currentTab === item.tab
+                                        return (
+                                            <button
+                                                key={item.id}
+                                                onClick={() => router.push(`/admin?tab=${item.tab}`)}
+                                                title={item.label}
+                                                className={cn(
+                                                    "w-full flex items-center justify-between px-3.5 py-2.5 rounded-[12px] text-[13px] font-medium transition-all duration-200 group relative outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40",
+                                                    isActive 
+                                                        ? "bg-indigo-50/80 text-indigo-700 font-semibold"
+                                                        : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                                                )}
+                                            >
+                                                <div className="flex items-center justify-center lg:justify-start gap-3 w-full">
+                                                    <Icon className={cn("w-[18px] h-[18px] shrink-0 transition-colors duration-200", isActive ? "text-indigo-600" : "text-slate-400 group-hover:text-slate-600")} strokeWidth={isActive ? 2.5 : 2} />
+                                                    <span className="hidden lg:inline-block text-left truncate">{item.label}</span>
+                                                </div>
+                                                {isActive && (
+                                                    <motion.div layoutId="activeNavIndicator" className="hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-indigo-600 rounded-r-full" />
+                                                )}
+                                            </button>
+                                        )
+                                    })}
                                 </div>
-                                {isActive && (
-                                    <motion.div layoutId="activeNavPointAdmin" className="hidden lg:block w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_8px_white] shrink-0 ml-2" />
-                                )}
-                            </button>
-                        )
-                    })}
+                            )
+                        })}
+                    </div>
                 </nav>
 
                 {/* USER IDENTITY FOOTER */}
-                <div className="px-3 lg:px-6 py-6 mt-4 border-t border-slate-50">
+                <div className="px-3 lg:px-5 py-5 mt-auto border-t border-slate-100/60 bg-slate-50/30">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <button className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-white border border-transparent hover:border-slate-100 transition-all group outline-none shadow-none hover:shadow-sm">
-                                <div className="w-8 h-8 shrink-0 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-black text-xs shadow-md relative">
+                            <button className="w-full flex items-center gap-3 p-2 rounded-[14px] hover:bg-white border border-transparent hover:border-slate-200 hover:shadow-sm transition-all group outline-none">
+                                <div className="w-9 h-9 shrink-0 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center text-white font-bold text-sm relative">
                                     {(session?.user?.name || "A")[0].toUpperCase()}
-                                    <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 border-2 border-white rounded-full" />
+                                    <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full" />
                                 </div>
                                 <div className="hidden lg:flex flex-col items-start min-w-0 flex-1">
-                                    <span className="text-[12.5px] font-semibold text-slate-800 leading-none truncate w-full">{session?.user?.name?.split(' ')[0] || 'Admin'}</span>
-                                    <span className="text-[10px] font-normal text-slate-400 mt-0.5 truncate w-full">{role} · Online</span>
+                                    <span className="text-[13px] font-semibold text-slate-900 leading-none truncate w-full">{session?.user?.name?.split(' ')[0] || 'Administrator'}</span>
+                                    <span className="text-[11px] font-medium text-slate-500 mt-1 truncate w-full">{role.replace('_', ' ')}</span>
                                 </div>
-                                <MoreHorizontal className="hidden lg:block w-3.5 h-3.5 text-slate-300 group-hover:text-slate-500 transition-colors shrink-0" />
+                                <MoreVertical className="hidden lg:block w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors shrink-0" />
                             </button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-60 bg-white border border-slate-100 rounded-2xl p-2 shadow-2xl shadow-slate-200/80 ml-2 mb-2" side="top" align="start">
-                            <div className="px-3 py-3 mb-1">
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Signed in as</p>
-                                <p className="text-[12px] font-bold text-slate-900 truncate">{session?.user?.email || "admin@hr.com"}</p>
+                        <DropdownMenuContent className="w-64 bg-white border border-slate-200 rounded-2xl p-2 shadow-[0_20px_60px_rgba(0,0,0,0.08)] ml-2 mb-2" side="top" align="start">
+                            <div className="px-3 py-3 mb-1 bg-slate-50/50 rounded-xl">
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1.5">Authenticated Account</p>
+                                <p className="text-[13px] font-semibold text-slate-900 truncate">{session?.user?.email || "admin@hr.com"}</p>
                             </div>
-                            <div className="h-px bg-slate-100 mx-2 mb-1" />
-                            <DropdownMenuItem onClick={() => router.push("/admin?tab=profile")} className="rounded-xl px-3 py-2.5 focus:bg-indigo-50 group cursor-pointer text-slate-600 focus:text-indigo-700 transition-colors">
-                                <User className="w-4 h-4 mr-2.5 text-slate-400" />
-                                <span className="text-[11px] font-bold">My Profile</span>
+                            <div className="h-px bg-slate-100 mx-2 my-2" />
+                            <DropdownMenuItem onClick={() => router.push("/admin?tab=profile")} className="rounded-xl px-3 py-2.5 focus:bg-slate-50 group cursor-pointer text-slate-600 transition-colors">
+                                <User className="w-4 h-4 mr-2.5 text-slate-400 group-hover:text-slate-900 transition-colors" />
+                                <span className="text-[12px] font-medium">My Profile</span>
                             </DropdownMenuItem>
-                            <div className="h-px bg-slate-100 mx-2 my-1" />
                             <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/login' })} className="rounded-xl px-3 py-2.5 focus:bg-rose-50 group cursor-pointer text-rose-500 focus:text-rose-600 transition-colors">
                                 <LogOut className="w-4 h-4 mr-2.5" />
-                                <span className="text-[11px] font-bold">Sign Out</span>
+                                <span className="text-[12px] font-medium">Secure Sign Out</span>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                    <div className="hidden lg:block mt-3 text-center">
-                        <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.3em]">v4.9.0 · Final</span>
-                    </div>
                 </div>
             </aside>
 
             {/* ── 📝 MAIN CONTENT STAGE ── */}
             <main className="flex-1 overflow-y-auto h-screen bg-[#f8fafc]">
-                <header className="px-8 py-4 flex items-center justify-between sticky top-0 z-[50] bg-white/90 backdrop-blur-md border-b border-slate-100/60 transition-all">
-                    <div className="flex items-center gap-4">
-                        {/* Identity section removed for refinement */}
-                    </div>
-                    {/* Simplified header with search and profile only */}
-                    
-                    {/* UNIVERSAL COMMAND BAR */}
-                    <div className="flex items-center gap-4 pointer-events-auto">
-                        <div className="hidden md:flex items-center bg-white rounded-xl px-4 py-2.5 border border-slate-200 w-64 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-300 transition-all group">
-                            <SearchIcon className="w-3.5 h-3.5 text-slate-300 group-focus-within:text-indigo-400 transition-colors" />
-                            <input 
-                                type="text" 
-                                placeholder="Search..." 
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="bg-transparent border-0 outline-none text-[13px] font-normal text-slate-700 placeholder:text-slate-300 ml-2.5 w-full" 
-                            />
-                        </div>
+                <TopHeader 
+                    token={token} 
+                    searchQuery={searchQuery} 
+                    setSearchQuery={setSearchQuery} 
+                />
 
-                        <div className="flex items-center gap-2 pl-4 border-l border-slate-100">
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <button className="p-3 rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-indigo-600 transition-all relative group active:scale-90 shadow-sm outline-none">
-                                        <Bell className="w-4 h-4" />
-                                        <div className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-rose-500 rounded-full border border-white" />
-                                    </button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-[420px] p-0 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.12)] border-slate-100 mt-3" align="end">
-                                    <div className="pt-6 px-6 pb-5 border-b border-slate-50 bg-slate-50/40">
-                                        <div className="flex items-center justify-between mb-1">
-                                            <h3 className="text-xs font-black italic uppercase tracking-tighter text-slate-900 flex items-center gap-2">
-                                                <div className="w-1.5 h-1.5 rounded-full bg-indigo-600" />
-                                                Live <span className="text-indigo-600">Telemetry</span>
-                                            </h3>
-                                            <Badge className="bg-emerald-50 text-emerald-600 border-none font-black text-[8px] px-2.5 py-1 rounded-full">System Healthy</Badge>
-                                        </div>
-                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400">Organizational Pulse Stream</p>
-                                    </div>
-                                    <div className="max-h-[360px] overflow-y-auto p-4 custom-scrollbar space-y-2">
-                                        {notifications.map((notif, i) => (
-                                            <motion.div 
-                                                key={i} 
-                                                initial={{ opacity: 0, y: 8 }} 
-                                                animate={{ opacity: 1, y: 0 }} 
-                                                transition={{ delay: i * 0.04 }} 
-                                                className="flex items-center gap-4 p-4 rounded-xl border border-slate-50 hover:border-indigo-100 hover:bg-slate-50/50 transition-all cursor-pointer group"
-                                            >
-                                                <div className={cn("p-2.5 rounded-lg shadow-sm transition-transform group-hover:scale-110", notif.bg)}>
-                                                    <notif.icon className={cn("w-3.5 h-3.5", notif.color)} />
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <p className="text-[10px] font-black text-slate-900 uppercase tracking-tight truncate leading-none">{notif.title}</p>
-                                                    <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">{notif.user} · {notif.time}</p>
-                                                </div>
-                                                <ChevronRight className="w-3 h-3 text-slate-200 group-hover:text-indigo-400 transition-colors" />
-                                            </motion.div>
-                                        ))}
-                                    </div>
-                                    <div className="p-3 bg-slate-50/50 border-t border-slate-50 rounded-b-2xl">
-                                        <Button 
-                                            onClick={() => {
-                                                setNotifications([])
-                                                toast.success("All notifications cleared")
-                                            }}
-                                            variant="ghost" 
-                                            size="sm" 
-                                            className="w-full text-[9px] font-black uppercase tracking-widest text-slate-400 hover:text-indigo-600 hover:bg-white transition-all"
-                                        >
-                                            Clear All Logs
-                                        </Button>
-                                    </div>
-                                </PopoverContent>
-                            </Popover>
-                            
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <button className="flex items-center gap-2.5 pl-2.5 pr-3.5 py-1.5 bg-white border border-slate-200 rounded-xl hover:border-indigo-200 transition-all shadow-sm group">
-                                        <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-semibold text-xs shrink-0">
-                                            {(session?.user?.name || "A")[0].toUpperCase()}
-                                        </div>
-                                        <div className="flex flex-col items-start">
-                                            <span className="text-[12.5px] font-medium text-slate-800 leading-none truncate max-w-[90px]">{session?.user?.name?.split(' ')[0] || "Admin"}</span>
-                                            <span className="text-[10px] font-normal text-slate-400 mt-0.5">Admin</span>
-                                        </div>
-                                        <MoreHorizontal className="w-3.5 h-3.5 text-slate-300 group-hover:text-slate-500 transition-colors" />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                    <DropdownMenuContent className="w-56 bg-white border border-slate-100 rounded-2xl p-2 shadow-xl mt-3 animate-in slide-in-from-top-2 duration-200" align="end">
-                                        <DropdownMenuLabel className="px-3 py-2">
-                                            <p className="text-[11px] font-normal text-slate-400 leading-none mb-1">Signed in as</p>
-                                            <p className="text-[13px] font-medium text-slate-900 truncate">{session?.user?.email || "admin@hr.com"}</p>
-                                        </DropdownMenuLabel>
-                                        <DropdownMenuSeparator className="bg-slate-100 my-1" />
-                                        <DropdownMenuItem onClick={() => router.push("/admin?tab=profile")} className="rounded-xl px-3 py-2 focus:bg-indigo-50 cursor-pointer text-[13px] font-medium text-slate-700 focus:text-indigo-700 transition-colors gap-2.5">
-                                            <User className="w-4 h-4 text-slate-400" />
-                                            My Profile
-                                        </DropdownMenuItem>
-                                        <DropdownMenuSeparator className="bg-slate-100 my-1" />
-                                        <DropdownMenuItem 
-                                            onClick={() => signOut({ callbackUrl: '/login' })} 
-                                            className="rounded-xl px-3 py-2 focus:bg-rose-50 cursor-pointer text-[13px] font-medium text-rose-500 focus:text-rose-600 transition-colors gap-2.5"
-                                        >
-                                            <LogOut className="w-4 h-4" />
-                                            Sign out
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                            </DropdownMenu>
-                        </div>
-                    </div>
-                </header>
-
-                <div className="max-w-[1700px] mx-auto px-12 py-12 space-y-12">
+                <div className="max-w-[1700px] mx-auto px-8 py-8 space-y-8">
                 
-                {/* QUICK HEADER — removed duplicate, handled by sticky top header */}
-                {currentTab !== "audit-logs" && (
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                        <div>
-                            <h2 className="text-xl font-black text-slate-800 tracking-tight uppercase italic">
-                                {navItems.find(i => i.id === currentTab)?.label || "Dashboard"}
-                            </h2>
-                            <p className="text-[10px] font-bold text-slate-400 mt-0.5 flex items-center gap-1.5 uppercase tracking-widest">
-                                <Globe className="w-3 h-3 text-indigo-400" /> {companyName} • Protocol Registry
-                            </p>
-                        </div>
-                    </div>
-                )}
-
                 {/* MODULES RENDERING */}
-                <div className="animate-in fade-in slide-in-from-bottom-3 duration-700">
+                <div className="animate-in fade-in slide-in-from-bottom-3 duration-500">
                     
                     {currentTab === "dashboard" && <ExecutiveHub token={token} hideVitals={true} />}
                     {currentTab === "employees"   && <UserManagementTable token={token} userRole={role} />}
@@ -399,10 +298,12 @@ function AdminDashboardContent() {
                     )}
                     {currentTab === "departments"  && <OrganizationControlCenter token={token} />}
                     {currentTab === "documents" && <DocumentsModule token={token} />}
-                    {currentTab === "reports"      && <ExecutiveHub token={token} />}
+                    {currentTab === "reports"      && <ManagerReports token={token} />}
                     {currentTab === "support"      && <SupportControlCenter token={token} />}
                     {currentTab === "user-management"   && <SecurityAuditLogs token={token} />}
                     {currentTab === "settings"     && <SystemSettingsCenter token={token} />}
+                    {currentTab === "broadcasts"   && <BroadcastCenter token={token} />}
+                    {currentTab === "dept-reports" && <DepartmentReports token={token} />}
 
                     {/* PROFILE MODULE */}
                     {currentTab === "profile" && (

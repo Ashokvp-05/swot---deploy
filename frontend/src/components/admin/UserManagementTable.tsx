@@ -33,7 +33,7 @@ const getAvatarColor = (name: string) => {
 
 export default function UserManagementTable({ token, userRole }: { token: string, userRole: string }) {
     const API = process.env.NEXT_PUBLIC_API_URL
-    const isAuthorized = ['SUPER_ADMIN', 'HR_MANAGER', 'HR_ADMIN'].includes(userRole.toUpperCase())
+    const canManage = !['HR', 'HR_ADMIN', 'AUDITOR'].includes(userRole.toUpperCase())
     const [users, setUsers] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const [search, setSearch] = useState("")
@@ -65,22 +65,17 @@ export default function UserManagementTable({ token, userRole }: { token: string
         <div className="bg-white border border-slate-100 rounded-[32px] overflow-hidden shadow-sm h-full flex flex-col font-body">
             
             {/* FUNCTIONAL COMMAND BAR */}
-            <div className="p-6 border-b border-slate-50 flex justify-between items-center gap-6 bg-white shrink-0">
-                <div className="relative flex-1 max-w-md group">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-indigo-500 transition-colors" />
-                    <Input 
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        placeholder="Filter personnel registry..."
-                        className="pl-11 h-12 bg-slate-50 border-none rounded-2xl text-xs font-bold focus-visible:ring-2 focus-visible:ring-indigo-100 transition-all"
-                    />
-                </div>
-                <Button 
-                    onClick={() => setIsAddOpen(true)}
-                    className="h-12 bg-slate-900 hover:bg-black text-white rounded-xl px-8 text-[10px] font-black uppercase tracking-widest shadow-xl transition-all active:scale-95"
-                >
-                    Add Employee
-                </Button>
+            <div className="p-6 border-b border-slate-50 flex justify-end items-center gap-6 bg-white shrink-0">
+
+                {/* Only Super Admin / Managers can add employees */}
+                {canManage && (
+                    <Button 
+                        onClick={() => setIsAddOpen(true)}
+                        className="h-12 bg-slate-900 hover:bg-black text-white rounded-xl px-8 text-[10px] font-black uppercase tracking-widest shadow-xl transition-all active:scale-95"
+                    >
+                        Add Employee
+                    </Button>
+                )}
             </div>
 
             {/* TABLE MANIFEST - ADDED COLOR DIVERSITY & CLARITY */}
@@ -125,15 +120,10 @@ export default function UserManagementTable({ token, userRole }: { token: string
                                 animate={{ opacity: 1, y: 0 }}
                                 whileHover={{ scale: 0.998 }}
                                 onClick={() => {
-                                    if (isAuthorized) {
                                         setSelectedUser(user)
-                                    } else {
-                                        toast.error("Restricted Executive Access: Only HR & Super Admin can view personnel dossiers.")
-                                    }
                                 }}
                                 className={cn(
-                                    "px-8 py-5 grid grid-cols-[1fr_200px_140px_140px] items-center transition-all group/row border border-transparent",
-                                    isAuthorized ? "cursor-pointer hover:bg-indigo-50/50 hover:border-indigo-100" : "cursor-not-allowed opacity-80"
+                                    "px-8 py-5 grid grid-cols-[1fr_200px_140px_140px] items-center transition-all group/row border border-transparent cursor-pointer hover:bg-indigo-50/50 hover:border-indigo-100"
                                 )}
                             >
                                 {/* Employee Info with Diverse Colors */}
@@ -141,14 +131,14 @@ export default function UserManagementTable({ token, userRole }: { token: string
                                     <div className={cn(
                                         "h-12 w-12 rounded-[18px] border flex items-center justify-center font-black text-sm shrink-0 transition-all",
                                         getAvatarColor(user.name),
-                                        isAuthorized && "group-hover/row:scale-110"
+                                        canManage && "group-hover/row:scale-110"
                                     )}>
                                         {user.name?.[0]?.toUpperCase() || "U"}
                                     </div>
                                     <div className="min-w-0">
                                         <p className={cn(
                                             "text-[14px] font-bold text-slate-900 transition-colors uppercase tracking-tight truncate",
-                                            isAuthorized && "group-hover/row:text-indigo-600 group-hover/row:underline underline-offset-4 decoration-indigo-200"
+                                            canManage && "group-hover/row:text-indigo-600 group-hover/row:underline underline-offset-4 decoration-indigo-200"
                                         )}>{user.name}</p>
                                         <p className="text-[11px] text-slate-400 font-medium lowercase mt-0.5 truncate">{user.email}</p>
                                     </div>
@@ -242,7 +232,51 @@ export default function UserManagementTable({ token, userRole }: { token: string
                                 }} 
                             />
                         )}
-                        {/* Placeholder for Delete confirmation if needed */}
+                        {deleteUser && (
+                            <motion.div 
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="bg-white rounded-[32px] p-10 max-w-md w-full border border-slate-100 shadow-2xl"
+                            >
+                                <div className="w-20 h-20 bg-rose-50 rounded-[32px] flex items-center justify-center mb-6 mx-auto">
+                                    <ShieldAlert className="w-10 h-10 text-rose-600" />
+                                </div>
+                                <h3 className="text-xl font-black text-slate-900 text-center uppercase tracking-tight mb-2">Delete Account?</h3>
+                                <p className="text-sm text-slate-500 text-center mb-8 font-medium">This action will permanently remove <span className="font-bold text-slate-900">{deleteUser.name}</span> from the system registry. This cannot be undone.</p>
+                                
+                                <div className="grid grid-cols-2 gap-4">
+                                    <Button 
+                                        variant="outline"
+                                        onClick={() => setDeleteUser(null)}
+                                        className="h-14 rounded-2xl text-[10px] font-black uppercase tracking-widest border-slate-100"
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button 
+                                        onClick={async () => {
+                                            try {
+                                                const res = await fetch(`${API}/admin/users/${deleteUser.id}`, {
+                                                    method: 'DELETE',
+                                                    headers: { "Authorization": `Bearer ${token}` }
+                                                })
+                                                if (res.ok) {
+                                                    toast.success("Identity purged from manifest")
+                                                    setDeleteUser(null)
+                                                    fetchUsers()
+                                                } else {
+                                                    throw new Error()
+                                                }
+                                            } catch {
+                                                toast.error("Operation failed")
+                                            }
+                                        }}
+                                        className="h-14 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-rose-600/20"
+                                    >
+                                        Delete Forever
+                                    </Button>
+                                </div>
+                            </motion.div>
+                        )}
                     </div>
                 )}
             </AnimatePresence>

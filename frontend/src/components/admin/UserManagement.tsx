@@ -56,7 +56,8 @@ const GlobalStyles = () => (
     `}</style>
 )
 
-export default function UserManagement({ token }: { token: string }) {
+export default function UserManagement({ token, userRole = "" }: { token: string, userRole?: string }) {
+    const canManage = !['HR', 'HR_ADMIN', 'AUDITOR'].includes((userRole || "").toUpperCase())
     const [users, setUsers] = useState<User[]>([])
     const [loading, setLoading] = useState(true)
     const [search, setSearch] = useState("")
@@ -152,12 +153,13 @@ export default function UserManagement({ token }: { token: string }) {
                         Export Census
                     </Button>
 
-                    <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-                        <DialogTrigger asChild>
-                            <Button className="h-12 px-6 bg-white text-black hover:bg-slate-200 rounded-[14px] shadow-xl shadow-white/5 font-black uppercase text-[10px] tracking-widest flex-1 lg:flex-none font-brand">
-                                Add Employee
-                            </Button>
-                        </DialogTrigger>
+                    {canManage && (
+                        <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+                            <DialogTrigger asChild>
+                                <Button className="h-12 px-6 bg-white text-black hover:bg-slate-200 rounded-[14px] shadow-xl shadow-white/5 font-black uppercase text-[10px] tracking-widest flex-1 lg:flex-none font-brand">
+                                    Add Employee
+                                </Button>
+                            </DialogTrigger>
                         <DialogContent className="bg-slate-950 border-white/10 text-white max-w-2xl rounded-[32px] overflow-hidden p-0 shadow-2xl">
                             <form onSubmit={handleAddUser}>
                                 <div className="p-8 border-b border-white/5 bg-slate-900/50">
@@ -230,7 +232,8 @@ export default function UserManagement({ token }: { token: string }) {
                                 </div>
                             </form>
                         </DialogContent>
-                    </Dialog>
+                        </Dialog>
+                    )}
                 </div>
             </div>
 

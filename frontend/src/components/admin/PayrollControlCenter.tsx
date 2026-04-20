@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { jsPDF } from "jspdf"
 import autoTable from "jspdf-autotable"
 import { motion, AnimatePresence } from "framer-motion"
-import { CreditCard, DollarSign, Loader2, Play, CheckCircle2, AlertCircle, FileText, ChevronRight, Lock, Unlock, Download, Send, Plus, Activity, Users, Clock, TrendingUp, ShieldCheck, Settings, Save, Trash2, Zap } from "lucide-react"
+import { CreditCard, DollarSign, Loader2, Play, CheckCircle2, AlertCircle, FileText, ChevronRight, Lock, Unlock, Download, Send, Plus, Activity, Users, Clock, TrendingUp, ShieldCheck, Settings, Save, Trash2, Zap, Eye } from "lucide-react"
 import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
@@ -379,7 +379,7 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
                 fetch(`${API_BASE_URL}/payroll/salary-config/${user.id}`, { headers: { Authorization: `Bearer ${token}` } }),
                 fetch(`${API_BASE_URL}/payroll/bank-details/${user.id}`, { headers: { Authorization: `Bearer ${token}` } }),
                 fetch(`${API_BASE_URL}/payroll/tax-details/${user.id}`, { headers: { Authorization: `Bearer ${token}` } }),
-                fetch(`${API_BASE_URL}/payroll/my-payslips?userId=${user.id}`, { headers: { Authorization: `Bearer ${token}` } })
+                fetch(`${API_BASE_URL}/payslips/all?userId=${user.id}`, { headers: { Authorization: `Bearer ${token}` } })
             ])
             if (cRes.ok) setConfig(await cRes.json())
             if (bRes.ok) setBank(await bRes.json())
@@ -430,7 +430,6 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
         
         setReleasing(true)
         try {
-            // 1. Generate the Payslip record
             const genRes = await fetch(`${API_BASE_URL}/payslips/generate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -451,7 +450,6 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
             }
             const newSlip = await genRes.json()
 
-            // 2. Release it to the dashboard
             const relRes = await fetch(`${API_BASE_URL}/payslips/${newSlip.id}/release`, {
                 method: 'PATCH',
                 headers: { Authorization: `Bearer ${token}` }
@@ -459,12 +457,13 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
 
             if (relRes.ok) {
                 toast.success(`Payslip for ${user.name} released successfully.`)
+                fetchDetails()
                 onUpdate()
             } else {
                 throw new Error("Release synchronization failed")
             }
         } catch (e: any) { 
-            toast.error(e.message || "Process error: Verification cluster unavailable") 
+            toast.error(e.message || "Process error") 
         } finally { 
             setReleasing(false) 
         }
@@ -476,54 +475,135 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
             return;
         }
         
-        toast.info("Generating Encrypted Document...");
+        toast.info("Generating Document...");
         const doc = new jsPDF();
-        
-        // Header Formatting
         doc.setFontSize(22);
         doc.setTextColor(30, 41, 59);
-        doc.text("SWOT ENTERPRISE", 14, 22);
+        doc.text("RUDRATIC HR", 14, 22);
         
         doc.setFontSize(10);
         doc.setTextColor(148, 163, 184);
-        doc.text("Official Compensation Manifest - " + new Date().toLocaleString('default', { month: 'long', year: 'numeric' }), 14, 30);
+        doc.text("Pay Slip - " + format(new Date(), 'MMMM yyyy'), 14, 30);
         
-        // Target Node Data
         doc.setFontSize(12);
         doc.setTextColor(15, 23, 42);
-        doc.text(`User: ${user.name}`, 14, 45);
-        doc.text(`Operational Role: ${user.designation?.name || 'Standard Unit'}`, 14, 52);
-        doc.text(`Disbursement Identifier: ${bank?.accountNumber || 'Pending'} (${bank?.bankName || 'Pending'})`, 14, 59);
+        doc.text(`Employee: ${user.name}`, 14, 45);
+        doc.text(`Designation: ${user.designation?.name || 'Staff'}`, 14, 52);
         
-        // Quantitative Matrix
         autoTable(doc, {
             startY: 70,
-            head: [['Financial Component', 'Type', 'Amount (INR)']],
+            head: [['Component', 'Amount (INR)']],
             body: [
-                ['Base Salary Core', 'Earning', `Rs. ${basic.toLocaleString()}`],
-                ['House Rent Allowance (HRA)', 'Earning', `Rs. ${hra.toLocaleString()}`],
-                ['Provident Fund (PF)', 'Deduction', `Rs. ${pf.toLocaleString()}`],
-                ['Income Tax Withholding', 'Deduction', `Rs. ${taxAmt.toLocaleString()}`]
+                ['Base Salary', `Rs. ${basic.toLocaleString()}`],
+                ['HRA', `Rs. ${hra.toLocaleString()}`],
+                ['PF Deduction', `Rs. ${pf.toLocaleString()}`],
+                ['Tax Withholding', `Rs. ${taxAmt.toLocaleString()}`],
+                ['TOTAL NET PAY', `Rs. ${netVal.toLocaleString()}`]
             ],
             theme: 'grid',
-            headStyles: { fillColor: [79, 70, 229] },
-            styles: { fontSize: 10, cellPadding: 5 }
+            headStyles: { fillColor: [79, 70, 229] }
         });
         
-        const finalY = (doc as any).lastAutoTable?.finalY || 130;
-        
-        // Terminal Calculations
-        doc.setFontSize(14);
-        doc.setTextColor(16, 185, 129);
-        doc.text(`Net Compensation Disbursed: Rs. ${netVal.toLocaleString()}`, 14, finalY + 15);
-        
         if (action === 'download') {
-            doc.save(`Payslip_${user.name.replace(/\s+/g, '_')}.pdf`);
-            toast.success("Compensation Vault Extracted");
+            doc.save(`Payslip_${user.name}.pdf`);
         } else {
             window.open(doc.output('bloburl'), '_blank');
         }
     }
+
+    const CompensationSheet = () => (
+        <SheetContent className="bg-white border-l border-slate-50 w-full sm:max-w-[540px] p-0 shadow-2xl overflow-y-auto custom-scrollbar">
+            <SheetHeader className="pt-12 px-8 pb-8 border-b border-slate-50/50 bg-slate-50/30">
+                <div className="flex items-center gap-5">
+                    <div className="p-4 bg-indigo-600 rounded-2xl shadow-lg shadow-indigo-100/50 shrink-0">
+                        <FileText className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                        <SheetTitle className="text-xl font-black uppercase tracking-tight text-slate-900 leading-tight">Compensation <span className="text-indigo-600">Console</span></SheetTitle>
+                        <SheetDescription className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mt-1">Deploy parameters for {user.name}</SheetDescription>
+                    </div>
+                </div>
+            </SheetHeader>
+
+            <div className="p-8 space-y-10">
+                <div className="space-y-6">
+                    <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest border-b border-slate-50 pb-2">1. Salary Structure</p>
+                    <div className="grid grid-cols-2 gap-5">
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Base Salary (₹)</Label>
+                            <Input 
+                                defaultValue={config?.basicSalary || 0} 
+                                onBlur={(e) => setConfig({ ...config, basicSalary: Number(e.target.value) })}
+                                className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">HRA (₹)</Label>
+                            <Input 
+                                defaultValue={config?.hra || 0}
+                                onBlur={(e) => setConfig({ ...config, hra: Number(e.target.value) })}
+                                className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">PF Deduction (₹)</Label>
+                            <Input 
+                                defaultValue={config?.pf || 0}
+                                onBlur={(e) => setConfig({ ...config, pf: Number(e.target.value) })}
+                                className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Income Tax (₹)</Label>
+                            <Input 
+                                defaultValue={config?.tax || 0}
+                                onBlur={(e) => setConfig({ ...config, tax: Number(e.target.value) })}
+                                className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
+                            />
+                        </div>
+                    </div>
+                    <Button className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest gap-2" onClick={() => handleSave('salary-config', config)}>
+                        {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Update Structure"}
+                    </Button>
+                </div>
+
+                <div className="space-y-6 pb-12">
+                    <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest border-b border-slate-50 pb-2">2. Bank Details</p>
+                    <div className="grid grid-cols-1 gap-5">
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Account Holder</Label>
+                            <Input 
+                                defaultValue={bank?.accountHolder || user.name}
+                                onBlur={(e) => setBank({ ...bank, accountHolder: e.target.value })}
+                                className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
+                            />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Bank Name</Label>
+                                <Input 
+                                    defaultValue={bank?.bankName || ''}
+                                    onBlur={(e) => setBank({ ...bank, bankName: e.target.value })}
+                                    className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Account Number</Label>
+                                <Input 
+                                    defaultValue={bank?.accountNumber || ''}
+                                    onBlur={(e) => setBank({ ...bank, accountNumber: e.target.value })}
+                                    className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <Button className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest gap-2" onClick={() => handleSave('bank-details', bank)}>
+                        Update Bank
+                    </Button>
+                </div>
+            </div>
+        </SheetContent>
+    )
 
     return (
         <tr className="group hover:bg-slate-50/50 transition-colors">
@@ -534,7 +614,7 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
                     </div>
                     <div>
                         <p className="text-[11px] font-black text-slate-900 uppercase tracking-tight">{user.name}</p>
-                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mt-0.5">{user.designation?.name || 'Standard'}</p>
+                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mt-0.5">{user.designation?.name || 'Staff'}</p>
                     </div>
                 </div>
             </td>
@@ -552,174 +632,64 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
             </td>
             <td className="px-4 py-4">
                 <Badge className={cn(
-                    "text-[8px] font-black uppercase tracking-[0.2em] px-2 py-1 border-none shadow-none",
+                    "text-[8px] font-black uppercase tracking-[0.2em] px-2 py-1 border-none shadow-none flex items-center gap-1.5 w-fit",
                     payslipStatus === 'RELEASED' ? "bg-emerald-50 text-emerald-600" :
-                    config ? "bg-amber-50 text-amber-600" : "bg-slate-100 text-slate-400"
+                    config ? "bg-amber-50 text-amber-600" : "bg-rose-50 text-rose-600 animate-pulse"
                 )}>
-                    {payslipStatus === 'RELEASED' ? "Released" : config ? "Pending" : "Missing Config"}
+                    <div className={cn("w-1 h-1 rounded-full", 
+                        payslipStatus === 'RELEASED' ? "bg-emerald-500" : 
+                        config ? "bg-amber-500" : "bg-rose-500"
+                    )} />
+                    {payslipStatus === 'RELEASED' ? "Released" : config ? "In Queue" : "Config Missing"}
                 </Badge>
             </td>
             <td className="px-6 py-4 text-right">
-                <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button variant="ghost" size="sm" onClick={() => generatePayslipPDF('view')} className="h-8 px-3 rounded-lg text-[9px] font-black uppercase text-slate-400 hover:bg-slate-100 hover:text-indigo-600 gap-2 border border-transparent hover:border-slate-200">
-                        View Payslip
-                    </Button>
-                    <Button variant="ghost" size="sm" onClick={() => generatePayslipPDF('download')} className="h-8 px-3 rounded-lg text-[9px] font-black uppercase text-slate-400 hover:bg-slate-100 hover:text-slate-900 gap-2 border border-transparent hover:border-slate-200 hidden md:flex">
-                        Export
-                    </Button>
-                    <Sheet>
-                        <SheetTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-8 px-3 rounded-lg text-[9px] font-black uppercase text-slate-400 hover:bg-slate-100 hover:text-slate-900 gap-2 border border-transparent hover:border-slate-200">
-                                Edit Payroll
+                <div className="flex items-center justify-end gap-2">
+                    {!config ? (
+                        <Sheet>
+                            <SheetTrigger asChild>
+                                <Button variant="outline" size="sm" className="h-8 px-4 rounded-lg text-[9px] font-black uppercase text-indigo-600 border-indigo-200 bg-indigo-50 hover:bg-indigo-600 hover:text-white transition-all gap-2">
+                                    <Plus className="w-3.5 h-3.5" /> Setup
+                                </Button>
+                            </SheetTrigger>
+                            <CompensationSheet />
+                        </Sheet>
+                    ) : (
+                        <div className="flex items-center gap-2">
+                            <Button 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={handleRelease} 
+                                disabled={releasing || payslipStatus === 'RELEASED'}
+                                className={cn(
+                                    "h-8 px-4 rounded-lg text-[9px] font-black uppercase transition-all border gap-2",
+                                    payslipStatus === 'RELEASED' ? "bg-emerald-50 text-emerald-600 border-emerald-100" :
+                                    "bg-indigo-50 text-indigo-600 border-indigo-100 hover:bg-indigo-600 hover:text-white"
+                                )}
+                            >
+                                {releasing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 
+                                 payslipStatus === 'RELEASED' ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Zap className="w-3.5 h-3.5" />}
+                                {releasing ? "Processing" : payslipStatus === 'RELEASED' ? "Released" : "Release"}
                             </Button>
-                        </SheetTrigger>
-                        <SheetContent className="bg-white border-l border-slate-50 w-full sm:max-w-[540px] p-0 shadow-2xl overflow-y-auto custom-scrollbar">
-                        <SheetHeader className="pt-12 px-8 pb-8 border-b border-slate-50/50 bg-slate-50/30">
-                            <div className="flex items-center gap-5">
-                                <div className="p-4 bg-indigo-600 rounded-2xl shadow-lg shadow-indigo-100/50 shrink-0">
-                                    <FileText className="w-6 h-6 text-white" />
-                                </div>
-                                <div>
-                                    <SheetTitle className="text-xl font-black uppercase tracking-tight text-slate-900 leading-tight">Compensation <span className="text-indigo-600">Console</span></SheetTitle>
-                                    <SheetDescription className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mt-1">Deploy parameters for {user.name}</SheetDescription>
-                                </div>
-                            </div>
-                        </SheetHeader>
 
-                        <div className="p-8 space-y-10">
-                            {/* SALARY CONFIG */}
-                            <div className="space-y-6">
-                                <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest border-b border-slate-50 pb-2">1. Salary Structure</p>
-                                <div className="grid grid-cols-2 gap-5">
-                                    <div className="space-y-2">
-                                        <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Base Salary (₹)</Label>
-                                        <Input 
-                                            defaultValue={config?.basicSalary || 0} 
-                                            onBlur={(e) => setConfig({ ...config, basicSalary: Number(e.target.value) })}
-                                            className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">HRA (₹)</Label>
-                                        <Input 
-                                            defaultValue={config?.hra || 0}
-                                            onBlur={(e) => setConfig({ ...config, hra: Number(e.target.value) })}
-                                            className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">PF Deduction (₹)</Label>
-                                        <Input 
-                                            defaultValue={config?.pf || 0}
-                                            onBlur={(e) => setConfig({ ...config, pf: Number(e.target.value) })}
-                                            className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Income Tax (₹)</Label>
-                                        <Input 
-                                            defaultValue={config?.tax || 0}
-                                            onBlur={(e) => setConfig({ ...config, tax: Number(e.target.value) })}
-                                            className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
-                                        />
-                                    </div>
-                                </div>
-                                <Button className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest gap-2 shadow-lg shadow-indigo-100" onClick={() => handleSave('salary-config', config)}>
-                                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Update Structure"}
+                            <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 border-l pl-2 border-slate-100">
+                                <Button variant="ghost" size="sm" onClick={() => generatePayslipPDF('view')} className="h-8 w-8 p-0 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors">
+                                    <Eye className="w-3.5 h-3.5" />
                                 </Button>
-                            </div>
-
-                            {/* BANK DETAILS */}
-                            <div className="space-y-6">
-                                <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest border-b border-slate-50 pb-2">2. Disbursement Node</p>
-                                <div className="grid grid-cols-2 gap-5">
-                                    <div className="space-y-2 col-span-2">
-                                        <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Account Holder Name</Label>
-                                        <Input 
-                                            defaultValue={bank?.accountHolder || user.name}
-                                            onBlur={(e) => setBank({ ...bank, accountHolder: e.target.value })}
-                                            className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Bank Name</Label>
-                                        <Input 
-                                            defaultValue={bank?.bankName || ''}
-                                            onBlur={(e) => setBank({ ...bank, bankName: e.target.value })}
-                                            className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">IFSC Code</Label>
-                                        <Input 
-                                            defaultValue={bank?.ifscCode || ''}
-                                            onBlur={(e) => setBank({ ...bank, ifscCode: e.target.value })}
-                                            className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
-                                        />
-                                    </div>
-                                    <div className="space-y-2 col-span-2">
-                                        <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Account Number</Label>
-                                        <Input 
-                                            defaultValue={bank?.accountNumber || ''}
-                                            onBlur={(e) => setBank({ ...bank, accountNumber: e.target.value })}
-                                            className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
-                                        />
-                                    </div>
-                                </div>
-                                <Button className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest gap-2 shadow-lg shadow-emerald-100" onClick={() => handleSave('bank-details', bank)}>
-                                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Update Disbursement"}
-                                </Button>
-                            </div>
-
-                            {/* TAX DETAILS */}
-                            <div className="space-y-6 pb-8">
-                                <p className="text-[10px] font-black text-violet-600 uppercase tracking-widest border-b border-slate-50 pb-2">3. Statutory Compliance</p>
-                                <div className="grid grid-cols-2 gap-5">
-                                    <div className="space-y-2">
-                                        <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">PAN Identifier</Label>
-                                        <Input 
-                                            defaultValue={tax?.panNumber || ''}
-                                            onBlur={(e) => setTax({ ...tax, panNumber: e.target.value })}
-                                            className="h-12 bg-white rounded-xl border border-slate-200 text-sm font-bold px-4 shadow-sm" 
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Tax Regime</Label>
-                                        <select 
-                                            defaultValue={tax?.taxRegime || 'NEW'}
-                                            onChange={(e) => setTax({ ...tax, taxRegime: e.target.value })}
-                                            className="w-full h-12 bg-white rounded-xl border border-slate-200 text-xs font-bold px-4 shadow-sm outline-none text-slate-900"
-                                        >
-                                            <option value="NEW">New Regime (Default)</option>
-                                            <option value="OLD">Old Regime</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <Button className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest gap-2 shadow-lg shadow-violet-100" onClick={() => handleSave('tax-details', tax)}>
-                                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Update Compliance"}
-                                </Button>
+                                <Sheet>
+                                    <SheetTrigger asChild>
+                                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-900 transition-colors">
+                                            <Settings className="w-3.5 h-3.5" />
+                                        </Button>
+                                    </SheetTrigger>
+                                    <CompensationSheet />
+                                </Sheet>
                             </div>
                         </div>
-                    </SheetContent>
-                </Sheet>
-                <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={handleRelease} 
-                    disabled={releasing || !config || payslipStatus === 'RELEASED'}
-                    className={cn(
-                        "h-8 px-4 rounded-lg text-[9px] font-black uppercase transition-all ml-1 font-brand border gap-2 shadow-sm",
-                        releasing ? "bg-slate-100 text-slate-400 border-slate-200" : 
-                        payslipStatus === 'RELEASED' ? "bg-emerald-50 text-emerald-600 border-emerald-100 cursor-default" :
-                        "text-emerald-600 hover:bg-emerald-600 hover:text-white bg-emerald-50 border-emerald-100"
                     )}
-                >
-                    {releasing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 
-                     payslipStatus === 'RELEASED' ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Zap className="w-3.5 h-3.5" />}
-                    {releasing ? "Deploying" : payslipStatus === 'RELEASED' ? "Released" : "Release"}
-                </Button>
                 </div>
             </td>
         </tr>
     )
 }
+

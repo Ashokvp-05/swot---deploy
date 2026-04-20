@@ -13,7 +13,7 @@ router.get('/my', payslipController.getMyPayslips);
 router.get('/:id/download', payslipController.downloadPayslip);
 
 // HR / Super Admin Management actions
-const PAYROLL_ROLES = ['SUPER_ADMIN', 'HR_ADMIN', 'HR'];
+const PAYROLL_ROLES = ['SUPER_ADMIN', 'ADMIN', 'COMPANY_ADMIN', 'HR_ADMIN', 'HR', 'HR_MANAGER', 'MANAGER'];
 
 router.get('/all', authorize(PAYROLL_ROLES), payslipController.getAllPayslips);
 router.post('/upload', authorize(PAYROLL_ROLES), upload.single('file'), payslipController.uploadPayslip);

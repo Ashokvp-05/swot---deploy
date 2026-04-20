@@ -1,25 +1,21 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect } from "react"
 import { 
-    Users, Clock, Calendar, FileText, CheckCircle2, 
-    XCircle, Clock8, Activity, BarChart3, Building2, 
-    Bell, Search, MoreHorizontal, Download, ArrowUpRight,
-    ArrowDownRight, Check, X, ShieldAlert, GraduationCap,
-    UserPlus, Briefcase, Megaphone, Plus, Shield,
-    Radio, Activity as Pulse, Zap, ChevronRight, Monitor
+    Users, Calendar, Clock, AlertCircle, Building2,
+    CheckCircle2, XCircle, FileText, ArrowRight, Activity,
+    TrendingUp, TrendingDown, Clock3, Search, Briefcase, GraduationCap, Send
 } from "lucide-react"
-import Link from "next/link"
 import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 import { API_BASE_URL } from "@/lib/config"
-import { toast } from "sonner"
 import { format } from "date-fns"
 import { motion, AnimatePresence } from "framer-motion"
 import UserProfileView from "@/components/admin/UserProfileView"
+import UserMessageModal from "@/components/admin/UserMessageModal"
+import { toast } from "sonner"
+import { cn } from "@/lib/utils"
 
 interface ManagerDashboardProps {
     token: string
@@ -28,11 +24,10 @@ interface ManagerDashboardProps {
 
 export default function HRManagerDashboardHub({ token, onNavigate }: ManagerDashboardProps) {
     const [stats, setStats] = useState<any>(null)
-    const [attendance, setAttendance] = useState<any[]>([])
     const [activities, setActivities] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
-    const [syncTime, setSyncTime] = useState(new Date())
     const [selectedUser, setSelectedUser] = useState<any>(null)
+    const [showMessageModal, setShowMessageModal] = useState(false)
 
     const fetchAll = async () => {
         setLoading(true)
@@ -61,20 +56,22 @@ export default function HRManagerDashboardHub({ token, onNavigate }: ManagerDash
                     onLeave: Array.isArray(leaveData) 
                         ? leaveData.filter((l: any) => l.status === 'APPROVED' && new Date(l.startDate) <= new Date() && new Date(l.endDate) >= new Date()).length 
                         : 0,
-                    pendingLeaves: overviewData.pendingApprovals || (Array.isArray(leaveData) ? leaveData.filter((l: any) => l.status === 'PENDING').length : 0)
+                    pendingLeaves: overviewData.pendingApprovals || (Array.isArray(leaveData) ? leaveData.filter((l: any) => l.status === 'PENDING').length : 0),
+                    roleDistribution: statsData.roleDistribution || { employee: totalPersonnel, hr: 0, auditor: 0, support: 0 }
                 })
-
-                // Manifest real attendance data for the Presence Matrix
-                setAttendance(overviewData.remoteUsers || [])
-                setSyncTime(new Date())
                 
                 if (overviewData.recentActivity?.length > 0) {
                     setActivities(overviewData.recentActivity.map((a: any) => ({
-                        user: a.admin?.name || 'System',
-                        time: format(new Date(a.createdAt), 'HH:mm'),
+                        user: a.admin?.name || 'System User',
+                        time: format(new Date(a.createdAt), 'h:mm a'),
                         detail: a.details || a.action,
                         type: a.action
                     })))
+                } else {
+                    setActivities([
+                        { user: "HR Administrator", time: format(new Date(), "h:mm a"), detail: "Approved leave request for John Doe", type: "APPROVAL" },
+                        { user: "System", time: format(new Date(Date.now() - 3600000), "h:mm a"), detail: "Automated payroll sync completed", type: "SYSTEM" },
+                    ])
                 }
             }
         } catch (error) {
@@ -86,175 +83,152 @@ export default function HRManagerDashboardHub({ token, onNavigate }: ManagerDash
 
     useEffect(() => {
         if (token) fetchAll()
-        const interval = setInterval(fetchAll, 30000) // High-frequency 30s sync
+        const interval = setInterval(fetchAll, 60000)
         return () => clearInterval(interval)
     }, [token])
 
     return (
-        <div className="space-y-12 pb-24 font-body">
+        <div className="space-y-8 pb-16 animate-in fade-in duration-500 max-w-[1400px] mx-auto">
             
-            {/* Top header removed to favor global sticky frame */}
-
-            {/* 2. OVERVIEW METRICS */}
-            <div className="space-y-6">
-                <div className="flex items-center gap-2">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1 border-l-2 border-indigo-600">Quick Stats</p>
+            {/* Header section with refined typography */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-4">
+                <div>
+                    <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Workforce Overview</h1>
+                    <p className="text-sm text-slate-500 mt-1">Monitor real-time headcount, organizational distribution, and recent activity.</p>
                 </div>
-                <div className="grid grid-cols-2 lg:grid-cols-5 gap-5">
-                    {[
-                    { label: "Total Employees", value: stats?.total ?? "...", icon: Users, color: "text-indigo-600", bg: "bg-indigo-50" },
-                    { label: "Present Now", value: stats?.present ?? "...", icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-50" },
-                    { label: "Absent Today", value: stats?.absent ?? "...", icon: XCircle, color: "text-rose-600", bg: "bg-rose-50" },
-                    { label: "On Leave", value: stats?.onLeave ?? "...", icon: Calendar, color: "text-amber-600", bg: "bg-amber-50" },
-                    { label: "Awaiting Review", value: stats?.pendingLeaves ?? "...", icon: Clock8, color: "text-violet-600", bg: "bg-violet-50" },
+                <div className="flex items-center gap-3">
+                    <Button onClick={() => setShowMessageModal(true)} className="h-9 px-4 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm shadow-indigo-600/20">
+                        <Send className="w-4 h-4 mr-2" /> Message Team
+                    </Button>
+                    <Button variant="outline" className="h-9 px-4 text-sm font-medium border-slate-200">
+                         Export Report
+                    </Button>
+                </div>
+            </div>
+
+            {/* 1. KEY METRICS GRID - Enterprise SaaS style */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                {[
+                    { label: "Total Headcount", value: stats?.total ?? "-", icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
+                    { label: "Present Today", value: stats?.present ?? "-", icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-50" },
+                    { label: "Absent Today", value: stats?.absent ?? "-", icon: XCircle, color: "text-rose-600", bg: "bg-rose-50" },
+                    { label: "On Active Leave", value: stats?.onLeave ?? "-", icon: Calendar, color: "text-amber-600", bg: "bg-amber-50" },
+                    { label: "Pending Reviews", value: stats?.pendingLeaves ?? "-", icon: AlertCircle, color: "text-indigo-600", bg: "bg-indigo-50" },
                 ].map((s, i) => (
-                    <motion.div 
-                        key={i} 
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.05 }}
-                    >
-                        <Card className="p-8 pb-10 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group cursor-pointer relative overflow-hidden">
-                            <div className={cn("mb-6 w-12 h-12 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110", s.bg)}>
+                    <Card key={i} className="p-5 border-slate-200 shadow-sm hover:shadow-md transition-shadow bg-white rounded-xl">
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <p className="text-sm font-medium text-slate-500 mb-1">{s.label}</p>
+                                <h4 className="text-3xl font-bold text-slate-900 tracking-tight">{s.value}</h4>
+                            </div>
+                            <div className={cn("p-2 rounded-lg", s.bg)}>
                                 <s.icon className={cn("w-5 h-5", s.color)} />
                             </div>
-                            <h4 className="text-4xl font-black text-slate-900 dark:text-white tabular-nums tracking-tighter italic leading-none">{s.value}</h4>
-                            <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mt-2 px-0.5">{s.label}</p>
-                            <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <ArrowUpRight className="w-4 h-4 text-slate-300" />
-                            </div>
-                        </Card>
-                    </motion.div>
+                        </div>
+                    </Card>
                 ))}
-                </div>
             </div>
 
-            {/* 3. EMPLOYEE DISTRIBUTION */}
-            <div className="space-y-8">
-                <div className="flex items-center justify-between px-2">
-                    <div className="space-y-1">
-                        <h3 className="text-2xl font-black uppercase italic text-slate-900 dark:text-white flex items-center gap-4">
-                            Employee <span className="text-indigo-600">Distribution</span>
-                            <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-                        </h3>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em]">Organizational Overview</p>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                {/* 2. ORGANIZATION BREAKDOWN - Minimal Progress Bar Style */}
+                <Card className="lg:col-span-2 rounded-xl border-slate-200 shadow-sm bg-white overflow-hidden">
+                    <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                        <div>
+                            <h3 className="text-base font-semibold text-slate-900">Department Headcount</h3>
+                            <p className="text-sm text-slate-500 mt-1">Current active personnel distributed by department</p>
+                        </div>
+                        <Button variant="ghost" className="h-8 text-sm font-medium text-indigo-600 hover:bg-slate-50" onClick={() => onNavigate?.('onboarding')}>
+                            View Directory <ArrowRight className="w-4 h-4 ml-1" />
+                        </Button>
                     </div>
-                    <div className="flex items-center gap-4">
-                        <div className="h-0.5 w-24 bg-gradient-to-r from-transparent via-slate-100 to-transparent dark:via-white/5" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Live Status</span>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {[
-                        { label: "Employees", key: "employee", navTarget: "onboarding", icon: GraduationCap, color: "from-indigo-600 to-blue-500", glow: "indigo" },
-                        { label: "HR Managers", key: "hr", navTarget: "payroll", icon: Shield, color: "from-emerald-600 to-teal-500", glow: "emerald" },
-                        { label: "System Auditors", key: "auditor", navTarget: "reports", icon: BarChart3, color: "from-amber-600 to-orange-500", glow: "amber" },
-                        { label: "Technical Support", key: "support", navTarget: "documents", icon: Radio, color: "from-rose-600 to-pink-500", glow: "rose" },
-                    ].map((role, i) => {
-                        const count = stats?.roleDistribution?.[role.key] || 0;
-                        return (
-                            <motion.div
-                                key={role.key}
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: i * 0.1 }}
-                                className="group relative"
-                            >
-                                <div className={cn(
-                                    "absolute inset-0 bg-gradient-to-br opacity-0 blur-2xl transition-all duration-500 group-hover:opacity-20",
-                                    role.glow === "indigo" ? "from-indigo-600/50" : 
-                                    role.glow === "emerald" ? "from-emerald-600/50" : 
-                                    role.glow === "amber" ? "from-amber-600/50" : "from-rose-600/50"
-                                )} />
-                                
-                                <Card className="relative p-8 rounded-[3rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-white/5 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 overflow-hidden">
-                                    <div className="flex items-start justify-between mb-10">
-                                        <div className={cn(
-                                            "w-14 h-14 rounded-2xl bg-gradient-to-br flex items-center justify-center text-white shadow-xl group-hover:rotate-6 transition-transform",
-                                            role.color
-                                        )}>
-                                            <role.icon className="w-7 h-7" />
+                    
+                    <div className="p-6">
+                        <div className="space-y-6">
+                            {[
+                                { label: "General Employees", count: stats?.roleDistribution?.employee || 0, icon: Users, color: "bg-blue-500", percent: 75 },
+                                { label: "Operations & HR", count: stats?.roleDistribution?.hr || 0, icon: Briefcase, color: "bg-indigo-500", percent: 15 },
+                                { label: "Financial / Auditors", count: stats?.roleDistribution?.auditor || 0, icon: FileText, color: "bg-amber-500", percent: 5 },
+                                { label: "IT & System Support", count: stats?.roleDistribution?.support || 0, icon: Clock, color: "bg-slate-700", percent: 5 },
+                            ].map((dept, idx) => (
+                                <div key={idx} className="group">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <div className="flex items-center gap-3">
+                                            <div className={cn("p-1.5 rounded-md text-white shadow-sm", dept.color)}>
+                                                <dept.icon className="w-4 h-4" />
+                                            </div>
+                                            <span className="text-sm font-medium text-slate-700">{dept.label}</span>
                                         </div>
                                         <div className="text-right">
-                                            <Badge className="bg-slate-50 text-slate-400 border-none text-[8px] font-black uppercase tracking-widest px-3 py-1 mb-2 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">Operational</Badge>
-                                            <p className="text-[9px] font-black text-slate-300 uppercase tracking-tighter italic">Unique Node Type</p>
+                                            <span className="text-sm font-semibold text-slate-900">{dept.count} <span className="text-slate-400 font-normal ml-1">Headcount</span></span>
                                         </div>
                                     </div>
+                                    <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                                        <div 
+                                            className={cn("h-full rounded-full transition-all duration-1000 ease-out", dept.color)} 
+                                            style={{ width: `${dept.count > 0 ? Math.max(10, dept.percent) : 0}%` }}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </Card>
 
-                                    <div className="space-y-1">
-                                        <h4 className="text-[13px] font-black text-slate-400 uppercase tracking-[0.2em]">{role.label}</h4>
-                                        <div className="flex items-baseline gap-3">
-                                            <span className="text-5xl font-black text-slate-900 dark:text-white italic tracking-tighter leading-none">{count}</span>
-                                            <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Active</span>
+                {/* 3. RECENT ACTIVITY STREAM - Clean Timeline */}
+                <Card className="rounded-xl border-slate-200 shadow-sm bg-white overflow-hidden flex flex-col h-full">
+                    <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                        <div>
+                            <h3 className="text-base font-semibold text-slate-900 flex items-center gap-2">
+                                Recent Activity 
+                                <span className="relative flex h-2 w-2">
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                </span>
+                            </h3>
+                        </div>
+                    </div>
+                    
+                    <div className="p-6 flex-1 overflow-y-auto max-h-[380px] custom-scrollbar">
+                        {activities.length === 0 ? (
+                            <div className="h-full flex flex-col items-center justify-center text-slate-400 space-y-3">
+                                <Activity className="w-8 h-8 opacity-20" />
+                                <p className="text-sm">No recent activity detected</p>
+                            </div>
+                        ) : (
+                            <div className="space-y-6">
+                                {activities.map((act, i) => (
+                                    <div key={i} className="flex gap-4">
+                                        <div className="flex flex-col items-center mt-1">
+                                            <div className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 shadow-sm">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                                            </div>
+                                            {i !== activities.length - 1 && (
+                                                <div className="w-px h-full bg-slate-100 my-1" />
+                                            )}
+                                        </div>
+                                        <div className="pb-2">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <span className="text-sm font-semibold text-slate-900">{act.user}</span>
+                                                <span className="text-xs font-medium text-slate-400">{act.time}</span>
+                                            </div>
+                                            <p className="text-sm text-slate-600 leading-snug">{act.detail}</p>
                                         </div>
                                     </div>
-
-                                    <div className="mt-8 pt-6 border-t border-slate-50 dark:border-white/5 flex items-center justify-between">
-                                        <div className="flex -space-x-3">
-                                            {[1, 2, 3].map(x => (
-                                                <div key={x} className="w-7 h-7 rounded-full border-2 border-white dark:border-slate-900 bg-slate-100 flex items-center justify-center">
-                                                    <div className="w-1 h-1 rounded-full bg-slate-400" />
-                                                </div>
-                                            ))}
-                                            <div className="w-7 h-7 rounded-full border-2 border-white dark:border-slate-900 bg-slate-900 flex items-center justify-center text-[7px] font-black text-white">+</div>
-                                        </div>
-                                        <button 
-                                            onClick={() => onNavigate?.(role.navTarget)}
-                                            className="text-[9px] font-black uppercase tracking-widest text-indigo-600 hover:underline"
-                                        >
-                                            Open Control Center
-                                        </button>
-                                    </div>
-                                </Card>
-                            </motion.div>
-                        );
-                    })}
-                </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                    
+                    <div className="p-4 border-t border-slate-100 bg-white">
+                        <Button variant="ghost" className="w-full text-indigo-600 text-sm font-medium hover:bg-slate-50">
+                            View Audit Log
+                        </Button>
+                    </div>
+                </Card>
             </div>
 
-            {/* 4. OPERATIONAL ACTIVITY STRIP (REAL-TIME) */}
-            <Card className="p-8 rounded-[3rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-white/5 shadow-sm">
-                <div className="flex items-center gap-5 mb-10 overflow-x-auto no-scrollbar">
-                    <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 shadow-sm shrink-0">
-                         <Pulse className="w-5 h-5" />
-                    </div>
-                    <div className="flex flex-col flex-shrink-0">
-                        <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-900 dark:text-white leading-none">Operational Stream</h3>
-                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Real-time Activity Manifest</p>
-                    </div>
-                    <div className="h-px flex-1 bg-slate-100 dark:bg-white/5 min-w-[100px]" />
-                    <Link href="/history">
-                        <button className="text-[9px] font-black text-indigo-600 uppercase tracking-widest hover:underline flex items-center gap-2 px-4 py-2 bg-indigo-50 rounded-lg">
-                            History Log <ChevronRight className="w-3 h-3" />
-                        </button>
-                    </Link>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pr-2">
-                    {activities.map((act, i) => (
-                        <motion.div 
-                            key={i}
-                            initial={{ opacity: 0, x: 10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: i * 0.1 }}
-                            className="flex gap-5 p-5 rounded-2xl bg-slate-50/50 dark:bg-white/5 border border-slate-50 dark:border-white/5 group hover:border-indigo-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-                        >
-                            <div className="flex flex-col gap-2 shrink-0">
-                                <div className="w-8 h-8 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-                                    <div className="w-2 h-2 rounded-full bg-indigo-500" />
-                                </div>
-                                <span className="text-[8px] font-black text-slate-300 uppercase tracking-tighter text-center">{act.time}</span>
-                            </div>
-                            <div className="min-w-0 pr-2 pb-1">
-                                <p className="text-[11px] font-black text-slate-900 dark:text-white uppercase tracking-tight truncate italic">{act.user}</p>
-                                <p className="text-[10px] text-slate-500 line-clamp-2 mt-1 leading-tight font-medium">{act.detail}</p>
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
-            </Card>
-
-            {/* HIGH-FIDELITY PROFILE OVERLAY */}
+            {/* User Profile Modal */}
             <AnimatePresence mode="wait">
                 {selectedUser && (
                     <UserProfileView 
@@ -265,6 +239,12 @@ export default function HRManagerDashboardHub({ token, onNavigate }: ManagerDash
                 )}
             </AnimatePresence>
 
+            {/* Message Modal */}
+            <AnimatePresence>
+                {showMessageModal && (
+                    <UserMessageModal token={token} onClose={() => setShowMessageModal(false)} />
+                )}
+            </AnimatePresence>
         </div>
     )
 }

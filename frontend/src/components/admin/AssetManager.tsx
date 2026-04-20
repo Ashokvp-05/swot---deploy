@@ -51,15 +51,7 @@ export default function AssetManager({ token }: { token: string }) {
                     <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Personnel infrastructure & asset audit</p>
                 </div>
                 <div className="flex gap-4">
-                    <div className="relative w-64">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <Input
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Scan by Name/Serial..."
-                            className="bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-white/5 pl-12 h-12 rounded-xl text-[10px] font-black uppercase tracking-widest placeholder:text-slate-500"
-                        />
-                    </div>
+
                     <Button
                         className="h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-8 text-[11px] font-black uppercase tracking-widest gap-2 shadow-xl shadow-emerald-600/20"
                     >

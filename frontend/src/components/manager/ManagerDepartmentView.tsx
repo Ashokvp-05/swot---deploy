@@ -91,13 +91,7 @@ export default function ManagerDepartmentView({ token }: { token: string }) {
                 </Button>
             </div>
 
-            <div className="flex items-center gap-4 bg-white dark:bg-slate-900 p-4 rounded-[2rem] border border-slate-100 dark:border-slate-800">
-                <div className="relative flex-1">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                    <Input placeholder="Filter architecture by department name or lead..." className="h-12 pl-12 rounded-2xl border-none bg-slate-50 dark:bg-black/20 text-xs font-black uppercase tracking-widest" />
-                </div>
-                <Button variant="ghost" className="h-12 w-12 rounded-2xl p-0"><Filter className="w-5 h-5 text-slate-400" /></Button>
-            </div>
+
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {loading ? (

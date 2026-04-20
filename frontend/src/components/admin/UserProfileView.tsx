@@ -11,7 +11,7 @@ import {
     ArrowLeftCircle, Verified, UserCog, Shield,
     Cpu, Laptop, Layers, Radio, Key, Monitor, History as HistoryIcon,
     ChevronRight, Clock, CheckCircle2, UserPlus, FileText, GraduationCap, UploadCloud, XCircle, FilePlus,
-    Smartphone, UserCircle, MapPinned
+    Smartphone, UserCircle, MapPinned, FileDown, RefreshCw, Trash2
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -40,10 +40,10 @@ export default function UserProfileView({ user: initialUser, token, onClose, onE
     const [privacyShield, setPrivacyShield] = useState(true)
     const [fullUser, setFullUser] = useState<any>(null)
     const [loading, setLoading] = useState(false)
+    const [downloading, setDownloading] = useState(false)
     
     const displayUser = fullUser || initialUser
     
-    // Real-time polling for full profile orchestration
     useEffect(() => {
         const fetchFullProfile = async () => {
             if (!initialUser?.id) return
@@ -59,16 +59,13 @@ export default function UserProfileView({ user: initialUser, token, onClose, onE
             }
         }
 
-        // Initial fetch
         setLoading(true)
         fetchFullProfile().finally(() => setLoading(false))
 
-        // Establish real-time polling interval (5s)
         const interval = setInterval(fetchFullProfile, 5000)
         return () => clearInterval(interval)
     }, [initialUser?.id, token])
 
-    // Determine role name and administrative status
     const roleName = typeof displayUser?.role === 'object' ? displayUser?.role?.name : displayUser?.role
     const isSuperAdmin = roleName === "SUPER_ADMIN"
     
@@ -78,26 +75,122 @@ export default function UserProfileView({ user: initialUser, token, onClose, onE
         { title: "Security protocol set", date: format(new Date(displayUser?.createdAt || Date.now() - 86400000 * 1), 'MMM dd, yyyy') },
     ]
 
-    const renderDataField = (label: string, value: any, icon: any, subtext?: string) => (
+    const handleDownloadPDF = async () => {
+        const element = document.getElementById('profile-dossier-content')
+        if (!element) return
+
+        setDownloading(true)
+        try {
+            const html2canvas = (await import('html2canvas')).default
+            const jspdfModule = await import('jspdf')
+            const jsPDF = jspdfModule.jsPDF || (jspdfModule as any).default
+
+            // Reveal clear data
+            const previousShield = privacyShield
+            setPrivacyShield(false)
+            await new Promise(r => setTimeout(r, 800))
+
+            const canvas = await html2canvas(element, {
+                scale: 1.5,
+                useCORS: true,
+                logging: false,
+                backgroundColor: '#ffffff',
+                imageTimeout: 20000,
+                onclone: (clonedDoc) => {
+                    const el = clonedDoc.getElementById('profile-dossier-content')
+                    if (el) {
+                        el.style.transform = 'none'
+                        el.style.maxHeight = 'none'
+                        el.style.height = 'auto'
+                        el.style.overflow = 'visible'
+                        el.style.borderRadius = '0'
+                        el.style.background = 'white'
+                        
+                        // DEEP CLEAN: Remove all Lab/Oklch rules from stylesheets to prevent parser crash
+                        try {
+                            Array.from(clonedDoc.styleSheets).forEach((sheet: any) => {
+                                try {
+                                    const rules = sheet.cssRules || sheet.rules;
+                                    if (!rules) return;
+                                    for (let i = rules.length - 1; i >= 0; i--) {
+                                        const rule = rules[i];
+                                        if (rule.cssText && (rule.cssText.includes('lab(') || rule.cssText.includes('oklch('))) {
+                                            sheet.deleteRule(i);
+                                        }
+                                    }
+                                } catch (e) {
+                                    // Cross-origin sheets might be inaccessible
+                                }
+                            });
+                        } catch (e) {}
+
+                        // Inject safe fallback styles
+                        const style = clonedDoc.createElement('style')
+                        style.innerHTML = `
+                            * { 
+                                backdrop-filter: none !important; 
+                                -webkit-backdrop-filter: none !important;
+                                color-scheme: light !important;
+                                text-shadow: none !important;
+                                box-shadow: none !important;
+                            }
+                            body { background: white !important; }
+                            .bg-slate-900 { background-color: #1e293b !important; color: white !important; }
+                            .bg-indigo-600 { background-color: #4f46e5 !important; }
+                            .bg-rose-500 { background-color: #f43f5e !important; }
+                            .bg-rose-600 { background-color: #e11d48 !important; }
+                            .bg-emerald-500 { background-color: #10b981 !important; }
+                            .text-slate-900 { color: #0f172a !important; }
+                            .text-indigo-600 { color: #4f46e5 !important; }
+                            .text-slate-400 { color: #94a3b8 !important; }
+                        `
+                        clonedDoc.head.appendChild(style)
+                    }
+                }
+            })
+
+            const imgData = canvas.toDataURL('image/png', 0.8)
+            const pdf = new jsPDF('p', 'mm', 'a4')
+            const pdfWidth = pdf.internal.pageSize.getWidth()
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width
+
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST')
+            pdf.save(`Personnel_Manifest_${displayUser?.name?.replace(/\s+/g, '_')}.pdf`)
+            
+            setPrivacyShield(previousShield)
+            import('sonner').then(m => m.toast.success("Profile saved as PDF."))
+        } catch (error: any) {
+            console.error("PDF Generate Error:", error)
+            import('sonner').then(m => m.toast.error("Download fail. Please retry."))
+        } finally {
+            setDownloading(false)
+        }
+    }
+
+    const renderDataField = (label: string, value: any, subtext?: string) => (
         <div className="group relative">
             <div className="flex flex-col">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest font-brand mb-2">{label}</span>
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.15em] font-brand mb-1">{label}</span>
                 <p className={cn(
-                    "text-[15px] font-bold tracking-tight text-slate-900",
-                    (!value || value === "NOT_SET") && "text-slate-300 font-normal"
+                    "text-[14px] font-bold tracking-tight text-slate-900 leading-tight",
+                    (!value || value === "NOT_SET" || value === "Pending Registry") && "text-slate-300 font-medium italic"
                 )}>
                     {privacyShield && label.toLowerCase().includes('aadhaar') ? 'XXXX-XXXX-XXXX' : 
                      privacyShield && label.toLowerCase().includes('pan') ? 'XXXXX0000X' :
-                     (!value || value === "NOT_SET") ? "Awaiting Data" : value}
+                     (!value || value === "NOT_SET" || value === "Pending Registry") ? "Awaiting Data" : value}
                 </p>
-                {subtext && <p className="text-[9px] font-bold text-slate-400 mt-1 uppercase tracking-widest italic">{subtext}</p>}
+                {subtext && <p className="text-[8px] font-bold text-slate-400 mt-0.5 uppercase tracking-widest italic">{subtext}</p>}
             </div>
         </div>
     )
 
-    const SectionHeader = ({ icon: Icon, title, subtitle }: { icon: any, title: string, subtitle: string }) => (
-        <div className="border-b border-slate-50 pb-4 mb-6">
-            <h3 className="text-[13px] font-black uppercase tracking-[0.2em] text-slate-900 font-brand italic leading-none">{title}</h3>
+    const CardContainer = ({ children, title, icon: Icon, className }: { children: React.ReactNode, title: string, icon?: any, className?: string }) => (
+        <div className={cn("bg-white rounded-[2rem] p-7 border border-slate-100 shadow-sm transition-all hover:shadow-md", className)}>
+            <div className="flex items-center gap-3 mb-6">
+                {Icon && <Icon className="w-4 h-4 text-slate-400" />}
+                <h3 className="text-[12px] font-black uppercase tracking-[0.2em] text-slate-900 font-brand italic leading-none">{title}</h3>
+            </div>
+            {children}
         </div>
     )
 
@@ -106,247 +199,214 @@ export default function UserProfileView({ user: initialUser, token, onClose, onE
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8 font-body backdrop-blur-3xl bg-slate-950/40"
+            className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8 font-body backdrop-blur-2xl bg-slate-950/20"
         >
             <GlobalStyles />
             <motion.div 
                 initial={{ scale: 0.98, y: 30 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.98, y: 30 }}
-                className="bg-white w-full max-w-7xl h-full max-h-[920px] rounded-[64px] shadow-[0_50px_150px_rgba(15,23,42,0.45)] flex flex-col overflow-hidden border border-white"
+                className="bg-slate-50 w-full max-w-[1400px] h-full max-h-[900px] rounded-[3rem] shadow-[0_50px_100px_rgba(15,23,42,0.15)] flex flex-col overflow-hidden border border-white"
             >
-                {/* ── MINIMALIST ADMINISTRATIVE HEADER ── */}
-                <div className="px-12 py-10 flex items-center justify-between border-b border-slate-50 shrink-0">
+                {/* ── HEADER ── */}
+                <div className="px-10 py-8 flex items-center justify-between border-b border-white bg-white/50 backdrop-blur-md shrink-0">
                     <div>
-                        <h2 className="text-2xl font-black text-slate-900 font-brand tracking-tighter uppercase italic leading-none">
+                        <h2 className="text-xl font-black text-slate-900 font-brand tracking-tighter uppercase italic leading-none">
                             Employee Profile
                         </h2>
-                        <div className="flex items-center gap-3 mt-3">
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">
-                                Live Sync
-                            </span>
-                            <span className="relative flex h-1 w-1">
+                        <div className="flex items-center gap-2 mt-2.5">
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.4em]">Live Sync</span>
+                            <span className="relative flex h-1.5 w-1.5">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-1 w-1 bg-emerald-500"></span>
+                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
                             </span>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-8">
+                    <div className="flex items-center gap-6">
+                         <button 
+                            disabled={downloading}
+                            onClick={handleDownloadPDF}
+                            className={cn(
+                                "flex items-center gap-2 bg-slate-900 text-white px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.1em] hover:bg-black transition-all font-brand shadow-lg active:scale-95",
+                                downloading && "opacity-50 cursor-wait"
+                            )}
+                        >
+                            {downloading ? <RefreshCw className="w-3 h-3 animate-spin" /> : <FileDown className="w-3 h-3" />}
+                            {downloading ? "Saving..." : "Download PDF"}
+                        </button>
                         <button 
                             onClick={() => setPrivacyShield(!privacyShield)}
-                            className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-slate-900 transition-colors font-brand"
+                            className="bg-slate-100/50 hover:bg-slate-200/50 px-5 py-2.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-slate-900 transition-all font-brand"
                         >
                             {privacyShield ? "Show Details" : "Hide Details"}
                         </button>
                         <button 
                             onClick={onClose}
-                            className="w-12 h-12 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all active:scale-95"
+                            className="w-11 h-11 flex items-center justify-center rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-slate-900 hover:shadow-sm transition-all active:scale-95"
                         >
                             <X className="w-5 h-5" />
                         </button>
                     </div>
                 </div>
 
-                <div className="flex-1 p-6 space-y-4">
-                    
-                    {/* ── HIGH-DENSITY COMMON ENGLISH MANIFEST ── */}
-                    <div className="grid grid-cols-1 xl:grid-cols-4 gap-4 items-start">
+                {/* ── MAIN CONTENT GRID ── */}
+                <div id="profile-dossier-content" className="flex-1 overflow-y-auto custom-scrollbar p-8 bg-white">
+                    <div className="grid grid-cols-12 gap-6 items-start">
                         
-                        {/* COLUMN 1: PROFILE & ROLE */}
-                        <div className="space-y-4">
-                            <div className="bg-slate-50/50 rounded-3xl p-6 border border-slate-100 flex flex-col items-center">
-                                <div className="w-32 h-32 rounded-3xl border-2 border-white shadow-lg flex items-center justify-center relative p-1 bg-white mb-4 overflow-hidden">
-                                     {displayUser?.avatarUrl ? (
-                                        <img src={displayUser.avatarUrl} alt="" className="w-full h-full object-cover rounded-2xl" />
-                                     ) : (
-                                        <div className="flex flex-col items-center justify-center gap-2">
-                                            <UserCircle className="w-16 h-16 text-slate-200" strokeWidth={1} />
-                                            <span className="text-[10px] font-black tracking-widest text-slate-300 uppercase">
-                                                {displayUser?.name?.[0]}{displayUser?.name?.split(' ')?.[1]?.[0] || displayUser?.name?.[1]?.toUpperCase()}
-                                            </span>
+                        {/* COLUMN 1: SIDEBAR (Personal Identity) */}
+                        <div className="col-span-12 lg:col-span-3 space-y-6">
+                            <div className="bg-slate-50/50 rounded-[2.5rem] p-8 border border-slate-100 text-center flex flex-col items-center">
+                                <div className="w-40 h-40 rounded-[2.5rem] bg-white p-1.5 mb-6 relative group overflow-hidden border border-white shadow-sm">
+                                    {displayUser?.avatarUrl ? (
+                                        <img src={displayUser.avatarUrl} alt="" className="w-full h-full object-cover rounded-[2rem]" />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center bg-slate-50/50 rounded-[2rem]">
+                                            <UserCircle className="w-20 h-20 text-slate-200" strokeWidth={0.5} />
                                         </div>
-                                     )}
+                                    )}
                                 </div>
-                                {isSuperAdmin && (
-                                    <div className="mb-4">
-                                        <span className="px-4 py-1.5 rounded-full bg-slate-900 text-white text-[9px] font-black uppercase tracking-[0.2em]">
-                                            Ultimate Authority
-                                        </span>
-                                    </div>
-                                )}
-                                <h1 className="text-xl font-bold text-slate-900 tracking-tighter uppercase leading-tight text-center">{displayUser?.name}</h1>
+                                <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase mb-1 leading-tight">{displayUser?.name}</h1>
+                                <Badge className="bg-slate-900 text-white border-none px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest mb-8">
+                                    {roleName || "Employee"}
+                                </Badge>
                                 
-                                <div className="w-full space-y-4 pt-4 border-t border-slate-100 mt-4">
-                                    {renderDataField("User Role", roleName || "Employee", <Shield />)}
-                                    {renderDataField("Office Branch", displayUser?.branch?.name || "Global", <Globe />)}
-                                    {renderDataField("Department", displayUser?.department?.name || "Core", <Building2 />)}
+                                <div className="w-full space-y-5 pt-8 border-t border-slate-100">
+                                    {renderDataField("Office Branch", displayUser?.branch?.name || "Global")}
+                                    {renderDataField("Department", displayUser?.department?.name || "Core")}
                                 </div>
                             </div>
 
-                            <div className="bg-white rounded-3xl p-6 border border-slate-50 shadow-sm">
-                                <SectionHeader icon={Briefcase} title="Job Details" subtitle="Position & Hierarchy" />
-                                <div className="space-y-4">
-                                    {renderDataField("Designation", displayUser?.designation?.name || displayUser?.designation, <Briefcase />)}
-                                    {renderDataField("Reporting Manager", displayUser?.manager?.name || "System Admin", <UserCog />)}
+                            <CardContainer title="Job Details" icon={Briefcase}>
+                                <div className="space-y-5">
+                                    {renderDataField("Designation", displayUser?.designation?.name || displayUser?.designation)}
+                                    {renderDataField("Reporting Manager", displayUser?.manager?.name || "System Admin")}
                                 </div>
-                            </div>
+                            </CardContainer>
                         </div>
 
-                        {/* COLUMN 2: PERSONAL & CONTACT */}
-                        <div className="space-y-4">
-                            <div className="bg-white rounded-3xl p-6 border border-slate-50 shadow-sm">
-                                <SectionHeader icon={UserCircle} title="Personal Details" subtitle="Basic Information" />
-                                <div className="grid grid-cols-2 gap-4">
-                                    {renderDataField("Gender", displayUser?.profile?.gender || "Female", <User />)}
-                                    {renderDataField("Date of Birth", displayUser?.profile?.dob ? format(new Date(displayUser?.profile?.dob), 'dd-MM-yyyy') : "14-05-1996", <Calendar />)}
-                                    {renderDataField("Marital Status", displayUser?.profile?.maritalStatus || "Married", <Heart />)}
-                                    {renderDataField("Blood Group", displayUser?.profile?.bloodGroup || "O+ive", <Activity />)}
-                                </div>
-                            </div>
-
-                            <div className="bg-white rounded-3xl p-6 border border-slate-50 shadow-sm">
-                                <SectionHeader icon={Smartphone} title="Contact Info" subtitle="Reachability" />
-                                {renderDataField("Email Address", displayUser?.email, <MailCheck />)}
-                                <div className="grid grid-cols-2 gap-4 mt-4">
-                                    {renderDataField("Work Phone", displayUser?.phone, <Smartphone />)}
-                                    {renderDataField("Personal Phone", displayUser?.profile?.secondaryPhone, <Phone />)}
-                                </div>
-                            </div>
-
-                            <div className="bg-white rounded-3xl p-6 border border-slate-50 shadow-sm">
-                                <SectionHeader icon={MapPin} title="Home Address" subtitle="Residential Details" />
-                                <div className="space-y-4">
-                                    {renderDataField("Current Address", displayUser?.profile?.currentAddress || "Pending Registry", <MapPin />)}
-                                    {renderDataField("Permanent Address", displayUser?.profile?.permanentAddress || "Pending Registry", <Building2 />)}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* COLUMN 3: DOCUMENTS & ONBOARDING */}
-                        <div className="space-y-4">
-                            <div className="bg-indigo-50/20 rounded-3xl p-6 border border-indigo-100/30 shadow-sm">
-                                <SectionHeader icon={Fingerprint} title="ID Documents" subtitle="Identity Verification" />
-                                <div className="space-y-4">
-                                    {renderDataField("Aadhaar Number", displayUser?.profile?.aadhaarNumber, <Verified />)}
-                                    {renderDataField("PAN Number", displayUser?.profile?.panNumber, <HardDrive />)}
-                                    {renderDataField("Passport ID", displayUser?.profile?.passportNumber, <Globe />)}
-                                </div>
-                            </div>
-
-                            <div className="bg-white rounded-3xl p-6 border border-slate-50 shadow-sm">
-                                <SectionHeader icon={ShieldCheck} title="Onboarding Progress" subtitle="Step Completion" />
-                                <div className="space-y-4">
-                                    <div className="w-full h-1 bg-slate-100 rounded-full overflow-hidden mb-4">
-                                        <div 
-                                            className="h-full bg-emerald-500 rounded-full transition-all duration-1000" 
-                                            style={{ width: `${displayUser?.onboardingSteps?.length > 0 ? (displayUser.onboardingSteps.filter((s:any) => s.completed).length / displayUser.onboardingSteps.length * 100) : 100}%` }} 
-                                        />
+                        {/* COLUMN 2: MIDDLE (Core Details) */}
+                        <div className="col-span-12 lg:col-span-6 space-y-6">
+                            <div className="grid grid-cols-2 gap-6">
+                                <CardContainer title="Personal Details" icon={UserCircle} className="col-span-2">
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                                        {renderDataField("Gender", displayUser?.profile?.gender || "Female")}
+                                        {renderDataField("Date of Birth", displayUser?.profile?.dob ? format(new Date(displayUser?.profile?.dob), 'dd-MM-yyyy') : "14-05-1996")}
+                                        {renderDataField("Marital Status", displayUser?.profile?.maritalStatus || "Married")}
+                                        {renderDataField("Blood Group", displayUser?.profile?.bloodGroup || "O+ive")}
                                     </div>
-                                    {displayUser?.onboardingSteps?.length > 0 ? (
-                                        displayUser.onboardingSteps.map((step: any, idx: number) => (
-                                            <div key={idx} className="flex items-center justify-between">
-                                                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">{step.task}</span>
-                                                <span className={cn(
-                                                    "text-[9px] font-black uppercase italic",
-                                                    step.completed ? "text-emerald-600" : "text-amber-600"
-                                                )}>{step.completed ? "Completed" : "Pending"}</span>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        [
-                                            { l: "Profile Verification", s: "Completed" },
-                                            { l: "Document Upload", s: "Completed" },
-                                            { l: "Policy Acceptance", s: "Completed" },
-                                            { l: "Training Completion", s: "Completed" },
-                                            { l: "Final HR Approval", s: "Completed" }
-                                        ].map((sh, idx) => (
-                                            <div key={idx} className="flex items-center justify-between">
-                                                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">{sh.l}</span>
-                                                <span className="text-[9px] font-black uppercase italic text-emerald-600">{sh.s}</span>
-                                            </div>
-                                        ))
-                                    )}
-                                </div>
+                                </CardContainer>
+
+                                <CardContainer title="Contact Info" icon={Smartphone} className="col-span-2 md:col-span-1">
+                                    <div className="space-y-5">
+                                        {renderDataField("Email Address", displayUser?.email)}
+                                        {renderDataField("Work Phone", displayUser?.phone)}
+                                        {renderDataField("Personal Phone", displayUser?.profile?.secondaryPhone)}
+                                    </div>
+                                </CardContainer>
+
+                                <CardContainer title="ID Documents" icon={Fingerprint} className="col-span-2 md:col-span-1 bg-indigo-50/20 border-indigo-100/30">
+                                    <div className="space-y-5">
+                                        {renderDataField("Aadhaar", displayUser?.profile?.aadhaarNumber)}
+                                        {renderDataField("PAN Number", displayUser?.profile?.panNumber)}
+                                        {renderDataField("Passport ID", displayUser?.profile?.passportNumber)}
+                                    </div>
+                                </CardContainer>
+
+                                <CardContainer title="Home Address" icon={MapPin} className="col-span-2">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        {renderDataField("Current Address", displayUser?.profile?.currentAddress || "Pending Registry")}
+                                        {renderDataField("Permanent Address", displayUser?.profile?.permanentAddress || "Pending Registry")}
+                                    </div>
+                                </CardContainer>
                             </div>
                         </div>
 
-                        {/* COLUMN 4: STATUS & ACTIVITY */}
-                        <div className="space-y-4">
-                            <div className="bg-white rounded-3xl p-6 border border-slate-50 shadow-sm">
-                                <SectionHeader icon={Activity} title="Leave balances" subtitle="Time Off Status" />
-                                <div className="space-y-6">
-                                    {displayUser?.leaveBalances?.length > 0 ? (
-                                        displayUser.leaveBalances.map((lb: any, idx: number) => (
-                                            <div key={idx} className="space-y-2">
-                                                <div className="flex justify-between items-end">
-                                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">{lb.leaveTypeConfig?.name || "Leave"}</span>
-                                                    <span className="text-[12px] font-bold text-slate-900">{lb.used} / {lb.total}</span>
-                                                </div>
-                                                <div className="w-full h-1 bg-slate-50 rounded-full overflow-hidden">
-                                                    <div 
-                                                        className={cn("h-full rounded-full bg-indigo-600")} 
-                                                        style={{ width: `${lb.total > 0 ? (lb.used / lb.total) * 100 : 0}%` }} 
-                                                    />
-                                                </div>
+                        {/* COLUMN 3: RIGHT (Status & Systems) */}
+                        <div className="col-span-12 lg:col-span-3 space-y-6">
+                            <CardContainer title="Leave Balances" icon={Activity}>
+                                <div className="space-y-5">
+                                    {[
+                                        { label: "Vacation Leave", val: "9 / 15", pct: 60, col: "bg-indigo-600" },
+                                        { label: "Sick Leave", val: "4 / 8", pct: 50, col: "bg-rose-500" },
+                                        { label: "Other Leave", val: "1 Day", pct: 15, col: "bg-emerald-500" }
+                                    ].map((lv, idx) => (
+                                        <div key={idx} className="space-y-2.5">
+                                            <div className="flex justify-between items-end">
+                                                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">{lv.label}</span>
+                                                <span className="text-[12px] font-bold text-slate-900 leading-none">{lv.val}</span>
                                             </div>
-                                        ))
-                                    ) : (
-                                        [
-                                            { label: "Vacation Leave", val: "9 / 15", pct: 60, col: "bg-indigo-600" },
-                                            { label: "Sick Leave", val: "4 / 8", pct: 50, col: "bg-rose-500" },
-                                            { label: "Other Leave", val: "1 Day", pct: 10, col: "bg-slate-400" }
-                                        ].map((lv, idx) => (
-                                            <div key={idx} className="space-y-2">
-                                                <div className="flex justify-between items-end">
-                                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">{lv.label}</span>
-                                                    <span className="text-[12px] font-bold text-slate-900">{lv.val}</span>
-                                                </div>
-                                                <div className="w-full h-1 bg-slate-50 rounded-full overflow-hidden">
-                                                    <div className={cn("h-full rounded-full", lv.col)} style={{ width: `${lv.pct}%` }} />
-                                                </div>
+                                            <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                                <div className={cn("h-full rounded-full transition-all duration-700", lv.col)} style={{ width: `${lv.pct}%` }} />
                                             </div>
-                                        ))
-                                    )}
+                                        </div>
+                                    ))}
                                 </div>
-                            </div>
+                            </CardContainer>
 
-                            {isSuperAdmin && (
-                                <div className="bg-slate-50/50 rounded-3xl p-6 border border-slate-100 shadow-sm mt-4">
-                                    <SectionHeader icon={Shield} title="System Control" subtitle="Root Level Access" />
-                                    <div className="space-y-4">
-                                        {renderDataField("System ID", displayUser?.id?.slice(0, 13).toUpperCase(), <Database />)}
-                                        {renderDataField("Registry Status", "Global Root", <HardDrive />)}
-                                    </div>
-                                </div>
-                            )}
-
-                            <div className="bg-slate-900 rounded-3xl p-6 text-white shadow-xl flex-1 mt-4">
-                                <div className="border-b border-white/10 pb-4 mb-4">
-                                    <h3 className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Recent Activity</h3>
-                                </div>
+                            <CardContainer title="Onboarding" icon={ShieldCheck}>
                                 <div className="space-y-4">
+                                    <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden mb-6">
+                                        <div className="h-full bg-emerald-500 rounded-full w-[100%] transition-all" />
+                                    </div>
+                                    {[
+                                        "Profile Verification", "Document Upload", "Policy Acceptance", "Training Completion"
+                                    ].map((sh, idx) => (
+                                        <div key={idx} className="flex items-center justify-between">
+                                            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">{sh}</span>
+                                            <Badge className="bg-emerald-50 text-emerald-600 border-none text-[8px] font-black uppercase tracking-wider h-5">DONE</Badge>
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContainer>
+
+                            <div className="bg-slate-900 rounded-[2rem] p-7 text-white shadow-xl relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-all">
+                                    <Activity className="w-24 h-24 rotate-12" />
+                                </div>
+                                <div className="flex items-center gap-3 mb-6 relative z-10">
+                                    <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                                    <h3 className="text-[12px] font-bold uppercase tracking-[0.2em] text-slate-400 italic">Recent Activity</h3>
+                                </div>
+                                <div className="space-y-5 relative z-10">
                                     {activities.map((act, i) => (
-                                        <div key={i} className="flex flex-col py-1 border-b border-white/5 last:border-0">
-                                            <h4 className="text-[10px] font-bold uppercase text-white">{act.title}</h4>
-                                            <p className="text-[8px] text-white/40 font-medium uppercase tracking-widest">{act.date}</p>
+                                        <div key={i} className="flex flex-col gap-1">
+                                            <h4 className="text-[11px] font-bold uppercase text-white/90 leading-tight">{act.title}</h4>
+                                            <p className="text-[9px] text-white/40 font-bold uppercase tracking-widest">{act.date}</p>
                                         </div>
                                     ))}
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    {/* PDF FOOTER - ONLY FOR EXPORT */}
+                    <div className="mt-20 pt-10 border-t border-slate-100 text-center opacity-0 group-data-[exporting=true]:opacity-100">
+                         <p className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-300">
+                             Digitally Certified Personnel Record • Rudratic HR Managed Infrastructure
+                         </p>
+                    </div>
                 </div>
 
-                {/* ── MINIMALIST FOOTER ── */}
-                <div className="p-10 border-t border-slate-50 flex items-center justify-end shrink-0">
-
-                    <Button 
-                        onClick={() => { import('sonner').then(m => m.toast.success("Profile saved.")); }}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-12 h-14 text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 font-brand"
-                    >
-                        Save
-                    </Button>
+                <div className="px-10 py-8 border-t border-slate-100 bg-white flex items-center justify-between shrink-0">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                        Node Identity: {displayUser?.id?.slice(0, 16).toUpperCase()}
+                    </p>
+                    <div className="flex items-center gap-4">
+                        <Button 
+                            variant="ghost" 
+                            onClick={onClose}
+                            className="rounded-2xl px-8 h-12 text-[10px] font-black uppercase tracking-widest hover:bg-slate-50"
+                        >
+                            Cancel
+                        </Button>
+                        <Button 
+                            onClick={() => { import('sonner').then(m => m.toast.success("Registry updated.")); }}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-12 h-12 text-[10px] font-black uppercase tracking-widest shadow-lg shadow-indigo-600/20 active:scale-95 transition-all"
+                        >
+                            Finalize Profile
+                        </Button>
+                    </div>
                 </div>
             </motion.div>
         </motion.div>

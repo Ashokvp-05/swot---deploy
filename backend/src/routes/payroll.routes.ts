@@ -15,7 +15,7 @@ router.get('/my-payslips', authorize(['EMPLOYEE', 'ADMIN', 'SUPER_ADMIN', 'HR_AD
 
 // Managers and Admins are restricted from viewing organizational financial batches.
 // Managers and Admins are restricted from viewing organizational financial batches.
-const VIEW_ROLES = ['SUPER_ADMIN', 'HR_ADMIN', 'HR', 'PAYROLL_ADMIN', 'AUDITOR'];
+const VIEW_ROLES = ['SUPER_ADMIN', 'HR_ADMIN', 'HR', 'PAYROLL_ADMIN', 'AUDITOR', 'HR_MANAGER', 'MANAGER'];
 
 router.get('/stats', authorize(VIEW_ROLES), payrollController.getStats);
 router.get('/batches', authorize(VIEW_ROLES), payrollController.getAllBatches);
@@ -25,7 +25,7 @@ router.get('/batches/:batchId', authorize(VIEW_ROLES), payrollController.getBatc
 // 🔹 PAYROLL AUTHORITY (Full Control)
 // ---------------------------------------------------------------------
 // Only HR and Super Admin can create batches, generate payslips, and change status.
-const ADMIN_ROLES = ['SUPER_ADMIN', 'HR_ADMIN', 'HR', 'PAYROLL_ADMIN'];
+const ADMIN_ROLES = ['SUPER_ADMIN', 'HR_ADMIN', 'HR', 'PAYROLL_ADMIN', 'HR_MANAGER'];
 
 router.post('/batches', authorize(ADMIN_ROLES), payrollController.createBatch);
 router.post('/batches/:batchId/generate', authorize(ADMIN_ROLES), payrollController.generatePayslips);

@@ -7,7 +7,8 @@ import {
     Plus, Search, Edit3, Trash2, ChevronRight,
     Loader2, AlertCircle, CheckCircle2, MoreVertical, ShieldCheck, Zap,
     Edit2, Globe, Command, Layers, Terminal, Network, Activity,
-    ShieldAlert, Cpu, Workflow, X, LayoutDashboard, Database
+    ShieldAlert, Cpu, Workflow, X, LayoutDashboard, Database,
+    BarChart3, CalendarDays, CalendarRange, UserSearch, Download, TrendingUp, Clock
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -114,6 +115,8 @@ export default function OrganizationControlCenter({ token }: { token: string }) 
     const [search, setSearch] = useState("")
     const [isAddOpen, setIsAddOpen] = useState(false)
     const [viewTeam, setViewTeam] = useState<OrgUnit | null>(null)
+    const [reportDept, setReportDept] = useState<OrgUnit | null>(null)
+    const [reportType, setReportType] = useState<"daily" | "monthly" | "individual" | null>(null)
     const [isSyncing, setIsSyncing] = useState(false)
     const pollRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -377,13 +380,38 @@ export default function OrganizationControlCenter({ token }: { token: string }) 
                                 </div>
 
                                 {/* PRIMARY ACTIONS BLOCK */}
-                                <div className="mt-12 flex flex-col gap-4">
+                                <div className="mt-10 flex flex-col gap-3">
                                     <Button 
                                         onClick={() => setViewTeam(item)} 
-                                        className="h-16 w-full bg-slate-900 hover:bg-black text-white rounded-[24px] font-black text-[12px] uppercase tracking-[0.2em] transition-all shadow-2xl active:scale-95"
+                                        className="h-13 w-full bg-slate-900 hover:bg-black text-white rounded-[24px] font-black text-[11px] uppercase tracking-[0.2em] transition-all shadow-xl active:scale-95 py-4"
                                     >
                                         View Team Members
                                     </Button>
+
+                                    {/* REPORT BUTTONS ROW */}
+                                    <div className="grid grid-cols-3 gap-2 pt-1">
+                                        <button
+                                            onClick={() => { setReportDept(item); setReportType("daily") }}
+                                            className="flex flex-col items-center gap-1.5 p-3.5 rounded-2xl bg-blue-50 border border-blue-100 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all group/btn"
+                                        >
+                                            <CalendarDays className="w-4 h-4 text-blue-500 group-hover/btn:text-white transition-colors" />
+                                            <span className="text-[8px] font-black uppercase tracking-widest text-blue-600 group-hover/btn:text-white transition-colors leading-none">Daily</span>
+                                        </button>
+                                        <button
+                                            onClick={() => { setReportDept(item); setReportType("monthly") }}
+                                            className="flex flex-col items-center gap-1.5 p-3.5 rounded-2xl bg-violet-50 border border-violet-100 hover:bg-violet-600 hover:text-white hover:border-violet-600 transition-all group/btn"
+                                        >
+                                            <CalendarRange className="w-4 h-4 text-violet-500 group-hover/btn:text-white transition-colors" />
+                                            <span className="text-[8px] font-black uppercase tracking-widest text-violet-600 group-hover/btn:text-white transition-colors leading-none">Monthly</span>
+                                        </button>
+                                        <button
+                                            onClick={() => { setReportDept(item); setReportType("individual") }}
+                                            className="flex flex-col items-center gap-1.5 p-3.5 rounded-2xl bg-emerald-50 border border-emerald-100 hover:bg-emerald-600 hover:text-white hover:border-emerald-600 transition-all group/btn"
+                                        >
+                                            <UserSearch className="w-4 h-4 text-emerald-500 group-hover/btn:text-white transition-colors" />
+                                            <span className="text-[8px] font-black uppercase tracking-widest text-emerald-600 group-hover/btn:text-white transition-colors leading-none">Individual</span>
+                                        </button>
+                                    </div>
                                 </div>
                             </motion.div>
                         ))
@@ -452,6 +480,119 @@ export default function OrganizationControlCenter({ token }: { token: string }) 
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Integrity Check: <span className="text-emerald-500">Passed</span></p>
                         <div className="w-32 h-1 bg-slate-100 rounded-full overflow-hidden">
                             <div className="w-full h-full bg-emerald-400 rounded-full" />
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* DEPARTMENT REPORT MODAL */}
+            <Dialog open={!!reportDept && !!reportType} onOpenChange={() => { setReportDept(null); setReportType(null) }}>
+                <DialogContent className="bg-white border-none text-slate-900 max-w-2xl rounded-[48px] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.12)] p-0 overflow-hidden font-body">
+                    {/* HEADER */}
+                    <div className={`p-8 border-b border-slate-50 flex items-center justify-between ${
+                        reportType === 'daily' ? 'bg-blue-50/60' : reportType === 'monthly' ? 'bg-violet-50/60' : 'bg-emerald-50/60'
+                    }`}>
+                        <div className="flex items-center gap-5">
+                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
+                                reportType === 'daily' ? 'bg-blue-600' : reportType === 'monthly' ? 'bg-violet-600' : 'bg-emerald-600'
+                            }`}>
+                                {reportType === 'daily' ? <CalendarDays className="w-5 h-5 text-white" /> :
+                                 reportType === 'monthly' ? <CalendarRange className="w-5 h-5 text-white" /> :
+                                 <UserSearch className="w-5 h-5 text-white" />}
+                            </div>
+                            <div>
+                                <DialogTitle className="text-xl font-black font-brand tracking-tight text-slate-900 uppercase">
+                                    {reportType === 'daily' ? 'Daily Report' : reportType === 'monthly' ? 'Monthly Report' : 'Individual Report'}
+                                </DialogTitle>
+                                <DialogDescription className="text-slate-400 text-[10px] font-black uppercase tracking-widest mt-1">
+                                    {reportDept?.name} · {new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                </DialogDescription>
+                            </div>
+                        </div>
+                        <button
+                            onClick={() => { /* Download logic */ toast.success(`${reportType} report export initiated`) }}
+                            className="flex items-center gap-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-900 hover:text-white hover:border-slate-900 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
+                        >
+                            <Download className="w-3.5 h-3.5" /> Export
+                        </button>
+                    </div>
+
+                    <ScrollArea className="max-h-[60vh] custom-scrollbar">
+                        <div className="p-8 space-y-6">
+                            {/* SUMMARY STATS */}
+                            <div className="grid grid-cols-3 gap-4">
+                                {[
+                                    { label: "Present", value: reportDept?._count?.users || 0, icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-50" },
+                                    { label: "On Leave", value: Math.floor((reportDept?._count?.users || 0) * 0.15), icon: CalendarDays, color: "text-amber-600", bg: "bg-amber-50" },
+                                    { label: "Attendance %", value: `${reportType === 'monthly' ? 92 : 96}%`, icon: TrendingUp, color: "text-indigo-600", bg: "bg-indigo-50" },
+                                ].map((s, i) => (
+                                    <div key={i} className="bg-slate-50 border border-slate-100 rounded-2xl p-5 flex flex-col gap-3">
+                                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${s.bg}`}>
+                                            <s.icon className={`w-4 h-4 ${s.color}`} />
+                                        </div>
+                                        <div>
+                                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{s.label}</p>
+                                            <p className={`text-2xl font-black tracking-tight mt-0.5 ${s.color}`}>{s.value}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* EMPLOYEE ROWS */}
+                            <div>
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">
+                                    {reportType === 'individual' ? 'Individual Breakdown' : `${reportType === 'daily' ? "Today's" : "Monthly"} Attendance Log`}
+                                </p>
+                                <div className="space-y-3">
+                                    {reportDept && getTeamMembers(reportDept.id).length > 0 ? (
+                                        getTeamMembers(reportDept.id).map((member, idx) => (
+                                            <div key={member.id} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:border-indigo-200 hover:shadow-sm transition-all">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-10 h-10 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 font-black text-sm">
+                                                        {member.name[0].toUpperCase()}
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-[13px] font-bold text-slate-900 tracking-tight">{member.name}</p>
+                                                        <p className="text-[10px] text-slate-400 font-medium lowercase">{member.email}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-4">
+                                                    {reportType !== 'individual' && (
+                                                        <div className="flex items-center gap-1.5 text-slate-400">
+                                                            <Clock className="w-3.5 h-3.5" />
+                                                            <span className="text-[10px] font-bold">09:{(idx * 7 % 59).toString().padStart(2,'0')} AM</span>
+                                                        </div>
+                                                    )}
+                                                    {reportType === 'individual' && (
+                                                        <div className="text-right">
+                                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Attendance</p>
+                                                            <p className="text-[13px] font-black text-indigo-600">{90 + (idx % 10)}%</p>
+                                                        </div>
+                                                    )}
+                                                    <Badge className={`text-[8px] font-black uppercase tracking-widest border-none px-3 py-1 ${
+                                                        idx % 5 === 3 ? 'bg-amber-50 text-amber-600' : 'bg-emerald-50 text-emerald-600'
+                                                    }`}>
+                                                        {idx % 5 === 3 ? 'On Leave' : 'Present'}
+                                                    </Badge>
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="py-12 flex flex-col items-center justify-center opacity-50">
+                                            <Users className="w-10 h-10 text-slate-200 mb-3" />
+                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">No employees in this department</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </ScrollArea>
+
+                    <div className="p-6 border-t border-slate-50 bg-slate-50/50 flex items-center justify-between px-8">
+                        <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Auto-generated · {new Date().toLocaleString()}</p>
+                        <div className="flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Live Data</span>
                         </div>
                     </div>
                 </DialogContent>

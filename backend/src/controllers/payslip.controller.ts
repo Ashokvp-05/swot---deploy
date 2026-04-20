@@ -14,16 +14,18 @@ export const uploadPayslip = async (req: Request, res: Response) => {
             return res.status(400).json({ error: "Missing required fields: userId, month, year, amount" });
         }
 
+        const adminId = (req as any).user.id;
+        const companyId = (req as any).user.companyId;
+
         const payslip = await payslipService.uploadPayslip(
             userId,
             month,
             parseInt(year),
             parseFloat(amount),
             req.file.buffer,
-            req.file.originalname
+            req.file.originalname,
+            companyId
         );
-
-        const adminId = (req as any).user.id;
         auditService.logAction('PAYSLIP_UPLOAD', adminId, payslip.id, `Uploaded payslip for User ${userId}`);
 
         res.status(201).json(payslip);
@@ -67,12 +69,13 @@ export const getMyPayslips = async (req: Request, res: Response) => {
 export const getAllPayslips = async (req: Request, res: Response) => {
     try {
         const { id: userId, companyId } = (req as any).user;
-        const { year, month, status } = req.query;
+        const { year, month, status, userId: targetUserId } = req.query;
         const payslips = await payslipService.getAllPayslips(
             companyId,
             year ? parseInt(year as string) : undefined,
             month as string,
-            status as string
+            status as string,
+            targetUserId as string
         );
         res.json(payslips);
     } catch (error: any) {

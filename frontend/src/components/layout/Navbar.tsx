@@ -2,293 +2,234 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { usePathname, useSearchParams } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useSession, signOut } from "next-auth/react"
 import { cn } from "@/lib/utils"
+import { motion } from "framer-motion"
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
-    Activity,
-    AlertTriangle,
-    Archive,
-    Banknote,
-    BarChart3,
-    Briefcase,
-    Building2,
-    CalendarCheck,
-    CheckCircle2,
-    ChevronDown,
-    ChevronRight,
-    Clock,
-    CreditCard,
-    Database,
-    Eye,
-    ExternalLink,
-    FileText,
-    Globe,
-    Globe2,
-    History,
     LayoutDashboard,
-    LifeBuoy,
-    Menu,
-    Plus,
-    Search,
-    SearchCheck,
-    Server,
-    Settings,
+    Clock,
+    Calendar,
+    BarChart3,
+    CreditCard,
+    User,
     Shield,
+    MoreVertical,
+    LogOut,
+    Building2,
+    Database,
     ShieldCheck,
-    Ticket,
-    TrendingUp,
-    UserMinus,
-    UserPlus,
+    Settings,
     Users,
-    XCircle,
-    Zap,
+    UserPlus,
+    FileText,
+    HelpCircle,
+    Megaphone,
 } from "lucide-react"
 
 import { getDashboardByRole } from "@/lib/role-redirect"
-import { UserNav } from "./UserNav"
-import NotificationBell from "./NotificationBell"
-import { Separator } from "@/components/ui/separator"
-import {
-    Sheet,
-    SheetContent,
-    SheetTrigger,
-    SheetHeader,
-    SheetTitle,
-} from "@/components/ui/sheet"
-import { Button } from "@/components/ui/button"
 
 // ─────────────────────────────────────────────
 //  ROUTE DEFINITIONS
 // ─────────────────────────────────────────────
 
-const getBasicItems = (role?: string) => {
+const getNavItems = (role?: string) => {
     const r = role?.toUpperCase()
-    if (r === "MANAGER" || r === "HR" || r === "HR_MANAGER" || r === "AUDITOR" || r === "SUPPORT" || r === "SUPPORT_ADMIN") {
-        return []
-    }
+    
+    // Admin families
     if (r === "ADMIN" || r === "COMPANY_ADMIN" || r === "SUPER_ADMIN") {
+        const adminLinks = [
+            { name: "Admin Hub", href: "/admin/dashboard", icon: LayoutDashboard, group: "core" },
+            { name: "Organization", href: "/admin/organization", icon: Building2, group: "company" },
+            { name: "Reports", href: "/admin/reports", icon: BarChart3, group: "company" },
+            { name: "Announcements", href: "/admin/announcements", icon: Megaphone, group: "company" },
+            { name: "Audit Logs", href: "/admin/audit-logs", icon: ShieldCheck, group: "admin" },
+            { name: "Settings", href: "/admin/settings", icon: Settings, group: "admin" },
+        ]
+        
+        if (r === "SUPER_ADMIN") {
+            adminLinks.push({ name: "Onboarding", href: "/admin/users", icon: UserPlus, group: "hr" })
+        }
+        
+        return adminLinks
+    }
+    
+    // Manager families
+    if (r === "MANAGER" || r === "HR_MANAGER" || r === "HR") {
         return [
-            { name: "Dashboard", href: "/admin/dashboard" },
-            { name: "Onboarding", href: "/admin/users?tab=onboarding" },
-            { name: "Attendance", href: "/admin/attendance" },
-            { name: "Leave", href: "/admin/leaves" },
-            { name: "Profile", href: "/profile" },
+            { name: "Dashboard", href: "/manager?tab=dashboard", icon: LayoutDashboard, group: "core" },
+            { name: "Employee Management", href: "/manager?tab=employees", icon: Users, group: "hr" },
+            { name: "Attendance", href: "/manager?tab=attendance", icon: Clock, group: "finance" },
+            { name: "Leaves", href: "/manager?tab=leaves", icon: Calendar, group: "finance" },
+            { name: "Payroll", href: "/manager?tab=payroll", icon: CreditCard, group: "finance" },
+            { name: "Departments", href: "/manager?tab=departments", icon: Building2, group: "company" },
+            { name: "Announcements", href: "/manager?tab=announcements", icon: Megaphone, group: "company" },
+            { name: "Documents", href: "/manager?tab=documents", icon: FileText, group: "company" },
+            { name: "Reports", href: "/manager?tab=reports", icon: BarChart3, group: "company" },
+            { name: "Support Desk", href: "/manager?tab=support", icon: HelpCircle, group: "admin" },
         ]
     }
+    
+    // Normal Employees
     return [
-        { name: "Dashboard", href: getDashboardByRole(role) },
-        { name: "Attendance", href: "/attendance" },
-        { name: "Leave", href: "/leave" },
-        { name: "Reports", href: "/reports" },
-        { name: "Payslips", href: "/payslip" },
-        { name: "Profile", href: "/profile" },
+        { name: "Dashboard", href: getDashboardByRole(role), icon: LayoutDashboard, group: "core" },
+        { name: "Attendance", href: "/attendance", icon: Clock, group: "finance" },
+        { name: "Leaves", href: "/leave", icon: Calendar, group: "finance" },
+        { name: "Reports", href: "/reports", icon: BarChart3, group: "company" },
+        { name: "Payslips", href: "/payslip", icon: CreditCard, group: "finance" },
     ]
 }
 
-const adminDropdownItems = [
-    { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-    { name: "Organization", href: "/admin/organization", icon: Building2 },
-    { name: "Reports", href: "/admin/reports", icon: BarChart3 },
-    { name: "Audit Logs", href: "/admin/audit-logs", icon: ShieldCheck },
-    { name: "Settings", href: "/admin/settings", icon: Settings },
-    { name: "Database", href: "/admin/database", icon: Database },
-]
-
-const getRoleDropdown = (role?: string) => {
-    const r = role?.toUpperCase()
-    if (!r) return null
-    if (r === "MANAGER" || r === "HR" || r === "HR_MANAGER" || r === "AUDITOR" || r === "SUPPORT" || r === "SUPPORT_ADMIN") return null
-    if (r === "ADMIN" || r === "COMPANY_ADMIN" || r === "SUPER_ADMIN") return { label: "Portal", items: adminDropdownItems }
-    return null
-}
-
-export default function Navbar({ role, token, isMobile, className, companyName }: { role?: string; token?: string; isMobile?: boolean; className?: string; companyName?: string }) {
+export default function Navbar({ role, token, companyName }: { role?: string; token?: string; companyName?: string }) {
     const pathname = usePathname()
+    const router = useRouter()
     const searchParams = useSearchParams()
     const [isMounted, setIsMounted] = React.useState(false)
+    const { data: session } = useSession()
 
     React.useEffect(() => {
         setIsMounted(true)
     }, [])
 
-    const normalizedRole = role?.toUpperCase()
-    const basicItems = getBasicItems(role)
-    const dropdown = getRoleDropdown(role)
+    const navItems = getNavItems(role)
+    const roleString = session?.user?.role || role || 'USER'
 
-    const renderLink = (item: { name: string; href: string }, isSub = false) => {
-        const hrefPath = item.href.split("?")[0]
-        const tabValue = item.href.split("tab=")[1]
-        
-        const isActive = pathname === hrefPath && (
-            !item.href.includes("tab=") || 
-            searchParams.get("tab") === tabValue ||
-            (hrefPath === '/manager' && tabValue === 'dashboard' && !searchParams.get("tab"))
-        )
-        return (
-            <Link
-                key={item.href}
-                href={item.href}
-                prefetch={true}
-                className={cn(
-                    "relative flex items-center transition-all px-4 h-16 cursor-pointer",
-                    isMobile ? "py-4 text-base font-bold border-b border-slate-100 dark:border-slate-800 h-14" : "text-[13px] font-semibold tabular-nums",
-                    isActive
-                        ? "text-indigo-600 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-[2px] after:bg-indigo-600 shadow-[inset_0_-2px_0_rgba(79,70,229,0.05)]"
-                        : "text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"
-                )}
-            >
-                <span className="relative z-10">{item.name}</span>
-            </Link>
-        )
-    }
-
-    if (isMobile) {
-        return (
-            <div className={cn("flex flex-col w-full", className)}>
-                {basicItems.map(item => renderLink(item))}
-                {dropdown && (
-                    <div className="mt-8 space-y-2 border-t border-slate-100 dark:border-slate-800 pt-6">
-                        <p className="px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                             <Briefcase className="w-3 h-3" /> {dropdown.label}
-                        </p>
-                        {dropdown.items.map(item => renderLink(item, true))}
-                    </div>
-                )}
-            </div>
-        )
-    }
+    if (!isMounted) return <aside className="w-[72px] lg:w-[280px] bg-[#ffffff] border-r border-slate-200/80 flex flex-col h-screen sticky top-0 shrink-0" />
 
     return (
-        <header className={cn("sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md", className)}>
-            <div className="w-full px-8 h-16 flex items-center justify-between">
+        <aside className="w-[72px] lg:w-[280px] bg-[#ffffff] border-r border-slate-200/80 flex flex-col h-screen sticky top-0 z-[100] shrink-0 custom-scrollbar-sidebar">
+            <style jsx global>{`
+                @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+                .font-brand { font-family: 'Plus Jakarta Sans', sans-serif; }
+                .font-body { font-family: 'Inter', sans-serif; }
                 
-                {/* 🧭 Left: Logo & Routes */}
-                <div className="flex items-center gap-8 h-full">
-                    <div className="flex items-center gap-4">
-                        {/* Mobile Menu Trigger */}
-                         <div className="md:hidden">
-                            {isMounted ? (
-                                <Sheet>
-                                    <SheetTrigger asChild>
-                                        <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
-                                            <Menu className="w-5 h-5 text-slate-600 dark:text-slate-400" />
-                                        </Button>
-                                    </SheetTrigger>
-                                    <SheetContent side="left" className="w-[300px] p-0 border-r border-slate-200 dark:border-slate-800 bg-background">
-                                        <SheetHeader className="p-6 border-b border-slate-100 dark:border-slate-800 text-left">
-                                            <SheetTitle className="flex items-center gap-2">
-                                                <div className="w-7 h-7 bg-indigo-600 rounded flex items-center justify-center">
-                                                    <Zap className="w-4 h-4 text-white" />
-                                                </div>
-                                                <span className="font-bold tracking-tight select-none no-caret">HR <span className="text-indigo-600">Central</span></span>
-                                            </SheetTitle>
-                                        </SheetHeader>
-                                        <div className="p-4 overflow-y-auto max-h-[calc(100vh-100px)]">
-                                            <Navbar role={role} token={token} isMobile />
-                                        </div>
-                                    </SheetContent>
-                                </Sheet>
-                            ) : (
-                                <div className="h-9 w-9 rounded-lg" />
-                            )}
-                        </div>
-
-                        <Link href="/" className="flex items-center gap-3.5 group">
-                            <div className="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center shadow-indigo-100 dark:shadow-indigo-900/20 shadow-lg group-hover:scale-105 transition-all shrink-0">
-                                <Zap className="w-5 h-5 text-white" />
-                            </div>
-                             <div className="flex flex-col select-none no-caret justify-center">
-                                 <span className="text-lg font-black tracking-tighter text-slate-900 dark:text-white leading-none uppercase italic">HR <span className="text-indigo-600">Central</span></span>
-                                 {companyName && (
-                                     <span className="text-[9px] font-black text-indigo-500 uppercase tracking-widest mt-1.5 leading-none">{companyName}</span>
-                                 )}
-                             </div>
-                        </Link>
+                .custom-scrollbar-sidebar::-webkit-scrollbar { width: 4px; }
+                .custom-scrollbar-sidebar::-webkit-scrollbar-track { background: transparent; }
+                .custom-scrollbar-sidebar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+                .custom-scrollbar-sidebar:hover::-webkit-scrollbar-thumb { background: #cbd5e1; }
+            `}</style>
+            
+            {/* BRAND HEADER */}
+            <div className="pt-8 pb-8 px-4 lg:px-7 border-b border-slate-100/60">
+                <div className="hidden lg:flex items-center gap-3.5">
+                    <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-[12px] flex items-center justify-center shadow-[0_8px_16px_-6px_rgba(79,70,229,0.4)] hover:scale-105 transition-transform cursor-pointer" onClick={() => router.push('/')}>
+                        <Shield className="w-5 h-5 text-white" strokeWidth={2.5} />
                     </div>
-
-                    <nav className="hidden lg:flex items-center h-full">
-                        {basicItems.map(item => renderLink(item))}
-                        
-                        {dropdown && isMounted && (
-                            <div className="flex items-center h-full ml-2">
-                                <Separator orientation="vertical" className="h-6 mx-2 bg-slate-200 dark:bg-slate-800" />
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[11px] font-black uppercase tracking-widest text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all outline-none">
-                                        <Globe className="w-3.5 h-3.5" />
-                                        <span>{dropdown.label}</span>
-                                        <ChevronDown className="w-3 h-3 opacity-50" />
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="start" className="w-64 p-2 rounded-xl shadow-2xl border-slate-200 dark:border-slate-800 animate-in slide-in-from-top-1">
-                                        <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 py-3 px-4 flex items-center gap-2">
-                                            <Shield className="w-3 h-3" /> Portal Access
-                                        </DropdownMenuLabel>
-                                        <DropdownMenuSeparator className="bg-slate-100 dark:bg-slate-800" />
-                                        <div className="grid gap-1 mt-1">
-                                            {dropdown.items.map((item) => {
-                                                const isActive = pathname === item.href.split("?")[0] && 
-                                                    (!item.href.includes("tab=") || searchParams.get("tab") === item.href.split("tab=")[1]) ||
-                                                    (pathname === item.href.split("?")[0] && item.href === '/manager' && !searchParams.get("tab"))
-
-                                                return (
-                                                    <DropdownMenuItem key={item.href} asChild>
-                                                        <Link href={item.href}
-                                                            className={cn(
-                                                                "cursor-pointer text-[11px] font-black uppercase tracking-wider py-3 px-4 rounded-xl flex items-center justify-between group transition-all",
-                                                                isActive 
-                                                                    ? "bg-indigo-600 text-white shadow-lg shadow-indigo-100 dark:shadow-none" 
-                                                                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100"
-                                                            )}>
-                                                            <div className="flex items-center gap-3">
-                                                                {item.icon && <item.icon className={cn("w-4 h-4", isActive ? "text-white" : "text-slate-400 group-hover:text-indigo-600")} />}
-                                                                <span>{item.name}</span>
-                                                            </div>
-                                                            <ExternalLink className={cn("w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-all", isActive ? "text-white/50" : "text-slate-300")} />
-                                                        </Link>
-                                                    </DropdownMenuItem>
-                                                )
-                                            })}
-                                        </div>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
-                        )}
-                    </nav>
-                </div>
-
-                {/* 🔍 Right: Actions */}
-                <div className="flex items-center gap-2">
-                    <div className="hidden md:flex items-center px-4 py-2 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl w-48 lg:w-64 focus-within:ring-2 focus-within:ring-indigo-100 dark:focus-within:ring-indigo-900/20 focus-within:bg-white dark:focus-within:bg-slate-950 transition-all group">
-                        <Search className="w-4 h-4 text-slate-400 group-focus-within:text-indigo-600" />
-                        <input 
-                            type="text" 
-                            placeholder="Universal search..." 
-                            className="bg-transparent border-none focus:ring-0 text-xs w-full ml-3 placeholder:text-slate-400 font-medium dark:text-slate-100"
-                        />
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                        {isMounted ? (
-                            <>
-                                <NotificationBell token={token as string} />
-                                <div className="w-[1px] h-6 bg-slate-200 dark:bg-slate-800 mx-1 hidden sm:block" />
-                                <UserNav />
-                            </>
-                        ) : (
-                            <div className="w-24 h-9" />
-                        )}
+                    <div>
+                        <h2 className="text-[18px] font-extrabold text-slate-900 tracking-tight font-brand leading-none">Rudratic</h2>
+                        <p className="text-[10px] font-semibold text-indigo-600 uppercase tracking-widest mt-1.5 leading-none bg-indigo-50 px-1.5 py-0.5 rounded pl-1.5 inline-block">
+                            Workspace
+                        </p>
                     </div>
                 </div>
-
+                <div className="lg:hidden flex items-center justify-center">
+                    <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-[12px] flex items-center justify-center shadow-lg" onClick={() => router.push('/')}>
+                        <Shield className="w-5 h-5 text-white" />
+                    </div>
+                </div>
             </div>
 
-        </header>
+            {/* NAVIGATION */}
+            <nav className="flex-1 px-3 lg:px-5 py-6 overflow-y-auto custom-scrollbar-sidebar">
+                <div className="space-y-8">
+                    {['core', 'hr', 'finance', 'company', 'admin'].map(group => {
+                        const groupItems = navItems.filter(i => i.group === group)
+                        if(groupItems.length === 0) return null
+
+                        const groupLabels: Record<string, string> = {
+                            'core': 'Overview',
+                            'hr': 'Personnel',
+                            'finance': 'Operations & Pay',
+                            'company': 'Organization',
+                            'admin': 'System & Security'
+                        }
+
+                        return (
+                            <div key={group} className="space-y-1.5">
+                                <p className="hidden lg:block text-[10px] font-bold text-slate-400/80 uppercase tracking-widest px-3 mb-3 font-brand ml-1">{groupLabels[group]}</p>
+                                {groupItems.map(item => {
+                                    const Icon = item.icon
+                                    
+                                    // Robust active logic
+                                    const isQueryLink = item.href.includes("?tab=")
+                                    const baseHref = item.href.split("?")[0]
+                                    const tabValue = item.href.split("tab=")[1]
+                                    const currentTab = searchParams?.get("tab")
+                                    
+                                    let isActive = false
+                                    if (isQueryLink) {
+                                        isActive = pathname === baseHref && (currentTab === tabValue || (!currentTab && tabValue === 'dashboard'))
+                                    } else {
+                                        isActive = pathname === baseHref
+                                    }
+
+                                    return (
+                                        <button
+                                            key={item.href}
+                                            onClick={() => router.push(item.href)}
+                                            title={item.name}
+                                            className={cn(
+                                                "w-full flex items-center justify-between px-3.5 py-2.5 rounded-[12px] text-[13px] font-medium transition-all duration-200 group relative outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40",
+                                                isActive 
+                                                    ? "bg-indigo-50/80 text-indigo-700 font-semibold"
+                                                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                                            )}
+                                        >
+                                            <div className="flex items-center justify-center lg:justify-start gap-3 w-full">
+                                                <Icon className={cn("w-[18px] h-[18px] shrink-0 transition-colors duration-200", isActive ? "text-indigo-600" : "text-slate-400 group-hover:text-slate-600")} strokeWidth={isActive ? 2.5 : 2} />
+                                                <span className="hidden lg:inline-block text-left truncate">{item.name}</span>
+                                            </div>
+                                            {isActive && (
+                                                <motion.div layoutId="globalActiveNav" className="hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-indigo-600 rounded-r-full" />
+                                            )}
+                                        </button>
+                                    )
+                                })}
+                            </div>
+                        )
+                    })}
+                </div>
+            </nav>
+
+            {/* USER IDENTITY FOOTER */}
+            <div className="px-3 lg:px-5 py-5 mt-auto border-t border-slate-100/60 bg-slate-50/30">
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <button className="w-full flex items-center gap-3 p-2 rounded-[14px] hover:bg-white border border-transparent hover:border-slate-200 hover:shadow-sm transition-all group outline-none">
+                            <div className="w-9 h-9 shrink-0 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center text-white font-bold text-sm relative">
+                                {(session?.user?.name || "E")[0].toUpperCase()}
+                                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full" />
+                            </div>
+                            <div className="hidden lg:flex flex-col items-start min-w-0 flex-1">
+                                <span className="text-[13px] font-semibold text-slate-900 leading-none truncate w-full">{session?.user?.name?.split(' ')[0] || 'Employee'}</span>
+                                <span className="text-[11px] font-medium text-slate-500 mt-1 truncate w-full">{roleString.replace('_', ' ')}</span>
+                            </div>
+                            <MoreVertical className="hidden lg:block w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors shrink-0" />
+                        </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-64 bg-white border border-slate-200 rounded-2xl p-2 shadow-[0_20px_60px_rgba(0,0,0,0.08)] ml-2 mb-2" side="top" align="start">
+                        <div className="px-3 py-3 mb-1 bg-slate-50/50 rounded-xl">
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1.5">Authenticated Account</p>
+                            <p className="text-[13px] font-semibold text-slate-900 truncate">{session?.user?.email || "employee@hr.com"}</p>
+                        </div>
+                        <div className="h-px bg-slate-100 mx-2 my-2" />
+                        <DropdownMenuItem onClick={() => router.push("/profile")} className="rounded-xl px-3 py-2.5 focus:bg-slate-50 group cursor-pointer text-slate-600 transition-colors">
+                            <User className="w-4 h-4 mr-2.5 text-slate-400 group-hover:text-slate-900 transition-colors" />
+                            <span className="text-[12px] font-medium">My Profile</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/login' })} className="rounded-xl px-3 py-2.5 focus:bg-rose-50 group cursor-pointer text-rose-500 focus:text-rose-600 transition-colors">
+                            <LogOut className="w-4 h-4 mr-2.5" />
+                            <span className="text-[12px] font-medium">Secure Sign Out</span>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+        </aside>
     )
 }

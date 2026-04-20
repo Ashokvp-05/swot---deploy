@@ -127,20 +127,7 @@ export function SecurityAuditLogs({ token }: { token: string }) {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4 w-full xl:w-auto">
-                    <div className="relative flex-1 xl:w-80 group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-indigo-500 transition-colors" />
-                        <Input 
-                            value={searchQuery}
-                            onChange={(e) => {
-                                setSearchQuery(e.target.value)
-                                setCurrentPage(1)
-                            }}
-                            placeholder="Identify administrative node..."
-                            className="h-11 pl-11 bg-slate-50 border-none rounded-xl text-[11px] font-black uppercase tracking-widest focus-visible:ring-2 focus-visible:ring-indigo-100"
-                        />
-                    </div>
-                </div>
+
             </div>
 
             {/* ── COMPACT LEDGER CARDS ── */}

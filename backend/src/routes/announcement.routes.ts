@@ -10,7 +10,7 @@ router.use(authenticate);
 router.get('/', announcementController.getAnnouncements);
 
 // Admin only management
-router.post('/', requireRole(['ADMIN', 'SUPER_ADMIN', 'HR_ADMIN', 'OPS_ADMIN']), announcementController.createAnnouncement);
-router.delete('/:id', requireRole(['ADMIN', 'SUPER_ADMIN', 'HR_ADMIN', 'OPS_ADMIN']), announcementController.deleteAnnouncement);
+router.post('/', requireRole(['ADMIN', 'SUPER_ADMIN', 'HR_ADMIN', 'OPS_ADMIN', 'HR_MANAGER', 'MANAGER']), announcementController.createAnnouncement);
+router.delete('/:id', requireRole(['ADMIN', 'SUPER_ADMIN', 'HR_ADMIN', 'OPS_ADMIN', 'HR_MANAGER', 'MANAGER']), announcementController.deleteAnnouncement);
 
 export default router;
