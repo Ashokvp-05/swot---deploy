@@ -16,6 +16,6 @@ export default async function RootPage() {
         redirect(getDashboardByRole((session.user as any)?.role))
     }
 
-    // Unauthenticated users see the high-fidelity landing page
-    return <LandingPage />
+    // Unauthenticated users are redirected to the secure login gateway
+    redirect("/login")
 }
