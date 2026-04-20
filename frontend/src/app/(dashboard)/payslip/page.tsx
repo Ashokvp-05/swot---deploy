@@ -426,7 +426,11 @@ export default function PayslipPage() {
 
             {/* DETAILED VIEW DIALOG */}
             <Dialog open={!!selectedPayslip} onOpenChange={() => setSelectedPayslip(null)}>
-                <DialogContent className="max-w-4xl bg-transparent border-none p-0">
+                <DialogContent className="max-w-4xl bg-transparent border-none p-0 outline-none">
+                    <DialogHeader className="sr-only">
+                        <DialogTitle>Payslip Details</DialogTitle>
+                        <DialogDescription>Detailed view of selected payroll document</DialogDescription>
+                    </DialogHeader>
                     <PayslipDetailedView data={selectedPayslip} />
                 </DialogContent>
             </Dialog>

@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useMemo, useRef, memo } from "react"
 import { format, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay } from "date-fns"
 import { cn } from "@/lib/utils"
 import {
-    Clock, Calendar, Loader2, LogIn, LogOut,
+    Clock, Calendar, Loader2, LogIn, LogOut, StopCircle,
     Bell, BarChart3, TrendingUp, CheckCircle2,
     Target, ShieldCheck, Building2, MapPin,
     ChevronRight, Activity, Zap
@@ -363,7 +363,7 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                                     {status === 'LOADING'
                                         ? <Loader2 className="w-4 h-4 animate-spin" />
                                         : status === 'ACTIVE'
-                                            ? <><LogOut className="w-4 h-4" /> Clock Out</>
+                                            ? <><StopCircle className="w-4 h-4" /> Clock Out</>
                                             : <><LogIn className="w-4 h-4" /> Clock In</>
                                     }
                                 </button>
