@@ -1,25 +1,23 @@
 "use client"
 
-import { motion, AnimatePresence } from "framer-motion"
-import { usePathname, useSearchParams } from "next/navigation"
+import { motion } from "framer-motion"
+import { usePathname } from "next/navigation"
 
 export default function PageTransition({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
-    const searchParams = useSearchParams()
-    const key = pathname + searchParams.toString()
 
+    // Using AnimatePresence across Next.js 13+ App Router for full pages causes 
+    // massive main-thread blocking during unmount. Swapping to an entrance-only 
+    // fade removes the delayed click lag immediately.
     return (
-        <AnimatePresence mode="popLayout">
-            <motion.div
-                key={key}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.15, ease: "linear" }}
-                className="w-full h-full"
-            >
-                {children}
-            </motion.div>
-        </AnimatePresence>
+        <motion.div
+            key={pathname}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="w-full h-full"
+        >
+            {children}
+        </motion.div>
     )
 }

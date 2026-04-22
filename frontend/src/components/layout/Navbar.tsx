@@ -47,6 +47,7 @@ const getNavItems = (role?: string) => {
         const adminLinks = [
             { name: "Admin Hub", href: "/admin/dashboard", icon: LayoutDashboard, group: "core" },
             { name: "Organization", href: "/admin/organization", icon: Building2, group: "company" },
+            { name: "Employee Details", href: "/admin/employee-details", icon: User, group: "company" },
             { name: "Reports", href: "/admin/reports", icon: BarChart3, group: "company" },
             { name: "Announcements", href: "/admin/announcements", icon: Megaphone, group: "company" },
             { name: "Audit Logs", href: "/admin/audit-logs", icon: ShieldCheck, group: "admin" },
@@ -54,7 +55,7 @@ const getNavItems = (role?: string) => {
         ]
         
         if (r === "SUPER_ADMIN") {
-            adminLinks.push({ name: "Onboarding", href: "/admin/users", icon: UserPlus, group: "hr" })
+            adminLinks.push({ name: "Employee Management", href: "/admin/users", icon: Users, group: "hr" })
         }
         
         return adminLinks

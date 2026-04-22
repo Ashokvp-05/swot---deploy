@@ -10,7 +10,7 @@ import {
     MoreVertical, Download, Calendar, ArrowUpRight, Info, LayoutDashboard, ShieldCheck,
     Globe, Zap, Cpu, HardDrive, ShieldAlert, Layers, BarChart3, Rocket, Laptop, ClipboardList, Briefcase,
     Search as SearchIcon, Moon, Sun, MoreHorizontal, Power, LogOut,
-    UserPlus, Sparkles, FileText, Share2, ClipboardCheck, History, Check
+    UserPlus, Sparkles, FileText, Share2, ClipboardCheck, History, Check, UserCheck
 } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -58,6 +58,7 @@ const UserProfileView = dynamic(() => import("@/components/admin/UserProfileView
 const PayrollControlCenter = dynamic(() => import("@/components/admin/PayrollControlCenter"), { ssr: false })
 const BroadcastCenter = dynamic(() => import("@/components/admin/BroadcastCenter").then(m => m.BroadcastCenter), { ssr: false })
 const DepartmentReports = dynamic(() => import("@/components/admin/DepartmentReports"), { ssr: false })
+const EmployeeDetailsModule = dynamic(() => import("@/components/admin/EmployeeDetailsModule"), { ssr: false })
 const ManagerReports = dynamic(() => import("@/components/manager/ManagerReports"), { ssr: false })
 const OnboardingSuite = dynamic(() => import("@/components/admin/OnboardingSuite"), { ssr: false })
 const PerformanceHub = dynamic(() => import("@/components/admin/PerformanceHub"), { ssr: false })
@@ -141,12 +142,13 @@ function AdminDashboardContent() {
         { id: "departments", label: "Departments",         tab: "departments", icon: Building2,       roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN"], group: "company" },
         // 9. Documents
         { id: "documents",   label: "Documents",           tab: "documents",   icon: FileText,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","AUDITOR"], group: "company" },
+        // Employee Details (Secure Record View)
+        { id: "employee-details", label: "Employee Details", tab: "employee-details", icon: UserCheck, roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER","AUDITOR"], group: "company" },
         // 10. Reports & Analytics
         { id: "reports",     label: "Reports & Analytics", tab: "reports",     icon: BarChart3,       roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER","AUDITOR","PAYROLL_ADMIN"], group: "admin" },
         // 11. Support Desk
         { id: "support",     label: "Support Desk",        tab: "support",     icon: HelpCircle,      roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","SUPPORT_ADMIN"], group: "admin" },
-        // 12. User Management
-        { id: "user-management",label: "User Management",  tab: "user-management", icon: ShieldCheck, roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN"], group: "admin" },
+
         // 13. Settings
         { id: "settings",    label: "Settings",            tab: "settings",    icon: Settings,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN"], group: "admin" },
         // 14. Announcements
@@ -155,7 +157,18 @@ function AdminDashboardContent() {
         { id: "dept-reports",  label: "Dept Reports",      tab: "dept-reports", icon: BarChart3,       roles: ["SUPER_ADMIN"], group: "company" },
     ]
 
-    const navItems = allNavItems.filter(item => item.roles.includes(role) || role === "ADMIN" || role === "COMPANY_ADMIN" || (role === "SUPER_ADMIN" && item.id !== "policies" && item.id !== "onboarding" && item.id !== "payroll" && item.id !== "departments" && item.id !== "performance"))
+    const navItems = allNavItems.filter(item => {
+        // First check if role is allowed
+        const isAllowedByRole = item.roles.includes(role) || role === "ADMIN" || role === "COMPANY_ADMIN";
+        
+        // Then apply specific exclusions for SUPER_ADMIN
+        if (role === "SUPER_ADMIN") {
+            const exclusions = ["policies", "onboarding", "payroll", "departments", "performance", "documents"];
+            if (exclusions.includes(item.id)) return false;
+        }
+        
+        return isAllowedByRole;
+    })
 
     return (
         <div className="min-h-screen bg-[#f0f2f8] flex font-body">
@@ -288,6 +301,7 @@ function AdminDashboardContent() {
                     {currentTab === "performance"  && <PerformanceHub token={token} />}
                     {currentTab === "departments"  && <OrganizationControlCenter token={token} />}
                     {currentTab === "documents" && <DocumentsModule token={token} />}
+                    {currentTab === "employee-details" && <EmployeeDetailsModule token={token} userRole={role} />}
                     {currentTab === "reports"      && <ManagerReports token={token} />}
                     {currentTab === "support"      && <SupportControlCenter token={token} />}
                     {currentTab === "user-management"   && <SecurityAuditLogs token={token} />}

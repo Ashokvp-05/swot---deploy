@@ -111,14 +111,11 @@ export default function HRManagerDashboardPage() {
         { id: "documents", label: "Documents", icon: FileText },
         { id: "reports", label: "Reports", icon: BarChart3 },
         { id: "support", label: "Support Desk", icon: HelpCircle },
-        { id: "user-management", label: "User Management", icon: ShieldCheck },
+
         { id: "settings", label: "Settings", icon: Settings },
     ]
 
-    // Only SUPER_ADMIN can see User Management
-    const navItems = allNavItems.filter(item => 
-        item.id !== "user-management" || role === "SUPER_ADMIN"
-    )
+    const navItems = allNavItems
 
     if (!hasMounted) return <div className="min-h-screen bg-[#fcfdff]" />
 

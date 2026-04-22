@@ -1,9 +1,13 @@
 
 import { Request, Response } from 'express';
 import prisma from '../config/db';
+import { AuthRequest } from '../middleware/auth.middleware';
 
 export const getCalendarData = async (req: Request, res: Response) => {
     try {
+        const user = (req as AuthRequest).user;
+        if (!user?.companyId) return res.status(401).json({ error: 'Unauthorized' });
+
         const { start, end } = req.query;
 
         // Default to current month if not provided
@@ -13,6 +17,7 @@ export const getCalendarData = async (req: Request, res: Response) => {
         // 1. Fetch Approved Leaves
         const leaves = await prisma.leaveRequest.findMany({
             where: {
+                user: { companyId: user.companyId },
                 status: 'APPROVED',
                 OR: [
                     { startDate: { gte: startDate, lte: endDate } },
@@ -26,6 +31,7 @@ export const getCalendarData = async (req: Request, res: Response) => {
         // 2. Fetch Holidays
         const holidays = await prisma.holiday.findMany({
             where: {
+                companyId: user.companyId,
                 date: { gte: startDate, lte: endDate }
             }
         });
@@ -33,6 +39,7 @@ export const getCalendarData = async (req: Request, res: Response) => {
         // 3. Fetch Company Events (Announcements with eventDate)
         const events = await prisma.announcement.findMany({
             where: {
+                companyId: user.companyId,
                 eventDate: { gte: startDate, lte: endDate }
             }
         });

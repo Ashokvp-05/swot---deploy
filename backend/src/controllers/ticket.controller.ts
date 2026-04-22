@@ -42,6 +42,8 @@ export const createTicket = async (req: Request, res: Response) => {
 export const getTicketAnalytics = async (req: Request, res: Response) => {
     try {
         const user = (req as AuthRequest).user;
+        if (!user || !user.id || !user.companyId) return res.status(401).json({ error: 'Unauthorized' });
+
         const canViewAll = ['ADMIN', 'SUPER_ADMIN', 'COMPANY_ADMIN', 'HR_MANAGER', 'HELPDESK_ADMIN'].includes(user.role || '');
         const where: any = { companyId: user.companyId };
         if (!canViewAll && user.companyId) {
@@ -86,6 +88,8 @@ export const getTicketAnalytics = async (req: Request, res: Response) => {
 export const getTickets = async (req: Request, res: Response) => {
     try {
         const user = (req as AuthRequest).user;
+        if (!user || !user.id || !user.companyId) return res.status(401).json({ error: 'Unauthorized' });
+
         const canViewAll = ['ADMIN', 'SUPER_ADMIN', 'COMPANY_ADMIN', 'HR_MANAGER', 'HELPDESK_ADMIN'].includes(user.role || '');
 
         const where: any = { companyId: user.companyId };

@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
-import UserProfileView from "./UserProfileView"
 import {
     Dialog, DialogContent, DialogDescription,
     DialogFooter, DialogHeader, DialogTitle,
@@ -67,7 +66,6 @@ export default function UserManagement({ token, userRole = "" }: { token: string
         deptId: "", designationId: "", branchId: "",
         roleName: "EMPLOYEE"
     })
-    const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
     const [depts, setDepts] = useState<{ id: string, name: string }[]>([])
     const [desigs, setDesigs] = useState<{ id: string, name: string }[]>([])
@@ -274,8 +272,7 @@ export default function UserManagement({ token, userRole = "" }: { token: string
                                         initial={{ opacity: 0, x: -10 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{ delay: idx * 0.03 }}
-                                        className="glass-table-row border-b border-white/[0.03] group last:border-0 cursor-pointer"
-                                        onClick={() => setSelectedUser(user)}
+                                        className="glass-table-row border-b border-white/[0.03] group last:border-0"
                                     >
                                         <td className="px-8 py-6">
                                             <div className="flex items-center gap-5">
@@ -376,27 +373,6 @@ export default function UserManagement({ token, userRole = "" }: { token: string
                     </div>
                 </div>
             </div>
-
-            {/* FULL PROFILE DETAIL VIEWER OVERLAY */}
-            <AnimatePresence>
-                {selectedUser && (
-                    <div className="fixed inset-0 z-[100] flex justify-end bg-black/40 backdrop-blur-sm">
-                        <motion.div
-                            initial={{ x: '100%' }}
-                            animate={{ x: 0 }}
-                            exit={{ x: '100%' }}
-                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            className="w-full max-w-5xl h-full shadow-2xl"
-                        >
-                            <UserProfileView
-                                user={selectedUser}
-                                onClose={() => setSelectedUser(null)}
-                                token={token}
-                            />
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
         </div>
     )
 }

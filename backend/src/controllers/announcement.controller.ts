@@ -55,6 +55,26 @@ export const createAnnouncement = async (req: Request, res: Response) => {
 
         cache.del(`announcements_${user.companyId}`);
 
+        // Broadcast to all active users so it shows in the Notification Bell
+        const users = await prisma.user.findMany({
+            where: { companyId: user.companyId, status: 'ACTIVE' },
+            select: { id: true }
+        });
+
+        if (users.length > 0) {
+            const notifications = users.map(u => ({
+                userId: u.id,
+                companyId: user.companyId,
+                title: `Announcement: ${title}`,
+                message: content,
+                type: 'INFO' as any
+            }));
+            await prisma.notification.createMany({
+                data: notifications,
+                skipDuplicates: true
+            });
+        }
+
         res.status(201).json(announcement);
     } catch (error: any) {
         res.status(400).json({ error: error.message });

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Building2, ShieldCheck, Calendar, Clock, Globe, Plus, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -13,6 +13,14 @@ import {
     SheetHeader,
     SheetTitle,
 } from "@/components/ui/sheet"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
 
 export function SystemSettingsCenter({ token }: { token: string }) {
     const [isSaving, setIsSaving] = useState(false)
@@ -29,6 +37,53 @@ export function SystemSettingsCenter({ token }: { token: string }) {
     const [lateProtocol, setLateProtocol] = useState(true)
     const [overtime, setOvertime] = useState(false)
     const [weeklyOffs, setWeeklyOffs] = useState<number[]>([5, 6]) // 0-based for M T W T F S S
+
+    // Holiday States
+    const [holidays, setHolidays] = useState<any[]>([])
+    const [isHolidayModalOpen, setIsHolidayModalOpen] = useState(false)
+    const [holidayForm, setHolidayForm] = useState({ name: "", date: "" })
+    const [isSavingHoliday, setIsSavingHoliday] = useState(false)
+
+    useEffect(() => {
+        const fetchHolidays = async () => {
+            try {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api"}/holidays`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                })
+                const data = await res.json()
+                setHolidays(Array.isArray(data) ? data : (data.holidays || []))
+            } catch (err) {}
+        }
+        fetchHolidays()
+    }, [token])
+
+    const saveHoliday = async () => {
+        if (!holidayForm.name || !holidayForm.date) return toast.error("Please provide both name and date")
+        setIsSavingHoliday(true)
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api"}/holidays`, {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(holidayForm)
+            })
+            if (res.ok) {
+                toast.success("Holiday successfully added!")
+                setIsHolidayModalOpen(false)
+                setHolidayForm({ name: "", date: "" })
+                const updatedRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api"}/holidays`, { headers: { "Authorization": `Bearer ${token}` }})
+                setHolidays(await updatedRes.json())
+            } else {
+                toast.error("Failed to add holiday")
+            }
+        } catch (err) {
+            toast.error("Network connection error")
+        } finally {
+            setIsSavingHoliday(false)
+        }
+    }
 
     // Role Models & States
     const [roles, setRoles] = useState([
@@ -59,7 +114,7 @@ export function SystemSettingsCenter({ token }: { token: string }) {
         }
     }
 
-    const featureToast = () => toast.info("Opening configuration modal...")
+
 
     const openRoleSheet = (role: any = null) => {
         if (role) {
@@ -234,7 +289,7 @@ export function SystemSettingsCenter({ token }: { token: string }) {
                             <div className="p-3 bg-cyan-50 text-cyan-600 rounded-2xl"><Globe className="w-5 h-5" /></div>
                             <h4 className="text-[14px] font-black text-slate-900 uppercase tracking-[0.2em]">5. Holiday Calendar</h4>
                         </div>
-                        <Button onClick={featureToast} variant="outline" size="sm" className="h-8 rounded-lg text-[9px] font-black uppercase tracking-widest"><Plus className="w-3 h-3 mr-1" /> Add Holiday</Button>
+                        <Button onClick={() => setIsHolidayModalOpen(true)} variant="outline" size="sm" className="h-8 rounded-lg text-[9px] font-black uppercase tracking-widest"><Plus className="w-3 h-3 mr-1" /> Add Holiday</Button>
                     </div>
                     
                     <div className="flex flex-col md:flex-row gap-10">
@@ -250,17 +305,18 @@ export function SystemSettingsCenter({ token }: { token: string }) {
                         <div className="md:w-2/3 space-y-4">
                             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-2 block mb-4">Company Holidays (Upcoming)</label>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                {[
-                                    { date: "15 Aug 2026", name: "Independence Day", day: "Saturday" },
-                                    { date: "02 Oct 2026", name: "Gandhi Jayanti", day: "Friday" },
-                                    { date: "12 Nov 2026", name: "Diwali", day: "Thursday" }
-                                ].map((hol, i) => (
+                                {holidays.length === 0 && (
+                                    <div className="flex justify-center items-center h-20 text-[10px] font-bold text-slate-400 uppercase tracking-widest border border-dashed border-slate-200 rounded-[20px]">
+                                        No registered holidays
+                                    </div>
+                                )}
+                                {holidays.map((hol, i) => (
                                     <div key={i} className="flex justify-between items-center bg-slate-50 px-5 py-4 rounded-[20px] border border-slate-100">
                                         <div className="space-y-1">
                                             <span className="block text-[13px] font-black text-slate-900 uppercase">{hol.name}</span>
-                                            <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">{hol.day}</span>
+                                            <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">{new Date(hol.date).toLocaleDateString('en-US', { weekday: 'long' })}</span>
                                         </div>
-                                        <Badge className="bg-white border-slate-200 text-slate-600 px-3 py-1.5 text-[9px] shadow-sm uppercase">{hol.date}</Badge>
+                                        <Badge className="bg-white border-slate-200 text-slate-600 px-3 py-1.5 text-[9px] shadow-sm uppercase">{new Date(hol.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</Badge>
                                     </div>
                                 ))}
                             </div>
@@ -332,6 +388,44 @@ export function SystemSettingsCenter({ token }: { token: string }) {
                     </div>
                 </SheetContent>
             </Sheet>
+
+            <Dialog open={isHolidayModalOpen} onOpenChange={setIsHolidayModalOpen}>
+                <DialogContent className="max-w-md bg-white border-none rounded-[32px] p-8 shadow-2xl">
+                    <DialogHeader>
+                        <DialogTitle className="text-2xl font-black text-slate-900 uppercase tracking-tighter italic font-brand">Add New Holiday</DialogTitle>
+                        <DialogDescription className="text-xs font-bold text-slate-400 uppercase tracking-widest">Register a public or global organizational holiday</DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-5 my-6">
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-slate-900 uppercase tracking-widest pl-2">Holiday Title</label>
+                            <Input 
+                                value={holidayForm.name} 
+                                onChange={e => setHolidayForm({ ...holidayForm, name: e.target.value })} 
+                                placeholder="e.g. Independence Day" 
+                                className="h-12 bg-slate-50 border-none rounded-xl text-sm font-bold placeholder:text-slate-400"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-slate-900 uppercase tracking-widest pl-2">Holiday Date</label>
+                            <Input 
+                                type="date"
+                                value={holidayForm.date} 
+                                onChange={e => setHolidayForm({ ...holidayForm, date: e.target.value })} 
+                                className="h-12 bg-slate-50 border-none rounded-xl text-sm font-bold"
+                            />
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button 
+                            onClick={saveHoliday} 
+                            disabled={isSavingHoliday}
+                            className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[11px] font-black uppercase tracking-widest shadow-lg shadow-indigo-200"
+                        >
+                            {isSavingHoliday ? "Adding..." : "Save Holiday"}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

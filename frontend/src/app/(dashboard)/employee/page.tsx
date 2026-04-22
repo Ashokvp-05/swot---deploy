@@ -16,13 +16,24 @@ export default async function EmployeeDashboardPage() {
     // Fetch Stats and Active Attendance
     let data: any = { summary: { totalHours: "0.00", daysWorked: 0 }, leaveBalances: [], latestPayslip: null, calendar: [], activeEntry: null }
     try {
+        const controller = new AbortController()
+        const timeout = setTimeout(() => controller.abort(), 8000)
         const res = await fetch(`${API_BASE_URL}/dashboard/employee`, {
-            headers: { Authorization: `Bearer ${token}` },
-            next: { revalidate: 60 }
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Accept-Encoding': 'identity',
+                'Accept': 'application/json',
+            },
+            cache: 'no-store',
+            signal: controller.signal,
         })
+        clearTimeout(timeout)
         if (res.ok) data = await res.json()
-    } catch (e) {
-        console.error("Dashboard fetch error:", e)
+    } catch (e: any) {
+        // Silently fall back to defaults — client will re-fetch
+        if (e?.name !== 'AbortError') {
+            console.warn("Dashboard SSR fetch skipped, client will hydrate:", e?.message || e)
+        }
     }
 
     return (

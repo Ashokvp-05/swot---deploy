@@ -115,6 +115,16 @@ export default function TeamCalendar() {
                             month={month}
                             onMonthChange={setMonth}
                             className="w-full"
+                            modifiers={{
+                                holiday: events.filter(e => e.type === 'HOLIDAY').map(e => new Date(e.start)),
+                                leave: events.filter(e => e.type === 'LEAVE').map(e => new Date(e.start)),
+                                eventGroup: events.filter(e => e.type === 'EVENT').map(e => new Date(e.start)),
+                            }}
+                            modifiersClassNames={{
+                                holiday: "bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-400 font-bold border border-rose-200 dark:border-rose-900 rounded-md",
+                                leave: "bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400 font-bold border border-blue-200 dark:border-blue-900 rounded-md",
+                                eventGroup: "bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-400 font-bold border border-indigo-200 dark:border-indigo-900 rounded-md"
+                            }}
                         />
                     </div>
 

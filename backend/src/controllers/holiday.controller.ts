@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import * as holidayService from '../services/holiday.service';
 import { AuthRequest } from '../middleware/auth.middleware';
+import prisma from '../config/db';
 
 export const sync = async (req: Request, res: Response) => {
     try {
@@ -41,6 +42,27 @@ export const create = async (req: Request, res: Response) => {
             isFloater,
             companyId: user.companyId
         });
+
+        // Broadcast to all active users so it shows in the Notification Bell
+        const users = await prisma.user.findMany({
+            where: { companyId: user.companyId, status: 'ACTIVE' },
+            select: { id: true }
+        });
+
+        if (users.length > 0) {
+            const notifications = users.map(u => ({
+                userId: u.id,
+                companyId: user.companyId,
+                title: `New Holiday Added: ${name}`,
+                message: `A new holiday '${name}' has been added on ${new Date(date).toDateString()}.`,
+                type: 'INFO' as any
+            }));
+            await prisma.notification.createMany({
+                data: notifications,
+                skipDuplicates: true
+            });
+        }
+
         res.status(201).json(holiday);
     } catch (error: any) {
         if (error.code === 'P2002') {

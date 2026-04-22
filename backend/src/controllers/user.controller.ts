@@ -54,6 +54,17 @@ export const getCurrentUser = async (req: Request, res: Response) => {
     }
 };
 
+export const getUserByIdHR = async (req: Request, res: Response) => {
+    try {
+        const { companyId } = (req as any).user;
+        const { id } = req.params;
+        const user = await userService.getUserById(id, companyId);
+        res.json(user);
+    } catch (error: any) {
+        res.status(404).json({ error: error.message });
+    }
+};
+
 export const updateProfile = async (req: Request, res: Response) => {
     try {
         const { id: userId, companyId } = (req as any).user;

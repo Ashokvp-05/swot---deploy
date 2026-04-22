@@ -70,8 +70,8 @@ export const getEmployeeDashboardData = async (userId: string, companyId: string
         timestamp: new Date()
     };
 
-    // Cache for 2 minutes
-    cache.set(cacheKey, data, 120);
+    // Cache for 5 seconds for real-time responsiveness
+    cache.set(cacheKey, data, 5);
 
     return data;
 };

@@ -86,7 +86,7 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
     const fetchLiveData = useCallback(async (signal?: AbortSignal) => {
         if (!token) return
         try {
-            const res = await fetch(`${API_BASE_URL}/dashboard/employee-summary`, {
+            const res = await fetch(`${API_BASE_URL}/dashboard/employee`, {
                 headers: { Authorization: `Bearer ${token}` }, signal
             })
             if (res.ok) setSummary(await res.json())
@@ -100,15 +100,19 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
         fetchLiveData(controller.signal)
         pollRef.current = setInterval(() => {
             fetchLiveData()
-            // Also refresh dashboard data for payslips etc
+            // Real-time synchronization for all dashboard modules
             fetch(`${API_BASE_URL}/dashboard/employee`, {
                 headers: { Authorization: `Bearer ${token}` }
             }).then(r => r.ok && r.json()).then(d => {
                 if (d) {
                     setLatestPayslip(d.latestPayslip)
+                    // If initialData state was available, we'd update it here. 
+                    // For now, these individual setters will keep the UI reactive.
+                    if (d.summary) setSummary(d.summary)
+                    // Add other setters here if they existed in props
                 }
             })
-        }, 30000)
+        }, 10000)
         return () => {
             controller.abort()
             if (pollRef.current) clearInterval(pollRef.current)
@@ -185,28 +189,8 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
         <div className="min-h-screen bg-[#F4F6FA]">
             <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 lg:px-8">
 
-                {/* ── ANNOUNCEMENT BANNER ── */}
-                <AnimatePresence>
-                    {announcements.length > 0 && (
-                        <motion.div
-                            initial={{ opacity: 0, y: -12 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -12 }}
-                            className="mb-8 flex items-center gap-4 bg-white border border-indigo-100 rounded-2xl px-5 py-3.5 shadow-sm"
-                        >
-                            <span className="flex items-center gap-1.5 shrink-0">
-                                <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-                                <span className="text-[9px] font-black text-indigo-500 uppercase tracking-[0.15em]">Live</span>
-                            </span>
-                            <div className="h-4 w-px bg-slate-200" />
-                            <Bell className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                            <p className="text-[11px] font-semibold text-slate-600 truncate">
-                                <span className="font-black text-slate-900">{announcements[0].title}:</span>{" "}
-                                {announcements[0].content}
-                            </p>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                {/* ── ALERTS MOVED TO NOTIFICATION BELL ── */}
+
 
                 {/* ── PAGE HEADER ── */}
                 <div className="mb-7 flex items-end justify-between gap-4">

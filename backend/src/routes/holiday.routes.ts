@@ -7,8 +7,8 @@ const router = Router();
 router.use(authenticate);
 
 router.get('/', holidayController.list);
-router.post('/', requireRole(['ADMIN']), holidayController.create);
-router.delete('/:id', requireRole(['ADMIN']), holidayController.remove);
-router.post('/sync', requireRole(['ADMIN']), holidayController.sync);
+router.post('/', requireRole(['ADMIN', 'SUPER_ADMIN', 'COMPANY_ADMIN', 'HR_ADMIN', 'HR']), holidayController.create);
+router.delete('/:id', requireRole(['ADMIN', 'SUPER_ADMIN', 'COMPANY_ADMIN', 'HR_ADMIN', 'HR']), holidayController.remove);
+router.post('/sync', requireRole(['ADMIN', 'SUPER_ADMIN', 'COMPANY_ADMIN', 'HR_ADMIN', 'HR']), holidayController.sync);
 
 export default router;
