@@ -49,7 +49,12 @@ export const getAllUsers = async (query: { companyId: string; page?: number; lim
                 joiningDate: true,
                 status: true,
                 createdAt: true,
-                companyId: true
+                companyId: true,
+                timeEntries: {
+                    where: { status: 'ACTIVE' },
+                    select: { id: true },
+                    take: 1
+                }
             } as any,
             orderBy: { createdAt: 'desc' }
         }),
@@ -57,7 +62,10 @@ export const getAllUsers = async (query: { companyId: string; page?: number; lim
     ]);
 
     return {
-        users,
+        users: users.map((u: any) => ({
+            ...u,
+            isLive: u.timeEntries?.length > 0
+        })),
         pagination: {
             total,
             page,

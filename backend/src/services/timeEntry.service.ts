@@ -31,6 +31,8 @@ export const clockIn = async (userId: string, companyId: string, type: ClockType
             clockIn: new Date(),
             clockType: type,
             location: location || {},
+            lat: location?.lat,
+            lng: location?.lng,
             status: TimeEntryStatus.ACTIVE,
             isOnCall
         },
@@ -127,7 +129,14 @@ export const getSummary = async (userId: string, companyId: string) => {
 
     const dayMap: { [key: string]: number } = {};
     entries.forEach(entry => {
-        const duration = entry.hoursWorked ? Number(entry.hoursWorked) : 0;
+        let duration = entry.hoursWorked ? Number(entry.hoursWorked) : 0;
+        
+        // If entry is ACTIVE, calculate its current duration to make the summary "live"
+        if (entry.status === TimeEntryStatus.ACTIVE) {
+            const diffInMs = new Date().getTime() - entry.clockIn.getTime();
+            duration = Math.max(0, diffInMs / (1000 * 60 * 60));
+        }
+
         totalHours += duration;
 
         const dayKey = entry.clockIn.toISOString().split('T')[0];

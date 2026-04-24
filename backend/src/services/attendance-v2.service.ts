@@ -66,7 +66,7 @@ export const clockInV2 = async (userId: string, companyId: string, location?: { 
             status: 'ACTIVE',
             lat: location?.lat,
             lng: location?.lng,
-            location: location?.workLocation ? { description: location.workLocation } : undefined
+            location: location || {}
         }
     });
 };

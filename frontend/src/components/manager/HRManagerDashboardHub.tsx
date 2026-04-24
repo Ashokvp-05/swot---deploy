@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { 
     Users, Calendar, Clock, AlertCircle, Building2,
     CheckCircle2, XCircle, FileText, ArrowRight, Activity,
-    TrendingUp, TrendingDown, Clock3, Search, Briefcase, GraduationCap, Send
+    TrendingUp, TrendingDown, Clock3, Search, Briefcase, GraduationCap, Send, ShieldCheck
 } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -88,144 +88,171 @@ export default function HRManagerDashboardHub({ token, onNavigate }: ManagerDash
     }, [token])
 
     return (
-        <div className="space-y-8 pb-16 animate-in fade-in duration-500 max-w-[1400px] mx-auto">
+        <div className="space-y-10 pb-20 animate-in fade-in duration-700 max-w-[1500px] mx-auto font-brand">
             
-            {/* Header section with refined typography */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-4">
-                <div>
-                    <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Workforce Overview</h1>
-                    <p className="text-sm text-slate-500 mt-1">Monitor real-time headcount, organizational distribution, and recent activity.</p>
+            {/* 🚀 Header & Command Center */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div className="space-y-1">
+                    <h1 className="text-4xl font-black text-slate-900 tracking-tighter italic uppercase leading-none">Workforce Intelligence</h1>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] ml-1">Real-time Organizational Telemetry</p>
                 </div>
-                <div className="flex items-center gap-3">
-                    <Button onClick={() => setShowMessageModal(true)} className="h-9 px-4 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm shadow-indigo-600/20">
-                        <Send className="w-4 h-4 mr-2" /> Message Team
-                    </Button>
-                    <Button variant="outline" className="h-9 px-4 text-sm font-medium border-slate-200">
-                         Export Report
+                <div className="flex items-center gap-4">
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <Button onClick={() => setShowMessageModal(true)} className="h-14 px-8 bg-purple-600 hover:bg-purple-700 text-white rounded-[20px] shadow-xl shadow-purple-200 font-black uppercase text-[11px] tracking-widest gap-3">
+                            <Send className="w-4 h-4" /> Message Hub
+                        </Button>
+                    </motion.div>
+                    <Button variant="outline" className="h-14 px-8 border-slate-100 bg-white text-slate-600 rounded-[20px] font-black uppercase text-[11px] tracking-widest hover:bg-slate-50 hover:shadow-lg transition-all">
+                        <ArrowRight className="w-4 h-4 mr-2" /> Global Audit
                     </Button>
                 </div>
             </div>
 
-            {/* 1. KEY METRICS GRID - Enterprise SaaS style */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            {/* 📊 Strategic Metrics - Enterprise SaaS Fidelity */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
                 {[
-                    { label: "Total Headcount", value: stats?.total ?? "-", icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
-                    { label: "Present Today", value: stats?.present ?? "-", icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-50" },
-                    { label: "Absent Today", value: stats?.absent ?? "-", icon: XCircle, color: "text-rose-600", bg: "bg-rose-50" },
-                    { label: "On Active Leave", value: stats?.onLeave ?? "-", icon: Calendar, color: "text-amber-600", bg: "bg-amber-50" },
-                    { label: "Pending Reviews", value: stats?.pendingLeaves ?? "-", icon: AlertCircle, color: "text-indigo-600", bg: "bg-indigo-50" },
+                    { label: "Total Headcount", value: stats?.total ?? "0", icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
+                    { label: "Live Nodes", value: stats?.present ?? "0", icon: Activity, color: "text-emerald-600", bg: "bg-emerald-50" },
+                    { label: "Offline Units", value: stats?.absent ?? "0", icon: XCircle, color: "text-rose-600", bg: "bg-rose-50" },
+                    { label: "Active Leave", value: stats?.onLeave ?? "0", icon: Calendar, color: "text-amber-600", bg: "bg-amber-50" },
+                    { label: "Pending Review", value: stats?.pendingLeaves ?? "0", icon: AlertCircle, color: "text-purple-600", bg: "bg-purple-50" },
                 ].map((s, i) => (
-                    <Card key={i} className="p-5 border-slate-200 shadow-sm hover:shadow-md transition-shadow bg-white rounded-xl">
-                        <div className="flex justify-between items-start">
-                            <div>
-                                <p className="text-sm font-medium text-slate-500 mb-1">{s.label}</p>
-                                <h4 className="text-3xl font-bold text-slate-900 tracking-tight">{s.value}</h4>
-                            </div>
-                            <div className={cn("p-2 rounded-lg", s.bg)}>
+                    <motion.div 
+                        key={i} 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.1 }}
+                        className="p-8 bg-white rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-slate-200/40 transition-all group"
+                    >
+                        <div className="flex flex-col gap-6">
+                            <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 transition-transform group-hover:rotate-6", s.bg)}>
                                 <s.icon className={cn("w-5 h-5", s.color)} />
                             </div>
+                            <div>
+                                <h4 className="text-4xl font-black text-slate-900 tracking-tighter tabular-nums leading-none mb-2">{s.value}</h4>
+                                <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">{s.label}</p>
+                            </div>
                         </div>
-                    </Card>
+                    </motion.div>
                 ))}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 
-                {/* 2. ORGANIZATION BREAKDOWN - Minimal Progress Bar Style */}
-                <Card className="lg:col-span-2 rounded-xl border-slate-200 shadow-sm bg-white overflow-hidden">
-                    <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                        <div>
-                            <h3 className="text-base font-semibold text-slate-900">Department Headcount</h3>
-                            <p className="text-sm text-slate-500 mt-1">Current active personnel distributed by department</p>
+                {/* 🏛️ Organizational Distribution */}
+                <div className="lg:col-span-2">
+                    <Card className="rounded-[3.5rem] border border-slate-100 shadow-xl shadow-slate-200/30 bg-white overflow-hidden flex flex-col h-[600px]">
+                        <div className="p-10 border-b border-slate-50 flex justify-between items-center">
+                            <div>
+                                <h3 className="text-xl font-black text-slate-900 uppercase italic tracking-tight">Departmental Matrix</h3>
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">Unit Distribution Protocol</p>
+                            </div>
+                            <Button variant="ghost" className="h-12 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest text-purple-600 hover:bg-purple-50" onClick={() => onNavigate?.('employees')}>
+                                Full Directory <ArrowRight className="w-4 h-4 ml-2" />
+                            </Button>
                         </div>
-                        <Button variant="ghost" className="h-8 text-sm font-medium text-indigo-600 hover:bg-slate-50" onClick={() => onNavigate?.('onboarding')}>
-                            View Directory <ArrowRight className="w-4 h-4 ml-1" />
-                        </Button>
-                    </div>
-                    
-                    <div className="p-6">
-                        <div className="space-y-6">
+                        
+                        <div className="p-10 flex-1 overflow-y-auto no-scrollbar space-y-10">
                             {[
-                                { label: "General Employees", count: stats?.roleDistribution?.employee || 0, icon: Users, color: "bg-blue-500", percent: 75 },
-                                { label: "Operations & HR", count: stats?.roleDistribution?.hr || 0, icon: Briefcase, color: "bg-indigo-500", percent: 15 },
-                                { label: "Financial / Auditors", count: stats?.roleDistribution?.auditor || 0, icon: FileText, color: "bg-amber-500", percent: 5 },
-                                { label: "IT & System Support", count: stats?.roleDistribution?.support || 0, icon: Clock, color: "bg-slate-700", percent: 5 },
+                                { label: "General Workforce", count: stats?.roleDistribution?.employee || 0, icon: Users, color: "bg-blue-600", percent: 75, light: "bg-blue-50" },
+                                { label: "Command & HR", count: stats?.roleDistribution?.hr || 0, icon: Briefcase, color: "bg-purple-600", percent: 15, light: "bg-purple-50" },
+                                { label: "Strategic Audit", count: stats?.roleDistribution?.auditor || 0, icon: ShieldCheck, color: "bg-amber-600", percent: 5, light: "bg-amber-50" },
+                                { label: "Systems Support", count: stats?.roleDistribution?.support || 0, icon: Clock3, color: "bg-slate-800", percent: 5, light: "bg-slate-100" },
                             ].map((dept, idx) => (
-                                <div key={idx} className="group">
-                                    <div className="flex justify-between items-center mb-2">
-                                        <div className="flex items-center gap-3">
-                                            <div className={cn("p-1.5 rounded-md text-white shadow-sm", dept.color)}>
-                                                <dept.icon className="w-4 h-4" />
+                                <motion.div 
+                                    key={idx} 
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.3 + (idx * 0.1) }}
+                                    className="group"
+                                >
+                                    <div className="flex justify-between items-end mb-4">
+                                        <div className="flex items-center gap-5">
+                                            <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform", dept.color)}>
+                                                <dept.icon className="w-6 h-6" />
                                             </div>
-                                            <span className="text-sm font-medium text-slate-700">{dept.label}</span>
+                                            <div>
+                                                <span className="text-[11px] font-black uppercase tracking-widest text-slate-400 block mb-1">Sector</span>
+                                                <span className="text-lg font-black text-slate-800 uppercase tracking-tight">{dept.label}</span>
+                                            </div>
                                         </div>
                                         <div className="text-right">
-                                            <span className="text-sm font-semibold text-slate-900">{dept.count} <span className="text-slate-400 font-normal ml-1">Headcount</span></span>
+                                            <span className="text-2xl font-black text-slate-900 tabular-nums">{dept.count}</span>
+                                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-2">Units</span>
                                         </div>
                                     </div>
-                                    <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                                        <div 
-                                            className={cn("h-full rounded-full transition-all duration-1000 ease-out", dept.color)} 
-                                            style={{ width: `${dept.count > 0 ? Math.max(10, dept.percent) : 0}%` }}
+                                    <div className="w-full bg-slate-50 rounded-full h-3 overflow-hidden p-0.5 border border-slate-100 shadow-inner">
+                                        <motion.div 
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${dept.count > 0 ? Math.max(10, dept.percent) : 0}%` }}
+                                            transition={{ duration: 2, ease: "easeOut" }}
+                                            className={cn("h-full rounded-full shadow-lg", dept.color)} 
                                         />
                                     </div>
-                                </div>
+                                </motion.div>
                             ))}
                         </div>
-                    </div>
-                </Card>
+                    </Card>
+                </div>
 
-                {/* 3. RECENT ACTIVITY STREAM - Clean Timeline */}
-                <Card className="rounded-xl border-slate-200 shadow-sm bg-white overflow-hidden flex flex-col h-full">
-                    <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-                        <div>
-                            <h3 className="text-base font-semibold text-slate-900 flex items-center gap-2">
-                                Recent Activity 
-                                <span className="relative flex h-2 w-2">
-                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                                </span>
-                            </h3>
+                {/* 📡 Operational Activity Stream */}
+                <div>
+                    <Card className="rounded-[3.5rem] border border-slate-100 shadow-xl shadow-slate-200/30 bg-white overflow-hidden flex flex-col h-[600px] relative">
+                        <div className="p-10 border-b border-slate-50 flex justify-between items-center">
+                            <div>
+                                <h3 className="text-xl font-black text-slate-900 uppercase italic tracking-tight">Signal Stream</h3>
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">Live Audit Relay</p>
+                            </div>
+                            <div className="flex h-3 w-3 relative">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-purple-600"></span>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div className="p-6 flex-1 overflow-y-auto max-h-[380px] custom-scrollbar">
-                        {activities.length === 0 ? (
-                            <div className="h-full flex flex-col items-center justify-center text-slate-400 space-y-3">
-                                <Activity className="w-8 h-8 opacity-20" />
-                                <p className="text-sm">No recent activity detected</p>
-                            </div>
-                        ) : (
-                            <div className="space-y-6">
-                                {activities.map((act, i) => (
-                                    <div key={i} className="flex gap-4">
-                                        <div className="flex flex-col items-center mt-1">
-                                            <div className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 shadow-sm">
-                                                <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                        
+                        <div className="p-8 flex-1 overflow-y-auto no-scrollbar">
+                            {activities.length === 0 ? (
+                                <div className="h-full flex flex-col items-center justify-center text-slate-300 space-y-6 opacity-40">
+                                    <Activity className="w-12 h-12 animate-pulse" />
+                                    <p className="text-[10px] font-black uppercase tracking-[0.4em]">Listening for signals...</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-8">
+                                    {activities.map((act, i) => (
+                                        <motion.div 
+                                            key={i} 
+                                            initial={{ opacity: 0, x: 20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ delay: i * 0.1 }}
+                                            className="flex gap-5 group"
+                                        >
+                                            <div className="flex flex-col items-center shrink-0">
+                                                <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center group-hover:border-purple-200 group-hover:bg-purple-50 transition-colors">
+                                                    <div className="w-2 h-2 rounded-full bg-slate-300 group-hover:bg-purple-600 transition-colors" />
+                                                </div>
+                                                {i !== activities.length - 1 && (
+                                                    <div className="w-[2px] h-full bg-slate-50 my-2" />
+                                                )}
                                             </div>
-                                            {i !== activities.length - 1 && (
-                                                <div className="w-px h-full bg-slate-100 my-1" />
-                                            )}
-                                        </div>
-                                        <div className="pb-2">
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <span className="text-sm font-semibold text-slate-900">{act.user}</span>
-                                                <span className="text-xs font-medium text-slate-400">{act.time}</span>
+                                            <div className="pb-2 flex-1">
+                                                <div className="flex items-center justify-between gap-2 mb-2">
+                                                    <span className="text-[13px] font-black text-slate-900 uppercase tracking-tight">{act.user}</span>
+                                                    <span className="text-[9px] font-black text-slate-400 tabular-nums uppercase">{act.time}</span>
+                                                </div>
+                                                <p className="text-[12px] font-bold text-slate-500 leading-relaxed uppercase tracking-tight">{act.detail}</p>
                                             </div>
-                                            <p className="text-sm text-slate-600 leading-snug">{act.detail}</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                    
-                    <div className="p-4 border-t border-slate-100 bg-white">
-                        <Button variant="ghost" className="w-full text-indigo-600 text-sm font-medium hover:bg-slate-50">
-                            View Audit Log
-                        </Button>
-                    </div>
-                </Card>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                        
+                        <div className="p-8 border-t border-slate-50 bg-slate-50/30">
+                            <Button variant="ghost" className="w-full h-14 rounded-2xl text-[10px] font-black uppercase tracking-widest text-purple-600 hover:bg-white hover:shadow-md transition-all">
+                                View Intelligence Logs
+                            </Button>
+                        </div>
+                    </Card>
+                </div>
             </div>
 
             {/* User Profile Modal */}

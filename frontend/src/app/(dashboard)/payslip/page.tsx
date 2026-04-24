@@ -293,53 +293,50 @@ export default function PayslipPage() {
                                     <Badge variant="secondary" className="rounded-lg px-2 h-6 text-[9px] font-black uppercase bg-slate-100 dark:bg-slate-800 text-slate-500 border-none tracking-widest">Sync: STABLE</Badge>
                                 </CardHeader>
                                 <CardContent className="p-0">
-                                    {payslips.length === 0 ? (
-                                        <div className="p-20 text-center space-y-4">
-                                            <div className="w-16 h-16 rounded-3xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-white/5 flex items-center justify-center mx-auto mb-6">
-                                                <FileText className="w-8 h-8 text-slate-200 dark:text-slate-700" />
-                                            </div>
-                                            <h3 className="text-sm font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest leading-none">No Released Payslips</h3>
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Synchronizing with HR Manager Vault</p>
-                                            <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest italic pt-4">Your payslips will appear here once released by HR.</p>
+                                    <ScrollArea className="w-full">
+                                        <div className="min-w-[600px]">
+                                            {payslips.length === 0 ? (
+                                                <div className="p-20 text-center space-y-4">
+                                                    <div className="w-16 h-16 rounded-3xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-white/5 flex items-center justify-center mx-auto mb-6">
+                                                        <FileText className="w-8 h-8 text-slate-200 dark:text-slate-700" />
+                                                    </div>
+                                                    <h3 className="text-sm font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest leading-none">No Released Payslips</h3>
+                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Synchronizing with HR Manager Vault</p>
+                                                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest italic pt-4">Your payslips will appear here once released by HR.</p>
+                                                </div>
+                                            ) : (
+                                                <table className="w-full text-left">
+                                                    <thead className="bg-slate-50/50 dark:bg-slate-800/20">
+                                                        <tr>
+                                                            <th className="px-10 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest">Period Reference</th>
+                                                            <th className="px-10 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest text-right">Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="divide-y divide-slate-50 dark:divide-white/5">
+                                                        {payslips.map((slip) => (
+                                                            <tr key={slip.id} className="group hover:bg-slate-50/30 dark:hover:bg-slate-800/30 transition-colors">
+                                                                <td className="px-10 py-6">
+                                                                    <div className="flex items-center gap-4 text-slate-700 dark:text-slate-300">
+                                                                        <FileText className="w-5 h-5 text-indigo-500" />
+                                                                        <span className="font-black text-xs uppercase tracking-wider">{slip.month} {slip.year}</span>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="px-10 py-6 text-right flex items-center justify-end gap-3">
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        onClick={() => handleDownload(slip.id, `Payslip_${slip.month}_${slip.year}.pdf`)}
+                                                                        className="h-10 px-6 rounded-xl border-slate-200 dark:border-white/10 dark:text-white font-black uppercase text-[10px] tracking-widest hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all"
+                                                                    >
+                                                                        <Download className="w-3.5 h-3.5 mr-2" /> Download
+                                                                    </Button>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            )}
                                         </div>
-                                    ) : (
-                                        <table className="w-full text-left">
-                                            <thead className="bg-slate-50/50 dark:bg-slate-800/20">
-                                                <tr>
-                                                    <th className="px-10 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest">Period Reference</th>
-                                                    <th className="px-10 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest text-right">Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-slate-50 dark:divide-white/5">
-                                                {payslips.map((slip) => (
-                                                    <tr key={slip.id} className="group hover:bg-slate-50/30 dark:hover:bg-slate-800/30 transition-colors">
-                                                        <td className="px-10 py-6">
-                                                            <div className="flex items-center gap-4 text-slate-700 dark:text-slate-300">
-                                                                <FileText className="w-5 h-5 text-indigo-500" />
-                                                                <span className="font-black text-xs uppercase tracking-wider">{slip.month} {slip.year}</span>
-                                                            </div>
-                                                        </td>
-                                                        <td className="px-10 py-6 text-right flex items-center justify-end gap-3">
-                                                            <Button
-                                                                variant="outline"
-                                                                onClick={() => setSelectedPayslip(slip)}
-                                                                className="h-10 px-6 rounded-xl border-slate-200 dark:border-white/10 dark:text-white font-black uppercase text-[10px] tracking-widest hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all"
-                                                            >
-                                                                <Eye className="w-3.5 h-3.5 mr-2" /> View Details
-                                                            </Button>
-                                                            <Button
-                                                                variant="outline"
-                                                                onClick={() => handleDownload(slip.id, `Payslip_${slip.month}_${slip.year}.pdf`)}
-                                                                className="h-10 px-6 rounded-xl border-slate-200 dark:border-white/10 dark:text-white font-black uppercase text-[10px] tracking-widest hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all"
-                                                            >
-                                                                <Download className="w-3.5 h-3.5 mr-2" /> Download
-                                                            </Button>
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    )}
+                                    </ScrollArea>
                                 </CardContent>
                             </Card>
                         </main>

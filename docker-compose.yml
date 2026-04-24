@@ -4,18 +4,18 @@ services:
     container_name: hr-db
     restart: always
     environment:
-      - POSTGRES_USER=hr_user
-      - POSTGRES_PASSWORD=hr_password_123
-      - POSTGRES_DB=hr_db
-    ports:
-      - "5432:5432"
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U hr_user -d hr_db"]
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - hr_network
 
   backend:
     build:
@@ -27,12 +27,17 @@ services:
       db:
         condition: service_healthy
     environment:
-      - DATABASE_URL=postgresql://hr_user:hr_password_123@db:5432/hr_db
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public
       - PORT=4000
-      - JWT_SECRET=your_jwt_secret_key_change_me
-      # SSO & SMTP can be added here as needed
+      - JWT_SECRET=${JWT_SECRET}
+      - CORS_ORIGIN=${FRONTEND_URL}
     ports:
-      - "4000:4000"
+      - "127.0.0.1:4000:4000"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:4000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     networks:
       - hr_network
 
@@ -41,18 +46,21 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - NEXT_PUBLIC_API_URL=http://localhost:4000/api
+        # Build-time only — must rebuild frontend if BACKEND_URL changes
+        - NEXT_PUBLIC_API_URL=${BACKEND_URL}/api
     container_name: hr-frontend
     restart: always
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:4000/api
-      - NEXTAUTH_URL=http://localhost:3000
-      - AUTH_URL=http://localhost:3000
-      - AUTH_SECRET=your_auth_secret_key_change_me
+      - NEXT_PUBLIC_API_URL=${BACKEND_URL}/api
+      - NEXTAUTH_URL=${FRONTEND_URL}
+      - AUTH_URL=${FRONTEND_URL}
+      - AUTH_SECRET=${AUTH_SECRET}
+      - AUTH_TRUST_HOST=true
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     networks:
       - hr_network
 

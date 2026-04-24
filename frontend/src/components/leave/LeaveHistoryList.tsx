@@ -54,7 +54,7 @@ export default function LeaveHistoryList({ token, refreshTrigger = 0 }: { token:
             </CardHeader>
             <CardContent className="space-y-4 pt-6">
                 {requests.map((req) => (
-                    <div key={req.id} className="flex items-center justify-between p-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-900/30 hover:bg-white dark:hover:bg-slate-800 transition-all group">
+                    <div key={req.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-900/30 hover:bg-white dark:hover:bg-slate-800 transition-all group gap-4">
                         <div className="flex items-start gap-4">
                             <div className={`mt-1 p-2 rounded-lg ${req.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-600' :
                                 req.status === 'REJECTED' ? 'bg-rose-100 text-rose-600' :

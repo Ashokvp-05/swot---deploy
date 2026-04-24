@@ -1,6 +1,7 @@
 # syntax=docker/dockerfile:1
 
 FROM node:20-alpine AS base
+RUN apk add --no-cache curl
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -31,6 +32,7 @@ RUN adduser --system --uid 1001 backend
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/prisma ./prisma
 
 USER backend
 
@@ -40,4 +42,4 @@ ENV PORT 4000
 # set hostname to localhost
 ENV HOSTNAME "0.0.0.0"
 
-CMD ["node", "dist/server.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/server.js"]

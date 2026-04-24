@@ -43,6 +43,10 @@ export default function EmployeeDetailsModule({ token, userRole }: { token: stri
             }
         }
         fetchUsers()
+        
+        // Polling for live status updates every 30 seconds
+        const interval = setInterval(fetchUsers, 30000)
+        return () => clearInterval(interval)
     }, [token])
 
     useEffect(() => {
@@ -140,6 +144,12 @@ export default function EmployeeDetailsModule({ token, userRole }: { token: stri
                                                 <Badge className="mt-2 bg-slate-100 text-slate-500 hover:bg-slate-200 border-none px-2.5 py-0.5 rounded-md text-[8px] font-black uppercase tracking-widest">
                                                     {roleName || "Employee"}
                                                 </Badge>
+                                                {user.isLive && (
+                                                    <div className="mt-2 flex items-center gap-1.5">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                                        <span className="text-[8px] font-black text-emerald-600 uppercase tracking-widest">Live Now</span>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
 

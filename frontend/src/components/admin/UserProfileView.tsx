@@ -152,12 +152,21 @@ export default function UserProfileView({ user: initialUser, token, onClose, onE
                         el.style.borderRadius = '0'
                         el.style.background = 'white'
 
+                        // Expand scrollable areas
+                        const scrollAreas = clonedDoc.querySelectorAll('.overflow-y-auto, .custom-scrollbar')
+                        scrollAreas.forEach((sa: any) => {
+                            sa.style.overflow = 'visible'
+                            sa.style.height = 'auto'
+                            sa.style.maxHeight = 'none'
+                        })
+
                         const style = clonedDoc.createElement('style')
                         style.innerHTML = `
                             * { 
                                 backdrop-filter: none !important; 
                                 -webkit-backdrop-filter: none !important;
                                 text-shadow: none !important;
+                                animation: none !important;
                             }
                             body { background: white !important; }
                         `
@@ -250,26 +259,31 @@ export default function UserProfileView({ user: initialUser, token, onClose, onE
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8 font-body backdrop-blur-2xl bg-slate-950/30"
+            className="fixed inset-0 z-[200] flex items-center justify-center p-0 md:p-4 lg:p-8 font-body backdrop-blur-2xl bg-slate-950/30"
         >
             <GlobalStyles />
             <motion.div 
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
                 id="profile-dossier-content"
-                initial={{ scale: 0.97, y: 20 }}
-                animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.97, y: 20 }}
-                transition={{ type: "spring", damping: 30, stiffness: 300 }}
-                className="bg-white w-full max-w-[1200px] h-full max-h-[850px] rounded-[2rem] shadow-2xl flex overflow-hidden border border-slate-100"
+                className="bg-white w-full max-w-[1200px] h-full md:h-auto md:max-h-[850px] md:rounded-[2rem] shadow-2xl flex flex-col md:flex-row overflow-hidden border border-slate-100"
             >
                 {/* ═══════════════════════════════════════════════════════════ */}
                 {/* LEFT PANEL - Identity Card                                 */}
                 {/* ═══════════════════════════════════════════════════════════ */}
-                <div className="w-[320px] bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 p-8 flex flex-col shrink-0 relative overflow-hidden">
-                    {/* Decorative elements */}
-                    <div className="absolute top-0 left-0 w-full h-full opacity-[0.03]">
-                        <div className="absolute top-20 -left-10 w-60 h-60 border border-white rounded-full" />
-                        <div className="absolute bottom-40 -right-20 w-80 h-80 border border-white rounded-full" />
-                    </div>
+                <div className="w-full md:w-[380px] bg-slate-900 shrink-0 flex flex-col relative overflow-hidden">
+                        {/* Background Identity Pattern */}
+                        <div className="absolute inset-0 opacity-10 pointer-events-none">
+                            <Fingerprint className="w-[400px] h-[400px] absolute -top-20 -left-20 text-indigo-500" />
+                        </div>
+
+                        {/* Top Controls - Mobile Only Close Button */}
+                        <div className="flex md:hidden justify-end p-4 relative z-10">
+                            <button onClick={onClose} className="p-2 bg-white/10 rounded-full text-white">
+                                <Activity className="w-5 h-5 rotate-45" />
+                            </button>
+                        </div>
 
                     {/* Real-time sync indicator */}
                     <div className="absolute top-6 right-6 flex items-center gap-2 z-20">

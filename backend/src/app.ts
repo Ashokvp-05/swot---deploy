@@ -61,6 +61,8 @@ app.use((req, res, next) => {
 });
 
 // Health Check
+app.get('/health', (req, res) => res.status(200).json({ status: 'ok' }));
+
 app.get('/', (req, res) => {
     res.json({ message: 'Rudratic HR System API is running', timestamp: new Date() });
 });

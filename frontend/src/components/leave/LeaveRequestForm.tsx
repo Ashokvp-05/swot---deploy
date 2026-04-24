@@ -121,16 +121,16 @@ export default function LeaveRequestForm({ token, onSuccess }: { token: string, 
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <div className="flex gap-4 items-end">
+                <div className="flex flex-col md:flex-row gap-4 md:items-end">
                     <FormField
                         control={form.control}
                         name="type"
                         render={({ field }) => (
-                            <FormItem className="flex-1">
+                            <FormItem className="flex-1 w-full">
                                 <FormLabel>Leave Type</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                     <FormControl>
-                                        <SelectTrigger>
+                                        <SelectTrigger className="w-full">
                                             <SelectValue placeholder="Select leave type" />
                                         </SelectTrigger>
                                     </FormControl>
@@ -147,14 +147,14 @@ export default function LeaveRequestForm({ token, onSuccess }: { token: string, 
                         )}
                     />
                     {selectedType && (
-                        <div className="p-3 bg-muted/50 rounded-lg text-xs flex items-center gap-2 border border-border/50 animate-in fade-in duration-300">
+                        <div className="p-3 bg-muted/50 rounded-lg text-xs flex items-center gap-2 border border-border/50 animate-in fade-in duration-300 w-fit">
                             <Info className="w-3 h-3 text-indigo-500" />
                             <span>Available: <b>{typeBalance} Days</b></span>
                         </div>
                     )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                         control={form.control}
                         name="startDate"

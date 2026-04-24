@@ -89,7 +89,11 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
             const res = await fetch(`${API_BASE_URL}/dashboard/employee`, {
                 headers: { Authorization: `Bearer ${token}` }, signal
             })
-            if (res.ok) setSummary(await res.json())
+            if (res.ok) {
+                const data = await res.json()
+                if (data.summary) setSummary(data.summary)
+                if (data.latestPayslip) setLatestPayslip(data.latestPayslip)
+            }
         } catch (e: any) {
             if (e?.name !== 'AbortError') {}
         }
@@ -98,21 +102,12 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
     useEffect(() => {
         const controller = new AbortController()
         fetchLiveData(controller.signal)
+        
+        // Polling for live updates every 10 seconds
         pollRef.current = setInterval(() => {
             fetchLiveData()
-            // Real-time synchronization for all dashboard modules
-            fetch(`${API_BASE_URL}/dashboard/employee`, {
-                headers: { Authorization: `Bearer ${token}` }
-            }).then(r => r.ok && r.json()).then(d => {
-                if (d) {
-                    setLatestPayslip(d.latestPayslip)
-                    // If initialData state was available, we'd update it here. 
-                    // For now, these individual setters will keep the UI reactive.
-                    if (d.summary) setSummary(d.summary)
-                    // Add other setters here if they existed in props
-                }
-            })
         }, 10000)
+
         return () => {
             controller.abort()
             if (pollRef.current) clearInterval(pollRef.current)
@@ -198,9 +193,19 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                         <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1">
                             {liveTime ? format(liveTime, "EEEE, MMMM dd, yyyy") : ""}
                         </p>
-                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
                             {greeting},{" "}
                             <span className="text-indigo-600">{firstName}</span>
+                            {status === 'ACTIVE' && (
+                                <motion.span 
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 text-[9px] font-black uppercase tracking-widest ml-2"
+                                >
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                    Live
+                                </motion.span>
+                            )}
                         </h1>
                     </div>
                     {liveTime && (
@@ -441,7 +446,7 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                                     </button>
                                 </Link>
                             </div>
-                            <div className="grid grid-cols-7 gap-2">
+                            <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
                                 {weekDays.map((day, idx) => {
                                     const isToday = isSameDay(day, mounted ? new Date() : new Date("2026-03-24"))
                                     const dayData = summary.chartData?.find((d: any) =>
@@ -510,7 +515,7 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                                         link: "/payslip"
                                     },
                                     {
-                                        label: "HelpDesk",
+                                        label: "Help Desk",
                                         sub: "Raise an Incident",
                                         icon: Target,
                                         color: "text-indigo-600",
@@ -550,7 +555,6 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                                 ))}
                             </div>
                         </div>
-
                     </div>
                 </div>
             </main>

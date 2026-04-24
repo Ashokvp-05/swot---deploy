@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import * as timeEntryController from '../controllers/timeEntry.controller';
+import * as reportController from '../controllers/report.controller';
 import { authenticate } from '../middleware/auth.middleware';
 
 const router = Router();
@@ -14,9 +15,8 @@ router.get('/history', timeEntryController.getHistory);
 router.get('/summary', timeEntryController.getSummary);
 
 // Reports - Admin only or Manager
-import * as reportController from '../controllers/report.controller';
-router.get('/reports', authenticate, reportController.getAttendanceReport);
-router.get('/reports/excel', authenticate, reportController.exportExcel);
-router.get('/reports/pdf', authenticate, reportController.exportPDF);
+router.get('/reports', reportController.getAttendanceReport);
+router.get('/reports/excel', reportController.exportExcel);
+router.get('/reports/pdf', reportController.exportPDF);
 
 export default router;
