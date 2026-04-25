@@ -4,13 +4,13 @@ services:
     container_name: hr-db
     restart: always
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres_password}
+      POSTGRES_DB: ${POSTGRES_DB:-antigravity_db}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-postgres} -d $${POSTGRES_DB:-antigravity_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -27,12 +27,13 @@ services:
       db:
         condition: service_healthy
     environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres_password}@db:5432/${POSTGRES_DB:-antigravity_db}?schema=public
       - PORT=4000
-      - JWT_SECRET=${JWT_SECRET}
-      - CORS_ORIGIN=${FRONTEND_URL}
+      - JWT_SECRET=${JWT_SECRET:-your_jwt_secret_key_here}
+      - FRONTEND_URL=${FRONTEND_URL:-http://192.168.1.14:8080}
+      - CORS_ORIGIN=${FRONTEND_URL:-http://192.168.1.14:8080}
     ports:
-      - "127.0.0.1:4000:4000"
+      - "8443:4000"
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:4000/health || exit 1"]
       interval: 30s
@@ -46,21 +47,21 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        # Build-time only — must rebuild frontend if BACKEND_URL changes
-        - NEXT_PUBLIC_API_URL=${BACKEND_URL}/api
+        - NEXT_PUBLIC_API_URL=${BACKEND_URL:-http://192.168.1.14:8443}/api
     container_name: hr-frontend
     restart: always
     depends_on:
       backend:
         condition: service_healthy
     environment:
-      - NEXT_PUBLIC_API_URL=${BACKEND_URL}/api
-      - NEXTAUTH_URL=${FRONTEND_URL}
-      - AUTH_URL=${FRONTEND_URL}
-      - AUTH_SECRET=${AUTH_SECRET}
+      - NEXT_PUBLIC_API_URL=${BACKEND_URL:-http://192.168.1.14:8443}/api
+      - FRONTEND_URL=${FRONTEND_URL:-http://192.168.1.14:8080}
+      - NEXTAUTH_URL=${FRONTEND_URL:-http://192.168.1.14:8080}
+      - AUTH_URL=${FRONTEND_URL:-http://192.168.1.14:8080}
+      - AUTH_SECRET=${AUTH_SECRET:-your_auth_secret_key_here}
       - AUTH_TRUST_HOST=true
     ports:
-      - "127.0.0.1:3000:3000"
+      - "8080:3000"
     networks:
       - hr_network
 
