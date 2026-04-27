@@ -211,13 +211,26 @@ export const deleteUser = async (req: Request, res: Response) => {
         const user = await prisma.user.findUnique({ where: { id, companyId } });
         if (!user) return res.status(404).json({ error: "User not found" });
 
+        // Manually delete related records that lack onDelete: Cascade in Prisma schema
+        // Specifically LeaveBalances which are now auto-seeded for all users!
+        await (prisma as any).leaveBalance.deleteMany({ where: { userId: id, companyId } });
+        await (prisma as any).leaveRequest.deleteMany({ where: { userId: id, companyId } });
+        await prisma.notification.deleteMany({ where: { userId: id } });
+        
+        // Unassign any assets back to the company
+        await prisma.asset.updateMany({
+            where: { assignedToId: id, companyId },
+            data: { assignedToId: null, status: 'AVAILABLE' }
+        });
+
         await prisma.user.delete({ where: { id, companyId } });
 
         auditService.logAction('USER_DELETE', adminId, companyId, id, `Permanently deleted user ${user.name} (${user.email})`);
 
         res.json({ message: "User deleted successfully" });
     } catch (error: any) {
-        res.status(500).json({ error: error.message });
+        console.error("Delete user error:", error);
+        res.status(500).json({ error: error.message || "Failed to delete user" });
     }
 };
 
