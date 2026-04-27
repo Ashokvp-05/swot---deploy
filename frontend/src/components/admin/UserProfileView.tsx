@@ -11,7 +11,7 @@ import {
     UserCircle, FileDown, RefreshCw,
     ChevronRight, Clock, Hash, CreditCard, Plane,
     Home, PhoneCall, AtSign, Cake, Droplets,
-    Users, Star, TrendingUp, Award, Edit3, Plus
+    Users, Star, TrendingUp, Award, Edit3, Plus, Minus
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -23,6 +23,7 @@ interface UserProfileViewProps {
     token: string
     onClose: () => void
     onEdit?: () => void
+    canEditBalances?: boolean
 }
 
 const GlobalStyles = () => (
@@ -38,7 +39,7 @@ const GlobalStyles = () => (
 
 type TabKey = "personal" | "employment" | "finance" | "documents"
 
-export default function UserProfileView({ user: initialUser, token, onClose, onEdit }: UserProfileViewProps) {
+export default function UserProfileView({ user: initialUser, token, onClose, onEdit, canEditBalances }: UserProfileViewProps) {
     const [privacyShield, setPrivacyShield] = useState(true)
     const [fullUser, setFullUser] = useState<any>(null)
     const [loading, setLoading] = useState(false)
@@ -46,6 +47,9 @@ export default function UserProfileView({ user: initialUser, token, onClose, onE
     const [activeTab, setActiveTab] = useState<TabKey>("personal")
     const photoInputRef = useRef<HTMLInputElement>(null)
     const docInputRef = useRef<HTMLInputElement>(null)
+    const [editingLeaves, setEditingLeaves] = useState(false)
+    const [leaveEdits, setLeaveEdits] = useState<{id: string, total: number}[]>([])
+    const [savingLeaves, setSavingLeaves] = useState(false)
     
     const displayUser = fullUser || initialUser
     
@@ -115,6 +119,37 @@ export default function UserProfileView({ user: initialUser, token, onClose, onE
             } catch { import('sonner').then(m => m.toast.error("Upload failed")) }
         }
         reader.readAsDataURL(file)
+    }
+
+    const handleSaveLeaves = async () => {
+        if (!displayUser?.id || leaveEdits.length === 0) return
+        setSavingLeaves(true)
+        try {
+            const API = process.env.NEXT_PUBLIC_API_URL
+            const res = await fetch(`${API}/admin/employees/${displayUser.id}/leave-balances`, {
+                method: 'PATCH',
+                headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+                body: JSON.stringify({ balances: leaveEdits })
+            })
+            if (res.ok) {
+                import('sonner').then(m => m.toast.success("Leave balances updated successfully"))
+                setEditingLeaves(false)
+                
+                if (fullUser && fullUser.leaveBalances) {
+                    const updatedBalances = fullUser.leaveBalances.map((lb: any) => {
+                        const edit = leaveEdits.find(e => e.id === lb.id)
+                        return edit ? { ...lb, total: edit.total } : lb
+                    })
+                    setFullUser({ ...fullUser, leaveBalances: updatedBalances })
+                }
+            } else {
+                import('sonner').then(m => m.toast.error("Failed to update leave balances"))
+            }
+        } catch (err) {
+            import('sonner').then(m => m.toast.error("Network error saving leave balances"))
+        } finally {
+            setSavingLeaves(false)
+        }
     }
 
     const roleName = typeof displayUser?.role === 'object' ? displayUser?.role?.name : displayUser?.role
@@ -203,6 +238,7 @@ export default function UserProfileView({ user: initialUser, token, onClose, onE
     // Leave balances from actual data or fallback
     const leaveBalances = displayUser?.leaveBalances?.length > 0
         ? displayUser.leaveBalances.map((lb: any) => ({
+            id: lb.id,
             label: lb.leaveTypeConfig?.name || "Leave",
             used: lb.used || 0,
             total: lb.total || 0,
@@ -267,7 +303,7 @@ export default function UserProfileView({ user: initialUser, token, onClose, onE
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
                 id="profile-dossier-content"
-                className="bg-white w-full max-w-[1200px] h-full md:h-auto md:max-h-[850px] md:rounded-[2rem] shadow-2xl flex flex-col md:flex-row overflow-hidden border border-slate-100"
+                className="bg-white w-full max-w-[1200px] h-full md:h-[85vh] md:min-h-[700px] md:max-h-[850px] md:rounded-[2rem] shadow-2xl flex flex-col md:flex-row overflow-hidden border border-slate-100"
             >
                 {/* ═══════════════════════════════════════════════════════════ */}
                 {/* LEFT PANEL - Identity Card                                 */}
@@ -475,7 +511,7 @@ export default function UserProfileView({ user: initialUser, token, onClose, onE
                                                 <FieldRow icon={MapPin} label="Branch" value={val(displayUser?.branch?.name, "Global")} />
                                                 <FieldRow icon={Home} label="Work Location" value={val(profile?.workLocation, "Hybrid")} />
                                                 <FieldRow icon={User} label="Reporting Manager" value={val(displayUser?.manager?.name)} />
-                                                <FieldRow icon={Clock} label="Employment Type" value={val(displayUser?.employmentType, "Full-Time")} />
+                                                <FieldRow icon={Clock} label="Employment Type" value={val(displayUser?.profile?.employmentType || displayUser?.employmentType, "Full-Time")} />
                                                 <FieldRow icon={Calendar} label="Date of Joining" value={joiningDate} />
                                                 <FieldRow icon={Shield} label="System Role" value={val(roleName)} />
                                             </div>
@@ -483,24 +519,83 @@ export default function UserProfileView({ user: initialUser, token, onClose, onE
                                             {/* Leave Balances */}
                                             <div className="space-y-8">
                                                 <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
-                                                    <SectionTitle title="Leave Balances" subtitle="Current allocation and usage" />
+                                                    <div className="flex items-center justify-between mb-6">
+                                                        <SectionTitle title="Leave Balances" subtitle="Current allocation and usage" />
+                                                        {(onEdit || canEditBalances) && (
+                                                            <button 
+                                                                onClick={() => {
+                                                                    if (editingLeaves) {
+                                                                        setEditingLeaves(false)
+                                                                        setLeaveEdits([])
+                                                                    } else {
+                                                                        setLeaveEdits(leaveBalances.map((lb: any) => ({ id: lb.id, total: lb.total })))
+                                                                        setEditingLeaves(true)
+                                                                    }
+                                                                }}
+                                                                className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest hover:bg-indigo-50 px-3 py-1.5 rounded-lg transition-colors"
+                                                            >
+                                                                {editingLeaves ? "Cancel" : "Edit"}
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                    
                                                     <div className="space-y-5">
                                                         {leaveBalances.map((lv: any, idx: number) => (
                                                             <div key={idx}>
                                                                 <div className="flex justify-between items-center mb-2">
                                                                     <span className="text-[11px] font-semibold text-slate-600">{lv.label}</span>
-                                                                    <span className="text-[12px] font-bold text-slate-900">{lv.used} / {lv.total}</span>
+                                                                    {editingLeaves && lv.id ? (
+                                                                        <div className="flex items-center gap-2">
+                                                                            <span className="text-[10px] text-slate-400">Used: {lv.used} / Total:</span>
+                                                                            <div className="flex items-center bg-slate-50 border border-slate-200 rounded-lg overflow-hidden h-8">
+                                                                                <button 
+                                                                                    className="w-8 h-full flex items-center justify-center text-slate-500 hover:bg-slate-200 hover:text-slate-900 transition-colors"
+                                                                                    onClick={() => {
+                                                                                        setLeaveEdits(prev => prev.map(p => p.id === lv.id ? { ...p, total: Math.max(lv.used, p.total - 1) } : p))
+                                                                                    }}
+                                                                                >
+                                                                                    <Minus className="w-3.5 h-3.5" />
+                                                                                </button>
+                                                                                <div className="w-10 text-center font-bold text-slate-900 text-[12px]">
+                                                                                    {leaveEdits.find(e => e.id === lv.id)?.total ?? lv.total}
+                                                                                </div>
+                                                                                <button 
+                                                                                    className="w-8 h-full flex items-center justify-center text-slate-500 hover:bg-slate-200 hover:text-slate-900 transition-colors"
+                                                                                    onClick={() => {
+                                                                                        setLeaveEdits(prev => prev.map(p => p.id === lv.id ? { ...p, total: p.total + 1 } : p))
+                                                                                    }}
+                                                                                >
+                                                                                    <Plus className="w-3.5 h-3.5" />
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    ) : (
+                                                                        <span className="text-[12px] font-bold text-slate-900">{lv.used} / {lv.total}</span>
+                                                                    )}
                                                                 </div>
-                                                                <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                                                                    <motion.div 
-                                                                        initial={{ width: 0 }}
-                                                                        animate={{ width: `${Math.min(lv.pct, 100)}%` }}
-                                                                        transition={{ duration: 0.8, delay: idx * 0.15 }}
-                                                                        className={cn("h-full rounded-full", leaveColors[idx % leaveColors.length])} 
-                                                                    />
-                                                                </div>
+                                                                {!editingLeaves && (
+                                                                    <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                                                                        <motion.div 
+                                                                            initial={{ width: 0 }}
+                                                                            animate={{ width: `${Math.min(lv.pct, 100)}%` }}
+                                                                            transition={{ duration: 0.8, delay: idx * 0.15 }}
+                                                                            className={cn("h-full rounded-full", leaveColors[idx % leaveColors.length])} 
+                                                                        />
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                         ))}
+                                                        {editingLeaves && (
+                                                            <div className="pt-2">
+                                                                <Button 
+                                                                    onClick={handleSaveLeaves} 
+                                                                    disabled={savingLeaves}
+                                                                    className="w-full h-9 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[10px] uppercase tracking-widest rounded-xl"
+                                                                >
+                                                                    {savingLeaves ? "Saving..." : "Save Balances"}
+                                                                </Button>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 </div>
 

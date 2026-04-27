@@ -225,7 +225,7 @@ export function BroadcastCenter({ token }: { token: string }) {
                                                                     </div>
                                                                     <div className="min-w-0">
                                                                         <p className="text-sm font-medium text-slate-900 truncate">{emp.name}</p>
-                                                                        <p className="text-[10px] uppercase tracking-widest text-slate-400 mt-0.5 truncate">{emp.email}</p>
+                                                                        <p className="text-[10px] lowercase tracking-widest text-slate-400 mt-0.5 truncate">{emp.email}</p>
                                                                     </div>
                                                                     <div className="ml-auto opacity-50"><Plus className="w-4 h-4 text-slate-400" /></div>
                                                                 </button>

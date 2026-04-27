@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import useSWR from "swr"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
     Search, Plus, Filter, MoreHorizontal, 
@@ -35,8 +36,6 @@ export default function UserManagementTable({ token, userRole }: { token: string
     const API = process.env.NEXT_PUBLIC_API_URL
     const router = useRouter()
     const canManage = !['HR', 'HR_ADMIN', 'AUDITOR'].includes(userRole.toUpperCase())
-    const [users, setUsers] = useState<any[]>([])
-    const [loading, setLoading] = useState(true)
     const [search, setSearch] = useState("")
     const [editUser, setEditUser] = useState<any>(null)
     const [deleteUser, setDeleteUser] = useState<any>(null)
@@ -44,20 +43,15 @@ export default function UserManagementTable({ token, userRole }: { token: string
     const [deptFilter, setDeptFilter] = useState("ALL")
     const [statusFilter, setStatusFilter] = useState("ALL")
     const [selectedIds, setSelectedIds] = useState<string[]>([])
-
-    const fetchUsers = async () => {
-        setLoading(true)
-        try {
-            const res = await fetch(`${API}/users`, {
-                headers: { "Authorization": `Bearer ${token}` }
-            })
-            const data = await res.json()
-            setUsers(Array.isArray(data) ? data : (data.users || []))
-        } catch { toast.error("Database connection failure") }
-        finally { setLoading(false) }
-    }
-
-    useEffect(() => { fetchUsers() }, [token])
+    
+    const fetcher = (url: string) => fetch(url, { headers: { Authorization: `Bearer ${token}` } }).then(res => res.json())
+    const { data: usersData, error, mutate: fetchUsers, isValidating } = useSWR(`${API}/users`, fetcher, { 
+        revalidateOnFocus: false,
+        keepPreviousData: true
+    })
+    
+    const users: any[] = Array.isArray(usersData) ? usersData : (usersData?.users || [])
+    const loading = !usersData && !error
 
     const departments = Array.from(new Set(users.map(u => u.department?.name).filter(Boolean)))
 

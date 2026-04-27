@@ -36,6 +36,7 @@ export default function AddEmployeeModal({ token, employee, onClose, onSuccess }
     const [form, setForm] = useState({
         name: "", email: "", password: "", phone: "",
         roleId: "", deptId: "", designationId: "", managerId: "",
+        employmentType: "FULL_TIME",
         joiningDate: new Date().toISOString().split("T")[0],
     })
     const [showPwd, setShowPwd] = useState(false)
@@ -61,6 +62,7 @@ export default function AddEmployeeModal({ token, employee, onClose, onSuccess }
                 deptId: employee.deptId || "",
                 designationId: employee.designationId || "",
                 managerId: employee.managerId || "",
+                employmentType: employee.profile?.employmentType || employee.employmentType || "FULL_TIME",
                 joiningDate: employee.joiningDate ? new Date(employee.joiningDate).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
             })
         }
@@ -117,7 +119,8 @@ export default function AddEmployeeModal({ token, employee, onClose, onSuccess }
             
             setSuccess(true)
             toast.success(isEditing ? `✅ ${form.name} updated successfully!` : `✅ ${form.name} added successfully!`)
-            setTimeout(() => { onSuccess(); onClose() }, 1500)
+            onSuccess()
+            onClose()
         } catch (err: any) {
             setError(err.message)
         } finally {
@@ -215,12 +218,13 @@ export default function AddEmployeeModal({ token, employee, onClose, onSuccess }
                                     </select>
                                 </div>
                                 <div>
-                                    <label className={labelCls}>Manager</label>
-                                    <select value={form.managerId} onChange={e => set("managerId", e.target.value)} className={selectCls}>
-                                        <option value="">No Manager</option>
-                                        {managers.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+                                    <label className={labelCls}>Employment Type</label>
+                                    <select value={form.employmentType} onChange={e => set("employmentType", e.target.value)} className={selectCls}>
+                                        <option value="FULL_TIME">Full-Time Employee</option>
+                                        <option value="INTERN">Intern</option>
                                     </select>
                                 </div>
+
                             </div>
                         </div>
 
@@ -234,7 +238,7 @@ export default function AddEmployeeModal({ token, employee, onClose, onSuccess }
                                     "h-14 px-12 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 font-brand",
                                     isEditing ? "bg-amber-500 hover:bg-amber-600 shadow-amber-100" : "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-100"
                                 )}>
-                                    {loading ? "..." : success ? "Done" : isEditing ? "Save Parameters" : "Provision Employee"}
+                                    {loading ? "..." : success ? "Done" : isEditing ? "Save Changes" : "Add Employee"}
                                 </Button>
                             </div>
                         </div>

@@ -154,11 +154,7 @@ export default function LoginPage() {
                         <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 to-fuchsia-500/20 rounded-[2.5rem] blur-2xl z-0" />
                         
                         <div className="glass-card rounded-[2.5rem] p-10 lg:p-12 relative z-10 border border-white/5">
-                            {/* Tabs */}
-                            <div className="flex bg-[#0d0e18] rounded-2xl p-1.5 mb-10 border border-white/5">
-                                <button type="button" className="flex-1 py-3 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-indigo-600/30">Sign In</button>
-                                <Link href="/register" className="flex-1 py-3 text-slate-500 text-[10px] font-black uppercase tracking-widest rounded-xl hover:text-slate-300 transition-all text-center">Join Us</Link>
-                            </div>
+
 
                             <div className="text-center mb-10">
                                 <h2 className="text-2xl font-black text-white uppercase tracking-tighter leading-none mb-1">WELCOME BACK</h2>

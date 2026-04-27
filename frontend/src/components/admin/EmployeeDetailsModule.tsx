@@ -192,6 +192,7 @@ export default function EmployeeDetailsModule({ token, userRole }: { token: stri
                         user={selectedUser} 
                         token={token} 
                         onClose={handleCloseProfile} 
+                        canEditBalances={['SUPER_ADMIN', 'ADMIN', 'HR_ADMIN', 'COMPANY_ADMIN'].includes(userRole)}
                     />
                 )}
             </AnimatePresence>

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import useSWR from "swr"
 import { Activity, Building2, Ticket, TrendingUp, Server, Cpu, Clock, Shield, Globe, LayoutDashboard, CreditCard, Users, CheckCircle2 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -20,30 +21,25 @@ interface PlatformStats {
 }
 
 export function SuperAdminHUD({ initialStats, token }: { initialStats: PlatformStats, token: string }) {
-    const [stats, setStats] = useState<PlatformStats>(initialStats)
-    const [lastUpdated, setLastUpdated] = useState<string>("")
+    const fetcher = (url: string) => fetch(url, { headers: { Authorization: `Bearer ${token}` } }).then(res => res.json())
+    const { data } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/companies/super-admin-dashboard`, fetcher, { 
+        fallbackData: { platform: initialStats },
+        refreshInterval: 10000 
+    })
+    
+    const stats = data?.platform || initialStats
     const [revenue, setRevenue] = useState(8420.00)
-
+    const [lastUpdated, setLastUpdated] = useState<string>("")
+    
     useEffect(() => {
         setLastUpdated(new Date().toLocaleTimeString())
-        const fetchMetrics = async () => {
-            try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/companies/super-admin-dashboard`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                })
-                if (res.ok) {
-                    const data = await res.json()
-                    setStats(data.platform)
-                    setLastUpdated(new Date().toLocaleTimeString())
-                    setRevenue(prev => prev + (Math.random() * 10 - 5))
-                }
-            } catch (e) {
-                console.error("Sync Failed", e)
-            }
-        }
-        const interval = setInterval(fetchMetrics, 30000)
+        const interval = setInterval(() => {
+            setRevenue(prev => prev + (Math.random() * 10 - 5))
+            setLastUpdated(new Date().toLocaleTimeString())
+        }, 10000)
         return () => clearInterval(interval)
-    }, [token])
+    }, [])
+
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">

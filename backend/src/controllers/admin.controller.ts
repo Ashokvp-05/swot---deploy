@@ -50,7 +50,7 @@ export const getStats = async (req: Request, res: Response) => {
         if (cached) return res.json(cached);
 
         const stats = await adminService.getDatabaseStats(companyId);
-        cache.set(cacheKey, stats, 300); // Cache for 5 mins
+        cache.set(cacheKey, stats, 5); // Cache for 5 seconds (was 300)
         res.json(stats);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
@@ -71,7 +71,7 @@ export const getOverview = async (req: Request, res: Response) => {
         if (cached) return res.json(cached);
 
         const overview = await adminService.getDashboardOverview(companyId, managerId);
-        cache.set(cacheKey, overview, 60); // Cache for 1 min
+        cache.set(cacheKey, overview, 5); // Cache for 5 seconds (was 60)
         res.json(overview);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
@@ -272,7 +272,7 @@ export const createEmployee = async (req: Request, res: Response) => {
         const { id: adminId, companyId } = (req as any).user;
         if (!companyId) return res.status(401).json({ error: 'Unauthorized: no company found' });
 
-        const { name, email, password, roleId, deptId, designationId, managerId, joiningDate, phone, leaves } = req.body;
+        const { name, email, password, roleId, deptId, designationId, managerId, joiningDate, phone, leaves, employmentType } = req.body;
         if (!name || !email || !password) return res.status(400).json({ error: 'Name, email and password are required' });
 
         // Check duplicate
@@ -295,6 +295,11 @@ export const createEmployee = async (req: Request, res: Response) => {
                 joiningDate: joiningDate ? new Date(joiningDate) : new Date(),
                 status: 'ACTIVE',
                 emailVerified: true,
+                profile: {
+                    create: {
+                        employmentType: employmentType || "FULL_TIME"
+                    }
+                }
             },
             include: {
                 role: { select: { name: true } },
@@ -321,7 +326,7 @@ export const updateEmployee = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const { id: adminId, companyId } = (req as any).user;
-        const { name, email, phone, status } = req.body;
+        const { name, email, phone, status, roleId, deptId, designationId, managerId, employmentType } = req.body;
 
         const updated = await prisma.user.update({
             where: { id, companyId },
@@ -329,7 +334,19 @@ export const updateEmployee = async (req: Request, res: Response) => {
                 ...(name && { name }),
                 ...(email && { email }),
                 ...(phone !== undefined && { phone }),
-                ...(status && { status })
+                ...(status && { status }),
+                ...(roleId !== undefined && { roleId }),
+                ...(deptId !== undefined && { deptId }),
+                ...(designationId !== undefined && { designationId }),
+                ...(managerId !== undefined && { managerId }),
+                ...(employmentType && {
+                    profile: {
+                        upsert: {
+                            create: { employmentType },
+                            update: { employmentType }
+                        }
+                    }
+                })
             },
             include: { role: { select: { name: true } } }
         });
