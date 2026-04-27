@@ -19,6 +19,7 @@ COPY . .
 
 RUN npx prisma generate
 RUN npm run build
+RUN npx tsc prisma/seed.ts --outDir dist/prisma --esModuleInterop --skipLibCheck --resolveJsonModule --module commonjs --target es2016
 
 # Production image, copy all the files and run next
 FROM base AS runner
@@ -35,6 +36,7 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/dist/prisma/seed.js ./prisma/seed.js
 
 RUN chown -R backend:nodejs /app/node_modules/@prisma
 
@@ -46,4 +48,4 @@ ENV PORT 4000
 # set hostname to localhost
 ENV HOSTNAME "0.0.0.0"
 
-CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed && node dist/server.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node prisma/seed.js && node dist/server.js"]
