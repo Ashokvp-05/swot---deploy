@@ -99,7 +99,66 @@ async function main() {
         });
     }
 
-    console.log('✨ Seed completed successfully. Exactly 6 identities synchronized.');
+    // 5. Departments
+    console.log('--- SEEDING DEPARTMENTS ---');
+    const departments = [
+        'Technical Support',
+        'Human Resources',
+        'DevOps',
+        'Internal Audit',
+        'Finance',
+        'Engineering',
+    ];
+
+    for (const name of departments) {
+        await prisma.department.upsert({
+            where: { name_companyId: { name, companyId: company.id } },
+            update: {},
+            create: { name, companyId: company.id },
+        });
+    }
+    console.log(`✅ ${departments.length} departments seeded`);
+
+    // 6. Designations (Job Titles)
+    console.log('--- SEEDING JOB TITLES ---');
+    const designations = [
+        'Software Engineer',
+        'Product Manager',
+        'HR Specialist',
+        'Sales Executive',
+        'Support Engineer',
+        'QA Analyst',
+        'DevOps Engineer',
+        'Team Lead',
+    ];
+
+    for (const name of designations) {
+        await prisma.designation.upsert({
+            where: { name_companyId: { name, companyId: company.id } },
+            update: {},
+            create: { name, companyId: company.id },
+        });
+    }
+    console.log(`✅ ${designations.length} job titles seeded`);
+
+    // 7. Leave Type Configs
+    console.log('--- SEEDING LEAVE TYPES ---');
+    const leaveTypes = [
+        { name: 'Sick Leave', code: 'SICK', totalDays: 10 },
+        { name: 'Casual Leave', code: 'CASUAL', totalDays: 10 },
+        { name: 'Earned Leave', code: 'EARNED', totalDays: 15 },
+    ];
+
+    for (const lt of leaveTypes) {
+        await prisma.leaveTypeConfig.upsert({
+            where: { code_companyId: { code: lt.code, companyId: company.id } },
+            update: { totalDays: lt.totalDays },
+            create: { ...lt, companyId: company.id },
+        });
+    }
+    console.log(`✅ ${leaveTypes.length} leave types seeded`);
+
+    console.log('✨ Seed completed successfully. All data synchronized.');
 }
 
 main()

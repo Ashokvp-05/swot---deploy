@@ -42,4 +42,4 @@ ENV PORT 4000
 # set hostname to localhost
 ENV HOSTNAME "0.0.0.0"
 
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/server.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed && node dist/server.js"]
