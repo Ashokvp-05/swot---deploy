@@ -65,6 +65,7 @@ async function main() {
 
     // 4. USERS (The only 6 allowed credentials)
     const userData = [
+        { name: 'Viswa S', email: 'viswa.s@rudratic.com', password: 'Swot@12345', roleId: roles.SUPER_ADMIN.id },
         { name: 'Super Admin', email: 'admin@default.com', password: 'Admin@123', roleId: roles.SUPER_ADMIN.id },
         { name: 'HR Manager', email: 'hr@hrms.com', password: 'HR@123', roleId: roles.HR_MANAGER.id },
         { name: 'Manager', email: 'dev_lead@hrms.com', password: 'Manager@123', roleId: roles.MANAGER.id },
