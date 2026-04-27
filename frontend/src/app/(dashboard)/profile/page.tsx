@@ -83,7 +83,7 @@ const profileSchema = z.object({
     // 2. Contact
     email: z.string().email("Invalid work email."),
     personalEmail: z.string().email("Invalid personal email.").optional().or(z.literal("")),
-    phone: z.string().regex(/^\+?[\d\s-]{10,}$/, "Enter a valid phone number (min 10 digits)."),
+    phone: z.string().regex(/^\+?[\d\s-]{10,15}$/, "Phone must be 10-15 digits (e.g. 9876543210)."),
     secondaryPhone: z.string().optional(),
     workPhone: z.string().optional(),
     discordId: z.string().optional(),
@@ -91,7 +91,7 @@ const profileSchema = z.object({
     // 3. Emergency
     emergencyName: z.string().optional(),
     emergencyRelationship: z.string().optional(),
-    emergencyPhone: z.string().regex(/^\+?[\d\s-]{10,}$/, "Enter a valid emergency phone.").optional().or(z.literal("")),
+    emergencyPhone: z.string().regex(/^\+?[\d\s-]{10,15}$/, "Emergency phone must be 10-15 digits.").optional().or(z.literal("")),
     emergencyPhoneSec: z.string().optional(),
     emergencyAddress: z.string().optional(),
 
@@ -671,8 +671,8 @@ export default function ProfilePage() {
                                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
                                                      <FormField control={form.control} name="phone" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Primary Phone</FormLabel><FormControl>
-                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
-                                                         </FormControl></FormItem>
+                                                             <Input placeholder="e.g. 9876543210" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
+                                                         </FormControl><FormMessage className="text-[9px] uppercase font-black" /></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="secondaryPhone" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Secondary Phone</FormLabel><FormControl>

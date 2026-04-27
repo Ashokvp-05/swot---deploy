@@ -149,14 +149,48 @@ async function main() {
         { name: 'Earned Leave', code: 'EARNED', totalDays: 15 },
     ];
 
+    const leaveConfigs = [];
     for (const lt of leaveTypes) {
-        await prisma.leaveTypeConfig.upsert({
+        const config = await prisma.leaveTypeConfig.upsert({
             where: { code_companyId: { code: lt.code, companyId: company.id } },
             update: { totalDays: lt.totalDays },
             create: { ...lt, companyId: company.id },
         });
+        leaveConfigs.push(config);
     }
     console.log(`✅ ${leaveTypes.length} leave types seeded`);
+
+    // 8. Initialize leave balances for ALL existing users (fixes empty leave tiles)
+    console.log('--- INITIALIZING LEAVE BALANCES FOR ALL USERS ---');
+    const allUsers = await prisma.user.findMany({ where: { companyId: company.id } });
+    const currentYear = new Date().getFullYear();
+    let balanceCount = 0;
+
+    for (const user of allUsers) {
+        for (const config of leaveConfigs) {
+            await (prisma as any).leaveBalance.upsert({
+                where: {
+                    userId_leaveTypeId_year: {
+                        userId: user.id,
+                        leaveTypeId: config.id,
+                        year: currentYear
+                    }
+                },
+                update: {},
+                create: {
+                    userId: user.id,
+                    companyId: company.id,
+                    leaveTypeId: config.id,
+                    total: config.totalDays,
+                    used: 0,
+                    pending: 0,
+                    year: currentYear
+                }
+            });
+            balanceCount++;
+        }
+    }
+    console.log(`✅ ${balanceCount} leave balance records initialized for ${allUsers.length} users`);
 
     console.log('✨ Seed completed successfully. All data synchronized.');
 }
