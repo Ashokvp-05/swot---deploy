@@ -99,7 +99,6 @@ export default function AddEmployeeModal({ token, employee, onClose, onSuccess }
         if (!form.email.trim() || !form.email.includes("@")) return setError("A valid Email Address is required")
         if (!isEditing && (!form.password || form.password.length < 6)) return setError("Password must be at least 6 characters long")
         if (!form.roleId) return setError("Please select a Role")
-        if (!form.deptId) return setError("Please select a Department")
 
         setLoading(true)
         try {
