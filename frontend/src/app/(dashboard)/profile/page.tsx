@@ -74,25 +74,33 @@ import EmployeeDocumentVault from "@/components/dashboard/EmployeeDocumentVault"
 
 const profileSchema = z.object({
     // 1. Personal
-    name: z.string().min(1, "Full Name is required."),
+    name: z.string().min(2, "Full Name must be at least 2 characters.").max(80, "Name too long."),
     gender: z.string().optional(),
-    dob: z.string().optional(),
+    dob: z.string()
+        .optional()
+        .refine(val => {
+            if (!val || val === "") return true;
+            const d = new Date(val);
+            if (isNaN(d.getTime())) return false;
+            const year = d.getFullYear();
+            return year >= 1900 && year <= new Date().getFullYear() - 16;
+        }, "Enter a valid date of birth (must be a real past date)."),
     maritalStatus: z.string().optional(),
-    bloodGroup: z.string().optional(),
+    bloodGroup: z.string().regex(/^(A|B|AB|O)[+-]$/, "Enter a valid blood group (e.g. O+, AB-)").optional().or(z.literal("")),
 
     // 2. Contact
     email: z.string().email("Invalid work email."),
-    personalEmail: z.string().email("Invalid personal email.").optional().or(z.literal("")),
-    phone: z.string().regex(/^\+?[\d\s-]{10,15}$/, "Phone must be 10-15 digits (e.g. 9876543210)."),
-    secondaryPhone: z.string().optional(),
-    workPhone: z.string().optional(),
+    personalEmail: z.string().email("Invalid personal email (e.g. name@gmail.com).").optional().or(z.literal("")),
+    phone: z.string().regex(/^\+?[\d\s-]{10,15}$/, "Phone must be 10-15 digits only (e.g. 9876543210)."),
+    secondaryPhone: z.string().regex(/^\+?[\d\s-]{10,15}$/, "Secondary phone must be 10-15 digits.").optional().or(z.literal("")),
+    workPhone: z.string().regex(/^\+?[\d\s-]{10,15}$/, "Work phone must be 10-15 digits.").optional().or(z.literal("")),
     discordId: z.string().optional(),
 
     // 3. Emergency
     emergencyName: z.string().optional(),
     emergencyRelationship: z.string().optional(),
     emergencyPhone: z.string().regex(/^\+?[\d\s-]{10,15}$/, "Emergency phone must be 10-15 digits.").optional().or(z.literal("")),
-    emergencyPhoneSec: z.string().optional(),
+    emergencyPhoneSec: z.string().regex(/^\+?[\d\s-]{10,15}$/, "Must be 10-15 digits.").optional().or(z.literal("")),
     emergencyAddress: z.string().optional(),
 
     // 4. Address
@@ -101,7 +109,7 @@ const profileSchema = z.object({
     city: z.string().optional(),
     state: z.string().optional(),
     country: z.string().default("India"),
-    zipCode: z.string().regex(/^\d{5,10}$/, "Invalid ZIP/Pincode.").optional().or(z.literal("")),
+    zipCode: z.string().regex(/^\d{5,10}$/, "Invalid ZIP/Pincode (5-10 digits).").optional().or(z.literal("")),
 
     // 5. Job & Identity
     employeeId: z.string().optional(),
@@ -650,8 +658,8 @@ export default function ProfilePage() {
                                                       )} />
                                                      <FormField control={form.control} name="dob" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Date of Birth</FormLabel><FormControl>
-                                                              <Input type="date" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
-                                                         </FormControl></FormItem>
+                                                              <Input type="date" max={new Date(new Date().setFullYear(new Date().getFullYear() - 16)).toISOString().split('T')[0]} min="1900-01-01" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
+                                                         </FormControl><FormMessage className="text-[9px] uppercase font-black" /></FormItem>
                                                      )} />
                                                       <FormField control={form.control} name="maritalStatus" render={({ field }) => (
                                                           <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Marital Status</FormLabel><FormControl>
@@ -676,13 +684,13 @@ export default function ProfilePage() {
                                                      )} />
                                                      <FormField control={form.control} name="secondaryPhone" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Secondary Phone</FormLabel><FormControl>
-                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
-                                                         </FormControl></FormItem>
+                                                             <Input placeholder="e.g. 9876543210" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
+                                                         </FormControl><FormMessage className="text-[9px] uppercase font-black" /></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="workPhone" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Work Phone</FormLabel><FormControl>
-                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
-                                                         </FormControl></FormItem>
+                                                             <Input placeholder="e.g. 9876543210" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
+                                                         </FormControl><FormMessage className="text-[9px] uppercase font-black" /></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="personalEmail" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Personal Email</FormLabel><FormControl>
