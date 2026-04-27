@@ -26,6 +26,8 @@ WORKDIR /app
 
 ENV NODE_ENV production
 
+RUN apk add --no-cache openssl
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 backend
 
@@ -33,6 +35,8 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/prisma ./prisma
+
+RUN chown -R backend:nodejs /app/node_modules/@prisma
 
 USER backend
 
