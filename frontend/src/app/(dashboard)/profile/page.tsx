@@ -91,16 +91,16 @@ const profileSchema = z.object({
     // 2. Contact
     email: z.string().email("Invalid work email."),
     personalEmail: z.string().email("Invalid personal email (e.g. name@gmail.com).").optional().or(z.literal("")),
-    phone: z.string().regex(/^\+?[\d\s-]{10,15}$/, "Phone must be 10-15 digits only (e.g. 9876543210)."),
-    secondaryPhone: z.string().regex(/^\+?[\d\s-]{10,15}$/, "Secondary phone must be 10-15 digits.").optional().or(z.literal("")),
-    workPhone: z.string().regex(/^\+?[\d\s-]{10,15}$/, "Work phone must be 10-15 digits.").optional().or(z.literal("")),
+    phone: z.string().regex(/^\d{10}$/, "Phone must be exactly 10 digits (e.g. 9876543210)."),
+    secondaryPhone: z.string().regex(/^\d{10}$/, "Secondary phone must be exactly 10 digits.").optional().or(z.literal("")),
+    workPhone: z.string().regex(/^\d{10}$/, "Work phone must be exactly 10 digits.").optional().or(z.literal("")),
     discordId: z.string().optional(),
 
     // 3. Emergency
     emergencyName: z.string().optional(),
     emergencyRelationship: z.string().optional(),
-    emergencyPhone: z.string().regex(/^\+?[\d\s-]{10,15}$/, "Emergency phone must be 10-15 digits.").optional().or(z.literal("")),
-    emergencyPhoneSec: z.string().regex(/^\+?[\d\s-]{10,15}$/, "Must be 10-15 digits.").optional().or(z.literal("")),
+    emergencyPhone: z.string().regex(/^\d{10}$/, "Emergency phone must be exactly 10 digits.").optional().or(z.literal("")),
+    emergencyPhoneSec: z.string().regex(/^\d{10}$/, "Must be exactly 10 digits.").optional().or(z.literal("")),
     emergencyAddress: z.string().optional(),
 
     // 4. Address
@@ -603,8 +603,11 @@ export default function ProfilePage() {
                                 </div>
                             </CardHeader>
                             <CardContent className="p-6">
-                                <Form {...form}>
-                                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                                 <Form {...form}>
+                                     <form onSubmit={form.handleSubmit(onSubmit, (errors) => {
+                                         const errorMessages = Object.values(errors).map((err: any) => err.message).filter(Boolean);
+                                         toast.error(`Validation failed: ${errorMessages.length > 0 ? errorMessages[0] : "Please check all fields across all tabs."}`);
+                                     })} className="space-y-6">
                                          <Tabs defaultValue="personal" className="w-full">
                                              <TabsList className="w-full justify-start h-12 bg-slate-50 dark:bg-slate-800/50 p-1 mb-8 overflow-x-auto no-scrollbar">
                                                  <TabsTrigger value="personal" className="relative px-5 h-10 text-[11px] font-black uppercase tracking-widest leading-none gap-2 data-[state=active]:text-indigo-600 transition-all duration-300 group overflow-hidden">

@@ -28,16 +28,7 @@ export default function TopHeader({
     return (
         <header className="px-8 py-4 flex items-center justify-end sticky top-0 z-[50] bg-[#f8fafc]/90 backdrop-blur-md border-b border-slate-100/60 transition-all">
             <div className="flex items-center gap-4 pointer-events-auto">
-                <div className="hidden md:flex items-center bg-white rounded-xl px-4 py-2.5 border border-slate-200 w-64 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-300 transition-all group">
-                    <Search className="w-3.5 h-3.5 text-slate-300 group-focus-within:text-indigo-400 transition-colors" />
-                    <input 
-                        type="text" 
-                        placeholder="Universal search..." 
-                        value={searchQuery !== undefined ? searchQuery : ""}
-                        onChange={(e) => setSearchQuery?.(e.target.value)}
-                        className="bg-transparent border-none outline-none text-[13px] font-medium text-slate-700 placeholder:text-slate-300 ml-2.5 w-full focus:ring-0" 
-                    />
-                </div>
+                {/* Search removed per user request */}
 
                 <div className="flex items-center gap-2 pl-4 border-l border-slate-100">
                     <NotificationBell token={token} />
