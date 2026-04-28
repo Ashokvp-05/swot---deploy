@@ -25,28 +25,38 @@ export default function NotificationBell({ token }: { token: string }) {
     const [notifications, setNotifications] = useState<Notification[]>([])
     const [unreadCount, setUnreadCount] = useState(0)
 
-    const fetchNotifications = async () => {
-        try {
-            const res = await fetch(`${API_BASE_URL}/notifications`, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-            if (res.ok) {
-                const data: Notification[] = await res.json()
-                setNotifications(data)
-                setUnreadCount(data.filter(n => !n.isRead).length)
-            } else {
-                console.warn(`Notifications fetch non-OK: ${res.status} ${res.statusText}`);
-            }
-        } catch (e) {
-            console.error("Failed to fetch notifications:", e)
-        }
-    }
-
     useEffect(() => {
-        if (token) {
-            fetchNotifications()
-            const interval = setInterval(fetchNotifications, 30000) // Poll every 30s
-            return () => clearInterval(interval)
+        if (!token) return
+
+        const controller = new AbortController()
+
+        const fetchNotifications = async () => {
+            try {
+                const res = await fetch(`${API_BASE_URL}/notifications`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                    signal: controller.signal,
+                })
+                if (res.ok) {
+                    const data: Notification[] = await res.json()
+                    setNotifications(data)
+                    setUnreadCount(data.filter(n => !n.isRead).length)
+                } else {
+                    // Non-OK is expected when token is stale — just log quietly
+                    console.warn(`Notifications: ${res.status}`)
+                }
+            } catch (e: any) {
+                // Abort errors are expected on unmount — ignore them
+                if (e?.name === 'AbortError') return
+                // Network errors: log but don't throw — prevents Next.js error overlay
+                console.warn("Notifications unavailable:", e?.message ?? e)
+            }
+        }
+
+        fetchNotifications()
+        const interval = setInterval(fetchNotifications, 30000) // Poll every 30s
+        return () => {
+            controller.abort()
+            clearInterval(interval)
         }
     }, [token])
 

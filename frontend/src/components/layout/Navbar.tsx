@@ -31,6 +31,8 @@ import {
     FileText,
     HelpCircle,
     Megaphone,
+    Monitor,
+    ExternalLink,
 } from "lucide-react"
 
 import { getDashboardByRole } from "@/lib/role-redirect"
@@ -39,9 +41,11 @@ import { getDashboardByRole } from "@/lib/role-redirect"
 //  ROUTE DEFINITIONS
 // ─────────────────────────────────────────────
 
+const KIBANA_LINK = { name: "Task Dashboard", href: "https://task.swotpam.com/", icon: Monitor, group: "tools", external: true }
+
 const getNavItems = (role?: string) => {
     const r = role?.toUpperCase()
-    
+
     // Admin families
     if (r === "ADMIN" || r === "COMPANY_ADMIN" || r === "SUPER_ADMIN") {
         const adminLinks = [
@@ -52,15 +56,16 @@ const getNavItems = (role?: string) => {
             { name: "Announcements", href: "/admin/announcements", icon: Megaphone, group: "company" },
             { name: "Audit Logs", href: "/admin/audit-logs", icon: ShieldCheck, group: "admin" },
             { name: "Settings", href: "/admin/settings", icon: Settings, group: "admin" },
+            KIBANA_LINK,
         ]
-        
+
         if (r === "SUPER_ADMIN") {
             adminLinks.push({ name: "Employee Management", href: "/admin/users", icon: Users, group: "hr" })
         }
-        
+
         return adminLinks
     }
-    
+
     // Manager families
     if (r === "MANAGER" || r === "HR_MANAGER" || r === "HR") {
         return [
@@ -74,9 +79,10 @@ const getNavItems = (role?: string) => {
             { name: "Documents", href: "/manager?tab=documents", icon: FileText, group: "company" },
             { name: "Reports", href: "/manager?tab=reports", icon: BarChart3, group: "company" },
             { name: "Support Desk", href: "/manager?tab=support", icon: HelpCircle, group: "admin" },
+            KIBANA_LINK,
         ]
     }
-    
+
     // Normal Employees
     return [
         { name: "Dashboard", href: getDashboardByRole(role), icon: LayoutDashboard, group: "core" },
@@ -84,6 +90,7 @@ const getNavItems = (role?: string) => {
         { name: "Leaves", href: "/leave", icon: Calendar, group: "finance" },
         { name: "Reports", href: "/reports", icon: BarChart3, group: "company" },
         { name: "Payslips", href: "/payslip", icon: CreditCard, group: "finance" },
+        KIBANA_LINK,
     ]
 }
 
@@ -115,7 +122,7 @@ export default function Navbar({ role, token, companyName }: { role?: string; to
                 .custom-scrollbar-sidebar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
                 .custom-scrollbar-sidebar:hover::-webkit-scrollbar-thumb { background: #cbd5e1; }
             `}</style>
-            
+
             {/* BRAND HEADER */}
             <div className="pt-8 pb-8 px-4 lg:px-7 border-b border-slate-100/60">
                 <div className="hidden lg:flex items-center gap-3.5">
@@ -139,16 +146,17 @@ export default function Navbar({ role, token, companyName }: { role?: string; to
             {/* NAVIGATION */}
             <nav className="flex-1 px-3 lg:px-5 py-6 overflow-y-auto custom-scrollbar-sidebar">
                 <div className="space-y-8">
-                    {['core', 'hr', 'finance', 'company', 'admin'].map(group => {
+                    {['core', 'hr', 'finance', 'company', 'admin', 'tools'].map(group => {
                         const groupItems = navItems.filter(i => i.group === group)
-                        if(groupItems.length === 0) return null
+                        if (groupItems.length === 0) return null
 
                         const groupLabels: Record<string, string> = {
                             'core': 'Overview',
                             'hr': 'Personnel',
                             'finance': 'Operations & Pay',
                             'company': 'Organization',
-                            'admin': 'System & Security'
+                            'admin': 'System & Security',
+                            'tools': 'Tools & Integrations'
                         }
 
                         return (
@@ -156,13 +164,13 @@ export default function Navbar({ role, token, companyName }: { role?: string; to
                                 <p className="hidden lg:block text-[10px] font-bold text-slate-400/80 uppercase tracking-widest px-3 mb-3 font-brand ml-1">{groupLabels[group]}</p>
                                 {groupItems.map(item => {
                                     const Icon = item.icon
-                                    
+
                                     // Robust active logic
                                     const isQueryLink = item.href.includes("?tab=")
                                     const baseHref = item.href.split("?")[0]
                                     const tabValue = item.href.split("tab=")[1]
                                     const currentTab = searchParams?.get("tab")
-                                    
+
                                     let isActive = false
                                     if (isQueryLink) {
                                         isActive = pathname === baseHref && (currentTab === tabValue || (!currentTab && tabValue === 'dashboard'))
@@ -170,14 +178,22 @@ export default function Navbar({ role, token, companyName }: { role?: string; to
                                         isActive = pathname === baseHref
                                     }
 
+                                    const isExternal = 'external' in item && (item as any).external
+
                                     return (
                                         <button
                                             key={item.href}
-                                            onClick={() => router.push(item.href)}
+                                            onClick={() => {
+                                                if (isExternal) {
+                                                    window.location.href = item.href
+                                                } else {
+                                                    router.push(item.href)
+                                                }
+                                            }}
                                             title={item.name}
                                             className={cn(
                                                 "w-full flex items-center justify-between px-3.5 py-2.5 rounded-[12px] text-[13px] font-medium transition-all duration-200 group relative outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40",
-                                                isActive 
+                                                isActive
                                                     ? "bg-indigo-50/80 text-indigo-700 font-semibold"
                                                     : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
                                             )}
@@ -185,6 +201,7 @@ export default function Navbar({ role, token, companyName }: { role?: string; to
                                             <div className="flex items-center justify-center lg:justify-start gap-3 w-full">
                                                 <Icon className={cn("w-[18px] h-[18px] shrink-0 transition-colors duration-200", isActive ? "text-indigo-600" : "text-slate-400 group-hover:text-slate-600")} strokeWidth={isActive ? 2.5 : 2} />
                                                 <span className="hidden lg:inline-block text-left truncate">{item.name}</span>
+                                                {isExternal && <ExternalLink className="hidden lg:block w-3.5 h-3.5 text-slate-400 group-hover:text-slate-500 shrink-0 ml-auto" />}
                                             </div>
                                             {isActive && (
                                                 <motion.div layoutId="globalActiveNav" className="hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-indigo-600 rounded-r-full" />

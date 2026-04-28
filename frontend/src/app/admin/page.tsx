@@ -2,7 +2,7 @@
 
 import { useSession, signOut } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { Suspense, useState, useEffect } from "react"
+import { Suspense, useState, useEffect, useCallback } from "react"
 import { 
     Building2, Users, Shield, Crown, Activity, CreditCard, AlertTriangle, Eye, Settings,
     Ticket, Megaphone, Database, CheckCircle2, XCircle, Server, TrendingUp, MessageSquare,
@@ -10,7 +10,8 @@ import {
     MoreVertical, Download, Calendar, ArrowUpRight, Info, LayoutDashboard, ShieldCheck,
     Globe, Zap, Cpu, HardDrive, ShieldAlert, Layers, BarChart3, Rocket, Laptop, ClipboardList, Briefcase,
     Search as SearchIcon, Moon, Sun, MoreHorizontal, Power, LogOut,
-    UserPlus, Sparkles, FileText, Share2, ClipboardCheck, History, Check, UserCheck
+    UserPlus, Sparkles, FileText, Share2, ClipboardCheck, History, Check, UserCheck,
+    Monitor, ExternalLink
 } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -94,6 +95,12 @@ function AdminDashboardContent() {
         { title: "Policy Update Propagated", user: "HR Policy", time: "45 min ago", icon: ShieldCheck, color: "text-emerald-500", bg: "bg-emerald-50" },
     ])
 
+    // ── Leave sidebar dropdown state ──
+    const [leaveDropOpen, setLeaveDropOpen] = useState(false)
+    const [leaveDropTab, setLeaveDropTab] = useState<'present' | 'absent'>('present')
+    const [sidebarEmployees, setSidebarEmployees] = useState<any[]>([])
+    const [sidebarLeaves, setSidebarLeaves] = useState<any[]>([])
+
     const currentTab = searchParams.get("tab") || "dashboard"
     const role = (session?.user?.role || "USER").toUpperCase()
     const companyName = session?.user?.companyName || "Company Shard"
@@ -105,6 +112,42 @@ function AdminDashboardContent() {
         window.addEventListener("scroll", handleScroll)
         return () => window.removeEventListener("scroll", handleScroll)
     }, [])
+
+    // ── Fetch sidebar attendance when dropdown is open ──
+    const fetchSidebarAttendance = useCallback(async () => {
+        if (!token) return
+        const headers = { Authorization: `Bearer ${token}` }
+        try {
+            const [empRes, lvRes] = await Promise.all([
+                fetch(`${API_BASE_URL}/admin/employees`, { headers }).catch(() => null),
+                fetch(`${API_BASE_URL}/admin/leave-requests`, { headers }).catch(() => null),
+            ])
+            if (empRes?.ok) {
+                const raw = await empRes.json()
+                setSidebarEmployees(Array.isArray(raw) ? raw : raw.users || [])
+            }
+            if (lvRes?.ok) {
+                const raw = await lvRes.json()
+                const arr = Array.isArray(raw) ? raw : raw.requests || []
+                const now = new Date()
+                const dayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+                const dayEnd = new Date(dayStart.getTime() + 86_400_000)
+                setSidebarLeaves(arr.filter((l: any) => l.status === 'APPROVED' && new Date(l.startDate) <= dayEnd && new Date(l.endDate) >= dayStart))
+            }
+        } catch {}
+    }, [token])
+
+    useEffect(() => {
+        if (!leaveDropOpen) return
+        fetchSidebarAttendance()
+        const iv = setInterval(fetchSidebarAttendance, 30000)
+        return () => clearInterval(iv)
+    }, [leaveDropOpen, fetchSidebarAttendance])
+
+    const sidebarAbsentIds = new Set(sidebarLeaves.map((l: any) => l.userId || l.user?.id))
+    const sidebarActive = sidebarEmployees.filter(e => e.status === 'ACTIVE' || !e.status)
+    const sidebarPresent = sidebarActive.filter(e => !sidebarAbsentIds.has(e.id))
+    const sidebarAbsent = sidebarActive.filter(e => sidebarAbsentIds.has(e.id))
 
     // Auth Protection
     useEffect(() => {
@@ -155,6 +198,8 @@ function AdminDashboardContent() {
         { id: "announcements", label: "Announcements",     tab: "broadcasts",  icon: Megaphone,       roles: ["SUPER_ADMIN"], group: "company" },
         // 15. Dept Reports
         { id: "dept-reports",  label: "Dept Reports",      tab: "dept-reports", icon: BarChart3,       roles: ["SUPER_ADMIN"], group: "company" },
+        // 16. Task Dashboard (External - Kibana)
+        { id: "task-dashboard", label: "Task Dashboard",   tab: "task-dashboard", icon: Monitor,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER"], group: "tools", external: true, href: "https://task.swotpam.com/" },
     ]
 
     const navItems = allNavItems.filter(item => {
@@ -198,7 +243,7 @@ function AdminDashboardContent() {
                 {/* NAVIGATION */}
                 <nav className="flex-1 px-3 lg:px-5 py-6 overflow-y-auto custom-scrollbar">
                     <div className="space-y-8">
-                        {['core', 'hr', 'finance', 'company', 'admin'].map(group => {
+                        {['core', 'hr', 'finance', 'company', 'admin', 'tools'].map(group => {
                             const groupItems = navItems.filter(i => i.group === group)
                             if(groupItems.length === 0) return null
 
@@ -207,7 +252,8 @@ function AdminDashboardContent() {
                                 'hr': 'Personnel',
                                 'finance': 'Operations & Pay',
                                 'company': 'Organization',
-                                'admin': 'System & Security'
+                                'admin': 'System & Security',
+                                'tools': 'Tools & Integrations'
                             }
 
                             return (
@@ -215,27 +261,111 @@ function AdminDashboardContent() {
                                     <p className="hidden lg:block text-[10px] font-bold text-slate-400/80 uppercase tracking-widest px-3 mb-3 font-brand ml-1">{groupLabels[group]}</p>
                                     {groupItems.map(item => {
                                         const Icon = item.icon
-                                        const isActive = currentTab === item.tab
+                                        const isExternal = 'external' in item && (item as any).external
+                                        const isActive = !isExternal && currentTab === item.tab
+                                        const isLeaveItem = item.id === 'leave'
+
                                         return (
-                                            <button
-                                                key={item.id}
-                                                onClick={() => router.push(`/admin?tab=${item.tab}`)}
-                                                title={item.label}
-                                                className={cn(
-                                                    "w-full flex items-center justify-between px-3.5 py-2.5 rounded-[12px] text-[13px] font-medium transition-all duration-200 group relative outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40",
-                                                    isActive 
-                                                        ? "bg-indigo-50/80 text-indigo-700 font-semibold"
-                                                        : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                                            <div key={item.id}>
+                                                <button
+                                                    onClick={() => {
+                                                        if (isExternal) {
+                                                            window.location.href = (item as any).href
+                                                        } else {
+                                                            router.push(`/admin?tab=${item.tab}`)
+                                                            if (isLeaveItem) setLeaveDropOpen(prev => !prev)
+                                                        }
+                                                    }}
+                                                    title={item.label}
+                                                    className={cn(
+                                                        "w-full flex items-center justify-between px-3.5 py-2.5 rounded-[12px] text-[13px] font-medium transition-all duration-200 group relative outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40",
+                                                        isActive 
+                                                            ? "bg-indigo-50/80 text-indigo-700 font-semibold"
+                                                            : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                                                    )}
+                                                >
+                                                    <div className="flex items-center justify-center lg:justify-start gap-3 w-full">
+                                                        <Icon className={cn("w-[18px] h-[18px] shrink-0 transition-colors duration-200", isActive ? "text-indigo-600" : "text-slate-400 group-hover:text-slate-600")} strokeWidth={isActive ? 2.5 : 2} />
+                                                        <span className="hidden lg:inline-block text-left truncate">{item.label}</span>
+                                                        {isExternal && <ExternalLink className="hidden lg:block w-3.5 h-3.5 text-slate-400 group-hover:text-slate-500 shrink-0 ml-auto" />}
+                                                        {isLeaveItem && <ChevronRight className={cn("hidden lg:block w-3.5 h-3.5 ml-auto shrink-0 transition-transform duration-200 text-slate-400", leaveDropOpen && "rotate-90 text-indigo-500")} />}
+                                                    </div>
+                                                    {isActive && (
+                                                        <motion.div layoutId="activeNavIndicator" className="hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-indigo-600 rounded-r-full" />
+                                                    )}
+                                                </button>
+
+                                                {/* ── LEAVE DROPDOWN: Present / Absent ── */}
+                                                {isLeaveItem && (
+                                                    <AnimatePresence>
+                                                        {leaveDropOpen && (
+                                                            <motion.div
+                                                                initial={{ height: 0, opacity: 0 }}
+                                                                animate={{ height: 'auto', opacity: 1 }}
+                                                                exit={{ height: 0, opacity: 0 }}
+                                                                transition={{ duration: 0.25 }}
+                                                                className="overflow-hidden hidden lg:block"
+                                                            >
+                                                                <div className="ml-5 mt-1.5 pl-4 border-l-2 border-indigo-100 space-y-2.5">
+                                                                    {/* Present Tab Section */}
+                                                                    <div className="space-y-1.5">
+                                                                        <button onClick={() => setLeaveDropTab('present')}
+                                                                            className={cn("w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12px] font-semibold transition-all",
+                                                                                leaveDropTab === 'present' ? "bg-emerald-50 text-emerald-700 shadow-sm" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600")}>
+                                                                            <span className={cn("w-2 h-2 rounded-full", leaveDropTab === 'present' ? "bg-emerald-500 animate-pulse" : "bg-slate-300")} />
+                                                                            Present Today
+                                                                            <span className={cn("ml-auto text-[10px] font-black px-1.5 py-0.5 rounded-full",
+                                                                                leaveDropTab === 'present' ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-400")}>{sidebarPresent.length}</span>
+                                                                        </button>
+                                                                        
+                                                                        {leaveDropTab === 'present' && (
+                                                                            <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="max-h-[160px] overflow-y-auto space-y-1 mt-1 pl-1 custom-scrollbar">
+                                                                                {sidebarPresent.slice(0, 8).map((emp, i) => (
+                                                                                    <div key={emp.id || i} className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] transition-colors hover:bg-emerald-50/50">
+                                                                                        <div className="w-6 h-6 rounded-md bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold shrink-0">
+                                                                                            {(emp.name || 'E')[0].toUpperCase()}
+                                                                                        </div>
+                                                                                        <span className="text-slate-600 font-medium truncate">{emp.name}</span>
+                                                                                    </div>
+                                                                                ))}
+                                                                                {sidebarPresent.length > 8 && <p className="text-[10px] text-slate-400 text-center py-1 italic">+{sidebarPresent.length - 8} more</p>}
+                                                                                {sidebarPresent.length === 0 && <p className="text-[10px] text-slate-400 text-center py-3">No employees present</p>}
+                                                                            </motion.div>
+                                                                        )}
+                                                                    </div>
+
+                                                                    {/* Absent Tab Section */}
+                                                                    <div className="space-y-1.5">
+                                                                        <button onClick={() => setLeaveDropTab('absent')}
+                                                                            className={cn("w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12px] font-semibold transition-all",
+                                                                                leaveDropTab === 'absent' ? "bg-rose-50 text-rose-700 shadow-sm" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600")}>
+                                                                            <span className={cn("w-2 h-2 rounded-full", leaveDropTab === 'absent' ? "bg-rose-500 animate-pulse" : "bg-slate-300")} />
+                                                                            Absent Today
+                                                                            <span className={cn("ml-auto text-[10px] font-black px-1.5 py-0.5 rounded-full",
+                                                                                leaveDropTab === 'absent' ? "bg-rose-100 text-rose-700" : "bg-slate-100 text-slate-400")}>{sidebarAbsent.length}</span>
+                                                                        </button>
+
+                                                                        {leaveDropTab === 'absent' && (
+                                                                            <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="max-h-[160px] overflow-y-auto space-y-1 mt-1 pl-1 custom-scrollbar">
+                                                                                {sidebarAbsent.slice(0, 8).map((emp, i) => (
+                                                                                    <div key={emp.id || i} className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] transition-colors hover:bg-rose-50/50">
+                                                                                        <div className="w-6 h-6 rounded-md bg-rose-100 text-rose-700 flex items-center justify-center text-[10px] font-bold shrink-0">
+                                                                                            {(emp.name || 'E')[0].toUpperCase()}
+                                                                                        </div>
+                                                                                        <span className="text-slate-600 font-medium truncate">{emp.name}</span>
+                                                                                    </div>
+                                                                                ))}
+                                                                                {sidebarAbsent.length > 8 && <p className="text-[10px] text-slate-400 text-center py-1 italic">+{sidebarAbsent.length - 8} more</p>}
+                                                                                {sidebarAbsent.length === 0 && <p className="text-[10px] text-slate-400 text-center py-3">No employees absent</p>}
+                                                                            </motion.div>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            </motion.div>
+                                                        )}
+                                                    </AnimatePresence>
                                                 )}
-                                            >
-                                                <div className="flex items-center justify-center lg:justify-start gap-3 w-full">
-                                                    <Icon className={cn("w-[18px] h-[18px] shrink-0 transition-colors duration-200", isActive ? "text-indigo-600" : "text-slate-400 group-hover:text-slate-600")} strokeWidth={isActive ? 2.5 : 2} />
-                                                    <span className="hidden lg:inline-block text-left truncate">{item.label}</span>
-                                                </div>
-                                                {isActive && (
-                                                    <motion.div layoutId="activeNavIndicator" className="hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-indigo-600 rounded-r-full" />
-                                                )}
-                                            </button>
+                                            </div>
                                         )
                                     })}
                                 </div>

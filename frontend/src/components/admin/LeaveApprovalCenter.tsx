@@ -126,6 +126,8 @@ export default function LeaveApprovalCenter({ token }: { token: string }) {
         <div className="bg-white border border-slate-100 rounded-[32px] overflow-hidden shadow-sm h-full flex flex-col font-body">
             <GlobalStyles />
 
+
+
             {/* HIGH-DENSITY HEADER */}
             <div className="p-6 md:p-8 border-b border-slate-50 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 bg-white shrink-0">
                 {/* Module-specific filters remain active for high-density control */}
