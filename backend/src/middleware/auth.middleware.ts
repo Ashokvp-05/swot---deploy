@@ -45,7 +45,11 @@ export const authenticate = async (req: AuthRequest, res: Response, next: NextFu
             }
         }
 
-        if (!cachedUser || cachedUser.tokenVersion !== decoded.tokenVersion) {
+        // tokenVersion: null/undefined from old JWTs or seeded users is treated as 0
+        const jwtVersion   = decoded.tokenVersion  ?? 0;
+        const dbVersion    = cachedUser.tokenVersion ?? 0;
+
+        if (!cachedUser || jwtVersion !== dbVersion) {
             return res.status(401).json({ error: 'Session expired or invalidated' });
         }
 

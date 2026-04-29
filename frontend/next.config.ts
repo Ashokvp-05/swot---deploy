@@ -1,70 +1,100 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* Performance Optimizations */
+  // ── Output ──────────────────────────────────────────────────────────────────
+  output: 'standalone', // Required for Docker — copies only necessary files
+  compress: true,       // Gzip compression at Next.js level
 
-  // Standalone output for Docker/IIS optimization
-  output: 'standalone', 
-
-  // Compress output for faster loading
-  compress: true,
-
-  // Optimize images
+  // ── Images ──────────────────────────────────────────────────────────────────
   images: {
-    formats: ['image/webp', 'image/avif'],
-    deviceSizes: [640, 750, 828, 1080, 1200],
-    imageSizes: [16, 32, 48, 64, 96],
-    minimumCacheTTL: 60,
+    formats: ['image/avif', 'image/webp'], // avif first — better compression
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
+    minimumCacheTTL: 3600,   // Cache optimized images for 1 hour (was 60s)
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
   },
 
-  // Production optimizations
+  // ── Production Flags ─────────────────────────────────────────────────────────
   reactStrictMode: true,
-  poweredByHeader: false,
-
-
-  // Disable all dev indicators (removes the floating "N" button)
+  poweredByHeader: false,  // Don't leak "X-Powered-By: Next.js"
   devIndicators: false,
 
-  // Experimental features for better performance
+  // ── Compiler ─────────────────────────────────────────────────────────────────
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production', // Strip console.* in prod build
+  },
+
+  // ── Tree-shaking: only import used components from large packages ─────────────
   experimental: {
-    // Optimize package imports (tree-shaking)
     optimizePackageImports: [
       'lucide-react',
       'framer-motion',
       '@radix-ui/react-icons',
+      '@radix-ui/react-accordion',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-select',
+      '@radix-ui/react-tabs',
+      '@radix-ui/react-toast',
       'date-fns',
       'recharts',
       'clsx',
-      'tailwind-merge'
+      'tailwind-merge',
+      'zod',
     ],
   },
-  // Moved from experimental as per Next.js 15+ deprecation
+
   skipProxyUrlNormalize: true,
   skipTrailingSlashRedirect: true,
-  
-  // Compiler optimization
-  compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+
+  // ── HTTP Response Headers ────────────────────────────────────────────────────
+  async headers() {
+    return [
+      {
+        // Aggressive caching for immutable static assets (_next/static is content-hashed)
+        source: '/_next/static/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+      {
+        // Public assets (icons, images)
+        source: '/(:path*.(png|jpg|jpeg|webp|avif|svg|ico|woff|woff2))',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=3600' },
+        ],
+      },
+      {
+        // Security headers on ALL routes
+        source: '/(.*)',
+        headers: [
+          { key: 'X-Frame-Options',           value: 'SAMEORIGIN' },
+          { key: 'X-Content-Type-Options',    value: 'nosniff' },
+          { key: 'Referrer-Policy',           value: 'strict-origin-when-cross-origin' },
+          { key: 'Permissions-Policy',        value: 'camera=(), microphone=(), geolocation=()' },
+          { key: 'X-DNS-Prefetch-Control',    value: 'on' },
+        ],
+      },
+    ];
   },
 
+  // ── API Proxy Rewrites ────────────────────────────────────────────────────────
   async rewrites() {
     const backendUrl = process.env.INTERNAL_BACKEND_URL || 'http://127.0.0.1:4000';
-    
     return {
       beforeFiles: [
         {
           source: '/ws',
-          destination: `${backendUrl}/ws`, // Next.js handles ws proxying correctly
-        }
+          destination: `${backendUrl}/ws`,
+        },
       ],
       fallback: [
         {
           source: '/api/:path*',
           destination: `${backendUrl}/api/:path*`,
-        }
-      ]
+        },
+      ],
     };
   },
 };

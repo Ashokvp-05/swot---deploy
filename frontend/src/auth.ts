@@ -49,7 +49,14 @@ export const config = {
                 if (!credentials?.email || !credentials?.password) return null;
 
                 try {
-                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+                    // IMPORTANT: auth.ts runs server-side (NextAuth authorize callback).
+                    // We must use INTERNAL_BACKEND_URL (direct Docker network URL: http://backend:4000)
+                    // NOT NEXT_PUBLIC_API_URL which is /api (a relative path only valid in the browser).
+                    // Using /api here would call localhost:3000/api → Next.js itself → infinite loop.
+                    const apiBase = process.env.INTERNAL_BACKEND_URL
+                        ? `${process.env.INTERNAL_BACKEND_URL}/api`
+                        : process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+                    const res = await fetch(`${apiBase}/auth/login`, {
                         method: 'POST',
                         body: JSON.stringify({ email: credentials.email, password: credentials.password }),
                         headers: { "Content-Type": "application/json" }

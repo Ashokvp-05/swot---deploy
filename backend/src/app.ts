@@ -7,36 +7,68 @@ import compression from 'compression';
 
 dotenv.config();
 
+// Ensure NODE_ENV is set for production optimizations
+if (!process.env.NODE_ENV) process.env.NODE_ENV = 'production';
+
 const app = express();
 app.set('etag', false); // Disable etag for simpler debugging
 
-// Optimized Middleware
-const allowedOrigins = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-    'http://[::1]:3000',
+// ─── Multi-Origin CORS ────────────────────────────────────────────────────────
+// Reads CORS_ORIGINS from env as a comma-separated list of allowed frontend URLs.
+// Add any new URL (Cloudflare tunnel, custom domain, localhost port) to the
+// CORS_ORIGINS variable in your root .env — no code change required.
+//
+// Always-allowed patterns (wildcard):
+//   • Any localhost / 127.x / 192.168.x / LAN IP
+//   • *.swotpam.com
+//   • *.trycloudflare.com   ← Cloudflare quick-tunnel URLs
+//   • *.cfargotunnel.com    ← Cloudflare named-tunnel URLs
+//   • *.vercel.app
+//   • *.onrender.com
+// ─────────────────────────────────────────────────────────────────────────────
+const envOrigins: string[] = [
+    // Parse CORS_ORIGINS comma-separated list (primary source)
+    ...(process.env.CORS_ORIGINS ?? '')
+        .split(',')
+        .map((o) => o.trim())
+        .filter(Boolean),
+    // Legacy single-origin fallbacks
     process.env.FRONTEND_URL,
     process.env.NEXT_PUBLIC_FRONTEND_URL,
-].filter(Boolean);
+    // Always include localhost defaults
+    'http://localhost:3000',
+    'http://localhost:4000',
+    'http://127.0.0.1:3000',
+    'http://[::1]:3000',
+].filter((v): v is string => Boolean(v));
+
+// Deduplicate
+const allowedOrigins = [...new Set(envOrigins)];
+
+console.log(`[CORS] Allowed origins (${allowedOrigins.length}):`, allowedOrigins);
 
 app.use(cors({
     origin: (origin, callback) => {
+        // Allow non-browser requests (curl, Postman, server-to-server)
         if (!origin) return callback(null, true);
 
-        const isLocalIP = /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|\[::1\])(:\d+)?$/.test(origin);
+        // Exact match from env list
+        if (allowedOrigins.includes(origin)) return callback(null, true);
 
-        if (
-            allowedOrigins.indexOf(origin) !== -1 ||
-            isLocalIP ||
-            origin.endsWith('.swotpam.com') ||
-            origin.endsWith('.vercel.app') ||
-            origin.endsWith('.onrender.com')
-        ) {
-            callback(null, true);
-        } else {
-            console.warn('Blocked by CORS:', origin);
-            callback(new Error('Not allowed by CORS'));
+        // Wildcard pattern checks
+        const isLocalIP       = /^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|\[::1\])(:\d+)?$/.test(origin);
+        const isSwotpam       = origin.endsWith('.swotpam.com');
+        const isCFQuickTunnel = origin.endsWith('.trycloudflare.com');   // Cloudflare quick tunnels
+        const isCFNamedTunnel = origin.endsWith('.cfargotunnel.com');    // Cloudflare named tunnels
+        const isVercel        = origin.endsWith('.vercel.app');
+        const isOnRender      = origin.endsWith('.onrender.com');
+
+        if (isLocalIP || isSwotpam || isCFQuickTunnel || isCFNamedTunnel || isVercel || isOnRender) {
+            return callback(null, true);
         }
+
+        console.warn('[CORS] Blocked origin:', origin);
+        callback(new Error('Not allowed by CORS'));
     },
     credentials: true,
     maxAge: 86400, // Cache preflight for 24 hours
@@ -47,19 +79,50 @@ app.use(helmet({
 }));
 
 app.use(compression({
-    level: 6, // Balance between compression ratio and speed
-    threshold: 1024, // Only compress responses > 1KB
+    level: 6,       // Best CPU-to-ratio balance
+    threshold: 1024 // Only compress responses > 1KB
 }));
 
-app.use(morgan('dev'));
+// Production: 'combined' log format (Apache-style, good for log parsers)
+// Development: 'dev' (colorized, concise)
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Cache control for static responses
+// ── Response-Time Header ──────────────────────────────────────────────────────
+// Adds X-Response-Time header so Cloudflare dashboard shows backend latency
 app.use((req, res, next) => {
-    // Set cache headers for specific routes
-    if (req.path.startsWith('/api/holidays') || req.path.startsWith('/api/announcements')) {
-        res.set('Cache-Control', 'public, max-age=300'); // 5 minutes
+    const start = Date.now();
+    res.on('finish', () => {
+        res.setHeader('X-Response-Time', `${Date.now() - start}ms`);
+    });
+    next();
+});
+
+// ── HTTP Cache-Control for Read-Heavy Routes ──────────────────────────────────
+// Browsers & Cloudflare cache these routes — reduces repeated DB hits significantly
+app.use((req, res, next) => {
+    if (req.method !== 'GET') return next(); // Only cache GET
+
+    const FIVE_MIN  = 'public, max-age=300, stale-while-revalidate=60';
+    const ONE_HOUR  = 'public, max-age=3600, stale-while-revalidate=300';
+    const NO_STORE  = 'no-store, no-cache';
+
+    if (
+        req.path.startsWith('/api/holidays') ||
+        req.path.startsWith('/api/announcements') ||
+        req.path.startsWith('/api/organization') ||
+        req.path.startsWith('/api/companies')
+    ) {
+        res.set('Cache-Control', FIVE_MIN);
+    } else if (req.path.startsWith('/api/leave-v2/types')) {
+        res.set('Cache-Control', ONE_HOUR);
+    } else if (
+        req.path.startsWith('/api/auth') ||
+        req.path.startsWith('/api/payroll') ||
+        req.path.startsWith('/api/payslips')
+    ) {
+        res.set('Cache-Control', NO_STORE); // Never cache sensitive routes
     }
     next();
 });
