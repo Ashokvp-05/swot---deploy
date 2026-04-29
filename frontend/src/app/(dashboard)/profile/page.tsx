@@ -89,8 +89,8 @@ const profileSchema = z.object({
     bloodGroup: z.string().regex(/^(A|B|AB|O)[+-]$/, "Enter a valid blood group (e.g. O+, AB-)").optional().or(z.literal("")),
 
     // 2. Contact
-    email: z.string().email("Invalid work email."),
-    personalEmail: z.string().email("Invalid personal email (e.g. name@gmail.com).").optional().or(z.literal("")),
+    email: z.string().regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, "Invalid work email (e.g. name@company.com)."),
+    personalEmail: z.string().regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, "Invalid personal email (e.g. name@gmail.com).").optional().or(z.literal("")),
     phone: z.string().regex(/^\d{10}$/, "Phone must be exactly 10 digits (e.g. 9876543210)."),
     secondaryPhone: z.string().regex(/^\d{10}$/, "Secondary phone must be exactly 10 digits.").optional().or(z.literal("")),
     workPhone: z.string().regex(/^\d{10}$/, "Work phone must be exactly 10 digits.").optional().or(z.literal("")),
@@ -506,7 +506,8 @@ export default function ProfilePage() {
                     <div className="flex items-center gap-6">
                         <div className="relative group cursor-pointer" onClick={() => document.getElementById('avatar-upload')?.click()}>
                             <Avatar className="h-20 w-20 border-[4px] border-white dark:border-slate-900 shadow-xl items-center justify-center bg-slate-100 dark:bg-slate-800 transition-transform group-hover:scale-105">
-                                <AvatarFallback className="text-3xl font-black text-slate-300 dark:text-slate-600 font-mono">
+                                <AvatarImage src={userData?.avatarUrl || (session?.user as any)?.image} className="object-cover" />
+                                <AvatarFallback className="text-3xl font-bold text-slate-300 dark:text-slate-600 font-mono">
                                     {fetchLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : initial}
                                 </AvatarFallback>
                             </Avatar>
@@ -558,10 +559,10 @@ export default function ProfilePage() {
 
                         <div className="space-y-1">
                             <div className="flex items-center gap-3">
-                                <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight uppercase tracking-widest leading-none">
+                                <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight uppercase tracking-widest leading-none">
                                     {userData?.name || <Skeleton className="h-6 w-48" />}
                                 </h1>
-                                <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-none px-2.5 py-0.5 font-black uppercase tracking-[0.1em] text-[9px]">
+                                <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-none px-2.5 py-0.5 font-bold uppercase tracking-[0.1em] text-[9px]">
                                     Verified
                                 </Badge>
                             </div>
@@ -575,7 +576,7 @@ export default function ProfilePage() {
 
                     <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-white/50 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800 backdrop-blur-sm">
                         <Fingerprint className="w-4 h-4 text-indigo-500" />
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Hash 0x{userData?.id?.slice(-8) || "88C22BFA"}</span>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Hash 0x{userData?.id?.slice(-8) || "88C22BFA"}</span>
                     </div>
                 </div>
 
@@ -598,7 +599,7 @@ export default function ProfilePage() {
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Live Sync</span>
+                                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Live Sync</span>
                                     </div>
                                 </div>
                             </CardHeader>
@@ -610,31 +611,31 @@ export default function ProfilePage() {
                                      })} className="space-y-6">
                                          <Tabs defaultValue="personal" className="w-full">
                                              <TabsList className="w-full justify-start h-12 bg-slate-50 dark:bg-slate-800/50 p-1 mb-8 overflow-x-auto no-scrollbar">
-                                                 <TabsTrigger value="personal" className="relative px-5 h-10 text-[11px] font-black uppercase tracking-widest leading-none gap-2 data-[state=active]:text-indigo-600 transition-all duration-300 group overflow-hidden">
+                                                 <TabsTrigger value="personal" className="relative px-5 h-10 text-[11px] font-bold uppercase tracking-widest leading-none gap-2 data-[state=active]:text-indigo-600 transition-all duration-300 group overflow-hidden">
                                                      <User className="w-3 h-3 group-data-[state=active]:scale-110 transition-transform" /> Personal
                                                      <div className="absolute bottom-0 left-0 w-full h-[3px] bg-indigo-600 translate-y-full data-[state=active]:translate-y-0 transition-transform duration-300" />
                                                  </TabsTrigger>
-                                                 <TabsTrigger value="contact" className="relative px-5 h-10 text-[11px] font-black uppercase tracking-widest leading-none gap-2 data-[state=active]:text-indigo-600 transition-all duration-300 group overflow-hidden">
+                                                 <TabsTrigger value="contact" className="relative px-5 h-10 text-[11px] font-bold uppercase tracking-widest leading-none gap-2 data-[state=active]:text-indigo-600 transition-all duration-300 group overflow-hidden">
                                                      <Phone className="w-3 h-3 group-data-[state=active]:scale-110 transition-transform" /> Contact
                                                      <div className="absolute bottom-0 left-0 w-full h-[3px] bg-indigo-600 translate-y-full data-[state=active]:translate-y-0 transition-transform duration-300" />
                                                  </TabsTrigger>
-                                                 <TabsTrigger value="emergency" className="relative px-5 h-10 text-[11px] font-black uppercase tracking-widest leading-none gap-2 data-[state=active]:text-indigo-600 transition-all duration-300 group overflow-hidden">
+                                                 <TabsTrigger value="emergency" className="relative px-5 h-10 text-[11px] font-bold uppercase tracking-widest leading-none gap-2 data-[state=active]:text-indigo-600 transition-all duration-300 group overflow-hidden">
                                                      <Stethoscope className="w-3 h-3 group-data-[state=active]:scale-110 transition-transform" /> Emergency
                                                      <div className="absolute bottom-0 left-0 w-full h-[3px] bg-indigo-600 translate-y-full data-[state=active]:translate-y-0 transition-transform duration-300" />
                                                  </TabsTrigger>
-                                                 <TabsTrigger value="address" className="relative px-5 h-10 text-[11px] font-black uppercase tracking-widest leading-none gap-2 data-[state=active]:text-indigo-600 transition-all duration-300 group overflow-hidden">
+                                                 <TabsTrigger value="address" className="relative px-5 h-10 text-[11px] font-bold uppercase tracking-widest leading-none gap-2 data-[state=active]:text-indigo-600 transition-all duration-300 group overflow-hidden">
                                                      <Building2 className="w-3 h-3 group-data-[state=active]:scale-110 transition-transform" /> Address
                                                      <div className="absolute bottom-0 left-0 w-full h-[3px] bg-indigo-600 translate-y-full data-[state=active]:translate-y-0 transition-transform duration-300" />
                                                  </TabsTrigger>
-                                                 <TabsTrigger value="job" className="relative px-5 h-10 text-[11px] font-black uppercase tracking-widest leading-none gap-2 data-[state=active]:text-indigo-600 transition-all duration-300 group overflow-hidden">
+                                                 <TabsTrigger value="job" className="relative px-5 h-10 text-[11px] font-bold uppercase tracking-widest leading-none gap-2 data-[state=active]:text-indigo-600 transition-all duration-300 group overflow-hidden">
                                                      <Briefcase className="w-3 h-3 group-data-[state=active]:scale-110 transition-transform" /> Job
                                                      <div className="absolute bottom-0 left-0 w-full h-[3px] bg-indigo-600 translate-y-full data-[state=active]:translate-y-0 transition-transform duration-300" />
                                                  </TabsTrigger>
-                                                 <TabsTrigger value="identity" className="relative px-5 h-10 text-[11px] font-black uppercase tracking-widest leading-none gap-2 data-[state=active]:text-indigo-600 transition-all duration-300 group overflow-hidden">
+                                                 <TabsTrigger value="identity" className="relative px-5 h-10 text-[11px] font-bold uppercase tracking-widest leading-none gap-2 data-[state=active]:text-indigo-600 transition-all duration-300 group overflow-hidden">
                                                      <Shield className="w-3 h-3 group-data-[state=active]:scale-110 transition-transform" /> Identity
                                                      <div className="absolute bottom-0 left-0 w-full h-[3px] bg-indigo-600 translate-y-full data-[state=active]:translate-y-0 transition-transform duration-300" />
                                                  </TabsTrigger>
-                                                 <TabsTrigger value="documents" className="relative px-5 h-10 text-[11px] font-black uppercase tracking-widest leading-none gap-2 data-[state=active]:text-indigo-600 transition-all duration-300 group overflow-hidden">
+                                                 <TabsTrigger value="documents" className="relative px-5 h-10 text-[11px] font-bold uppercase tracking-widest leading-none gap-2 data-[state=active]:text-indigo-600 transition-all duration-300 group overflow-hidden">
                                                      <Database className="w-3 h-3 group-data-[state=active]:scale-110 transition-transform" /> Documents
                                                      <div className="absolute bottom-0 left-0 w-full h-[3px] bg-indigo-600 translate-y-full data-[state=active]:translate-y-0 transition-transform duration-300" />
                                                  </TabsTrigger>
@@ -645,32 +646,32 @@ export default function ProfilePage() {
                                              <TabsContent value="personal" className="space-y-6 animate-in slide-in-from-left-2 duration-300">
                                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
                                                      <FormField control={form.control} name="name" render={({ field }) => (
-                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Full Name</FormLabel><FormControl>
+                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Full Name</FormLabel><FormControl>
                                                              <div className="relative group"><User className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 group-focus-within:text-indigo-500" /><Input className="h-10 pl-9 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} /></div>
-                                                         </FormControl><FormMessage className="text-[9px] uppercase font-black" /></FormItem>
+                                                         </FormControl><FormMessage className="text-[9px] uppercase font-bold" /></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="employeeId" render={({ field }) => (
-                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Employee ID</FormLabel><FormControl>
+                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Employee ID</FormLabel><FormControl>
                                                              <div className="relative group"><Hash className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 group-focus-within:text-indigo-500" /><Input className="h-10 pl-9 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} /></div>
                                                          </FormControl><FormMessage /></FormItem>
                                                      )} />
                                                       <FormField control={form.control} name="gender" render={({ field }) => (
-                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Gender</FormLabel><FormControl>
+                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Gender</FormLabel><FormControl>
                                                               <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="Male, Female, etc." {...field} />
                                                           </FormControl><FormMessage /></FormItem>
                                                       )} />
                                                      <FormField control={form.control} name="dob" render={({ field }) => (
-                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Date of Birth</FormLabel><FormControl>
+                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Date of Birth</FormLabel><FormControl>
                                                               <Input type="date" max={new Date(new Date().setFullYear(new Date().getFullYear() - 16)).toISOString().split('T')[0]} min="1900-01-01" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
-                                                         </FormControl><FormMessage className="text-[9px] uppercase font-black" /></FormItem>
+                                                         </FormControl><FormMessage className="text-[9px] uppercase font-bold" /></FormItem>
                                                      )} />
                                                       <FormField control={form.control} name="maritalStatus" render={({ field }) => (
-                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Marital Status</FormLabel><FormControl>
-                                                              <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="Single, Married, Divorced, etc." {...field} />
+                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Marital Status</FormLabel><FormControl>
+                                                              <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
                                                           </FormControl><FormMessage /></FormItem>
                                                       )} />
                                                      <FormField control={form.control} name="bloodGroup" render={({ field }) => (
-                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Blood Group</FormLabel><FormControl>
+                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Blood Group</FormLabel><FormControl>
                                                              <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="e.g. O+ive" {...field} />
                                                          </FormControl></FormItem>
                                                      )} />
@@ -681,27 +682,27 @@ export default function ProfilePage() {
                                              <TabsContent value="contact" className="space-y-6 animate-in slide-in-from-left-2 duration-300">
                                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
                                                      <FormField control={form.control} name="phone" render={({ field }) => (
-                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Primary Phone</FormLabel><FormControl>
-                                                             <Input placeholder="e.g. 9876543210" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
-                                                         </FormControl><FormMessage className="text-[9px] uppercase font-black" /></FormItem>
+                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Primary Phone</FormLabel><FormControl>
+                                                             <Input placeholder="e.g. 9876543210" type="tel" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} onChange={(e) => field.onChange(e.target.value.replace(/\D/g, '').slice(0, 10))} />
+                                                         </FormControl><FormMessage className="text-[9px] uppercase font-bold" /></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="secondaryPhone" render={({ field }) => (
-                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Secondary Phone</FormLabel><FormControl>
-                                                             <Input placeholder="e.g. 9876543210" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
-                                                         </FormControl><FormMessage className="text-[9px] uppercase font-black" /></FormItem>
+                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Secondary Phone</FormLabel><FormControl>
+                                                             <Input placeholder="e.g. 9876543210" type="tel" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} onChange={(e) => field.onChange(e.target.value.replace(/\D/g, '').slice(0, 10))} />
+                                                         </FormControl><FormMessage className="text-[9px] uppercase font-bold" /></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="workPhone" render={({ field }) => (
-                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Work Phone</FormLabel><FormControl>
-                                                             <Input placeholder="e.g. 9876543210" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
-                                                         </FormControl><FormMessage className="text-[9px] uppercase font-black" /></FormItem>
+                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Work Phone</FormLabel><FormControl>
+                                                             <Input placeholder="e.g. 9876543210" type="tel" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} onChange={(e) => field.onChange(e.target.value.replace(/\D/g, '').slice(0, 10))} />
+                                                         </FormControl><FormMessage className="text-[9px] uppercase font-bold" /></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="personalEmail" render={({ field }) => (
-                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Personal Email</FormLabel><FormControl>
+                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Personal Email</FormLabel><FormControl>
                                                              <Input type="email" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
                                                          </FormControl></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="discordId" render={({ field }) => (
-                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Discord ID</FormLabel><FormControl>
+                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Discord ID</FormLabel><FormControl>
                                                              <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
                                                          </FormControl></FormItem>
                                                      )} />
@@ -712,28 +713,28 @@ export default function ProfilePage() {
                                              <TabsContent value="emergency" className="space-y-6 animate-in slide-in-from-left-2 duration-300">
                                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
                                                      <FormField control={form.control} name="emergencyName" render={({ field }) => (
-                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Contact Name</FormLabel><FormControl>
+                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Contact Name</FormLabel><FormControl>
                                                              <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
                                                          </FormControl></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="emergencyRelationship" render={({ field }) => (
-                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Relationship</FormLabel><FormControl>
+                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Relationship</FormLabel><FormControl>
                                                              <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="Father, Spouse, etc." {...field} />
                                                          </FormControl></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="emergencyPhone" render={({ field }) => (
-                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Emergency Phone 1</FormLabel><FormControl>
-                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
+                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Emergency Phone 1</FormLabel><FormControl>
+                                                             <Input type="tel" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} onChange={(e) => field.onChange(e.target.value.replace(/\D/g, '').slice(0, 10))} />
                                                          </FormControl></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="emergencyPhoneSec" render={({ field }) => (
-                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Emergency Phone 2</FormLabel><FormControl>
-                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
+                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Emergency Phone 2</FormLabel><FormControl>
+                                                             <Input type="tel" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} onChange={(e) => field.onChange(e.target.value.replace(/\D/g, '').slice(0, 10))} />
                                                          </FormControl></FormItem>
                                                      )} />
                                                      <div className="md:col-span-2">
                                                          <FormField control={form.control} name="emergencyAddress" render={({ field }) => (
-                                                             <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Emergency Contact Address</FormLabel><FormControl>
+                                                             <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Emergency Contact Address</FormLabel><FormControl>
                                                                  <textarea className="flex min-h-[80px] w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20 px-3 py-2 text-sm font-bold focus:ring-0 focus:border-indigo-500" {...field} />
                                                              </FormControl></FormItem>
                                                          )} />
@@ -746,35 +747,35 @@ export default function ProfilePage() {
                                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
                                                      <div className="md:col-span-2">
                                                          <FormField control={form.control} name="currentAddress" render={({ field }) => (
-                                                             <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Current Address</FormLabel><FormControl>
+                                                             <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Current Address</FormLabel><FormControl>
                                                                  <textarea className="flex min-h-[80px] w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20 px-3 py-2 text-sm font-bold" {...field} />
                                                              </FormControl></FormItem>
                                                          )} />
                                                      </div>
                                                      <div className="md:col-span-2">
                                                          <FormField control={form.control} name="permanentAddress" render={({ field }) => (
-                                                             <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Permanent Address</FormLabel><FormControl>
+                                                             <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Permanent Address</FormLabel><FormControl>
                                                                  <textarea className="flex min-h-[80px] w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20 px-3 py-2 text-sm font-bold" {...field} />
                                                              </FormControl></FormItem>
                                                          )} />
                                                      </div>
                                                      <FormField control={form.control} name="city" render={({ field }) => (
-                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">City</FormLabel><FormControl>
+                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">City</FormLabel><FormControl>
                                                              <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
                                                          </FormControl></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="state" render={({ field }) => (
-                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">State</FormLabel><FormControl>
+                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">State</FormLabel><FormControl>
                                                              <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
                                                          </FormControl></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="country" render={({ field }) => (
-                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Country</FormLabel><FormControl>
+                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Country</FormLabel><FormControl>
                                                              <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
                                                          </FormControl></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="zipCode" render={({ field }) => (
-                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">ZIP / Pincode</FormLabel><FormControl>
+                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">ZIP / Pincode</FormLabel><FormControl>
                                                              <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
                                                          </FormControl></FormItem>
                                                      )} />
@@ -785,7 +786,7 @@ export default function ProfilePage() {
                                              <TabsContent value="job" className="space-y-6 animate-in slide-in-from-left-2 duration-300">
                                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
                                                      <FormField control={form.control} name="employmentType" render={({ field }) => (
-                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Employment Type</FormLabel><FormControl>
+                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Employment Type</FormLabel><FormControl>
                                                              <select className="flex h-10 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20 px-3 py-2 text-sm font-bold focus:ring-0 focus:border-indigo-500" {...field}>
                                                                  <option value="FULL_TIME">Full-time</option>
                                                                  <option value="CONTRACT">Contract</option>
@@ -794,16 +795,16 @@ export default function ProfilePage() {
                                                          </FormControl></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="workLocation" render={({ field }) => (
-                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Work Location</FormLabel><FormControl>
+                                                         <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Work Location</FormLabel><FormControl>
                                                              <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
                                                          </FormControl></FormItem>
                                                      )} />
                                                      <div className="space-y-1.5">
-                                                         <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Department</label>
+                                                         <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Department</label>
                                                          <Input disabled className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-100/50 dark:bg-slate-800/40 text-sm opacity-70" value={userData?.department?.name || "Operations"} />
                                                      </div>
                                                      <div className="space-y-1.5">
-                                                         <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Designation</label>
+                                                         <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Designation</label>
                                                          <Input disabled className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-100/50 dark:bg-slate-800/40 text-sm opacity-70" value={roleName} />
                                                      </div>
                                                  </div>
@@ -813,7 +814,7 @@ export default function ProfilePage() {
                                              <TabsContent value="identity" className="space-y-6 animate-in slide-in-from-left-2 duration-300">
                                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
                                                       <FormField control={form.control} name="aadhaarNumber" render={({ field }) => (
-                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Aadhaar Number</FormLabel><FormControl>
+                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Aadhaar Number</FormLabel><FormControl>
                                                               <div className="relative group">
                                                                   <Input 
                                                                       className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm tracking-widest" 
@@ -832,7 +833,7 @@ export default function ProfilePage() {
                                                           </FormControl><FormMessage className="text-[9px]" /></FormItem>
                                                       )} />
                                                       <FormField control={form.control} name="panNumber" render={({ field }) => (
-                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">PAN Number</FormLabel><FormControl>
+                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">PAN Number</FormLabel><FormControl>
                                                               <div className="relative group">
                                                                   <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm tracking-widest uppercase" {...field} />
                                                                   <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
@@ -842,7 +843,7 @@ export default function ProfilePage() {
                                                           </FormControl><FormMessage className="text-[9px]" /></FormItem>
                                                       )} />
                                                       <FormField control={form.control} name="passportNumber" render={({ field }) => (
-                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Passport Number</FormLabel><FormControl>
+                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Passport Number</FormLabel><FormControl>
                                                               <div className="relative group">
                                                                   <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm tracking-widest uppercase" {...field} />
                                                                   <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
@@ -852,7 +853,7 @@ export default function ProfilePage() {
                                                           </FormControl><FormMessage className="text-[9px]" /></FormItem>
                                                       )} />
                                                       <FormField control={form.control} name="drivingLicense" render={({ field }) => (
-                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Driving License</FormLabel><FormControl>
+                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Driving License</FormLabel><FormControl>
                                                               <div className="relative group">
                                                                   <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm tracking-widest uppercase" {...field} />
                                                                   <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
@@ -872,7 +873,7 @@ export default function ProfilePage() {
                                          </Tabs>
 
                                          <div className="flex justify-end pt-4 border-t border-slate-100 dark:border-slate-800">
-                                             <Button type="submit" disabled={loading} className="h-11 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-[10px] rounded-xl shadow-lg shadow-indigo-500/30 active:scale-95 transition-all">
+                                             <Button type="submit" disabled={loading} className="h-11 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-bold uppercase tracking-widest text-[10px] rounded-xl shadow-lg shadow-indigo-500/30 active:scale-95 transition-all">
                                                  {loading ? <Loader2 className="w-3 h-3 animate-spin mr-2" /> : <Save className="w-3 h-3 mr-2" />}
                                                  Save Global Profile
                                              </Button>
@@ -889,7 +890,7 @@ export default function ProfilePage() {
                         {/* TRUST & ACCESS */}
                         <Card className="border-none shadow-sm ring-1 ring-slate-200 dark:ring-slate-800 bg-white dark:bg-slate-900">
                             <CardHeader className="py-4 px-6 border-b border-slate-100 dark:border-slate-800">
-                                <CardTitle className="text-[10px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-2">
+                                <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-slate-500 flex items-center gap-2">
                                     <ShieldCheck className="w-3 h-3 text-emerald-500" /> Trust Center
                                 </CardTitle>
                             </CardHeader>
@@ -904,9 +905,16 @@ export default function ProfilePage() {
                                         </Button>
                                     </DialogTrigger>
                                     <DialogContent className="sm:max-w-[400px] border-none shadow-2xl rounded-3xl p-0 overflow-hidden">
-                                        <div className="bg-indigo-600 p-6 text-white text-center">
-                                            <h3 className="text-xl font-black uppercase tracking-tight">Password Reset</h3>
-                                            <p className="text-[10px] text-indigo-100 font-bold opacity-80 uppercase tracking-widest mt-1">Personnel Authentication Required</p>
+                                        <div className="p-7 pb-5 border-b border-slate-50 flex items-center justify-between bg-gradient-to-r from-indigo-50/60 to-white">
+                                            <div className="flex items-center gap-4">
+                                                <div className="p-3 bg-indigo-600 rounded-2xl shadow-lg shadow-indigo-300">
+                                                    <Lock className="w-5 h-5 text-white" />
+                                                </div>
+                                                <div>
+                                                    <DialogTitle className="text-lg font-bold text-slate-900 uppercase italic tracking-tight">Password Reset</DialogTitle>
+                                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Please confirm your password</p>
+                                                </div>
+                                            </div>
                                         </div>
                                         <Form {...passwordForm}>
                                             <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)} className="p-6 space-y-5">
@@ -915,20 +923,34 @@ export default function ProfilePage() {
                                                     name="currentPassword"
                                                     render={({ field }) => (
                                                         <FormItem className="space-y-1">
-                                                            <FormLabel className="text-[9px] font-black text-slate-400 uppercase">Existing Key</FormLabel>
+                                                            <FormLabel className="text-[9px] font-bold text-slate-400 uppercase">Current Password</FormLabel>
                                                             <FormControl>
                                                                 <Input type={showPassword ? "text" : "password"} className="h-10 border-slate-200 rounded-xl bg-slate-50 font-bold" {...field} />
                                                             </FormControl>
+                                                            <FormMessage className="text-[9px]" />
                                                         </FormItem>
                                                     )}
                                                 />
                                                 <div className="space-y-4">
                                                     <FormField
                                                         control={passwordForm.control}
+                                                        name="newPassword"
+                                                        render={({ field }) => (
+                                                            <FormItem className="space-y-1">
+                                                                <FormLabel className="text-[9px] font-bold text-slate-400 uppercase">New Password</FormLabel>
+                                                                <FormControl>
+                                                                    <Input type={showPassword ? "text" : "password"} className="h-10 border-slate-200 rounded-xl bg-slate-50 font-bold" {...field} />
+                                                                </FormControl>
+                                                                <FormMessage className="text-[9px]" />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                    <FormField
+                                                        control={passwordForm.control}
                                                         name="confirmPassword"
                                                         render={({ field }) => (
                                                             <FormItem className="space-y-1">
-                                                                <FormLabel className="text-[9px] font-black text-slate-400 uppercase">Confirm Identity</FormLabel>
+                                                                <FormLabel className="text-[9px] font-bold text-slate-400 uppercase">Confirm Password</FormLabel>
                                                                 <FormControl>
                                                                     <Input type={showPassword ? "text" : "password"} className="h-10 border-slate-200 rounded-xl bg-slate-50 font-bold" {...field} />
                                                                 </FormControl>
@@ -938,18 +960,18 @@ export default function ProfilePage() {
                                                     />
                                                 </div>
                                                 <div className="flex items-center justify-between pt-1">
-                                                    <Button type="button" variant="ghost" size="sm" onClick={() => setShowPassword(!showPassword)} className="text-[9px] font-black uppercase text-slate-400">
-                                                        {showPassword ? "Obfuscate" : "Reveal Keys"}
+                                                    <Button type="button" variant="ghost" size="sm" onClick={() => setShowPassword(!showPassword)} className="text-[9px] font-bold uppercase text-slate-400">
+                                                        {showPassword ? "Hide Password" : "Show Password"}
                                                     </Button>
                                                 </div>
-                                                <Button type="submit" disabled={passwordLoading} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-[10px] h-12 rounded-2xl shadow-xl shadow-indigo-500/30">
+                                                <Button type="submit" disabled={passwordLoading} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold uppercase tracking-widest text-[10px] h-12 rounded-2xl shadow-xl shadow-indigo-500/30">
                                                     {passwordLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Confirm Reset"}
                                                 </Button>
                                             </form>
                                         </Form>
                                     </DialogContent>
                                 </Dialog>
-                                <Button variant="ghost" className="w-full h-10 justify-center text-[9px] font-black uppercase tracking-widest text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/10 rounded-xl transition-all" onClick={() => signOut()}>
+                                <Button variant="ghost" className="w-full h-10 justify-center text-[9px] font-bold uppercase tracking-widest text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/10 rounded-xl transition-all" onClick={() => signOut()}>
                                     Terminate Session
                                 </Button>
                             </CardContent>
@@ -961,7 +983,7 @@ export default function ProfilePage() {
                 <div className="flex flex-col md:flex-row items-center justify-between pt-4 opacity-20 hover:opacity-100 transition-opacity grayscale border-t border-slate-100 dark:border-slate-800">
                     <div className="flex items-center gap-3">
                         <Fingerprint className="w-3 h-3 text-slate-400" />
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.8em]">Personnel Node Identity</p>
+                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.8em]">Personnel Node Identity</p>
                     </div>
                     <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest italic mt-2 md:mt-0">Protocol Stability v.6.0.0-Compact</p>
                 </div>

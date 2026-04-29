@@ -75,7 +75,7 @@ export default function UserManagementTable({ token, userRole }: { token: string
         const toExport = selectedIds.length > 0 ? users.filter(u => selectedIds.includes(u.id)) : filtered
         if (toExport.length === 0) return toast.error("No data to export")
         
-        const headers = ["Name", "Email", "Role", "Status", "Department", "Designation"]
+        const headers = ["Name", "Email", "Role", "Status", "Department", "Job Title"]
         const rows = toExport.map(u => [
             `"${u.name || ''}"`, `"${u.email || ''}"`, `"${u.role?.name || u.role || ''}"`,
             `"${u.status || ''}"`, `"${u.department?.name || ''}"`, `"${u.designation?.name || ''}"`
@@ -93,30 +93,31 @@ export default function UserManagementTable({ token, userRole }: { token: string
     }
 
     return (
-        <div className="bg-white border border-slate-100 rounded-[32px] overflow-hidden shadow-sm h-full flex flex-col font-body">
+        <div className="bg-white border border-slate-100 rounded-[48px] overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-slate-200/50 transition-all h-full flex flex-col font-body relative">
+            <div className="absolute top-0 right-0 w-full h-[300px] bg-gradient-to-bl from-indigo-50/20 to-transparent pointer-events-none" />
             
-            {/* FUNCTIONAL COMMAND BAR */}
-            <div className="p-6 border-b border-slate-50 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 bg-white shrink-0">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-1 w-full">
+            {/* 🛠️ STRATEGIC COMMAND BAR */}
+            <div className="p-10 border-b border-slate-50 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 bg-white/80 backdrop-blur-md shrink-0 relative z-10">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 flex-1 w-full">
                     <div className="flex-1 w-full max-w-md group">
                         <div className="relative">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-indigo-500 transition-colors" />
+                            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-300 group-focus-within:text-indigo-600 transition-colors" />
                             <Input 
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                placeholder="Search by name or email..."
-                                className="h-12 pl-12 bg-slate-50 border-none rounded-xl text-[11px] font-bold uppercase tracking-widest placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-indigo-100"
+                                placeholder="Search Staff..."
+                                className="h-14 pl-14 bg-slate-50/50 border border-slate-100 rounded-[20px] text-[12px] font-bold placeholder:text-slate-400 focus-visible:ring-4 focus-visible:ring-indigo-50 transition-all"
                             />
                         </div>
-                        <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-2 pl-2">
-                            Showing {filtered.length} of {users.length} employees
+                        <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest mt-3 pl-2">
+                            Count: {filtered.length} of {users.length} People
                         </div>
                     </div>
-                    <div className="hidden sm:flex items-center gap-2">
+                    <div className="hidden sm:flex items-center gap-3">
                         <select 
                             value={deptFilter} 
                             onChange={(e) => setDeptFilter(e.target.value)}
-                            className="h-12 px-4 pr-8 rounded-xl text-[10px] font-black uppercase tracking-widest border-slate-100 bg-white hover:bg-slate-50 text-slate-500 outline-none appearance-none cursor-pointer"
+                            className="h-14 px-6 pr-10 rounded-[20px] text-[10px] font-bold uppercase tracking-widest border border-slate-100 bg-white hover:bg-slate-50 text-slate-500 outline-none appearance-none cursor-pointer transition-all shadow-sm"
                         >
                             <option value="ALL">All Departments</option>
                             {departments.map((d: any) => <option key={d} value={d}>{d}</option>)}
@@ -124,7 +125,7 @@ export default function UserManagementTable({ token, userRole }: { token: string
                         <select 
                             value={statusFilter} 
                             onChange={(e) => setStatusFilter(e.target.value)}
-                            className="h-12 px-4 pr-8 rounded-xl text-[10px] font-black uppercase tracking-widest border-slate-100 bg-white hover:bg-slate-50 text-slate-500 outline-none appearance-none cursor-pointer"
+                            className="h-14 px-6 pr-10 rounded-[20px] text-[10px] font-bold uppercase tracking-widest border border-slate-100 bg-white hover:bg-slate-50 text-slate-500 outline-none appearance-none cursor-pointer transition-all shadow-sm"
                         >
                             <option value="ALL">All Status</option>
                             <option value="ACTIVE">Active</option>
@@ -134,154 +135,123 @@ export default function UserManagementTable({ token, userRole }: { token: string
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3 w-full lg:w-auto justify-end">
-                    {selectedIds.length > 0 && canManage && (
-                        <Button 
-                            onClick={() => setDeleteUser({ bulk: true, count: selectedIds.length })}
-                            className="h-12 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl px-6 text-[10px] font-black uppercase tracking-widest transition-all"
-                        >
-                            <Trash2 className="w-4 h-4 mr-2" />
-                            Delete ({selectedIds.length})
-                        </Button>
-                    )}
-                    <Button onClick={handleExport} variant="outline" className="h-12 px-6 rounded-xl text-[10px] font-black uppercase tracking-widest border-slate-100 hover:bg-slate-50 flex items-center gap-2 text-slate-700">
-                        <FileDown className="w-4 h-4" />
-                        Export
+                <div className="flex items-center gap-4 w-full lg:w-auto justify-end">
+                    <Button onClick={handleExport} variant="outline" className="h-14 px-8 rounded-[20px] text-[10px] font-bold uppercase tracking-widest border-slate-100 hover:bg-slate-900 hover:text-white transition-all flex items-center gap-3 group">
+                        <FileDown className="w-4.5 h-4.5 group-hover:translate-y-0.5 transition-transform" />
+                        Download List
                     </Button>
-                    {/* Only Super Admin / Managers can add employees */}
                     {canManage && (
                         <Button 
                             onClick={() => setIsAddOpen(true)}
-                            className="h-12 bg-slate-900 hover:bg-black text-white rounded-xl px-8 text-[10px] font-black uppercase tracking-widest shadow-xl transition-all active:scale-95 whitespace-nowrap"
+                            className="h-14 bg-indigo-600 hover:bg-black text-white rounded-[20px] px-10 text-[10px] font-bold uppercase tracking-widest shadow-2xl shadow-indigo-100 transition-all active:scale-95 whitespace-nowrap"
                         >
-                            <Plus className="w-4 h-4 mr-2" />
-                            Add Employee
+                            <Plus className="w-5 h-5 mr-2" />
+                            Add New
                         </Button>
                     )}
                 </div>
             </div>
 
-            {/* TABLE MANIFEST - ADDED COLOR DIVERSITY & CLARITY */}
-            <div className="flex-1 overflow-auto custom-scrollbar">
-                <div className="px-8 py-5 grid grid-cols-[40px_1fr_200px_140px_140px] items-center text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-50 sticky top-0 bg-white/80 backdrop-blur-md z-10">
-                    <div className="flex items-center">
-                        <input 
-                            type="checkbox" 
-                            checked={filtered.length > 0 && selectedIds.length === filtered.length}
-                            onChange={handleSelectAll}
-                            className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" 
-                        />
-                    </div>
-                    <span>Employee</span>
-                    <span className="text-center">Role Node</span>
-                    <span className="text-center">Status Matrix</span>
-                    <span className="text-right px-4">Actions</span>
+            {/* 📋 STAFF LIST */}
+            <div className="flex-1 overflow-auto custom-scrollbar relative z-10">
+                <div className="px-12 py-6 grid grid-cols-[1fr_180px] md:grid-cols-[1fr_220px_160px_160px] items-center text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-50 sticky top-0 bg-white/95 backdrop-blur-md z-20 font-brand">
+                    <span>Staff</span>
+                    <span className="hidden md:block text-center">Role</span>
+                    <span className="hidden md:block text-center">Status</span>
+                    <span className="text-right px-6">Actions</span>
                 </div>
 
                 {loading ? (
-                    <div className="h-64 flex flex-col items-center justify-center gap-4 text-slate-400">
-                        <Loader2 className="w-10 h-10 animate-spin text-indigo-600" />
-                        <p className="text-[10px] font-black uppercase tracking-[0.5em]">Syncing database...</p>
+                    <div className="h-80 flex flex-col items-center justify-center gap-8">
+                        <Loader2 className="w-14 h-14 animate-spin text-indigo-600" />
+                        <p className="text-[12px] font-bold uppercase tracking-widest text-slate-300 animate-pulse">Loading Staff...</p>
                     </div>
                 ) : filtered.length === 0 ? (
-                    <div className="h-96 flex flex-col items-center justify-center gap-6">
-                        <div className="w-24 h-24 bg-indigo-50 rounded-[40px] flex items-center justify-center relative">
-                            <div className="absolute inset-0 bg-indigo-500/10 rounded-[40px] animate-ping" />
-                            <ShieldAlert className="w-10 h-10 text-indigo-600 relative z-10" />
+                    <div className="h-[500px] flex flex-col items-center justify-center gap-10">
+                        <div className="w-28 h-28 bg-slate-50 rounded-[48px] flex items-center justify-center relative group">
+                            <div className="absolute inset-0 bg-indigo-500/10 rounded-[48px] animate-ping" />
+                            <ShieldAlert className="w-12 h-12 text-slate-200 relative z-10 group-hover:text-indigo-400 transition-colors" />
                         </div>
-                        <div className="text-center">
-                            <p className="text-[11px] font-black uppercase tracking-[0.5em] text-slate-800">Operational Vacancy</p>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">Strategic reconnaissance found no matching identities</p>
+                        <div className="text-center space-y-4">
+                            <p className="text-[14px] font-bold uppercase tracking-widest text-slate-900 font-brand">No People Found</p>
+                            <p className="text-[11px] font-medium text-slate-400 uppercase tracking-widest">Search found no matching records</p>
                         </div>
                         <Button 
                             onClick={() => setSearch("")}
                             variant="outline" 
-                            className="h-10 px-6 rounded-xl text-[9px] font-black uppercase tracking-widest border-slate-100 hover:bg-slate-50 transition-all"
+                            className="h-12 px-8 rounded-full text-[10px] font-bold uppercase tracking-widest border-slate-100 hover:bg-slate-900 hover:text-white transition-all shadow-sm"
                         >
-                            Reset Registry Filter
+                            Reset Search
                         </Button>
                     </div>
                 ) : (
-                    <div className="divide-y divide-slate-50">
+                    <div className="divide-y divide-slate-50 pb-20">
                         {filtered.map((user, idx) => (
                             <motion.div
                                 key={user.id}
                                 layout
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                whileHover={{ scale: 0.998 }}
-                                className={cn(
-                                    "px-8 py-5 grid grid-cols-[40px_1fr_200px_140px_140px] items-center transition-all group/row border border-transparent hover:bg-indigo-50/50 hover:border-indigo-100"
-                                )}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: idx * 0.02 }}
+                                className="px-12 py-7 grid grid-cols-[1fr_180px] md:grid-cols-[1fr_220px_160px_160px] items-center transition-all group border border-transparent hover:bg-slate-50/50"
                             >
-                                {/* Bulk Selection Checkbox */}
-                                <div className="flex items-center">
-                                    <input 
-                                        type="checkbox" 
-                                        checked={selectedIds.includes(user.id)}
-                                        onChange={() => toggleSelection(user.id)}
-                                        onClick={(e) => e.stopPropagation()}
-                                        className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" 
-                                    />
-                                </div>
-
-                                {/* Employee Info with Diverse Colors */}
-                                <div className="flex items-center gap-5">
+                                {/* Personnel Identity */}
+                                <div className="flex items-center gap-6">
                                     <div className={cn(
-                                        "h-12 w-12 rounded-[18px] border flex items-center justify-center font-black text-sm shrink-0 transition-all",
-                                        getAvatarColor(user.name),
-                                        canManage && "group-hover/row:scale-110"
+                                        "h-14 w-14 rounded-[22px] border flex items-center justify-center font-bold text-lg shrink-0 transition-all group-hover:rotate-6 shadow-sm",
+                                        getAvatarColor(user.name)
                                     )}>
                                         {user.name?.[0]?.toUpperCase() || "U"}
                                     </div>
                                     <div className="min-w-0">
-                                        <p className={cn(
-                                            "text-[14px] font-bold text-slate-900 transition-colors uppercase tracking-tight truncate",
-                                            canManage && "group-hover/row:text-indigo-600 group-hover/row:underline underline-offset-4 decoration-indigo-200"
-                                        )}>{user.name}</p>
-                                        <p className="text-[11px] text-slate-400 font-medium lowercase mt-0.5 truncate">{user.email}</p>
+                                        <p className="text-[17px] font-bold text-slate-800 tracking-tight font-brand truncate leading-none mb-2">
+                                            {user.name}
+                                        </p>
+                                        <div className="flex items-center gap-3">
+                                            <p className="text-[12px] text-slate-500 font-medium truncate">{user.email}</p>
+                                            <div className="w-1 h-1 rounded-full bg-slate-200" />
+                                            <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">{user.id?.split('-')[0]}</p>
+                                        </div>
                                     </div>
                                 </div>
 
-                                {/* Role Manifest with Color Pills */}
-                                <div className="flex justify-center">
-                                    <Badge variant="outline" className="border-indigo-100 bg-indigo-50/30 text-indigo-600/80 text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-xl border-none">
-                                        {user.role?.name || "Member"}
+                                {/* Identity Node */}
+                                <div className="hidden md:flex justify-center">
+                                    <Badge className="bg-slate-50 text-slate-600 border-none text-[10px] font-bold uppercase tracking-widest px-5 py-2 rounded-full shadow-sm">
+                                        {user.role?.name || "Standard Member"}
                                     </Badge>
                                 </div>
 
-                                {/* Status Matrix */}
-                                <div className="flex justify-center">
-                                    <Badge className={cn(
-                                        "text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-xl border-none shadow-none",
-                                        user.status === 'ACTIVE' ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"
-                                    )}>
-                                        {user.status || "ACTIVE"}
-                                    </Badge>
+                                {/* Operations Status */}
+                                <div className="hidden md:flex justify-center">
+                                    <div className="flex items-center gap-3 bg-white px-5 py-2 rounded-full border border-slate-50 shadow-sm">
+                                        <div className={cn("w-2 h-2 rounded-full", user.status === 'ACTIVE' ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.3)]" : "bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.3)]")} />
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-600">{user.status || "ACTIVE"}</span>
+                                    </div>
                                 </div>
 
-                                {/* Professional Actions Hub */}
-                                <div className="flex items-center gap-2 justify-end">
+                                {/* Professional Directives */}
+                                <div className="flex items-center gap-3 justify-end">
                                     <button
                                         onClick={(e) => { e.stopPropagation(); setEditUser(user); }}
-                                        className="h-10 w-10 flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:bg-white rounded-xl transition-all shadow-sm hover:shadow-indigo-50 border border-transparent hover:border-indigo-100"
+                                        className="h-11 w-11 flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:bg-white rounded-[14px] transition-all shadow-sm border border-transparent hover:border-indigo-100"
                                     >
-                                        <Edit3 className="w-4.5 h-4.5" />
+                                        <Edit3 className="w-5 h-5" />
                                     </button>
                                     <button
                                         onClick={(e) => { e.stopPropagation(); setDeleteUser(user); }}
-                                        className="h-10 w-10 flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-white rounded-xl transition-all shadow-sm hover:shadow-rose-50 border border-transparent hover:border-rose-100"
+                                        className="h-11 w-11 flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-white rounded-[14px] transition-all shadow-sm border border-transparent hover:border-rose-100"
                                     >
-                                        <Trash2 className="w-4.5 h-4.5" />
+                                        <Trash2 className="w-5 h-5" />
                                     </button>
                                     <button 
                                         onClick={(e) => {
                                             e.stopPropagation()
                                             router.push(`/admin?tab=employee-details&userId=${user.id}`)
                                         }}
-                                        className="ml-2 w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center group-hover/row:bg-indigo-600 group-hover/row:border-indigo-600 transition-all shadow-sm"
+                                        className="ml-2 w-11 h-11 rounded-[14px] bg-slate-900 border border-slate-900 flex items-center justify-center text-white transition-all shadow-xl shadow-slate-100 active:scale-95"
                                     >
-                                        <ChevronRight className="w-5 h-5 text-slate-300 group-hover/row:text-white transition-all" />
+                                        <ChevronRight className="w-5 h-5" />
                                     </button>
                                 </div>
                             </motion.div>
@@ -290,104 +260,97 @@ export default function UserManagementTable({ token, userRole }: { token: string
                 )}
             </div>
 
-            {/* FOOTER */}
-            <div className="p-8 border-t border-slate-50 bg-white flex justify-between items-center px-10 shrink-0">
-                <div className="flex items-center gap-4">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">
-                        {filtered.length} of {users.length} Personnel Manifested
-                    </span>
-                    <div className="hidden sm:block w-1.5 h-1.5 rounded-full bg-slate-200" />
-                    <span className="hidden sm:flex text-[10px] font-black text-emerald-500 uppercase tracking-widest items-center gap-2">
-                         Node Healthy
-                    </span>
+            {/* SYNC FOOTER */}
+            <div className="p-10 border-t border-slate-50 bg-white/80 backdrop-blur-md flex justify-between items-center px-12 shrink-0 relative z-10">
+                <div className="flex items-center gap-10">
+                    <div className="flex items-center gap-3">
+                        <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest">
+                            Total Staff: <span className="text-slate-800 font-brand font-bold text-[13px]">{filtered.length}</span> / {users.length} People
+                        </span>
+                    </div>
+                    <div className="hidden lg:flex items-center gap-3 bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-100">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="text-[9px] font-bold text-emerald-700 uppercase tracking-widest">Online</span>
+                    </div>
                 </div>
                 
-                <div className="flex items-center gap-2 hidden lg:flex">
-                    <Button variant="outline" size="sm" className="h-8 w-8 p-0 rounded-lg border-slate-100 text-slate-400 hover:text-slate-900">1</Button>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg text-slate-400 hover:text-slate-900">2</Button>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg text-slate-400 hover:text-slate-900">3</Button>
-                    <span className="text-slate-300 mx-1">...</span>
+                <div className="flex items-center gap-4">
+                    <button onClick={fetchUsers} className="flex items-center gap-3 text-[10px] font-bold text-indigo-600 uppercase tracking-widest transition-all hover:scale-105 active:scale-95 group bg-white border border-indigo-100 px-6 py-3 rounded-full hover:bg-indigo-50 shadow-sm">
+                        <RefreshCcw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-700" />
+                        Refresh List
+                    </button>
                 </div>
-
-                <button onClick={fetchUsers} className="flex items-center gap-3 text-[10px] font-black text-indigo-600 uppercase tracking-widest transition-all hover:scale-105 active:scale-95 group">
-                    <RefreshCcw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-700" />
-                    Sync Node
-                </button>
             </div>
 
             <AnimatePresence>
                 {(isAddOpen || editUser || deleteUser) && (
-                    <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-                        {(isAddOpen || editUser) && (
-                            <AddEmployeeModal 
-                                token={token} 
-                                employee={editUser} 
-                                onClose={() => {
-                                    setEditUser(null);
-                                    setIsAddOpen(false);
-                                }} 
-                                onSuccess={() => {
-                                    setEditUser(null);
-                                    setIsAddOpen(false);
-                                    fetchUsers();
-                                }} 
-                            />
-                        )}
-                        {deleteUser && (
-                            <motion.div 
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                className="bg-white rounded-[32px] p-10 max-w-md w-full border border-slate-100 shadow-2xl"
-                            >
-                                <div className="w-20 h-20 bg-rose-50 rounded-[32px] flex items-center justify-center mb-6 mx-auto">
-                                    <ShieldAlert className="w-10 h-10 text-rose-600" />
-                                </div>
-                                <h3 className="text-xl font-black text-slate-900 text-center uppercase tracking-tight mb-2">Delete Account{deleteUser.bulk ? 's' : ''}?</h3>
-                                <p className="text-sm text-slate-500 text-center mb-8 font-medium">
-                                    This action will permanently remove <span className="font-bold text-slate-900">{deleteUser.bulk ? `${deleteUser.count} employees` : deleteUser.name}</span> from the system registry. This cannot be undone.
-                                </p>
-                                
-                                <div className="grid grid-cols-2 gap-4">
-                                    <Button 
-                                        variant="outline"
-                                        onClick={() => setDeleteUser(null)}
-                                        className="h-14 rounded-2xl text-[10px] font-black uppercase tracking-widest border-slate-100"
-                                    >
-                                        Cancel
-                                    </Button>
-                                    <Button 
-                                        onClick={async () => {
-                                            try {
-                                                if (deleteUser.bulk) {
-                                                    await Promise.all(selectedIds.map(id => 
-                                                        fetch(`${API}/admin/users/${id}`, { method: 'DELETE', headers: { "Authorization": `Bearer ${token}` }})
-                                                    ))
-                                                    toast.success(`${selectedIds.length} identities purged from manifest`)
-                                                    setSelectedIds([])
-                                                } else {
+                    <div className="fixed inset-0 z-[300] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md">
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="w-full max-w-4xl max-h-[90vh] overflow-hidden"
+                        >
+                            {(isAddOpen || editUser) && (
+                                <AddEmployeeModal 
+                                    token={token} 
+                                    employee={editUser} 
+                                    onClose={() => {
+                                        setEditUser(null);
+                                        setIsAddOpen(false);
+                                    }} 
+                                    onSuccess={() => {
+                                        setEditUser(null);
+                                        setIsAddOpen(false);
+                                        fetchUsers();
+                                    }} 
+                                />
+                            )}
+                            {deleteUser && (
+                                <div className="bg-white rounded-[48px] p-12 max-w-md mx-auto border border-slate-100 shadow-[0_32px_80px_rgba(0,0,0,0.1)]">
+                                    <div className="w-24 h-24 bg-rose-50 rounded-[32px] flex items-center justify-center mb-10 mx-auto">
+                                        <ShieldAlert className="w-12 h-12 text-rose-600" />
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-slate-900 text-center tracking-tight font-brand mb-4 leading-none">Delete Staff Member?</h3>
+                                    <p className="text-[13px] text-slate-500 text-center mb-10 font-medium leading-relaxed">
+                                        You are about to remove <span className="font-bold text-slate-900 uppercase">{deleteUser.name}</span>. This cannot be undone.
+                                    </p>
+                                    
+                                    <div className="grid grid-cols-2 gap-6">
+                                        <Button 
+                                            variant="outline"
+                                            onClick={() => setDeleteUser(null)}
+                                            className="h-16 rounded-[22px] text-[10px] font-bold uppercase tracking-widest border-slate-100 hover:bg-slate-50 transition-all"
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <Button 
+                                            onClick={async () => {
+                                                try {
                                                     const res = await fetch(`${API}/admin/users/${deleteUser.id}`, {
                                                         method: 'DELETE',
                                                         headers: { "Authorization": `Bearer ${token}` }
                                                     })
                                                     if (!res.ok) throw new Error()
-                                                    toast.success("Identity purged from manifest")
+                                                    toast.success("Employee deleted")
+                                                    setDeleteUser(null)
+                                                    fetchUsers()
+                                                } catch {
+                                                    toast.error("Operation failed")
                                                 }
-                                                setDeleteUser(null)
-                                                fetchUsers()
-                                            } catch {
-                                                toast.error("Operation failed")
-                                            }
-                                        }}
-                                        className="h-14 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-rose-600/20"
-                                    >
-                                        Delete Forever
-                                    </Button>
+                                            }}
+                                            className="h-16 bg-rose-600 hover:bg-black text-white rounded-[22px] text-[10px] font-bold uppercase tracking-widest shadow-2xl shadow-rose-100 transition-all"
+                                        >
+                                            Confirm Delete
+                                        </Button>
+                                    </div>
                                 </div>
-                            </motion.div>
-                        )}
+                            )}
+                        </motion.div>
                     </div>
                 )}
             </AnimatePresence>
         </div>
     )
 }
+

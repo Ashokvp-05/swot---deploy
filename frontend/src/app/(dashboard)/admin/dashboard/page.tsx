@@ -22,7 +22,7 @@ export default function AdminDashboardPage() {
                 <div className="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center">
                     <ShieldCheck className="w-8 h-8 text-rose-500" />
                 </div>
-                <h2 className="text-xl font-black text-slate-900 uppercase">Access Denied</h2>
+                <h2 className="text-xl font-bold text-slate-900 uppercase">Access Denied</h2>
                 <p className="text-sm text-slate-500 font-medium">Elevated administrative privileges required to view the Command Center.</p>
                 <Button variant="outline" onClick={() => window.location.href = '/dashboard'}>Return to Dashboard</Button>
             </div>

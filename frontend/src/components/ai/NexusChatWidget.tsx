@@ -32,7 +32,8 @@ export function NexusChatWidget({ token }: { token: string }) {
         setLoading(true)
 
         try {
-            const res = await fetch("http://localhost:4000/api/ai/chat", {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api"
+            const res = await fetch(`${apiUrl}/ai/chat`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

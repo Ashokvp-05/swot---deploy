@@ -133,7 +133,7 @@ export default function EmployeeAttendanceCard({ token }: { token: string }) {
 
                 {/* Clock Display */}
                 <div className="space-y-1">
-                    <h2 className="text-3xl font-black tracking-tight tabular-nums font-mono text-foreground">{elapsed}</h2>
+                    <h2 className="text-3xl font-bold tracking-tight tabular-nums font-mono text-foreground">{elapsed}</h2>
                     <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">
                         {status === 'ACTIVE' ? 'Shift Active' : status === 'LOADING' ? 'Synchronizing...' : 'Session Ended'}
                     </p>

@@ -22,7 +22,7 @@ export default async function AttendancePage() {
                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-700" />
                 </div>
                 <div>
-                    <h1 className="text-4xl font-black tracking-tight text-white uppercase italic font-brand leading-none mb-1">Chronos Engine</h1>
+                    <h1 className="text-4xl font-bold tracking-tight text-white uppercase italic font-brand leading-none mb-1">Chronos Engine</h1>
                     <p className="text-slate-500 font-bold text-xs uppercase tracking-widest opacity-80">Synchronize human resources across operational timelines.</p>
                 </div>
             </div>

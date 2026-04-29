@@ -379,35 +379,35 @@ export default function PayrollPage() {
                         <DollarSign className="w-8 h-8 text-white" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic">Financial Operations</h1>
+                        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white uppercase italic">Financial Operations</h1>
                         <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Enterprise-grade payroll disbursement and audit control.</p>
                     </div>
                 </div>
                 <div className="relative z-10 flex gap-4">
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-[10px] font-black uppercase text-emerald-600 dark:text-emerald-400">Ledger Balanced</span>
+                        <span className="text-[10px] font-bold uppercase text-emerald-600 dark:text-emerald-400">Ledger Balanced</span>
                     </div>
                 </div>
             </div>
 
             <Tabs defaultValue="batches" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 h-14 rounded-[1.5rem] bg-slate-100 dark:bg-slate-900 p-1 mb-8">
-                    <TabsTrigger value="batches" className="rounded-2xl h-12 font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-lg">Batch Operations</TabsTrigger>
-                    <TabsTrigger value="individual" className="rounded-2xl h-12 font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-lg">Individual Management</TabsTrigger>
+                    <TabsTrigger value="batches" className="rounded-2xl h-12 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-lg">Batch Operations</TabsTrigger>
+                    <TabsTrigger value="individual" className="rounded-2xl h-12 font-bold uppercase text-[10px] tracking-widest data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-lg">Individual Management</TabsTrigger>
                 </TabsList>
 
                 {/* --- BATCH OPERATIONS TAB --- */}
                 <TabsContent value="batches" className="space-y-6">
                     <div className="flex justify-between items-center bg-white dark:bg-slate-950 p-6 rounded-[2rem] shadow-xl border border-indigo-50/50 dark:border-indigo-900/20">
                         <div>
-                            <h3 className="text-xl font-black text-slate-900 dark:text-white">Active Payroll Cycles</h3>
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-white">Active Payroll Cycles</h3>
                             <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Manage monthly disbursement cycles</p>
                         </div>
                         {canGenerate && (
                             <Button
                                 onClick={() => setShowCreateBatchModal(true)}
-                                className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl h-12 px-6 font-black uppercase text-[10px] tracking-widest shadow-lg shadow-indigo-600/20"
+                                className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl h-12 px-6 font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-indigo-600/20"
                             >
                                 <Plus className="w-4 h-4 mr-2" /> Initialize Batch
                             </Button>
@@ -425,16 +425,16 @@ export default function PayrollPage() {
                                             </div>
                                             <div>
                                                 <div className="flex items-center gap-3">
-                                                    <h3 className="text-xl font-black uppercase tracking-tight text-slate-900 dark:text-white">{batch.month} {batch.year}</h3>
-                                                    <Badge variant="outline" className={cn("rounded-lg px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.2em]", getStatusColor(batch.status))}>
+                                                    <h3 className="text-xl font-bold uppercase tracking-tight text-slate-900 dark:text-white">{batch.month} {batch.year}</h3>
+                                                    <Badge variant="outline" className={cn("rounded-lg px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.2em]", getStatusColor(batch.status))}>
                                                         {batch.status}
                                                     </Badge>
                                                 </div>
                                                 <div className="flex items-center gap-6 mt-2.5">
-                                                    <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] flex items-center gap-2">
+                                                    <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] flex items-center gap-2">
                                                         <Users className="w-3.5 h-3.5" /> {batch.payslipCount || 0} Entities
                                                     </span>
-                                                    <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] flex items-center gap-2">
+                                                    <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] flex items-center gap-2">
                                                         <DollarSign className="w-3.5 h-3.5" /> Managed Cycle
                                                     </span>
                                                 </div>
@@ -447,7 +447,7 @@ export default function PayrollPage() {
                                                 <Button
                                                     onClick={() => handleBatchAction(batch.id, 'generate')}
                                                     disabled={processingBatch === batch.id}
-                                                    className="h-10 px-6 rounded-xl bg-slate-900 text-white font-black uppercase text-[9px] tracking-widest shadow-lg hover:bg-slate-800"
+                                                    className="h-10 px-6 rounded-xl bg-slate-900 text-white font-bold uppercase text-[9px] tracking-widest shadow-lg hover:bg-slate-800"
                                                 >
                                                     {processingBatch === batch.id ? <Loader2 className="w-3 h-3 animate-spin mr-2" /> : <Zap className="w-3 h-3 mr-2 text-yellow-400" />}
                                                     Run Calculation
@@ -458,7 +458,7 @@ export default function PayrollPage() {
                                                     onClick={() => handleBatchAction(batch.id, 'approve')}
                                                     disabled={processingBatch === batch.id}
                                                     variant="outline"
-                                                    className="h-10 px-6 rounded-xl font-black uppercase text-[9px] tracking-widest border-indigo-200 text-indigo-600 hover:bg-indigo-50"
+                                                    className="h-10 px-6 rounded-xl font-bold uppercase text-[9px] tracking-widest border-indigo-200 text-indigo-600 hover:bg-indigo-50"
                                                 >
                                                     <CheckCircle2 className="w-3 h-3 mr-2" /> Approve
                                                 </Button>
@@ -467,7 +467,7 @@ export default function PayrollPage() {
                                                 <Button
                                                     onClick={() => handleBatchAction(batch.id, 'lock')}
                                                     disabled={processingBatch === batch.id}
-                                                    className="h-10 px-6 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-black uppercase text-[9px] tracking-widest shadow-lg shadow-amber-500/20"
+                                                    className="h-10 px-6 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold uppercase text-[9px] tracking-widest shadow-lg shadow-amber-500/20"
                                                 >
                                                     <Lock className="w-3 h-3 mr-2" /> Lock & Finalize
                                                 </Button>
@@ -476,13 +476,13 @@ export default function PayrollPage() {
                                                 <Button
                                                     onClick={() => handleBatchAction(batch.id, 'release')}
                                                     disabled={processingBatch === batch.id}
-                                                    className="h-10 px-6 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black uppercase text-[9px] tracking-widest shadow-lg shadow-emerald-500/20"
+                                                    className="h-10 px-6 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold uppercase text-[9px] tracking-widest shadow-lg shadow-emerald-500/20"
                                                 >
                                                     <Send className="w-3 h-3 mr-2" /> Release Payments
                                                 </Button>
                                             )}
                                             {batch.status === 'RELEASED' && (
-                                                <Button disabled variant="ghost" className="h-10 px-6 rounded-xl font-black uppercase text-[9px] tracking-widest text-emerald-600 opacity-100">
+                                                <Button disabled variant="ghost" className="h-10 px-6 rounded-xl font-bold uppercase text-[9px] tracking-widest text-emerald-600 opacity-100">
                                                     <CheckCircle2 className="w-4 h-4 mr-2" /> Disbursed
                                                 </Button>
                                             )}
@@ -549,7 +549,7 @@ export default function PayrollPage() {
                                             variant="ghost"
                                             size="sm"
                                             onClick={() => setShowAdvanced(!showAdvanced)}
-                                            className="w-full text-[10px] font-black uppercase tracking-tighter text-slate-400 hover:text-indigo-600 mb-2"
+                                            className="w-full text-[10px] font-bold uppercase tracking-tighter text-slate-400 hover:text-indigo-600 mb-2"
                                         >
                                             {showAdvanced ? "Hide Individual Breakdown" : "Edit Detailed Breakdown"}
                                         </Button>
@@ -584,11 +584,11 @@ export default function PayrollPage() {
                                         )}
                                     </div>
                                     <div className="pt-4 space-y-3">
-                                        <Button type="submit" className="w-full bg-slate-900 text-white font-black uppercase tracking-widest h-12 rounded-xl" disabled={uploading || !file}>
+                                        <Button type="submit" className="w-full bg-slate-900 text-white font-bold uppercase tracking-widest h-12 rounded-xl" disabled={uploading || !file}>
                                             {uploading ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : <UploadCloud className="mr-2 h-4 w-4" />} Manual Upload
                                         </Button>
-                                        <div className="relative flex justify-center text-[10px] uppercase font-black text-slate-400 bg-white dark:bg-slate-900 px-2 tracking-widest">or use intelligence</div>
-                                        <Button type="button" onClick={handleGenerate} className="w-full bg-white text-indigo-600 border-2 border-indigo-100 font-black uppercase tracking-widest h-12 rounded-xl" disabled={generating}>
+                                        <div className="relative flex justify-center text-[10px] uppercase font-bold text-slate-400 bg-white dark:bg-slate-900 px-2 tracking-widest">or use intelligence</div>
+                                        <Button type="button" onClick={handleGenerate} className="w-full bg-white text-indigo-600 border-2 border-indigo-100 font-bold uppercase tracking-widest h-12 rounded-xl" disabled={generating}>
                                             {generating ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : <Zap className="mr-2 h-4 w-4" />} Generate & Save
                                         </Button>
                                     </div>
@@ -599,7 +599,7 @@ export default function PayrollPage() {
                         <Card className="lg:col-span-2 border-indigo-50/50 dark:border-indigo-900/20 shadow-2xl bg-white dark:bg-slate-950 rounded-3xl overflow-hidden">
                             <CardHeader className="bg-slate-50/50 dark:bg-black/20 border-b border-border/50 flex flex-row items-center justify-between">
                                 <div>
-                                    <CardTitle className="text-xl font-black tracking-tight">Financial Stream Log</CardTitle>
+                                    <CardTitle className="text-xl font-bold tracking-tight">Financial Stream Log</CardTitle>
                                     <CardDescription>History of all payroll transactions</CardDescription>
                                 </div>
                                 <div className="flex items-center gap-3">
@@ -616,19 +616,19 @@ export default function PayrollPage() {
                                             <div className="flex items-center gap-5">
                                                 <div className="h-12 w-12 bg-indigo-50 rounded-2xl flex items-center justify-center"><FileText className="h-6 w-6 text-indigo-600" /></div>
                                                 <div>
-                                                    <p className="font-black text-slate-900">{slip.user?.name}</p>
+                                                    <p className="font-bold text-slate-900">{slip.user?.name}</p>
                                                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{slip.month} {slip.year} • {slip.amount}</p>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-3">
-                                                <Badge className={`rounded-lg px-2 py-0.5 text-[10px] font-black uppercase tracking-tighter ${slip.status === 'RELEASED' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-amber-50 text-amber-600 border-amber-100'}`}>
+                                                <Badge className={`rounded-lg px-2 py-0.5 text-[10px] font-bold uppercase tracking-tighter ${slip.status === 'RELEASED' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-amber-50 text-amber-600 border-amber-100'}`}>
                                                     {slip.status}
                                                 </Badge>
                                                 {slip.status === 'DRAFT' && (
                                                     <Button
                                                         size="sm"
                                                         onClick={() => handleRelease(slip.id)}
-                                                        className="h-8 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-black text-[10px] uppercase tracking-widest px-4 shadow-lg shadow-indigo-200"
+                                                        className="h-8 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[10px] uppercase tracking-widest px-4 shadow-lg shadow-indigo-200"
                                                     >
                                                         <Send className="w-3 h-3 mr-1.5" /> Release
                                                     </Button>
@@ -647,13 +647,13 @@ export default function PayrollPage() {
             <Dialog open={showCreateBatchModal} onOpenChange={setShowCreateBatchModal}>
                 <DialogContent className="max-w-md bg-white dark:bg-slate-900 rounded-[2.5rem] border-none p-10 dark:text-white">
                     <DialogHeader>
-                        <DialogTitle className="text-2xl font-black">Initialize Batch</DialogTitle>
+                        <DialogTitle className="text-2xl font-bold">Initialize Batch</DialogTitle>
                         <DialogDescription className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Quantum Payroll Infrastructure</DialogDescription>
                     </DialogHeader>
                     <div className="space-y-6 pt-6">
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Month</label>
+                                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Month</label>
                                 <Select onValueChange={(v) => setNewBatch({ ...newBatch, month: v })}>
                                     <SelectTrigger className="h-12 rounded-2xl border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-white/5 font-bold">
                                         <SelectValue placeholder="Month" />
@@ -666,7 +666,7 @@ export default function PayrollPage() {
                                 </Select>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Year</label>
+                                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Year</label>
                                 <Input
                                     type="number"
                                     value={newBatch.year}
@@ -680,7 +680,7 @@ export default function PayrollPage() {
                         <Button
                             onClick={handleCreateBatch}
                             disabled={creatingBatch}
-                            className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-indigo-600/20"
+                            className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold uppercase text-[10px] tracking-widest shadow-xl shadow-indigo-600/20"
                         >
                             {creatingBatch ? "Connecting..." : "Confirm & Initialize"}
                         </Button>

@@ -87,9 +87,9 @@ export default function EmployeeDetailsModule({ token, userRole }: { token: stri
                         <Network className="w-7 h-7" />
                     </div>
                     <div>
-                        <h3 className="text-2xl font-black text-slate-900 tracking-tighter italic uppercase font-brand leading-none">Personnel <span className="text-emerald-500">Directory</span></h3>
-                        <p className="text-[10px] font-black text-slate-400 font-brand uppercase tracking-[0.2em] mt-2.5">
-                            {users.length} Active Identity Nodes · Secure Registry
+                        <h3 className="text-2xl font-bold text-slate-800 font-brand leading-none">Personnel Directory</h3>
+                        <p className="text-slate-500 font-medium text-[11px] mt-2.5">
+                            {users.length} Active Employees
                         </p>
                     </div>
                 </div>
@@ -101,7 +101,7 @@ export default function EmployeeDetailsModule({ token, userRole }: { token: stri
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Search by name, email, or department..."
-                            className="h-14 pl-14 bg-slate-50/80 border-none rounded-2xl text-[11px] font-black uppercase tracking-widest placeholder:text-slate-400 focus-visible:ring-4 focus-visible:ring-emerald-100"
+                            className="h-14 pl-14 bg-slate-50/80 border-none rounded-2xl text-[11px] font-bold uppercase tracking-widest placeholder:text-slate-400 focus-visible:ring-4 focus-visible:ring-emerald-100"
                         />
                     </div>
                 </div>
@@ -140,14 +140,14 @@ export default function EmployeeDetailsModule({ token, userRole }: { token: stri
                                                 )}
                                             </div>
                                             <div>
-                                                <h4 className="text-[14px] font-black text-slate-900 tracking-tight leading-tight group-hover:text-emerald-600 transition-colors">{user.name}</h4>
-                                                <Badge className="mt-2 bg-slate-100 text-slate-500 hover:bg-slate-200 border-none px-2.5 py-0.5 rounded-md text-[8px] font-black uppercase tracking-widest">
+                                                <h4 className="text-[14px] font-bold text-slate-800 tracking-tight leading-tight group-hover:text-emerald-600 transition-colors">{user.name}</h4>
+                                                <Badge className="mt-2 bg-slate-100 text-slate-500 hover:bg-slate-200 border-none px-2.5 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-widest">
                                                     {roleName || "Employee"}
                                                 </Badge>
                                                 {user.isLive && (
                                                     <div className="mt-2 flex items-center gap-1.5">
                                                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                                        <span className="text-[8px] font-black text-emerald-600 uppercase tracking-widest">Live Now</span>
+                                                        <span className="text-[8px] font-bold text-emerald-600 uppercase tracking-widest">Live Now</span>
                                                     </div>
                                                 )}
                                             </div>
@@ -171,7 +171,7 @@ export default function EmployeeDetailsModule({ token, userRole }: { token: stri
                                         <div className="mt-6 pt-5 border-t border-slate-50 flex items-center justify-between relative z-10">
                                             <div className="flex items-center gap-2">
                                                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                                <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Secure Node</span>
+                                                <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Verified Employee</span>
                                             </div>
                                             <div className="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-emerald-500 group-hover:text-white transition-all">
                                                 <Eye className="w-4 h-4" />

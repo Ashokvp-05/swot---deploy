@@ -56,7 +56,7 @@ export function TeamStatusMonitor({ remoteUsers }: { remoteUsers: TeamMemberStat
                             <div className="absolute inset-0 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-3xl animate-[spin_10s_linear_infinite]" />
                         </div>
                         <div className="space-y-2">
-                            <p className="text-slate-900 dark:text-white text-base font-black uppercase tracking-[0.2em]">
+                            <p className="text-slate-900 dark:text-white text-base font-bold uppercase tracking-[0.2em]">
                                 {searchQuery ? "No Matches detected" : "Operational Silence"}
                             </p>
                             <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-loose max-w-[280px] mx-auto opacity-70">
@@ -76,7 +76,7 @@ export function TeamStatusMonitor({ remoteUsers }: { remoteUsers: TeamMemberStat
                                 <div className="relative">
                                     <Avatar className="h-14 w-14 border-2 border-white dark:border-slate-800 shadow-xl ring-2 ring-slate-100 dark:ring-white/5 transition-transform group-hover:scale-105 duration-500">
                                         <AvatarImage src={`https://api.dicebear.com/7.x/notionists/svg?seed=${user.name}`} />
-                                        <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-indigo-700 text-white font-black text-lg">
+                                        <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-indigo-700 text-white font-bold text-lg">
                                             {user.name.charAt(0)}
                                         </AvatarFallback>
                                     </Avatar>
@@ -87,10 +87,10 @@ export function TeamStatusMonitor({ remoteUsers }: { remoteUsers: TeamMemberStat
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 mb-1">
-                                        <p className="text-base font-black text-slate-900 dark:text-white uppercase tracking-tight truncate">
+                                        <p className="text-base font-bold text-slate-900 dark:text-white uppercase tracking-tight truncate">
                                             {user.name}
                                         </p>
-                                        <Badge variant="outline" className="text-[8px] font-black uppercase border-slate-200 dark:border-slate-800 h-4">
+                                        <Badge variant="outline" className="text-[8px] font-bold uppercase border-slate-200 dark:border-slate-800 h-4">
                                             {user.department || "Resource"}
                                         </Badge>
                                     </div>
@@ -99,7 +99,7 @@ export function TeamStatusMonitor({ remoteUsers }: { remoteUsers: TeamMemberStat
                                             <Clock className="w-3.5 h-3.5 text-indigo-500" />
                                             <span suppressHydrationWarning>Logged: {new Date(user.clockIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                         </div>
-                                        <div className="flex items-center gap-1.5 text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest px-2 py-0.5 rounded-lg bg-slate-100/50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5">
+                                        <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-widest px-2 py-0.5 rounded-lg bg-slate-100/50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5">
                                             {user.location ? <MapPin className="w-3 h-3 text-emerald-500" /> : <Building className="w-3 h-3 text-blue-500" />}
                                             {user.location || "Office HQ"}
                                         </div>

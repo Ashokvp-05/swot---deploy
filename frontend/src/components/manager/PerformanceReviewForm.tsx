@@ -95,8 +95,8 @@ export default function PerformanceReviewForm({ token, userId, userName, onClose
                             <Target className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-black text-white italic uppercase tracking-tight">Performance Audit</h3>
-                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none mt-1">Personnel Identity: {userName}</p>
+                            <h3 className="text-xl font-bold text-white italic uppercase tracking-tight">Performance Audit</h3>
+                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none mt-1">Personnel Identity: {userName}</p>
                         </div>
                     </div>
                     <Button size="icon" variant="ghost" className="text-slate-500 hover:text-white" onClick={onClose}>
@@ -107,7 +107,7 @@ export default function PerformanceReviewForm({ token, userId, userName, onClose
                 <div className="p-10 space-y-10 max-h-[70vh] overflow-y-auto custom-scrollbar">
                     {/* REVIEW CYCLE */}
                     <div className="space-y-4">
-                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-1">Review Temporal Cycle</label>
+                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] px-1">Review Temporal Cycle</label>
                         <Input
                             className="h-14 bg-slate-950 border-white/5 rounded-2xl px-6 text-sm font-bold text-white placeholder:text-slate-800"
                             placeholder="e.g. Q1 2026, Annual Review 2025"
@@ -119,7 +119,7 @@ export default function PerformanceReviewForm({ token, userId, userName, onClose
                     {/* KPI RATINGS */}
                     <div className="space-y-6">
                         <div className="flex items-center justify-between px-1">
-                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Objective Metrics (KPIs)</label>
+                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">Objective Metrics (KPIs)</label>
                             <span className="text-[9px] font-bold text-slate-600 uppercase tracking-widest text-right">Scale: 1 (Deficient) - 5 (Exceptional)</span>
                         </div>
 
@@ -131,7 +131,7 @@ export default function PerformanceReviewForm({ token, userId, userName, onClose
                             <div key={kpi.id} className="p-6 bg-slate-950 rounded-[30px] border border-white/5 space-y-6">
                                 <div className="flex items-start justify-between">
                                     <div className="space-y-1">
-                                        <h4 className="text-sm font-black text-white uppercase tracking-wider">{kpi.name}</h4>
+                                        <h4 className="text-sm font-bold text-white uppercase tracking-wider">{kpi.name}</h4>
                                         <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest italic leading-relaxed">{kpi.description}</p>
                                     </div>
                                     <div className="flex gap-2">
@@ -139,7 +139,7 @@ export default function PerformanceReviewForm({ token, userId, userName, onClose
                                             <button
                                                 key={v}
                                                 onClick={() => setRatings({ ...ratings, [kpi.id]: v })}
-                                                className={`w-10 h-10 rounded-xl font-black text-xs transition-all ${ratings[kpi.id] === v ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'bg-slate-900 text-slate-500 hover:text-white border border-white/5'}`}
+                                                className={`w-10 h-10 rounded-xl font-bold text-xs transition-all ${ratings[kpi.id] === v ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'bg-slate-900 text-slate-500 hover:text-white border border-white/5'}`}
                                             >
                                                 {v}
                                             </button>
@@ -158,7 +158,7 @@ export default function PerformanceReviewForm({ token, userId, userName, onClose
 
                     {/* OVERALL COMMENTS */}
                     <div className="space-y-4">
-                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-1">Executive Summary / Future Velocity</label>
+                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] px-1">Executive Summary / Future Velocity</label>
                         <Textarea
                             className="bg-slate-950 border-white/5 rounded-2xl min-h-[120px] p-6 text-xs font-bold leading-relaxed resize-none focus:ring-1 focus:ring-rose-500"
                             placeholder="Detail overall performance impact and developmental vectors..."
@@ -169,11 +169,11 @@ export default function PerformanceReviewForm({ token, userId, userName, onClose
                 </div>
 
                 <div className="p-8 bg-slate-950/40 border-t border-white/5 flex gap-4">
-                    <Button variant="ghost" className="flex-1 h-14 rounded-2xl text-[10px] font-black uppercase tracking-widest" onClick={onClose}>Abort Audit</Button>
+                    <Button variant="ghost" className="flex-1 h-14 rounded-2xl text-[10px] font-bold uppercase tracking-widest" onClick={onClose}>Abort Audit</Button>
                     <Button
                         disabled={loading}
                         onClick={handleSubmit}
-                        className="flex-[2] h-14 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest gap-2 shadow-xl shadow-rose-600/20"
+                        className="flex-[2] h-14 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl text-[10px] font-bold uppercase tracking-widest gap-2 shadow-xl shadow-rose-600/20"
                     >
                         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                         Finalize Performance Review

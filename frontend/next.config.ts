@@ -48,6 +48,25 @@ const nextConfig: NextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
+
+  async rewrites() {
+    const backendUrl = process.env.INTERNAL_BACKEND_URL || 'http://127.0.0.1:4000';
+    
+    return {
+      beforeFiles: [
+        {
+          source: '/ws',
+          destination: `${backendUrl}/ws`, // Next.js handles ws proxying correctly
+        }
+      ],
+      fallback: [
+        {
+          source: '/api/:path*',
+          destination: `${backendUrl}/api/:path*`,
+        }
+      ]
+    };
+  },
 };
 
 export default nextConfig;

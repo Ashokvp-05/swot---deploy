@@ -57,7 +57,7 @@ export default function HistoryPage() {
             <div className="flex items-center justify-center min-h-[60vh]">
                 <div className="flex flex-col items-center gap-4">
                     <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Loading History...</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Loading History...</p>
                 </div>
             </div>
         )
@@ -72,12 +72,12 @@ export default function HistoryPage() {
                     <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-indigo-200">
                         <Zap className="w-4 h-4" />
                     </div>
-                    <h1 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter italic">
+                    <h1 className="text-3xl font-bold text-slate-900 dark:text-white uppercase tracking-tighter italic">
                         Activity <span className="text-indigo-600">History</span>
                     </h1>
                     <div className="flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/30 px-3 py-1 rounded-full border border-emerald-100 dark:border-emerald-800/50">
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-[8px] font-black text-emerald-600 uppercase tracking-widest">Live Feed</span>
+                        <span className="text-[8px] font-bold text-emerald-600 uppercase tracking-widest">Live Feed</span>
                     </div>
                 </div>
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-11">
@@ -90,10 +90,10 @@ export default function HistoryPage() {
                 <CardHeader className="p-8 border-b border-slate-50 dark:border-white/5 bg-slate-50/30 dark:bg-white/5">
                     <div className="flex justify-between items-center">
                         <div className="space-y-1">
-                            <CardTitle className="text-[11px] font-black uppercase tracking-widest text-slate-900 dark:text-white">Timeline</CardTitle>
+                            <CardTitle className="text-[11px] font-bold uppercase tracking-widest text-slate-900 dark:text-white">Timeline</CardTitle>
                             <p className="text-[9px] font-medium text-slate-400 uppercase tracking-widest italic">A simple record of what happened in the system</p>
                         </div>
-                        <Badge variant="outline" className="rounded-full px-4 py-1 border-indigo-100 text-indigo-600 text-[9px] font-black uppercase">
+                        <Badge variant="outline" className="rounded-full px-4 py-1 border-indigo-100 text-indigo-600 text-[9px] font-bold uppercase">
                             {activities.length} Entries
                         </Badge>
                     </div>
@@ -112,7 +112,7 @@ export default function HistoryPage() {
                                     >
                                         {/* TIME COLUMN */}
                                         <div className="w-24 shrink-0 flex flex-col pt-1">
-                                            <span className="text-[11px] font-black text-slate-900 dark:text-white uppercase">
+                                            <span className="text-[11px] font-bold text-slate-900 dark:text-white uppercase">
                                                 {format(new Date(activity.createdAt), 'HH:mm')}
                                             </span>
                                             <span className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">
@@ -131,7 +131,7 @@ export default function HistoryPage() {
                                         {/* CONTENT */}
                                         <div className="flex-1 space-y-3">
                                             <div className="flex items-center gap-3">
-                                                <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1 rounded-md">
+                                                <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1 rounded-md">
                                                     {activity.action || 'EVENT'}
                                                 </span>
                                                 <div className="flex items-center gap-1.5 text-slate-400">
@@ -160,7 +160,7 @@ export default function HistoryPage() {
                                         <Activity className="w-8 h-8" />
                                     </div>
                                     <div className="space-y-1">
-                                        <h3 className="text-[11px] font-black uppercase tracking-widest text-slate-900 dark:text-white">Idle Stream</h3>
+                                        <h3 className="text-[11px] font-bold uppercase tracking-widest text-slate-900 dark:text-white">Idle Stream</h3>
                                         <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">No activity recorded in this cycle</p>
                                     </div>
                                 </div>
@@ -173,7 +173,7 @@ export default function HistoryPage() {
             {/* FOOTER AUDIT NOTE */}
             <div className="flex items-center justify-center gap-3 py-6 border-t border-slate-50 dark:border-white/5 grayscale opacity-50">
                 <Shield className="w-4 h-4 text-slate-400" />
-                <p className="text-[8px] font-black uppercase tracking-[0.3em] text-slate-400">
+                <p className="text-[8px] font-bold uppercase tracking-[0.3em] text-slate-400">
                     System History Secure & Verified
                 </p>
             </div>

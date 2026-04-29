@@ -63,19 +63,19 @@ export default function SettingsClient({ session }: { session: any }) {
         <div className="max-w-4xl mx-auto py-12 px-6 animate-in fade-in duration-500">
             {/* Minimal Header */}
             <div className="mb-12">
-                <h1 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Settings</h1>
+                <h1 className="text-3xl font-bold text-slate-900 dark:text-white uppercase tracking-tight">Settings</h1>
                 <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">Personalize your Swot-HR Experience</p>
             </div>
 
             <Tabs defaultValue="preferences" className="w-full">
                 <TabsList className="flex w-full justify-start h-auto bg-transparent border-b border-slate-100 dark:border-slate-800 rounded-none p-0 mb-10 gap-8">
-                    <TabsTrigger value="preferences" className="rounded-none border-b-2 border-transparent px-0 pb-3 h-auto font-black uppercase text-[10px] tracking-widest data-[state=active]:border-indigo-600 data-[state=active]:bg-transparent data-[state=active]:text-indigo-600 dark:data-[state=active]:text-indigo-400 bg-transparent shadow-none hover:text-slate-900 transition-all">
+                    <TabsTrigger value="preferences" className="rounded-none border-b-2 border-transparent px-0 pb-3 h-auto font-bold uppercase text-[10px] tracking-widest data-[state=active]:border-indigo-600 data-[state=active]:bg-transparent data-[state=active]:text-indigo-600 dark:data-[state=active]:text-indigo-400 bg-transparent shadow-none hover:text-slate-900 transition-all">
                         Preferences
                     </TabsTrigger>
-                    <TabsTrigger value="security" className="rounded-none border-b-2 border-transparent px-0 pb-3 h-auto font-black uppercase text-[10px] tracking-widest data-[state=active]:border-indigo-600 data-[state=active]:bg-transparent data-[state=active]:text-indigo-600 dark:data-[state=active]:text-indigo-400 bg-transparent shadow-none hover:text-slate-900 transition-all">
+                    <TabsTrigger value="security" className="rounded-none border-b-2 border-transparent px-0 pb-3 h-auto font-bold uppercase text-[10px] tracking-widest data-[state=active]:border-indigo-600 data-[state=active]:bg-transparent data-[state=active]:text-indigo-600 dark:data-[state=active]:text-indigo-400 bg-transparent shadow-none hover:text-slate-900 transition-all">
                         Security
                     </TabsTrigger>
-                    <TabsTrigger value="notifications" className="rounded-none border-b-2 border-transparent px-0 pb-3 h-auto font-black uppercase text-[10px] tracking-widest data-[state=active]:border-indigo-600 data-[state=active]:bg-transparent data-[state=active]:text-indigo-600 dark:data-[state=active]:text-indigo-400 bg-transparent shadow-none hover:text-slate-900 transition-all">
+                    <TabsTrigger value="notifications" className="rounded-none border-b-2 border-transparent px-0 pb-3 h-auto font-bold uppercase text-[10px] tracking-widest data-[state=active]:border-indigo-600 data-[state=active]:bg-transparent data-[state=active]:text-indigo-600 dark:data-[state=active]:text-indigo-400 bg-transparent shadow-none hover:text-slate-900 transition-all">
                         Notifications
                     </TabsTrigger>
                 </TabsList>
@@ -84,13 +84,13 @@ export default function SettingsClient({ session }: { session: any }) {
 
                     <section className="space-y-6">
                         <div className="flex flex-col gap-1">
-                            <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">Regional Infrastructure</h3>
+                            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-tight">Regional Infrastructure</h3>
                             <p className="text-xs text-slate-400 font-medium tracking-tight">Configure your local synchronization and regional standards.</p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Active Timezone</Label>
+                                <Label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Active Timezone</Label>
                                 <Select value={timezone} onValueChange={setTimezone}>
                                     <SelectTrigger className="h-12 rounded-xl border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 font-bold px-4">
                                         <Globe className="w-3.5 h-3.5 mr-2 text-indigo-500" />
@@ -104,7 +104,7 @@ export default function SettingsClient({ session }: { session: any }) {
                                 </Select>
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">System Language</Label>
+                                <Label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">System Language</Label>
                                 <Select value={language} onValueChange={setLanguage}>
                                     <SelectTrigger className="h-12 rounded-xl border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 font-bold px-4">
                                         <div className="w-4 h-4 rounded-full bg-slate-100 flex items-center justify-center mr-2 text-[8px]">🇺🇸</div>
@@ -122,14 +122,14 @@ export default function SettingsClient({ session }: { session: any }) {
                         <div className="grid gap-4">
                             <div className="flex items-center justify-between p-6 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl">
                                 <div className="space-y-1">
-                                    <Label className="text-sm font-black text-slate-800 dark:text-slate-200">24-Hour Chronometer</Label>
+                                    <Label className="text-sm font-bold text-slate-800 dark:text-slate-200">24-Hour Chronometer</Label>
                                     <p className="text-[11px] text-slate-400 font-medium">Use military-style time formatting across the system.</p>
                                 </div>
                                 <Switch checked={is24Hour} onCheckedChange={setIs24Hour} />
                             </div>
                             <div className="flex items-center justify-between p-6 bg-slate-50/50 dark:bg-slate-800/20 border border-slate-100 dark:border-slate-800 rounded-2xl">
                                 <div className="space-y-1">
-                                    <Label className="text-sm font-black text-slate-800 dark:text-slate-200">Personnel Privacy Shield</Label>
+                                    <Label className="text-sm font-bold text-slate-800 dark:text-slate-200">Personnel Privacy Shield</Label>
                                     <p className="text-[11px] text-slate-400 font-medium">Auto-mask sensitive IDs (Aadhaar, PAN, SSN) while in common areas.</p>
                                 </div>
                                 <Switch checked={privacyShield} onCheckedChange={setPrivacyShield} />
@@ -141,13 +141,13 @@ export default function SettingsClient({ session }: { session: any }) {
                 <TabsContent value="security" className="space-y-8">
                     <section className="space-y-6">
                         <div className="flex flex-col gap-1">
-                            <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">Credentials Update</h3>
+                            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-tight">Credentials Update</h3>
                             <p className="text-xs text-slate-400 font-medium tracking-tight">Rotate your authentication keys for maximum security.</p>
                         </div>
 
                         <form onSubmit={handlePasswordChange} className="max-w-xl space-y-5 p-8 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[2rem] shadow-sm">
                             <div className="space-y-2">
-                                <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Existing Password</Label>
+                                <Label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Existing Password</Label>
                                 <Input
                                     type="password"
                                     className="h-12 px-5 rounded-xl border-slate-100 bg-slate-50/50 font-bold"
@@ -158,7 +158,7 @@ export default function SettingsClient({ session }: { session: any }) {
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">New Secret</Label>
+                                    <Label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">New Secret</Label>
                                     <Input
                                         type="password"
                                         className="h-12 px-5 rounded-xl border-slate-100 bg-white font-bold"
@@ -168,7 +168,7 @@ export default function SettingsClient({ session }: { session: any }) {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Verify Secret</Label>
+                                    <Label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Verify Secret</Label>
                                     <Input
                                         type="password"
                                         className="h-12 px-5 rounded-xl border-slate-100 bg-white font-bold"
@@ -178,7 +178,7 @@ export default function SettingsClient({ session }: { session: any }) {
                                     />
                                 </div>
                             </div>
-                            <Button type="submit" disabled={passLoading} className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg shadow-indigo-100 mt-4 transition-all active:scale-95">
+                            <Button type="submit" disabled={passLoading} className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-indigo-100 mt-4 transition-all active:scale-95">
                                 {passLoading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Lock className="w-3.5 h-3.5 mr-2" />}
                                 Sync New Cipher
                             </Button>
@@ -189,7 +189,7 @@ export default function SettingsClient({ session }: { session: any }) {
                 <TabsContent value="notifications" className="space-y-8">
                     <section className="space-y-6">
                         <div className="flex flex-col gap-1">
-                            <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">System Intel</h3>
+                            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-tight">System Intel</h3>
                             <p className="text-xs text-slate-400 font-medium tracking-tight">Configure the frequency of automated system notifications.</p>
                         </div>
 
@@ -205,7 +205,7 @@ export default function SettingsClient({ session }: { session: any }) {
                                             <item.icon className="w-4.5 h-4.5" />
                                         </div>
                                         <div className="space-y-1">
-                                            <Label className="text-sm font-black text-slate-800 dark:text-slate-200">{item.label}</Label>
+                                            <Label className="text-sm font-bold text-slate-800 dark:text-slate-200">{item.label}</Label>
                                             <p className="text-[11px] text-slate-400 font-medium">{item.desc}</p>
                                         </div>
                                     </div>

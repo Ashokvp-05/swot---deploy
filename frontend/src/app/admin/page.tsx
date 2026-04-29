@@ -77,6 +77,11 @@ const GlobalStyles = () => (
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
         .custom-scrollbar:hover::-webkit-scrollbar-thumb { background: #cbd5e1; }
+
+        .sidebar-scrollbar::-webkit-scrollbar { width: 4px; }
+        .sidebar-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .sidebar-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        .sidebar-scrollbar:hover::-webkit-scrollbar-thumb { background: #cbd5e1; }
     `}</style>
 )
 
@@ -171,13 +176,13 @@ function AdminDashboardContent() {
         // 1. Dashboard
         { id: "dashboard",   label: "Dashboard",           tab: "dashboard",   icon: LayoutDashboard, roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","MANAGER","AUDITOR","SUPPORT_ADMIN","PAYROLL_ADMIN","SUPER_ADMIN"], group: "core" },
         // 2. Employee Management
-        { id: "employees",   label: "Employee Management", tab: "employees",   icon: Users,           roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER"], group: "hr" },
+        { id: "employees",   label: "Manage Employees", tab: "employees",   icon: Users,           roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER"], group: "hr" },
         // 3. Onboarding
-        { id: "onboarding",  label: "Personnel & Onboarding", tab: "onboarding",  icon: UserPlus,        roles: ["SUPER_ADMIN", "HR_ADMIN", "HR", "COMPANY_ADMIN", "ADMIN"], group: "hr" },
+        { id: "onboarding",  label: "Add Employees", tab: "onboarding",  icon: UserPlus,        roles: ["SUPER_ADMIN", "HR_ADMIN", "HR", "COMPANY_ADMIN", "ADMIN"], group: "hr" },
         // 4. Attendance
         { id: "attendance",  label: "Attendance",          tab: "attendance",  icon: Clock,           roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER"], group: "finance" },
         // 5. Leave Management
-        { id: "leave",       label: "Leave Management",    tab: "leave",       icon: Calendar,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER"], group: "finance" },
+        { id: "leave",       label: "Leaves",    tab: "leave",       icon: Calendar,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER"], group: "finance" },
         { id: "payroll",     label: "Payroll",             tab: "payroll",     icon: CreditCard,      roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","PAYROLL_ADMIN"], group: "finance" },
         // 7. Performance
         { id: "performance", label: "Performance",         tab: "performance", icon: TrendingUp,      roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","MANAGER"], group: "company" },
@@ -186,18 +191,18 @@ function AdminDashboardContent() {
         // 9. Documents
         { id: "documents",   label: "Documents",           tab: "documents",   icon: FileText,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","AUDITOR"], group: "company" },
         // Employee Details (Secure Record View)
-        { id: "employee-details", label: "Employee Details", tab: "employee-details", icon: UserCheck, roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER","AUDITOR"], group: "company" },
+        { id: "employee-details", label: "Employee Info", tab: "employee-details", icon: UserCheck, roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER","AUDITOR"], group: "company" },
         // 10. Reports & Analytics
-        { id: "reports",     label: "Reports & Analytics", tab: "reports",     icon: BarChart3,       roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER","AUDITOR","PAYROLL_ADMIN"], group: "admin" },
+        { id: "reports",     label: "Reports", tab: "reports",     icon: BarChart3,       roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER","AUDITOR","PAYROLL_ADMIN"], group: "admin" },
         // 11. Support Desk
-        { id: "support",     label: "Support Desk",        tab: "support",     icon: HelpCircle,      roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","SUPPORT_ADMIN"], group: "admin" },
+        { id: "support",     label: "Help",        tab: "support",     icon: HelpCircle,      roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","SUPPORT_ADMIN"], group: "admin" },
 
         // 13. Settings
         { id: "settings",    label: "Settings",            tab: "settings",    icon: Settings,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN"], group: "admin" },
         // 14. Announcements
         { id: "announcements", label: "Announcements",     tab: "broadcasts",  icon: Megaphone,       roles: ["SUPER_ADMIN"], group: "company" },
         // 15. Dept Reports
-        { id: "dept-reports",  label: "Dept Reports",      tab: "dept-reports", icon: BarChart3,       roles: ["SUPER_ADMIN"], group: "company" },
+        { id: "dept-reports",  label: "Department Reports",      tab: "dept-reports", icon: BarChart3,       roles: ["SUPER_ADMIN"], group: "company" },
         // 16. Task Dashboard (External - Kibana)
         { id: "task-dashboard", label: "Task Dashboard",   tab: "task-dashboard", icon: Monitor,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER"], group: "tools", external: true, href: "https://task.swotpam.com/" },
     ]
@@ -216,158 +221,123 @@ function AdminDashboardContent() {
     })
 
     return (
-        <div className="min-h-screen bg-[#f0f2f8] flex font-body">
+        <div className="min-h-screen bg-[#fcfcfd] flex font-body overflow-hidden">
             <GlobalStyles />
             
-            {/* ── 🛡️ PROFESSIONAL SIDEBAR ── */}
-            <aside className="w-[72px] lg:w-[280px] bg-[#ffffff] border-r border-slate-200/80 flex flex-col h-screen sticky top-0 z-[100] shrink-0">
+            {/* ── 🛡️ EXECUTIVE SIDEBAR ── */}
+            <aside className="w-[72px] lg:w-[280px] bg-white flex flex-col h-screen sticky top-0 z-[100] shrink-0 border-r border-slate-200/80 shadow-[2px_0_20px_rgba(0,0,0,0.04)]">
+                {/* Background Glow */}
+                <div className="absolute top-0 left-0 w-full h-[300px] bg-gradient-to-b from-indigo-500/[0.03] to-transparent pointer-events-none" />
 
                 {/* BRAND HEADER */}
-                <div className="pt-8 pb-8 px-4 lg:px-7 border-b border-slate-100/60">
-                    <div className="hidden lg:flex items-center gap-3.5">
-                        <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-[12px] flex items-center justify-center shadow-[0_8px_16px_-6px_rgba(79,70,229,0.4)]">
-                            <Shield className="w-5 h-5 text-white" strokeWidth={2.5} />
+                <div className="pt-10 pb-10 px-6 lg:px-8 relative z-10">
+                    <div className="hidden lg:flex items-center gap-4">
+                        <div className="w-12 h-12 bg-indigo-600 rounded-[18px] flex items-center justify-center shadow-lg shadow-indigo-500/30 transition-transform hover:scale-110 active:scale-95 cursor-pointer" onClick={() => router.push('/admin')}>
+                            <Shield className="w-6 h-6 text-white" strokeWidth={2.5} />
                         </div>
                         <div>
-                            <h2 className="text-[18px] font-extrabold text-slate-900 tracking-tight font-brand leading-none">Rudratic</h2>
-                            <p className="text-[10px] font-semibold text-indigo-600 uppercase tracking-widest mt-1.5 leading-none bg-indigo-50 px-1.5 py-0.5 rounded pl-1.5 inline-block">Admin Workspace</p>
+                            <h2 className="text-xl font-bold text-slate-800 tracking-tight leading-none">Rudratic</h2>
+                            <p className="text-[10px] font-semibold text-indigo-500 uppercase tracking-widest mt-2 leading-none">Admin Workspace</p>
                         </div>
                     </div>
                     <div className="lg:hidden flex items-center justify-center">
-                        <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-[12px] flex items-center justify-center shadow-lg">
+                        <div className="w-11 h-11 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30" onClick={() => router.push('/admin')}>
                             <Shield className="w-5 h-5 text-white" />
                         </div>
                     </div>
                 </div>
 
                 {/* NAVIGATION */}
-                <nav className="flex-1 px-3 lg:px-5 py-6 overflow-y-auto custom-scrollbar">
+                <nav className="flex-1 px-4 lg:px-5 py-2 overflow-y-auto sidebar-scrollbar relative z-10">
                     <div className="space-y-8">
                         {['core', 'hr', 'finance', 'company', 'admin', 'tools'].map(group => {
                             const groupItems = navItems.filter(i => i.group === group)
                             if(groupItems.length === 0) return null
 
                             const groupLabels: Record<string, string> = {
-                                'core': 'Overview',
-                                'hr': 'Personnel',
-                                'finance': 'Operations & Pay',
-                                'company': 'Organization',
-                                'admin': 'System & Security',
-                                'tools': 'Tools & Integrations'
+                                'core': 'Main',
+                                'hr': 'Staff',
+                                'finance': 'Daily Work',
+                                'company': 'Company',
+                                'admin': 'Admin',
+                                'tools': 'Tools'
                             }
 
                             return (
                                 <div key={group} className="space-y-1.5">
-                                    <p className="hidden lg:block text-[10px] font-bold text-slate-400/80 uppercase tracking-widest px-3 mb-3 font-brand ml-1">{groupLabels[group]}</p>
-                                    {groupItems.map(item => {
-                                        const Icon = item.icon
-                                        const isExternal = 'external' in item && (item as any).external
-                                        const isActive = !isExternal && currentTab === item.tab
-                                        const isLeaveItem = item.id === 'leave'
+                                    <p className="hidden lg:block text-[9px] font-bold text-slate-400 uppercase tracking-[0.3em] px-4 mb-3">{groupLabels[group]}</p>
+                                    <div className="space-y-0.5">
+                                        {groupItems.map(item => {
+                                            const Icon = item.icon
+                                            const isExternal = 'external' in item && (item as any).external
+                                            const isActive = !isExternal && currentTab === item.tab
+                                            const isLeaveItem = item.id === 'leave'
 
-                                        return (
-                                            <div key={item.id}>
-                                                <button
-                                                    onClick={() => {
-                                                        if (isExternal) {
-                                                            window.location.href = (item as any).href
-                                                        } else {
-                                                            router.push(`/admin?tab=${item.tab}`)
-                                                            if (isLeaveItem) setLeaveDropOpen(prev => !prev)
-                                                        }
-                                                    }}
-                                                    title={item.label}
-                                                    className={cn(
-                                                        "w-full flex items-center justify-between px-3.5 py-2.5 rounded-[12px] text-[13px] font-medium transition-all duration-200 group relative outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40",
-                                                        isActive 
-                                                            ? "bg-indigo-50/80 text-indigo-700 font-semibold"
-                                                            : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
-                                                    )}
-                                                >
-                                                    <div className="flex items-center justify-center lg:justify-start gap-3 w-full">
-                                                        <Icon className={cn("w-[18px] h-[18px] shrink-0 transition-colors duration-200", isActive ? "text-indigo-600" : "text-slate-400 group-hover:text-slate-600")} strokeWidth={isActive ? 2.5 : 2} />
-                                                        <span className="hidden lg:inline-block text-left truncate">{item.label}</span>
-                                                        {isExternal && <ExternalLink className="hidden lg:block w-3.5 h-3.5 text-slate-400 group-hover:text-slate-500 shrink-0 ml-auto" />}
-                                                        {isLeaveItem && <ChevronRight className={cn("hidden lg:block w-3.5 h-3.5 ml-auto shrink-0 transition-transform duration-200 text-slate-400", leaveDropOpen && "rotate-90 text-indigo-500")} />}
-                                                    </div>
-                                                    {isActive && (
-                                                        <motion.div layoutId="activeNavIndicator" className="hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-indigo-600 rounded-r-full" />
-                                                    )}
-                                                </button>
-
-                                                {/* ── LEAVE DROPDOWN: Present / Absent ── */}
-                                                {isLeaveItem && (
-                                                    <AnimatePresence>
-                                                        {leaveDropOpen && (
-                                                            <motion.div
-                                                                initial={{ height: 0, opacity: 0 }}
-                                                                animate={{ height: 'auto', opacity: 1 }}
-                                                                exit={{ height: 0, opacity: 0 }}
-                                                                transition={{ duration: 0.25 }}
-                                                                className="overflow-hidden hidden lg:block"
-                                                            >
-                                                                <div className="ml-5 mt-1.5 pl-4 border-l-2 border-indigo-100 space-y-2.5">
-                                                                    {/* Present Tab Section */}
-                                                                    <div className="space-y-1.5">
-                                                                        <button onClick={() => setLeaveDropTab('present')}
-                                                                            className={cn("w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12px] font-semibold transition-all",
-                                                                                leaveDropTab === 'present' ? "bg-emerald-50 text-emerald-700 shadow-sm" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600")}>
-                                                                            <span className={cn("w-2 h-2 rounded-full", leaveDropTab === 'present' ? "bg-emerald-500 animate-pulse" : "bg-slate-300")} />
-                                                                            Present Today
-                                                                            <span className={cn("ml-auto text-[10px] font-black px-1.5 py-0.5 rounded-full",
-                                                                                leaveDropTab === 'present' ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-400")}>{sidebarPresent.length}</span>
-                                                                        </button>
-                                                                        
-                                                                        {leaveDropTab === 'present' && (
-                                                                            <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="max-h-[160px] overflow-y-auto space-y-1 mt-1 pl-1 custom-scrollbar">
-                                                                                {sidebarPresent.slice(0, 8).map((emp, i) => (
-                                                                                    <div key={emp.id || i} className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] transition-colors hover:bg-emerald-50/50">
-                                                                                        <div className="w-6 h-6 rounded-md bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold shrink-0">
-                                                                                            {(emp.name || 'E')[0].toUpperCase()}
-                                                                                        </div>
-                                                                                        <span className="text-slate-600 font-medium truncate">{emp.name}</span>
-                                                                                    </div>
-                                                                                ))}
-                                                                                {sidebarPresent.length > 8 && <p className="text-[10px] text-slate-400 text-center py-1 italic">+{sidebarPresent.length - 8} more</p>}
-                                                                                {sidebarPresent.length === 0 && <p className="text-[10px] text-slate-400 text-center py-3">No employees present</p>}
-                                                                            </motion.div>
-                                                                        )}
-                                                                    </div>
-
-                                                                    {/* Absent Tab Section */}
-                                                                    <div className="space-y-1.5">
-                                                                        <button onClick={() => setLeaveDropTab('absent')}
-                                                                            className={cn("w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12px] font-semibold transition-all",
-                                                                                leaveDropTab === 'absent' ? "bg-rose-50 text-rose-700 shadow-sm" : "text-slate-400 hover:bg-slate-50 hover:text-slate-600")}>
-                                                                            <span className={cn("w-2 h-2 rounded-full", leaveDropTab === 'absent' ? "bg-rose-500 animate-pulse" : "bg-slate-300")} />
-                                                                            Absent Today
-                                                                            <span className={cn("ml-auto text-[10px] font-black px-1.5 py-0.5 rounded-full",
-                                                                                leaveDropTab === 'absent' ? "bg-rose-100 text-rose-700" : "bg-slate-100 text-slate-400")}>{sidebarAbsent.length}</span>
-                                                                        </button>
-
-                                                                        {leaveDropTab === 'absent' && (
-                                                                            <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="max-h-[160px] overflow-y-auto space-y-1 mt-1 pl-1 custom-scrollbar">
-                                                                                {sidebarAbsent.slice(0, 8).map((emp, i) => (
-                                                                                    <div key={emp.id || i} className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] transition-colors hover:bg-rose-50/50">
-                                                                                        <div className="w-6 h-6 rounded-md bg-rose-100 text-rose-700 flex items-center justify-center text-[10px] font-bold shrink-0">
-                                                                                            {(emp.name || 'E')[0].toUpperCase()}
-                                                                                        </div>
-                                                                                        <span className="text-slate-600 font-medium truncate">{emp.name}</span>
-                                                                                    </div>
-                                                                                ))}
-                                                                                {sidebarAbsent.length > 8 && <p className="text-[10px] text-slate-400 text-center py-1 italic">+{sidebarAbsent.length - 8} more</p>}
-                                                                                {sidebarAbsent.length === 0 && <p className="text-[10px] text-slate-400 text-center py-3">No employees absent</p>}
-                                                                            </motion.div>
-                                                                        )}
-                                                                    </div>
-                                                                </div>
-                                                            </motion.div>
+                                            return (
+                                                <div key={item.id}>
+                                                    <button
+                                                        onClick={() => {
+                                                            if (isExternal) {
+                                                                window.location.href = (item as any).href
+                                                            } else {
+                                                                router.push(`/admin?tab=${item.tab}`)
+                                                                if (isLeaveItem) setLeaveDropOpen(prev => !prev)
+                                                            }
+                                                        }}
+                                                        title={item.label}
+                                                        className={cn(
+                                                            "w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 group relative outline-none",
+                                                            isActive 
+                                                                ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/25"
+                                                                : "text-slate-500 hover:bg-slate-100/80 hover:text-slate-900"
                                                         )}
-                                                    </AnimatePresence>
-                                                )}
-                                            </div>
-                                        )
-                                    })}
+                                                    >
+                                                        <div className="flex items-center justify-center lg:justify-start gap-3.5 w-full">
+                                                            <Icon className={cn("w-[18px] h-[18px] shrink-0 transition-colors duration-200", isActive ? "text-white" : "text-slate-400 group-hover:text-slate-700")} strokeWidth={isActive ? 2.5 : 1.8} />
+                                                            <span className="hidden lg:inline-block text-left truncate">{item.label}</span>
+                                                            {isExternal && <ExternalLink className="hidden lg:block w-3.5 h-3.5 text-slate-400 group-hover:text-slate-700 shrink-0 ml-auto" />}
+                                                            {isLeaveItem && <ChevronRight className={cn("hidden lg:block w-3.5 h-3.5 ml-auto shrink-0 transition-transform duration-300 text-slate-400", leaveDropOpen && "rotate-90 text-indigo-500")} />}
+                                                        </div>
+                                                        {isActive && (
+                                                            <motion.div layoutId="activeSidebarIndicator" className="hidden lg:block absolute -left-[5px] top-1/2 -translate-y-1/2 w-[3px] h-5 bg-indigo-400 rounded-r-full" />
+                                                        )}
+                                                    </button>
+
+                                                    {/* ── LEAVE DROPDOWN: Present / Absent ── */}
+                                                    {isLeaveItem && (
+                                                        <AnimatePresence>
+                                                            {leaveDropOpen && (
+                                                                <motion.div
+                                                                    initial={{ height: 0, opacity: 0 }}
+                                                                    animate={{ height: 'auto', opacity: 1 }}
+                                                                    exit={{ height: 0, opacity: 0 }}
+                                                                    transition={{ duration: 0.3, ease: "circOut" }}
+                                                                    className="overflow-hidden hidden lg:block ml-4 mt-1 border-l border-slate-200"
+                                                                >
+                                                                    <div className="pl-4 space-y-0.5 pb-1">
+                                                                        <button onClick={() => router.push('/admin?tab=attendance-present')}
+                                                                            className={cn("w-full flex items-center gap-3 px-4 py-2 rounded-lg text-[11px] font-semibold transition-all",
+                                                                                currentTab === 'attendance-present' ? "text-emerald-600 bg-emerald-50" : "text-slate-400 hover:text-slate-700")}>
+                                                                            <div className={cn("w-1.5 h-1.5 rounded-full", currentTab === 'attendance-present' ? "bg-emerald-500 shadow-[0_0_6px_rgba(52,211,153,0.4)]" : "bg-slate-300")} />
+                                                                            Present
+                                                                            <span className="ml-auto text-[10px] opacity-60">{sidebarPresent.length}</span>
+                                                                        </button>
+                                                                        <button onClick={() => router.push('/admin?tab=attendance-absent')}
+                                                                            className={cn("w-full flex items-center gap-3 px-4 py-2 rounded-lg text-[11px] font-semibold transition-all",
+                                                                                currentTab === 'attendance-absent' ? "text-rose-600 bg-rose-50" : "text-slate-400 hover:text-slate-700")}>
+                                                                            <div className={cn("w-1.5 h-1.5 rounded-full", currentTab === 'attendance-absent' ? "bg-rose-500 shadow-[0_0_6px_rgba(251,113,133,0.4)]" : "bg-slate-300")} />
+                                                                            Absent
+                                                                            <span className="ml-auto text-[10px] opacity-60">{sidebarAbsent.length}</span>
+                                                                        </button>
+                                                                    </div>
+                                                                </motion.div>
+                                                            )}
+                                                        </AnimatePresence>
+                                                    )}
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
                                 </div>
                             )
                         })}
@@ -375,84 +345,154 @@ function AdminDashboardContent() {
                 </nav>
 
                 {/* USER IDENTITY FOOTER */}
-                <div className="px-3 lg:px-5 py-5 mt-auto border-t border-slate-100/60 bg-slate-50/30">
+                <div className="px-5 py-6 mt-auto border-t border-slate-200/80 relative z-10">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <button className="w-full flex items-center gap-3 p-2 rounded-[14px] hover:bg-white border border-transparent hover:border-slate-200 hover:shadow-sm transition-all group outline-none">
-                                <div className="w-9 h-9 shrink-0 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center text-white font-bold text-sm relative">
+                            <button className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-slate-100/80 transition-all group outline-none">
+                                <div className="w-10 h-10 shrink-0 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-sm relative shadow-md shadow-indigo-500/30">
                                     {(session?.user?.name || "A")[0].toUpperCase()}
-                                    <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full" />
+                                    <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 border-2 border-white rounded-full" />
                                 </div>
                                 <div className="hidden lg:flex flex-col items-start min-w-0 flex-1">
-                                    <span className="text-[13px] font-semibold text-slate-900 leading-none truncate w-full">{session?.user?.name?.split(' ')[0] || 'Administrator'}</span>
-                                    <span className="text-[11px] font-medium text-slate-500 mt-1 truncate w-full">{role.replace('_', ' ')}</span>
+                                    <span className="text-[13px] font-bold text-slate-800 leading-none truncate w-full">{session?.user?.name?.split(' ')[0] || 'Admin'}</span>
+                                    <span className="text-[9px] font-medium text-slate-400 uppercase tracking-wider mt-1.5 truncate w-full">{role.replace('_', ' ')}</span>
                                 </div>
-                                <MoreVertical className="hidden lg:block w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors shrink-0" />
+                                <ChevronRight className="hidden lg:block w-4 h-4 text-slate-400 group-hover:text-slate-700 transition-colors shrink-0" />
                             </button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-64 bg-white border border-slate-200 rounded-2xl p-2 shadow-[0_20px_60px_rgba(0,0,0,0.08)] ml-2 mb-2" side="top" align="start">
-                            <div className="px-3 py-3 mb-1 bg-slate-50/50 rounded-xl">
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1.5">Authenticated Account</p>
+                        <DropdownMenuContent className="w-64 bg-white border border-slate-100 rounded-[32px] p-3 shadow-2xl ml-4 mb-4">
+                            <div className="px-5 py-4 mb-2 bg-slate-50/50 rounded-[22px]">
+                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-2">Logged In</p>
                                 <p className="text-[13px] font-semibold text-slate-900 truncate">{session?.user?.email || "admin@hr.com"}</p>
                             </div>
-                            <div className="h-px bg-slate-100 mx-2 my-2" />
-                            <DropdownMenuItem onClick={() => router.push("/admin?tab=profile")} className="rounded-xl px-3 py-2.5 focus:bg-slate-50 group cursor-pointer text-slate-600 transition-colors">
-                                <User className="w-4 h-4 mr-2.5 text-slate-400 group-hover:text-slate-900 transition-colors" />
-                                <span className="text-[12px] font-medium">My Profile</span>
+                            <DropdownMenuItem onClick={() => router.push("/admin?tab=profile")} className="rounded-xl px-4 py-3 focus:bg-slate-50 group cursor-pointer text-slate-600 transition-all">
+                                <User className="w-4 h-4 mr-3 text-slate-400 group-hover:text-slate-900" />
+                                <span className="text-[11px] font-bold uppercase tracking-widest">My Profile</span>
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/login' })} className="rounded-xl px-3 py-2.5 focus:bg-rose-50 group cursor-pointer text-rose-500 focus:text-rose-600 transition-colors">
-                                <LogOut className="w-4 h-4 mr-2.5" />
-                                <span className="text-[12px] font-medium">Secure Sign Out</span>
+                            <DropdownMenuSeparator className="bg-slate-50 my-2" />
+                            <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/login' })} className="rounded-xl px-4 py-3 focus:bg-rose-50 group cursor-pointer text-rose-500 transition-all">
+                                <LogOut className="w-4 h-4 mr-3" />
+                                <span className="text-[11px] font-bold uppercase tracking-widest">Logout</span>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
             </aside>
 
-            {/* ── 📝 MAIN CONTENT STAGE ── */}
-            <main className="flex-1 overflow-y-auto h-screen bg-[#f8fafc]">
+            {/* ── 📝 COMMAND STAGE ── */}
+            <main className="flex-1 overflow-y-auto h-screen bg-[#fcfcfd] custom-scrollbar">
                 <TopHeader 
                     token={token} 
                     searchQuery={searchQuery} 
                     setSearchQuery={setSearchQuery} 
                 />
 
-                <div className="max-w-[1700px] mx-auto px-8 py-8 space-y-8">
-                
-                {/* MODULES RENDERING */}
-                <div className="animate-in fade-in slide-in-from-bottom-3 duration-500">
-                    
-                    {currentTab === "dashboard" && <ExecutiveHub token={token} hideVitals={true} />}
-                    {currentTab === "employees"   && <UserManagementTable token={token} userRole={role} />}
-                    {currentTab === "onboarding"  && <OnboardingSuite token={token} />}
-                    {currentTab === "attendance"   && <AttendanceControlCenter token={token} />}
-                    {currentTab === "leave"        && <LeaveApprovalCenter token={token} />}
-                    {currentTab === "payroll"      && <PayrollControlCenter token={token} />}
-                    {currentTab === "performance"  && <PerformanceHub token={token} />}
-                    {currentTab === "departments"  && <OrganizationControlCenter token={token} />}
-                    {currentTab === "documents" && <DocumentsModule token={token} />}
-                    {currentTab === "employee-details" && <EmployeeDetailsModule token={token} userRole={role} />}
-                    {currentTab === "reports"      && <ManagerReports token={token} />}
-                    {currentTab === "support"      && <SupportControlCenter token={token} />}
-                    {currentTab === "user-management"   && <SecurityAuditLogs token={token} />}
-                    {currentTab === "settings"     && <SystemSettingsCenter token={token} />}
-                    {currentTab === "broadcasts"   && <BroadcastCenter token={token} />}
-                    {currentTab === "dept-reports" && <DepartmentReports token={token} />}
+                <div className="max-w-[1700px] mx-auto px-10 py-10">
+                    <AnimatePresence mode="wait">
+                        <motion.div 
+                            key={currentTab}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            transition={{ duration: 0.4, ease: "circOut" }}
+                            className="min-h-full"
+                        >
+                            {currentTab === "dashboard" && <ExecutiveHub token={token} hideVitals={true} />}
+                            {currentTab === "employees"   && <UserManagementTable token={token} userRole={role} />}
+                            {currentTab === "onboarding"  && <OnboardingSuite token={token} />}
+                            {currentTab === "attendance"   && <AttendanceControlCenter token={token} />}
+                            {currentTab === "leave"        && <LeaveApprovalCenter token={token} />}
+                            {currentTab === "payroll"      && <PayrollControlCenter token={token} />}
+                            {currentTab === "performance"  && <PerformanceHub token={token} />}
+                            {currentTab === "departments"  && <OrganizationControlCenter token={token} />}
+                            {currentTab === "documents" && <DocumentsModule token={token} />}
+                            {currentTab === "employee-details" && <EmployeeDetailsModule token={token} userRole={role} />}
+                            {currentTab === "reports"      && <ManagerReports token={token} />}
+                            {currentTab === "support"      && <SupportControlCenter token={token} />}
+                            {currentTab === "user-management"   && <SecurityAuditLogs token={token} />}
+                            {currentTab === "settings"     && <SystemSettingsCenter token={token} />}
+                            {currentTab === "broadcasts"   && <BroadcastCenter token={token} />}
+                            {currentTab === "dept-reports" && <DepartmentReports token={token} />}
 
-                    {/* PROFILE MODULE */}
-                    {currentTab === "profile" && (
-                        <UserProfileView 
-                            user={session?.user || { name: "Admin", email: "admin@hr.com" }} 
-                            onClose={() => router.push("/admin?tab=dashboard")}
-                            token={token}
-                        />
-                    )}
-                </div>
+                            {/* ── HIGH-FIDELITY ATTENDANCE LISTS ── */}
+                            {(currentTab === "attendance-present" || currentTab === "attendance-absent") && (
+                                <div className="space-y-12">
+                                    <div className="flex items-center gap-6">
+                                        <div className={cn("w-16 h-16 rounded-[24px] flex items-center justify-center text-white shadow-2xl transition-transform hover:scale-110",
+                                            currentTab === 'attendance-present' ? "bg-emerald-600 shadow-emerald-100" : "bg-rose-600 shadow-rose-100")}>
+                                            {currentTab === 'attendance-present' ? <UserCheck className="w-8 h-8" /> : <AlertTriangle className="w-8 h-8" />}
+                                        </div>
+                                        <div className="space-y-2">
+                                            <h1 className="text-2xl font-bold text-slate-800 tracking-tight leading-none">
+                                                {currentTab === 'attendance-present' ? 'Present Today' : 'Absent Today'}
+                                            </h1>
+                                            <p className="text-[11px] font-medium text-slate-400 uppercase tracking-[0.2em]">
+                                                Current List · {currentTab === 'attendance-present' ? sidebarPresent.length : sidebarAbsent.length} People
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 gap-4">
+                                        {(currentTab === 'attendance-present' ? sidebarPresent : sidebarAbsent).map((emp, i) => (
+                                            <motion.div
+                                                key={emp.id || i}
+                                                initial={{ opacity: 0, x: -20 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                transition={{ delay: i * 0.02 }}
+                                                className="bg-white border border-slate-50 rounded-[32px] p-6 shadow-sm hover:shadow-2xl hover:shadow-slate-200/40 hover:border-indigo-100 transition-all group flex items-center justify-between gap-10"
+                                            >
+                                                <div className="flex items-center gap-6 min-w-0 flex-1">
+                                                    <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center text-xl font-bold shadow-sm group-hover:rotate-6 transition-all shrink-0",
+                                                        currentTab === 'attendance-present' ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600")}>
+                                                        {(emp.name || 'E')[0].toUpperCase()}
+                                                    </div>
+                                                    <div className="min-w-0 flex flex-col md:flex-row md:items-center gap-2 md:gap-10 flex-1">
+                                                        <div className="min-w-[240px]">
+                                                            <h3 className="text-[17px] font-bold text-slate-800 tracking-tight font-brand group-hover:text-indigo-600 transition-colors truncate">
+                                                                {emp.name}
+                                                            </h3>
+                                                            <p className="text-[11px] font-bold text-slate-400 truncate mt-1">{emp.email}</p>
+                                                        </div>
+                                                        
+                                                        <div className="hidden xl:flex items-center gap-4 text-slate-200">
+                                                            <div className="w-1.5 h-1.5 rounded-full bg-slate-100" />
+                                                            <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-300">ID</span>
+                                                            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{emp.id?.split('-')[0] || 'SYS'}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex items-center gap-8 shrink-0">
+                                                    <Badge className={cn("text-[9px] font-bold uppercase tracking-widest px-6 py-2.5 rounded-full border-none shadow-sm",
+                                                        currentTab === 'attendance-present' ? "bg-emerald-600 text-white" : "bg-rose-600 text-white")}>
+                                                        {currentTab === 'attendance-present' ? 'Present' : 'Absent'}
+                                                    </Badge>
+                                                    <button className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-slate-900 group-hover:text-white transition-all shadow-sm">
+                                                        <ChevronRight className="w-5 h-5" />
+                                                    </button>
+                                                </div>
+                                            </motion.div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* PROFILE MODULE */}
+                            {currentTab === "profile" && (
+                                <UserProfileView 
+                                    user={session?.user || { name: "Admin", email: "admin@hr.com" }} 
+                                    onClose={() => router.push("/admin?tab=dashboard")}
+                                    token={token}
+                                />
+                            )}
+                        </motion.div>
+                    </AnimatePresence>
                 </div>
             </main>
         </div>
     )
 }
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  ROOT PAGE EXPORT (with Suspense for useSearchParams)
@@ -463,7 +503,7 @@ export default function CompanyAdminPage() {
             <div className="flex min-h-screen items-center justify-center bg-white shadow-2xl">
                 <div className="flex flex-col items-center gap-6">
                     <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] animate-pulse">Initializing Administrative Core</p>
+                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest animate-pulse">Loading...</p>
                 </div>
             </div>
         }>

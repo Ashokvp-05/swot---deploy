@@ -128,7 +128,7 @@ export default function AddEmployeeModal({ token, employee, onClose, onSuccess }
     }
 
     const inputCls = "h-12 bg-slate-50/50 border-slate-100 text-slate-900 placeholder:text-slate-400 rounded-2xl text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all font-medium pr-10"
-    const labelCls = "text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 ml-1 font-brand"
+    const labelCls = "text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2 ml-1 font-brand"
     const selectCls = "w-full h-12 bg-slate-50/50 border border-slate-100 text-slate-900 rounded-2xl text-sm px-4 focus:ring-4 focus:ring-indigo-500/5 outline-none appearance-none cursor-pointer font-medium transition-all"
 
     return (
@@ -146,10 +146,10 @@ export default function AddEmployeeModal({ token, employee, onClose, onSuccess }
                     <div className="px-10 py-8 border-b border-slate-50 flex justify-between items-center bg-white">
                         <div className="flex items-center gap-5">
                             <div>
-                                <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter italic font-brand leading-none">
+                                <h3 className="text-xl font-bold text-slate-800 font-brand leading-none">
                                     {isEditing ? "Edit Details" : "Add Employee"}
                                 </h3>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2 leading-none">
+                                <p className="text-[10px] font-medium text-slate-400 uppercase tracking-widest mt-2 leading-none">
                                     {isEditing ? "Change information" : "Fill out the form below"}
                                 </p>
                             </div>
@@ -163,7 +163,7 @@ export default function AddEmployeeModal({ token, employee, onClose, onSuccess }
                         {error && (
                             <div className="mb-8 p-4 bg-rose-50 border border-rose-100 rounded-2xl flex items-center gap-3 text-rose-600 animate-in fade-in slide-in-from-top-2">
                                 <AlertCircle className="w-4 h-4 shrink-0" />
-                                <p className="text-[10px] font-black uppercase tracking-tight">{error}</p>
+                                <p className="text-[10px] font-bold uppercase tracking-widest">{error}</p>
                             </div>
                         )}
 
@@ -202,13 +202,7 @@ export default function AddEmployeeModal({ token, employee, onClose, onSuccess }
                                         {roles.filter(r => r.name !== 'SUPER_ADMIN').map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
                                     </select>
                                 </div>
-                                <div>
-                                    <label className={labelCls}>Department</label>
-                                    <select value={form.deptId} onChange={e => set("deptId", e.target.value)} className={selectCls}>
-                                        <option value="">Select Department</option>
-                                        {depts.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                                    </select>
-                                </div>
+
                                 <div>
                                     <label className={labelCls}>Job Title</label>
                                     <select value={form.designationId} onChange={e => set("designationId", e.target.value)} className={selectCls}>
@@ -230,11 +224,11 @@ export default function AddEmployeeModal({ token, employee, onClose, onSuccess }
                         <div className="flex items-center justify-between pt-6 border-t border-slate-50">
                             <div className="flex items-center gap-3">
                                 <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Security Active</span>
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Secure update</span>
                             </div>
                             <div className="flex gap-4">
                                 <Button disabled={loading || success} className={cn(
-                                    "h-14 px-12 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 font-brand",
+                                    "h-14 px-12 rounded-2xl font-bold text-[10px] uppercase tracking-widest transition-all active:scale-95 font-brand",
                                     isEditing ? "bg-amber-500 hover:bg-amber-600 shadow-amber-100" : "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-100"
                                 )}>
                                     {loading ? "..." : success ? "Done" : isEditing ? "Save Changes" : "Add Employee"}

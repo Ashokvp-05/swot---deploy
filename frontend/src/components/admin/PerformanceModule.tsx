@@ -34,7 +34,7 @@ export default function PerformanceModule({ token }: { token: string }) {
     if (loading) return (
         <div className="h-64 flex flex-col items-center justify-center gap-3 text-slate-300">
             <Loader2 className="w-10 h-10 animate-spin text-indigo-500" />
-            <p className="text-[10px] font-black uppercase tracking-[0.4em]">Loading Performance Data...</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.4em]">Loading Performance...</p>
         </div>
     )
 
@@ -73,7 +73,7 @@ export default function PerformanceModule({ token }: { token: string }) {
                         <div className={cn("w-9 h-9 rounded-xl flex items-center justify-center mb-4", s.bg)}>
                             <s.icon className={cn("w-4 h-4", s.color)} />
                         </div>
-                        <p className="text-2xl font-black text-slate-900 tracking-tight">{s.value}</p>
+                        <p className="text-2xl font-bold text-slate-900 tracking-tight">{s.value}</p>
                         <p className="text-[11px] font-semibold text-slate-500 mt-0.5">{s.label}</p>
                         <p className="text-[10px] text-slate-400 mt-1">{s.sub}</p>
                     </div>
@@ -84,7 +84,7 @@ export default function PerformanceModule({ token }: { token: string }) {
             <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
                 <div className="flex items-center justify-between mb-5">
                     <div>
-                        <h3 className="text-sm font-black text-slate-800 uppercase tracking-tight">Department Score Breakdown</h3>
+                        <h3 className="text-sm font-bold text-slate-800 uppercase tracking-tight">Department Score Breakdown</h3>
                         <p className="text-[10px] text-slate-400 mt-0.5">Average rating per department · Live from review data</p>
                     </div>
                     <Button variant="outline" size="sm" className="text-xs rounded-xl gap-1.5">
@@ -94,7 +94,7 @@ export default function PerformanceModule({ token }: { token: string }) {
 
                 {deptStats.length === 0 ? (
                     <div className="h-32 flex items-center justify-center text-slate-300">
-                        <p className="text-[11px] font-black uppercase tracking-widest">No review data yet</p>
+                        <p className="text-[11px] font-bold uppercase tracking-widest">No review data yet</p>
                     </div>
                 ) : (
                     <div className="space-y-3">
@@ -108,7 +108,7 @@ export default function PerformanceModule({ token }: { token: string }) {
                                     <div className={cn("h-full rounded-full transition-all duration-700", d.color)}
                                         style={{ width: `${(d.score / 10) * 100}%` }} />
                                 </div>
-                                <span className="text-sm font-black text-slate-700 w-14 text-right">{d.score}/10</span>
+                                <span className="text-sm font-bold text-slate-700 w-14 text-right">{d.score}/10</span>
                             </div>
                         ))}
                     </div>
@@ -118,13 +118,13 @@ export default function PerformanceModule({ token }: { token: string }) {
             {/* KPIs LIST */}
             {kpis.length > 0 && (
                 <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
-                    <h3 className="text-sm font-black text-slate-800 uppercase tracking-tight mb-4">Active KPIs</h3>
+                    <h3 className="text-sm font-bold text-slate-800 uppercase tracking-tight mb-4">Active KPIs</h3>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                         {kpis.map((kpi: any, i: number) => (
                             <div key={i} className="p-4 bg-slate-50 rounded-xl border border-slate-100">
                                 <p className="text-[12px] font-bold text-slate-800">{kpi.name}</p>
                                 {kpi.description && <p className="text-[10px] text-slate-400 mt-1">{kpi.description}</p>}
-                                <p className="text-[9px] font-black text-indigo-500 mt-2 uppercase tracking-widest">Weight: {kpi.weight}</p>
+                                <p className="text-[9px] font-bold text-indigo-500 mt-2 uppercase tracking-widest">Weight: {kpi.weight}</p>
                             </div>
                         ))}
                     </div>

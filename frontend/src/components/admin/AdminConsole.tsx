@@ -24,14 +24,14 @@ export function AdminConsole({ role, token, overview, pendingUsers = [], pending
                             <Activity className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h3 className="text-2xl font-bold text-slate-900 dark:text-white italic uppercase tracking-tight leading-none">Operations Pulse</h3>
-                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Real-time Workforce Dynamics</p>
+                            <h3 className="text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-tight leading-none">Operations Hub</h3>
+                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Workforce Activity</p>
                         </div>
                     </div>
 
                     <TabsList className="bg-slate-100 dark:bg-slate-950 p-1 h-12 rounded-2xl border border-border">
                         <TabsTrigger value="activity" className="h-10 px-6 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all data-[state=active]:bg-indigo-600 data-[state=active]:text-white">Live Activity</TabsTrigger>
-                        <TabsTrigger value="remote" className="h-10 px-6 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all data-[state=active]:bg-indigo-600 data-[state=active]:text-white">Active Personnel</TabsTrigger>
+                        <TabsTrigger value="remote" className="h-10 px-6 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all data-[state=active]:bg-indigo-600 data-[state=active]:text-white">Active Employees</TabsTrigger>
                     </TabsList>
                 </div>
 
@@ -59,13 +59,13 @@ export function AdminConsole({ role, token, overview, pendingUsers = [], pending
                                             </div>
                                         </div>
                                     </div>
-                                    <Badge variant="outline" className="text-[8px] font-bold uppercase border-border group-hover/log:border-indigo-500/30 transition-all opacity-70">Identity Linked</Badge>
+                                    <Badge variant="outline" className="text-[8px] font-bold uppercase border-border group-hover/log:border-indigo-500/30 transition-all opacity-70">Verified</Badge>
                                 </motion.div>
                             ))
                         ) : (
                             <div className="h-full flex flex-col items-center justify-center gap-4 py-20 text-slate-700">
                                 <ShieldCheck className="w-12 h-12 opacity-10" />
-                                <p className="text-[10px] font-black uppercase tracking-[0.4em]">Awaiting live protocols...</p>
+                                <p className="text-[10px] font-bold uppercase tracking-widest">Awaiting activity...</p>
                             </div>
                         )}
                     </TabsContent>
@@ -83,16 +83,16 @@ export function AdminConsole({ role, token, overview, pendingUsers = [], pending
                                     <div className="flex items-center gap-5">
                                         <div className="relative h-14 w-14 group-hover/user:scale-110 transition-transform">
                                             <div className="absolute inset-0 bg-indigo-500/20 rounded-2xl animate-pulse" />
-                                            <div className="relative h-full w-full rounded-2xl bg-indigo-600/10 border border-indigo-600/20 flex items-center justify-center text-indigo-400 font-black text-xl italic uppercase">
+                                            <div className="relative h-full w-full rounded-2xl bg-indigo-600/10 border border-indigo-600/20 flex items-center justify-center text-indigo-400 font-bold text-xl uppercase">
                                                 {user.name.charAt(0)}
                                             </div>
                                         </div>
                                         <div>
-                                            <h4 className="text-white font-black text-sm uppercase tracking-wider group-hover/user:text-indigo-400 transition-colors uppercase">{user.name}</h4>
+                                            <h4 className="text-white font-bold text-sm uppercase tracking-wide group-hover/user:text-indigo-400 transition-colors uppercase">{user.name}</h4>
                                             <div className="flex items-center gap-3 mt-1">
                                                 <div className="flex items-center gap-1.5">
                                                     {user.status === 'REMOTE' ? <Laptop className="w-3.5 h-3.5 text-emerald-400" /> : <Clock className="w-3.5 h-3.5 text-indigo-400" />}
-                                                    <span className={`text-[9px] font-black ${user.status === 'REMOTE' ? 'text-emerald-400' : 'text-indigo-400'} uppercase tracking-widest`}>{user.status}</span>
+                                                    <span className={`text-[9px] font-bold ${user.status === 'REMOTE' ? 'text-emerald-400' : 'text-indigo-400'} uppercase tracking-widest`}>{user.status}</span>
                                                 </div>
                                                 <div className="w-1 h-1 rounded-full bg-slate-700" />
                                                 <div className="flex items-center gap-1 text-slate-500">
@@ -103,7 +103,7 @@ export function AdminConsole({ role, token, overview, pendingUsers = [], pending
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-[10px] font-black text-white italic tracking-tighter uppercase mb-0.5">Clocked-In</p>
+                                        <p className="text-[10px] font-bold text-white uppercase mb-0.5">Clocked In</p>
                                         <p suppressHydrationWarning className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">{new Date(user.clockIn).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}</p>
                                     </div>
                                 </motion.div>
@@ -111,15 +111,15 @@ export function AdminConsole({ role, token, overview, pendingUsers = [], pending
                         ) : (
                             <div className="h-full flex flex-col items-center justify-center gap-4 py-20 text-slate-700">
                                 <Users className="w-12 h-12 opacity-10" />
-                                <p className="text-[10px] font-black uppercase tracking-[0.4em]">No active personnel detected</p>
+                                <p className="text-[10px] font-bold uppercase tracking-widest">No active employees detected</p>
                             </div>
                         )}
                     </TabsContent>
                 </div>
 
                 <div className="p-10 pt-4 border-t border-white/5 bg-slate-950/40">
-                    <Button variant="ghost" className="w-full h-14 rounded-[20px] text-[10px] font-black uppercase border border-white/5 hover:bg-white/5 hover:text-white transition-all gap-3 tracking-widest">
-                        Expand Strategic Audit Center
+                    <Button variant="ghost" className="w-full h-14 rounded-[20px] text-[10px] font-bold uppercase border border-white/5 hover:bg-white/5 hover:text-white transition-all gap-3 tracking-widest">
+                        View Full Logs
                         <ArrowRight className="w-4 h-4 text-slate-700 group-hover:translate-x-2 transition-transform" />
                     </Button>
                 </div>

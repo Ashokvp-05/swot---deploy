@@ -55,7 +55,7 @@ export default function AttendanceCalendar({ token }: AttendanceCalendarProps) {
     if (loading) return (
         <div className="flex flex-col items-center justify-center p-20 gap-4">
             <Loader2 className="animate-spin text-indigo-500 w-10 h-10" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Syncing Matrix...</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Syncing Matrix...</span>
         </div>
     )
 
@@ -71,14 +71,14 @@ export default function AttendanceCalendar({ token }: AttendanceCalendarProps) {
                     holiday: holidayDays,
                 }}
                 modifiersClassNames={{
-                    present: "bg-emerald-500 text-white hover:bg-emerald-600 rounded-full font-black shadow-lg shadow-emerald-500/20",
-                    holiday: "bg-indigo-600 text-white hover:bg-indigo-700 rounded-full font-black ring-4 ring-indigo-50 dark:ring-indigo-900/20 shadow-lg shadow-indigo-600/20",
+                    present: "bg-emerald-500 text-white hover:bg-emerald-600 rounded-full font-bold shadow-lg shadow-emerald-500/20",
+                    holiday: "bg-indigo-600 text-white hover:bg-indigo-700 rounded-full font-bold ring-4 ring-indigo-50 dark:ring-indigo-900/20 shadow-lg shadow-indigo-600/20",
                 }}
             />
             {activeHoliday && (
                 <div className="w-full p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl border border-indigo-100 dark:border-indigo-800/50 flex items-center gap-3 animate-in zoom-in-95 duration-200">
                     <div className="w-2 h-2 rounded-full bg-indigo-600 animate-pulse" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-indigo-700 dark:text-indigo-300">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-700 dark:text-indigo-300">
                         {activeHoliday.name}
                     </span>
                 </div>

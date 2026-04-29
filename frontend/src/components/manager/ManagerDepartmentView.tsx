@@ -80,12 +80,12 @@ export default function ManagerDepartmentView({ token }: { token: string }) {
         <div className="space-y-10">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter italic">Organizational <span className="text-indigo-600">Architecture</span></h2>
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Manage departmental groups & hierarchy protocols</p>
+                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white uppercase tracking-tighter italic">Organizational <span className="text-indigo-600">Architecture</span></h2>
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Manage departmental groups & hierarchy protocols</p>
                 </div>
                 <Button 
                     onClick={() => setIsCreateOpen(true)}
-                    className="h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-10 text-[11px] font-black uppercase tracking-widest gap-3 shadow-xl"
+                    className="h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-10 text-[11px] font-bold uppercase tracking-widest gap-3 shadow-xl"
                 >
                     <Plus className="w-5 h-5" /> Add Department
                 </Button>
@@ -97,12 +97,12 @@ export default function ManagerDepartmentView({ token }: { token: string }) {
                 {loading ? (
                     <div className="col-span-full py-20 flex flex-col items-center justify-center gap-4">
                         <Loader2 className="w-10 h-10 animate-spin text-indigo-500" />
-                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Scanning Department Hierarchy...</p>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Scanning Department Hierarchy...</p>
                     </div>
                 ) : departments.length === 0 ? (
                     <div className="col-span-full py-20 text-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-[3rem]">
                         <Building2 className="w-16 h-16 text-slate-200 mx-auto mb-6" />
-                        <h4 className="text-sm font-black uppercase text-slate-400 italic">No Architecture Defined</h4>
+                        <h4 className="text-sm font-bold uppercase text-slate-400 italic">No Architecture Defined</h4>
                     </div>
                 ) : (
                     departments.map((dept) => (
@@ -114,22 +114,22 @@ export default function ManagerDepartmentView({ token }: { token: string }) {
                                 <Button variant="ghost" size="icon" className="rounded-xl"><MoreHorizontal className="w-5 h-5" /></Button>
                             </div>
 
-                            <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight italic mb-1">{dept.name}</h3>
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">{dept.description || "Core organizational management department"}</p>
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-white uppercase tracking-tight italic mb-1">{dept.name}</h3>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">{dept.description || "Core organizational management department"}</p>
 
                             <div className="grid grid-cols-2 gap-4 mb-8">
                                 <div className="p-4 rounded-2xl bg-slate-50 dark:bg-black/20">
-                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Personnel</p>
+                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Personnel</p>
                                     <div className="flex items-center gap-2">
                                         <Users className="w-3 h-3 text-indigo-600" />
-                                        <span className="text-sm font-black text-slate-900 dark:text-white">{dept._count?.users || 0}</span>
+                                        <span className="text-sm font-bold text-slate-900 dark:text-white">{dept._count?.users || 0}</span>
                                     </div>
                                 </div>
                                 <div className="p-4 rounded-2xl bg-slate-50 dark:bg-black/20">
-                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Governance</p>
+                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Governance</p>
                                     <div className="flex items-center gap-2">
                                         <Target className="w-3 h-3 text-emerald-600" />
-                                        <span className="text-[10px] font-black text-emerald-600 uppercase">Active</span>
+                                        <span className="text-[10px] font-bold text-emerald-600 uppercase">Active</span>
                                     </div>
                                 </div>
                             </div>
@@ -137,11 +137,11 @@ export default function ManagerDepartmentView({ token }: { token: string }) {
                             <div className="flex items-center justify-between pt-6 border-t border-slate-50 dark:border-white/5">
                                 <div className="flex -space-x-3">
                                     {[1, 2, 3].map((i) => (
-                                        <div key={i} className="w-8 h-8 rounded-full border-2 border-white dark:border-slate-900 bg-slate-100 flex items-center justify-center text-[10px] font-black text-slate-400">U</div>
+                                        <div key={i} className="w-8 h-8 rounded-full border-2 border-white dark:border-slate-900 bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-400">U</div>
                                     ))}
-                                    <div className="w-8 h-8 rounded-full border-2 border-white dark:border-slate-900 bg-indigo-600 flex items-center justify-center text-[10px] font-black text-white">+</div>
+                                    <div className="w-8 h-8 rounded-full border-2 border-white dark:border-slate-900 bg-indigo-600 flex items-center justify-center text-[10px] font-bold text-white">+</div>
                                 </div>
-                                <Button variant="ghost" className="text-[10px] font-black uppercase text-indigo-600 tracking-widest flex items-center gap-2 hover:bg-transparent">
+                                <Button variant="ghost" className="text-[10px] font-bold uppercase text-indigo-600 tracking-widest flex items-center gap-2 hover:bg-transparent">
                                     Dept Details <ExternalLink className="w-3 h-3" />
                                 </Button>
                             </div>
@@ -154,13 +154,13 @@ export default function ManagerDepartmentView({ token }: { token: string }) {
             <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                 <DialogContent className="bg-white dark:bg-slate-900 border-none rounded-[3rem] shadow-2xl p-10 max-w-lg font-sans">
                     <DialogHeader>
-                        <DialogTitle className="text-2xl font-black uppercase italic tracking-tighter text-slate-900 dark:text-white">Add <span className="text-indigo-600">Department</span></DialogTitle>
-                        <DialogDescription className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">Register a new organizational department</DialogDescription>
+                        <DialogTitle className="text-2xl font-bold uppercase italic tracking-tighter text-slate-900 dark:text-white">Add <span className="text-indigo-600">Department</span></DialogTitle>
+                        <DialogDescription className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">Register a new organizational department</DialogDescription>
                     </DialogHeader>
                     
                     <div className="space-y-6 py-8">
                         <div className="space-y-3">
-                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Department Name</Label>
+                            <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Department Name</Label>
                             <Input 
                                 className="h-14 rounded-2xl bg-slate-50 dark:bg-black/40 border-slate-100 dark:border-white/5 px-6 font-bold text-slate-900 dark:text-white focus:ring-4 focus:ring-indigo-600/10 transition-all outline-none" 
                                 placeholder="e.g. Engineering & Cloud"
@@ -169,7 +169,7 @@ export default function ManagerDepartmentView({ token }: { token: string }) {
                             />
                         </div>
                         <div className="space-y-3">
-                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Operational Mandate</Label>
+                            <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Operational Mandate</Label>
                             <Textarea 
                                 className="min-h-[120px] rounded-2xl bg-slate-50 dark:bg-black/40 border-slate-100 dark:border-white/5 p-6 font-medium text-slate-900 dark:text-white" 
                                 placeholder="Define the core objectives..."
@@ -183,14 +183,14 @@ export default function ManagerDepartmentView({ token }: { token: string }) {
                         <Button 
                             variant="ghost" 
                             onClick={() => setIsCreateOpen(false)}
-                            className="h-14 px-8 rounded-2xl font-black uppercase text-[11px] tracking-widest text-slate-400"
+                            className="h-14 px-8 rounded-2xl font-bold uppercase text-[11px] tracking-widest text-slate-400"
                         >
                             Abort
                         </Button>
                         <Button 
                             onClick={handleCreate}
                             disabled={creating}
-                            className="h-14 px-10 rounded-2xl bg-indigo-600 hover:bg-black text-white font-black uppercase text-[11px] tracking-[0.2em] shadow-2xl shadow-indigo-600/20 transition-all active:scale-95"
+                            className="h-14 px-10 rounded-2xl bg-indigo-600 hover:bg-black text-white font-bold uppercase text-[11px] tracking-[0.2em] shadow-2xl shadow-indigo-600/20 transition-all active:scale-95"
                         >
                             {creating ? <Loader2 className="w-5 h-5 animate-spin" /> : "Create Department"}
                         </Button>

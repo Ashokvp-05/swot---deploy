@@ -43,7 +43,7 @@ export default async function DatabaseExplorerPage() {
                             <Database className="w-8 h-8 text-white" />
                         </div>
                         <div>
-                            <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic">Infrastructure Core</h2>
+                            <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white uppercase italic">Infrastructure Core</h2>
                             <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Direct system-level insights from the PostgreSQL persistence layer.</p>
                         </div>
                     </div>
@@ -51,7 +51,7 @@ export default async function DatabaseExplorerPage() {
                 <div className="relative z-10 flex gap-4">
                     <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-[10px] font-black uppercase text-emerald-600 dark:text-emerald-400">Engine Stable</span>
+                        <span className="text-[10px] font-bold uppercase text-emerald-600 dark:text-emerald-400">Engine Stable</span>
                     </div>
                 </div>
             </div>
@@ -60,16 +60,16 @@ export default async function DatabaseExplorerPage() {
                 {/* Main Table Card */}
                 <Card className="md:col-span-8 border-slate-200 dark:border-slate-800 shadow-2xl bg-white dark:bg-slate-950 rounded-[2.5rem] overflow-hidden">
                     <CardHeader className="bg-slate-50/50 dark:bg-black/20 border-b border-border/50 p-8">
-                        <CardTitle className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Tables Inventory</CardTitle>
+                        <CardTitle className="text-xl font-bold text-slate-900 dark:text-white uppercase tracking-tight">Tables Inventory</CardTitle>
                         <CardDescription className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Real-time object distribution and record counts.</CardDescription>
                     </CardHeader>
                     <CardContent className="p-0">
                         <Table>
                             <TableHeader className="bg-slate-50 dark:bg-slate-900/50">
                                 <TableRow className="border-slate-100 dark:border-slate-800 hover:bg-transparent">
-                                    <TableHead className="w-[300px] text-[10px] font-black uppercase tracking-widest text-slate-400 h-14 pl-8">Structure Name</TableHead>
-                                    <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400 h-14">Record Depth</TableHead>
-                                    <TableHead className="text-right text-[10px] font-black uppercase tracking-widest text-slate-400 h-14 pr-8">Physical Path</TableHead>
+                                    <TableHead className="w-[300px] text-[10px] font-bold uppercase tracking-widest text-slate-400 h-14 pl-8">Structure Name</TableHead>
+                                    <TableHead className="text-[10px] font-bold uppercase tracking-widest text-slate-400 h-14">Record Depth</TableHead>
+                                    <TableHead className="text-right text-[10px] font-bold uppercase tracking-widest text-slate-400 h-14 pr-8">Physical Path</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -86,7 +86,7 @@ export default async function DatabaseExplorerPage() {
                                                 </div>
                                             </TableCell>
                                             <TableCell>
-                                                <span className="inline-flex items-center rounded-lg bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1.5 text-[10px] font-black text-indigo-700 dark:text-indigo-400 ring-1 ring-inset ring-indigo-200 dark:ring-indigo-800">
+                                                <span className="inline-flex items-center rounded-lg bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1.5 text-[10px] font-bold text-indigo-700 dark:text-indigo-400 ring-1 ring-inset ring-indigo-200 dark:ring-indigo-800">
                                                     {stat.count.toLocaleString()} ROWS
                                                 </span>
                                             </TableCell>
@@ -106,7 +106,7 @@ export default async function DatabaseExplorerPage() {
                     <Card className="border-none shadow-xl bg-slate-900 text-white rounded-[2rem] overflow-hidden relative">
                         <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-transparent" />
                         <CardHeader className="relative z-10 p-6">
-                            <CardTitle className="text-sm font-black uppercase tracking-widest text-slate-400">Engine Analytics</CardTitle>
+                            <CardTitle className="text-sm font-bold uppercase tracking-widest text-slate-400">Engine Analytics</CardTitle>
                         </CardHeader>
                         <CardContent className="relative z-10 p-6 pt-0 space-y-6">
                             <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10">
@@ -114,28 +114,28 @@ export default async function DatabaseExplorerPage() {
                                     <Cpu className="w-5 h-5 text-indigo-400" />
                                     <span className="text-xs font-bold uppercase tracking-tight text-slate-300">Processor State</span>
                                 </div>
-                                <span className="text-xs font-black text-emerald-400">98% OPTIMAL</span>
+                                <span className="text-xs font-bold text-emerald-400">98% OPTIMAL</span>
                             </div>
                             <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10">
                                 <div className="flex items-center gap-3">
                                     <HardDrive className="w-5 h-5 text-indigo-400" />
                                     <span className="text-xs font-bold uppercase tracking-tight text-slate-300">Disk Integrity</span>
                                 </div>
-                                <span className="text-xs font-black text-indigo-400">RAID-1 SYNCED</span>
+                                <span className="text-xs font-bold text-indigo-400">RAID-1 SYNCED</span>
                             </div>
                         </CardContent>
                     </Card>
 
                     <Card className="border-slate-200 dark:border-slate-800 shadow-xl bg-white dark:bg-slate-900 rounded-[2rem]">
                         <CardHeader className="p-6 pb-2">
-                            <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                            <CardTitle className="text-xs font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
                                 <Activity className="w-4 h-4 text-indigo-600" /> System Pulse
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="p-6 pt-2 space-y-4">
                             <div className="space-y-1">
                                 <div className="flex justify-between items-end">
-                                    <span className="text-[10px] font-black uppercase text-slate-500 tracking-tighter">Connection Utilization</span>
+                                    <span className="text-[10px] font-bold uppercase text-slate-500 tracking-tighter">Connection Utilization</span>
                                     <span className="text-[10px] font-bold text-indigo-600">14% ACTIVE</span>
                                 </div>
                                 <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">

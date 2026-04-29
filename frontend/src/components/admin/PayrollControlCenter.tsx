@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { jsPDF } from "jspdf"
 import autoTable from "jspdf-autotable"
 import { motion, AnimatePresence } from "framer-motion"
-import { CreditCard, DollarSign, Loader2, Play, CheckCircle2, AlertCircle, FileText, ChevronRight, Lock, Unlock, Download, Send, Plus, Activity, Users, Clock, TrendingUp, ShieldCheck, Settings, Save, Trash2, Zap, Eye } from "lucide-react"
+import { CreditCard, DollarSign, Loader2, Play, CheckCircle2, AlertCircle, FileText, ChevronRight, Lock, Unlock, Download, Send, Plus, Activity, Users, Clock, TrendingUp, ShieldCheck, Settings, Save, Trash2, Zap, Eye, Calendar, Search } from "lucide-react"
 import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
@@ -40,7 +40,7 @@ export default function PayrollControlCenter({ token }: { token: string }) {
             const data = await res.json()
             if (res.ok) setBatches(data)
         } catch (e) {
-            toast.error("Financial ledger sync error")
+            toast.error("Payroll data error")
         } finally {
             setLoading(false)
         }
@@ -97,14 +97,14 @@ export default function PayrollControlCenter({ token }: { token: string }) {
             })
 
             if (res.ok) {
-                toast.success(`Operational Batch ${month}/${year} initialized`)
+                toast.success(`Payroll Batch ${month}/${year} created`)
                 fetchBatches()
             } else {
                 const err = await res.json()
-                toast.error(err.error || "Execution failed")
+                toast.error(err.error || "Process failed")
             }
         } catch (e) {
-            toast.error("Network synchronization collision")
+            toast.error("Connection error")
         } finally {
             setProcessing(null)
         }
@@ -119,13 +119,13 @@ export default function PayrollControlCenter({ token }: { token: string }) {
             })
 
             if (res.ok) {
-                toast.success("Temporal calculation cycle complete")
+                toast.success("Payroll calculation complete")
                 fetchBatches()
             } else {
-                toast.error("Calculation failure")
+                toast.error("Failed to calculate")
             }
         } catch (e) {
-            toast.error("Simulation error")
+            toast.error("Calculation error")
         } finally {
             setProcessing(null)
         }
@@ -144,223 +144,237 @@ export default function PayrollControlCenter({ token }: { token: string }) {
             })
 
             if (res.ok) {
-                toast.success(`Financial state: ${status}`)
+                toast.success(`Status updated: ${status}`)
                 fetchBatches()
             } else {
-                toast.error("Override rejected")
+                toast.error("Request rejected")
             }
         } catch (e) {
-            toast.error("Authority verification timeout")
+            toast.error("Request timed out")
         } finally {
             setProcessing(null)
         }
     }
 
     return (
-        <div className="space-y-12 font-sans px-2">
-            {/* HUD HEADER */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
-                <div className="flex items-center gap-5">
-                    <div className="p-4 bg-emerald-600 rounded-[20px] shadow-xl shadow-emerald-100 transition-transform hover:-rotate-3">
-                        <DollarSign className="w-7 h-7 text-white" />
-                    </div>
-                    <div>
-                        <h2 className="text-3xl font-black text-slate-900 border-none uppercase tracking-tighter italic leading-none font-brand">Payroll</h2>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mt-3 leading-none italic font-body">Manage employee salaries and payments.</p>
-                    </div>
-                </div>
-                
-                <div className="flex items-center gap-4 bg-slate-50 p-2 rounded-[24px]">
-                    {[
-                        { id: 'batches', label: 'Batches', icon: CreditCard },
-                        { id: 'salary', label: 'Salary Structures', icon: FileText },
-                    ].map((t) => (
-                        <button
-                            key={t.id}
-                            onClick={() => setActiveTab(t.id)}
-                            className={cn(
-                                "flex items-center gap-2 px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all",
-                                activeTab === t.id ? "bg-white text-indigo-600 shadow-sm shadow-indigo-100" : "text-slate-400 hover:text-slate-600"
-                            )}
-                        >
-                            <t.icon className="w-3.5 h-3.5" />
-                            {t.label}
-                        </button>
-                    ))}
-                </div>
-            </div>
+        <div className="min-h-full bg-[#fcfcfd] font-body pb-20 relative overflow-hidden">
+            {/* Subtle Background Accent */}
+            <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-indigo-50/30 to-transparent pointer-events-none" />
 
-            {/* DASHBOARD STATS OVERLAY */}
-            {!statsLoading && stats && (
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    {[
-                        { label: 'Total Payroll Amount', value: `₹${(stats.estimatedExpenditure / 100000).toFixed(2)}L`, sub: 'Current Active Ledger', icon: TrendingUp, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-                        { label: 'Total Personnel Paid', value: `${stats.configuredEmployees}`, sub: `Allocated within limit: ${stats.totalEmployees}`, icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-                        { label: 'Pending Payments', value: stats.missingConfig > 0 ? stats.missingConfig : 0, sub: 'Requires Generation Phase', icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
-                        { label: 'Total Deductions', value: `₹${((stats.estimatedExpenditure * 0.12) / 1000).toFixed(1)}k`, sub: 'Calculated tax and PF', icon: Activity, color: 'text-rose-600', bg: 'bg-rose-50' },
-                    ].map((s, i) => (
-                        <div key={i} className="bg-white rounded-[32px] border border-slate-50 p-8 shadow-sm">
-                            <div className={cn("w-10 h-10 rounded-2xl flex items-center justify-center mb-6", s.bg)}>
-                                <s.icon className={cn("w-5 h-5", s.color)} />
-                            </div>
-                            <h3 className="text-2xl font-black text-slate-900 tracking-tighter uppercase">{s.value}</h3>
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1.5">{s.label}</p>
-                            <p className="text-[9px] font-bold text-slate-400 uppercase italic mt-2">{s.sub}</p>
+            <div className="max-w-[1400px] mx-auto px-6 py-10 space-y-12 relative z-10">
+
+                {/* ── HIGH-FIDELITY HEADER ── */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+                    <div className="flex items-center gap-6">
+                        <div className="w-14 h-14 bg-emerald-600 rounded-[22px] flex items-center justify-center text-white shadow-2xl shadow-emerald-200">
+                            <DollarSign className="w-7 h-7" />
                         </div>
-                    ))}
-                </div>
-            )}
-
-            {activeTab === 'batches' && (
-                <div className="space-y-12">
-                    <div className="flex justify-end">
-                        <Button
-                            onClick={createBatch}
-                            disabled={processing !== null}
-                            className="h-14 bg-slate-900 hover:bg-black text-white rounded-[20px] px-10 text-[11px] font-black uppercase tracking-widest transition-all active:scale-95 font-brand"
-                        >
-                            {processing === "creating" && <Loader2 className="w-5 h-5 animate-spin mr-3" />}
-                            New Payroll
-                        </Button>
+                        <div>
+                            <h1 className="text-[26px] font-bold text-slate-800 tracking-tight font-brand leading-none">
+                                Payroll Management
+                            </h1>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">
+                                Manage Salaries and Payments
+                            </p>
+                        </div>
                     </div>
+                    
+                    <div className="flex items-center gap-4 bg-white p-1.5 rounded-2xl border border-slate-100 shadow-sm">
+                        {[
+                            { id: 'batches', label: 'Payment Lists', icon: CreditCard },
+                            { id: 'salary', label: 'Salary Settings', icon: FileText },
+                        ].map((t) => (
+                            <button
+                                key={t.id}
+                                onClick={() => setActiveTab(t.id)}
+                                className={cn(
+                                    "h-10 px-6 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all",
+                                    activeTab === t.id 
+                                        ? "bg-slate-900 text-white shadow-lg" 
+                                        : "text-slate-400 hover:text-slate-600 hover:bg-slate-50"
+                                )}
+                            >{t.label}</button>
+                        ))}
+                    </div>
+                </div>
 
-                    {/* BATCH GRID */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10 text-black">
-                        {loading ? (
-                            <div className="col-span-full h-80 flex flex-col items-center justify-center gap-6 text-slate-400">
-                                <div className="w-10 h-10 border-4 border-emerald-500/10 border-t-emerald-500 rounded-full animate-spin" />
-                                <p className="text-[10px] font-black uppercase tracking-[0.5em] animate-pulse">Syncing synchronization nodes...</p>
-                            </div>
-                        ) : batches.length === 0 ? (
-                            <div className="col-span-full h-80 flex flex-col items-center justify-center gap-6 text-slate-400 bg-white border-[3px] border-dashed border-slate-100 rounded-[50px] opacity-60">
-                                <p className="text-[11px] font-black uppercase tracking-[0.4em]">No payroll batches yet.</p>
-                            </div>
-                        ) : (
-                            batches.map((batch, idx) => (
-                                <motion.div 
-                                    key={batch.id} 
-                                    initial={{ opacity: 0, y: 15 }} 
-                                    animate={{ opacity: 1, y: 0 }} 
-                                    transition={{ delay: idx * 0.05 }}
-                                    className="bg-white border border-slate-50 rounded-[44px] shadow-sm hover:shadow-2xl transition-all duration-300 group overflow-hidden"
-                                >
-                                    <div className="p-10 pb-0 flex flex-row items-center justify-between">
-                                        <div className="space-y-2 pb-6">
-                                            <div className="flex items-center gap-3">
-                                                <h3 className="text-2xl font-black text-slate-900 italic uppercase leading-none">{batch.month} / {batch.year}</h3>
-                                                <Badge className={cn("text-[9px] font-black uppercase tracking-tighter px-3 h-5 border-none shadow-none", 
-                                                    batch.status === 'RELEASED' ? 'bg-emerald-50 text-emerald-600' :
-                                                    batch.status === 'APPROVED' ? 'bg-indigo-50 text-indigo-600' :
-                                                    'bg-amber-50 text-amber-600'
-                                                )}>
-                                                    {batch.status}
-                                                </Badge>
-                                            </div>
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{batch._count?.payslips || 0} Registered Personnel Units</p>
-                                        </div>
-                                        <div className="p-4 bg-slate-50 rounded-[20px] mb-6 group-hover:bg-emerald-50 transition-colors">
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{batch._count?.payslips || 0} Employees</p>
-                                        </div>
-                                    </div>
+                {/* ── SUMMARY DASHBOARD ── */}
+                {!statsLoading && stats && (
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        {[
+                            { label: 'Total Pay Amount', value: `₹${(stats.estimatedExpenditure / 100000).toFixed(2)}L`, sub: 'Current Active Payments', icon: TrendingUp, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+                            { label: 'Employees Paid', value: `${stats.configuredEmployees}`, sub: `Total Staff: ${stats.totalEmployees}`, icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+                            { label: 'Pending Payments', value: stats.missingConfig > 0 ? stats.missingConfig : 0, sub: 'Needs Calculation', icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
+                            { label: 'Tax & Deductions', value: `₹${((stats.estimatedExpenditure * 0.12) / 1000).toFixed(1)}k`, sub: 'Estimated Government Tax', icon: Activity, color: 'text-rose-600', bg: 'bg-rose-50' },
+                        ].map((s, i) => (
+                            <motion.div 
+                                key={i} 
+                                initial={{ opacity: 0, y: 15 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: i * 0.05 }}
+                                className="bg-white rounded-[32px] border border-slate-100 p-8 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all group"
+                            >
+                                <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:rotate-6", s.bg)}>
+                                    <s.icon className={cn("w-5 h-5", s.color)} />
+                                </div>
+                                <h3 className="text-2xl font-bold text-slate-800 tracking-tight font-brand leading-none">{s.value}</h3>
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">{s.label}</p>
+                                <p className="text-[9px] font-semibold text-slate-300 uppercase mt-3">{s.sub}</p>
+                            </motion.div>
+                        ))}
+                    </div>
+                )}
 
-                                    <div className="p-10 space-y-8">
-                                        <div className="space-y-4">
-                                            {batch.status === 'DRAFT' && (
-                                                <Button
-                                                    onClick={() => runCalculation(batch.id)}
-                                                    disabled={processing === batch.id}
-                                                    className="w-full h-14 bg-slate-50 hover:bg-slate-100 text-slate-900 rounded-[18px] text-[10px] font-black uppercase tracking-widest transition-all border border-slate-100/50"
-                                                >
-                                                    Calculate
-                                                </Button>
-                                            )}
+                {activeTab === 'batches' && (
+                    <div className="space-y-12">
+                        <div className="flex justify-end">
+                            <Button
+                                onClick={createBatch}
+                                disabled={processing !== null}
+                                className="h-16 bg-slate-900 hover:bg-black text-white text-[10px] font-bold uppercase tracking-widest rounded-[24px] shadow-2xl shadow-slate-200 transition-all active:scale-95 flex items-center gap-3 px-12"
+                            >
+                                {processing === "creating" && <Loader2 className="w-5 h-5 animate-spin mr-3" />}
+                                Create Payroll Batch
+                            </Button>
+                        </div>
 
-                                            {batch.status === 'DRAFT' && batch._count.payslips > 0 && (
-                                                <Button
-                                                    onClick={() => updateStatus(batch.id, 'APPROVED')}
-                                                    disabled={processing === batch.id}
-                                                    className="w-full h-14 bg-slate-900 hover:bg-black text-white rounded-[18px] text-[10px] font-black uppercase tracking-widest transition-all active:scale-95"
-                                                >
-                                                    Approve
-                                                </Button>
-                                            )}
-
-                                            {batch.status === 'APPROVED' && (
-                                                <Button
-                                                    onClick={() => updateStatus(batch.id, 'RELEASED')}
-                                                    disabled={processing === batch.id}
-                                                    className="w-full h-14 bg-emerald-600 hover:bg-emerald-700 text-white rounded-[18px] text-[10px] font-black uppercase tracking-widest transition-all active:scale-95"
-                                                >
-                                                    Release All
-                                                </Button>
-                                            )}
-
-                                            {batch.status === 'RELEASED' && (
-                                                <div className="p-8 bg-emerald-50 rounded-[28px] border border-emerald-100/50 flex flex-col items-center gap-4 text-center">
+                        {/* BATCH GRID */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                            {loading ? (
+                                <div className="col-span-full py-32 flex flex-col items-center justify-center gap-6">
+                                    <Loader2 className="w-12 h-12 animate-spin text-indigo-600" />
+                                    <p className="text-[12px] font-bold uppercase tracking-widest text-slate-400">Loading Payment List...</p>
+                                </div>
+                            ) : batches.length === 0 ? (
+                                <div className="col-span-full py-32 flex flex-col items-center justify-center gap-6 bg-white rounded-[40px] border border-dashed border-slate-200">
+                                    <CreditCard className="w-16 h-16 text-slate-100" />
+                                    <p className="text-[12px] font-bold uppercase tracking-widest text-slate-400">No payroll lists created yet</p>
+                                </div>
+                            ) : (
+                                batches.map((batch, idx) => (
+                                    <motion.div 
+                                        key={batch.id} 
+                                        initial={{ opacity: 0, y: 15 }} 
+                                        animate={{ opacity: 1, y: 0 }} 
+                                        transition={{ delay: idx * 0.05 }}
+                                        className="bg-white border border-slate-100 rounded-[40px] p-8 shadow-sm hover:shadow-2xl hover:shadow-slate-200/50 hover:border-indigo-100 transition-all group flex flex-col justify-between h-full"
+                                    >
+                                        <div>
+                                            <div className="flex items-center justify-between mb-8">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                                                        <Calendar className="w-5 h-5" />
+                                                    </div>
                                                     <div>
-                                                        <p className="text-emerald-600 text-[12px] font-black uppercase tracking-tight italic">Paid</p>
-                                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Released: {new Date(batch.releasedAt).toLocaleDateString()}</p>
+                                                        <h3 className="text-xl font-bold text-slate-900 tracking-tight font-brand uppercase">{batch.month} / {batch.year}</h3>
+                                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">{batch._count?.payslips || 0} Total Staff</p>
                                                     </div>
                                                 </div>
-                                            )}
+                                                <Badge className={cn("text-[9px] font-bold uppercase tracking-widest px-4 py-1 rounded-full border-none shadow-sm", 
+                                                    batch.status === 'RELEASED' ? 'bg-emerald-600 text-white' :
+                                                    batch.status === 'APPROVED' ? 'bg-indigo-600 text-white' :
+                                                    'bg-amber-100 text-amber-700'
+                                                )}>
+                                                    {batch.status === 'RELEASED' ? 'Paid' : batch.status === 'APPROVED' ? 'Confirmed' : 'Pending'}
+                                                </Badge>
+                                            </div>
+
+                                            <div className="space-y-4">
+                                                {batch.status === 'DRAFT' && (
+                                                    <Button
+                                                        onClick={() => runCalculation(batch.id)}
+                                                        disabled={processing === batch.id}
+                                                        className="w-full h-14 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-[20px] text-[10px] font-bold uppercase tracking-widest border border-slate-100 shadow-sm"
+                                                    >
+                                                        Calculate Salaries
+                                                    </Button>
+                                                )}
+
+                                                {batch.status === 'DRAFT' && batch._count.payslips > 0 && (
+                                                    <Button
+                                                        onClick={() => updateStatus(batch.id, 'APPROVED')}
+                                                        disabled={processing === batch.id}
+                                                        className="w-full h-14 bg-slate-900 hover:bg-black text-white rounded-[20px] text-[10px] font-bold uppercase tracking-widest shadow-xl active:scale-95"
+                                                    >
+                                                        Confirm for Payment
+                                                    </Button>
+                                                )}
+
+                                                {batch.status === 'APPROVED' && (
+                                                    <Button
+                                                        onClick={() => updateStatus(batch.id, 'RELEASED')}
+                                                        disabled={processing === batch.id}
+                                                        className="w-full h-14 bg-emerald-600 hover:bg-emerald-700 text-white rounded-[20px] text-[10px] font-bold uppercase tracking-widest shadow-xl shadow-emerald-100 active:scale-95"
+                                                    >
+                                                        Pay Everyone Now
+                                                    </Button>
+                                                )}
+
+                                                {batch.status === 'RELEASED' && (
+                                                    <div className="p-6 bg-emerald-50 rounded-[24px] border border-emerald-100 flex flex-col items-center gap-3 text-center">
+                                                        <CheckCircle2 className="w-8 h-8 text-emerald-600" />
+                                                        <div>
+                                                            <p className="text-emerald-700 text-[11px] font-bold uppercase tracking-tight">All Paid Successfully</p>
+                                                            <p className="text-[9px] font-semibold text-slate-400 uppercase mt-1">Date: {new Date(batch.releasedAt).toLocaleDateString()}</p>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
 
-                                        <div className="pt-8 border-t border-slate-50 flex items-center justify-between">
-                                            <button className="text-[10px] font-black uppercase text-slate-400 hover:text-indigo-600 transition-all flex items-center gap-2 group/link">
-                                                View Details
+                                        <div className="mt-8 pt-6 border-t border-slate-50 flex items-center justify-between">
+                                            <button className="text-[9px] font-bold uppercase text-slate-400 hover:text-indigo-600 transition-all tracking-widest">
+                                                View History
                                             </button>
-                                            <button className="text-[10px] font-black uppercase text-slate-400 hover:text-emerald-600 transition-all flex items-center gap-2">
-                                                Export CSV
+                                            <button className="text-[9px] font-bold uppercase text-slate-400 hover:text-emerald-600 transition-all tracking-widest">
+                                                Download Report
                                             </button>
                                         </div>
-                                    </div>
-                                </motion.div>
-                            ))
-                        )}
-                    </div>
-                </div>
-            )}
-
-            {activeTab === 'salary' && (
-                <div className="bg-white rounded-[44px] border border-slate-50 shadow-sm overflow-hidden">
-                    <div className="p-10 border-b border-slate-50 bg-slate-50/20 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                        <div>
-                            <h3 className="text-xl font-black text-slate-900 uppercase italic tracking-tight">Employee Payroll Matrix</h3>
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Real-time salary calculation and disbursement terminal</p>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-4">
-                            <Input placeholder="Search personnel..." className="h-12 w-[300px] border-slate-100 bg-white rounded-xl text-xs font-black uppercase tracking-widest px-6" />
-                            <select className="h-12 border border-slate-100 bg-white rounded-xl text-[10px] font-black uppercase tracking-widest px-6 text-slate-500 outline-none">
-                                <option>Current Period</option>
-                                <option>Previous Month</option>
-                            </select>
-                            <Badge className="bg-indigo-50 text-indigo-600 border-none font-black text-[9px] px-3 py-1.5 rounded-full">{(Array.isArray(users) ? users.length : 0)} Active Nodes</Badge>
+                                    </motion.div>
+                                ))
+                            )}
                         </div>
                     </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
-                            <thead>
-                                <tr className="bg-slate-50/50 font-brand italic">
-                                    <th className="px-6 py-6 text-left text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] w-[20%]">User</th>
-                                    <th className="px-4 py-6 text-left text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Base Salary</th>
-                                    <th className="px-4 py-6 text-left text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Allowances</th>
-                                    <th className="px-4 py-6 text-left text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Deductions</th>
-                                    <th className="px-4 py-6 text-left text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Net Salary</th>
-                                    <th className="px-4 py-6 text-left text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Status</th>
-                                    <th className="px-6 py-6 text-right text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-50">
-                                {Array.isArray(users) && users.map((user) => (
-                                    <SalaryAuditRow key={user.id} user={user} token={token} onUpdate={fetchStats} />
-                                ))}
-                            </tbody>
-                        </table>
+                )}
+
+                {activeTab === 'salary' && (
+                    <div className="bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden">
+                        <div className="p-10 border-b border-slate-100 bg-slate-50/20 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+                            <div>
+                                <h3 className="text-xl font-bold text-slate-800 tracking-tight font-brand">Employee Salary Settings</h3>
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Configure and manage staff compensation details</p>
+                            </div>
+                            <div className="flex flex-wrap items-center gap-4">
+                                <div className="relative">
+                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                    <Input placeholder="Search employee..." className="h-12 w-[280px] border-slate-200 bg-white rounded-xl text-[10px] font-bold uppercase tracking-widest pl-11 pr-6 focus:ring-indigo-500/10" />
+                                </div>
+                                <Badge className="bg-indigo-50 text-indigo-600 border-none font-bold text-[9px] px-4 py-2 rounded-full shadow-sm">{(Array.isArray(users) ? users.length : 0)} Active Staff</Badge>
+                            </div>
+                        </div>
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead>
+                                    <tr className="bg-slate-50/50">
+                                        <th className="px-8 py-6 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">Employee</th>
+                                        <th className="px-6 py-6 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">Basic Pay</th>
+                                        <th className="px-6 py-6 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">Allowances</th>
+                                        <th className="px-6 py-6 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">Deductions</th>
+                                        <th className="px-6 py-6 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">Final Pay</th>
+                                        <th className="px-6 py-6 text-left text-[9px] font-bold text-slate-400 uppercase tracking-widest">Status</th>
+                                        <th className="px-8 py-6 text-right text-[9px] font-bold text-slate-400 uppercase tracking-widest">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-50">
+                                    {Array.isArray(users) && users.map((user) => (
+                                        <SalaryAuditRow key={user.id} user={user} token={token} onUpdate={fetchStats} />
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-            )}
-
-
+                )}
+            </div>
         </div>
     )
 }
@@ -407,11 +421,11 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
                 body: JSON.stringify(data)
             })
             if (res.ok) {
-                toast.success(`${type.split('-').join(' ')} synchronized`)
+                toast.success("Settings Saved")
                 fetchDetails()
                 onUpdate()
             }
-        } catch (e) { toast.error("Write error") } finally { setSaving(false) }
+        } catch (e) { toast.error("Error saving") } finally { setSaving(false) }
     }
 
     const basic = Number(config?.basicSalary || 0)
@@ -424,7 +438,7 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
 
     const handleRelease = async () => {
         if (!config) {
-            toast.error("Salary metrics missing configuration. Cannot release.")
+            toast.error("Salary not setup yet. Cannot pay.");
             return
         }
         
@@ -446,7 +460,7 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
             
             if (!genRes.ok) {
                 const err = await genRes.json()
-                throw new Error(err.error || "Generation phase failed")
+                throw new Error(err.error || "Failed to generate pay record")
             }
             const newSlip = await genRes.json()
 
@@ -456,14 +470,14 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
             })
 
             if (relRes.ok) {
-                toast.success(`Payslip for ${user.name} released successfully.`)
+                toast.success(`Payment for ${user.name} successful.`)
                 fetchDetails()
                 onUpdate()
             } else {
-                throw new Error("Release synchronization failed")
+                throw new Error("Payment failed")
             }
         } catch (e: any) { 
-            toast.error(e.message || "Process error") 
+            toast.error(e.message || "Error processing payment") 
         } finally { 
             setReleasing(false) 
         }
@@ -471,11 +485,11 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
     
     const generatePayslipPDF = (action: 'download' | 'view' = 'download') => {
         if (!config) {
-            toast.error("Salary metrics missing configuration");
+            toast.error("Salary not setup yet");
             return;
         }
         
-        toast.info("Generating Document...");
+        toast.info("Creating PDF...");
         const doc = new jsPDF();
         doc.setFontSize(22);
         doc.setTextColor(30, 41, 59);
@@ -483,54 +497,54 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
         
         doc.setFontSize(10);
         doc.setTextColor(148, 163, 184);
-        doc.text("Pay Slip - " + format(new Date(), 'MMMM yyyy'), 14, 30);
+        doc.text("Salary Slip - " + format(new Date(), 'MMMM yyyy'), 14, 30);
         
         doc.setFontSize(12);
         doc.setTextColor(15, 23, 42);
-        doc.text(`Employee: ${user.name}`, 14, 45);
-        doc.text(`Designation: ${user.designation?.name || 'Staff'}`, 14, 52);
+        doc.text(`Staff Name: ${user.name}`, 14, 45);
+        doc.text(`Job Role: ${user.designation?.name || 'Employee'}`, 14, 52);
         
         autoTable(doc, {
             startY: 70,
-            head: [['Component', 'Amount (INR)']],
+            head: [['Item', 'Amount (INR)']],
             body: [
-                ['Base Salary', `Rs. ${basic.toLocaleString()}`],
-                ['HRA', `Rs. ${hra.toLocaleString()}`],
+                ['Basic Salary', `Rs. ${basic.toLocaleString()}`],
+                ['HRA Allowance', `Rs. ${hra.toLocaleString()}`],
                 ['PF Deduction', `Rs. ${pf.toLocaleString()}`],
-                ['Tax Withholding', `Rs. ${taxAmt.toLocaleString()}`],
-                ['TOTAL NET PAY', `Rs. ${netVal.toLocaleString()}`]
+                ['Income Tax', `Rs. ${taxAmt.toLocaleString()}`],
+                ['NET PAYABLE', `Rs. ${netVal.toLocaleString()}`]
             ],
             theme: 'grid',
             headStyles: { fillColor: [79, 70, 229] }
         });
         
         if (action === 'download') {
-            doc.save(`Payslip_${user.name}.pdf`);
+            doc.save(`Salary_${user.name}.pdf`);
         } else {
             window.open(doc.output('bloburl'), '_blank');
         }
     }
 
     const CompensationSheet = () => (
-        <SheetContent className="bg-white border-l border-slate-50 w-full sm:max-w-[540px] p-0 shadow-2xl overflow-y-auto custom-scrollbar">
-            <SheetHeader className="pt-12 px-8 pb-8 border-b border-slate-50/50 bg-slate-50/30">
+        <SheetContent className="bg-white border-l border-slate-100 w-full sm:max-w-[540px] p-0 shadow-2xl overflow-y-auto custom-scrollbar">
+            <SheetHeader className="pt-12 px-8 pb-8 border-b border-slate-100/50 bg-slate-50/30">
                 <div className="flex items-center gap-5">
                     <div className="p-4 bg-indigo-600 rounded-2xl shadow-lg shadow-indigo-100/50 shrink-0">
                         <FileText className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                        <SheetTitle className="text-xl font-black uppercase tracking-tight text-slate-900 leading-tight">Compensation <span className="text-indigo-600">Console</span></SheetTitle>
-                        <SheetDescription className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mt-1">Deploy parameters for {user.name}</SheetDescription>
+                        <SheetTitle className="text-xl font-bold uppercase tracking-tight text-slate-900 leading-tight">Pay <span className="text-indigo-600">Settings</span></SheetTitle>
+                        <SheetDescription className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mt-1">Set salary for {user.name}</SheetDescription>
                     </div>
                 </div>
             </SheetHeader>
 
             <div className="p-8 space-y-10">
                 <div className="space-y-6">
-                    <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest border-b border-slate-50 pb-2">1. Salary Structure</p>
+                    <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest border-b border-slate-50 pb-2">1. Monthly Salary</p>
                     <div className="grid grid-cols-2 gap-5">
                         <div className="space-y-2">
-                            <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Base Salary (₹)</Label>
+                            <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Basic Pay (₹)</Label>
                             <Input 
                                 defaultValue={config?.basicSalary || 0} 
                                 onBlur={(e) => setConfig({ ...config, basicSalary: Number(e.target.value) })}
@@ -538,7 +552,7 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">HRA (₹)</Label>
+                            <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">HRA (₹)</Label>
                             <Input 
                                 defaultValue={config?.hra || 0}
                                 onBlur={(e) => setConfig({ ...config, hra: Number(e.target.value) })}
@@ -546,7 +560,7 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">PF Deduction (₹)</Label>
+                            <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">PF Amount (₹)</Label>
                             <Input 
                                 defaultValue={config?.pf || 0}
                                 onBlur={(e) => setConfig({ ...config, pf: Number(e.target.value) })}
@@ -554,7 +568,7 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Income Tax (₹)</Label>
+                            <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Tax Amount (₹)</Label>
                             <Input 
                                 defaultValue={config?.tax || 0}
                                 onBlur={(e) => setConfig({ ...config, tax: Number(e.target.value) })}
@@ -562,16 +576,16 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
                             />
                         </div>
                     </div>
-                    <Button className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest gap-2" onClick={() => handleSave('salary-config', config)}>
-                        {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Update Structure"}
+                    <Button className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest gap-2" onClick={() => handleSave('salary-config', config)}>
+                        {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Salary"}
                     </Button>
                 </div>
 
                 <div className="space-y-6 pb-12">
-                    <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest border-b border-slate-50 pb-2">2. Bank Details</p>
+                    <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest border-b border-slate-50 pb-2">2. Bank Info</p>
                     <div className="grid grid-cols-1 gap-5">
                         <div className="space-y-2">
-                            <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Account Holder</Label>
+                            <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Account Name</Label>
                             <Input 
                                 defaultValue={bank?.accountHolder || user.name}
                                 onBlur={(e) => setBank({ ...bank, accountHolder: e.target.value })}
@@ -580,7 +594,7 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Bank Name</Label>
+                                <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Bank Name</Label>
                                 <Input 
                                     defaultValue={bank?.bankName || ''}
                                     onBlur={(e) => setBank({ ...bank, bankName: e.target.value })}
@@ -588,7 +602,7 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Account Number</Label>
+                                <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Account Number</Label>
                                 <Input 
                                     defaultValue={bank?.accountNumber || ''}
                                     onBlur={(e) => setBank({ ...bank, accountNumber: e.target.value })}
@@ -597,8 +611,8 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
                             </div>
                         </div>
                     </div>
-                    <Button className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest gap-2" onClick={() => handleSave('bank-details', bank)}>
-                        Update Bank
+                    <Button className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest gap-2" onClick={() => handleSave('bank-details', bank)}>
+                        Save Bank Info
                     </Button>
                 </div>
             </div>
@@ -607,49 +621,49 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
 
     return (
         <tr className="group hover:bg-slate-50/50 transition-colors">
-            <td className="px-6 py-4">
+            <td className="px-8 py-5">
                 <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-[10px] font-black text-slate-400 group-hover:bg-white transition-colors uppercase shadow-sm">
+                    <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all uppercase shadow-sm shrink-0">
                         {user.name[0]}
                     </div>
-                    <div>
-                        <p className="text-[11px] font-black text-slate-900 uppercase tracking-tight">{user.name}</p>
-                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mt-0.5">{user.designation?.name || 'Staff'}</p>
+                    <div className="min-w-0">
+                        <p className="text-[11px] font-bold text-slate-900 uppercase tracking-tight truncate">{user.name}</p>
+                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mt-1">{user.designation?.name || 'Staff'}</p>
                     </div>
                 </div>
             </td>
-            <td className="px-4 py-4">
-                <span className="text-[11px] font-black uppercase text-slate-600">₹{basic.toLocaleString()}</span>
+            <td className="px-6 py-5">
+                <span className="text-[11px] font-bold uppercase text-slate-600">₹{basic.toLocaleString()}</span>
             </td>
-            <td className="px-4 py-4">
-                <span className="text-[11px] font-black uppercase text-emerald-600">₹{hra.toLocaleString()}</span>
+            <td className="px-6 py-5">
+                <span className="text-[11px] font-bold uppercase text-emerald-600">₹{hra.toLocaleString()}</span>
             </td>
-            <td className="px-4 py-4">
-                <span className="text-[11px] font-black uppercase text-rose-500">₹{deductionsVal.toLocaleString()}</span>
+            <td className="px-6 py-5">
+                <span className="text-[11px] font-bold uppercase text-rose-500">₹{deductionsVal.toLocaleString()}</span>
             </td>
-            <td className="px-4 py-4">
-                <span className="text-[12px] font-black uppercase text-indigo-600 italic">₹{netVal.toLocaleString()}</span>
+            <td className="px-6 py-5">
+                <span className="text-[12px] font-bold uppercase text-indigo-600">₹{netVal.toLocaleString()}</span>
             </td>
-            <td className="px-4 py-4">
+            <td className="px-6 py-5">
                 <Badge className={cn(
-                    "text-[8px] font-black uppercase tracking-[0.2em] px-2 py-1 border-none shadow-none flex items-center gap-1.5 w-fit",
-                    payslipStatus === 'RELEASED' ? "bg-emerald-50 text-emerald-600" :
-                    config ? "bg-amber-50 text-amber-600" : "bg-rose-50 text-rose-600 animate-pulse"
+                    "text-[8px] font-bold uppercase tracking-widest px-2.5 py-1.5 border-none shadow-none flex items-center gap-2 w-fit",
+                    payslipStatus === 'RELEASED' ? "bg-emerald-600 text-white" :
+                    config ? "bg-amber-100 text-amber-700" : "bg-rose-50 text-rose-600 animate-pulse"
                 )}>
                     <div className={cn("w-1 h-1 rounded-full", 
-                        payslipStatus === 'RELEASED' ? "bg-emerald-500" : 
+                        payslipStatus === 'RELEASED' ? "bg-white" : 
                         config ? "bg-amber-500" : "bg-rose-500"
                     )} />
-                    {payslipStatus === 'RELEASED' ? "Released" : config ? "In Queue" : "Config Missing"}
+                    {payslipStatus === 'RELEASED' ? "Paid" : config ? "Waiting" : "Not Set"}
                 </Badge>
             </td>
-            <td className="px-6 py-4 text-right">
+            <td className="px-8 py-5 text-right">
                 <div className="flex items-center justify-end gap-2">
                     {!config ? (
                         <Sheet>
                             <SheetTrigger asChild>
-                                <Button variant="outline" size="sm" className="h-8 px-4 rounded-lg text-[9px] font-black uppercase text-indigo-600 border-indigo-200 bg-indigo-50 hover:bg-indigo-600 hover:text-white transition-all gap-2">
-                                    <Plus className="w-3.5 h-3.5" /> Setup
+                                <Button variant="outline" size="sm" className="h-9 px-5 rounded-xl text-[9px] font-bold uppercase text-indigo-600 border-indigo-100 bg-indigo-50 hover:bg-indigo-600 hover:text-white transition-all gap-2">
+                                    <Plus className="w-3.5 h-3.5" /> Configure Salary
                                 </Button>
                             </SheetTrigger>
                             <CompensationSheet />
@@ -662,23 +676,23 @@ function SalaryAuditRow({ user, token, onUpdate }: { user: any, token: string, o
                                 onClick={handleRelease} 
                                 disabled={releasing || payslipStatus === 'RELEASED'}
                                 className={cn(
-                                    "h-8 px-4 rounded-lg text-[9px] font-black uppercase transition-all border gap-2",
-                                    payslipStatus === 'RELEASED' ? "bg-emerald-50 text-emerald-600 border-emerald-100" :
+                                    "h-9 px-5 rounded-xl text-[9px] font-bold uppercase transition-all border gap-2",
+                                    payslipStatus === 'RELEASED' ? "bg-emerald-50 text-emerald-600 border-emerald-100 shadow-sm" :
                                     "bg-indigo-50 text-indigo-600 border-indigo-100 hover:bg-indigo-600 hover:text-white"
                                 )}
                             >
                                 {releasing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 
                                  payslipStatus === 'RELEASED' ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Zap className="w-3.5 h-3.5" />}
-                                {releasing ? "Processing" : payslipStatus === 'RELEASED' ? "Released" : "Release"}
+                                {releasing ? "Paying..." : payslipStatus === 'RELEASED' ? "Paid" : "Pay Now"}
                             </Button>
 
                             <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 border-l pl-2 border-slate-100">
-                                <Button variant="ghost" size="sm" onClick={() => generatePayslipPDF('view')} className="h-8 w-8 p-0 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors">
+                                <Button variant="ghost" size="sm" onClick={() => generatePayslipPDF('view')} className="h-9 w-9 p-0 rounded-xl text-slate-400 hover:bg-slate-100 hover:text-indigo-600 transition-colors">
                                     <Eye className="w-3.5 h-3.5" />
                                 </Button>
                                 <Sheet>
                                     <SheetTrigger asChild>
-                                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-900 transition-colors">
+                                        <Button variant="ghost" size="sm" className="h-9 w-9 p-0 rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-900 transition-colors">
                                             <Settings className="w-3.5 h-3.5" />
                                         </Button>
                                     </SheetTrigger>

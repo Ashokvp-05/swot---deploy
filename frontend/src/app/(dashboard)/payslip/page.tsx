@@ -240,7 +240,7 @@ export default function PayslipPage() {
     if (loading) return (
         <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
             <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Neutralizing Data Layer...</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Neutralizing Data Layer...</span>
         </div>
     )
 
@@ -250,7 +250,7 @@ export default function PayslipPage() {
             {/* CLEAN HEADER */}
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                    <h1 className="text-4xl font-black tracking-tight text-slate-900 dark:text-white">Payslips</h1>
+                    <h1 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-white">Payslips</h1>
                     <p className="text-sm font-semibold text-slate-500 mt-1 uppercase tracking-[0.2em] flex items-center gap-2">
                         <ShieldCheck className="w-4 h-4 text-emerald-500" />
                         {canManage ? (isHR ? "Human Resources Financial Command" : "Executive Administrative Console") : "Secure Document Vault"}
@@ -259,7 +259,7 @@ export default function PayslipPage() {
                 {canIssue && (
                     <Button
                         onClick={() => setShowGenerateModal(true)}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6 h-12 font-black uppercase text-[10px] tracking-widest shadow-xl shadow-indigo-600/20"
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6 h-12 font-bold uppercase text-[10px] tracking-widest shadow-xl shadow-indigo-600/20"
                     >
                         <Plus className="w-4 h-4 mr-2" />
                         Issue Document
@@ -271,10 +271,10 @@ export default function PayslipPage() {
                 {canManage && (
                     <div className="flex justify-center">
                         <TabsList className="bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl h-14 border border-slate-200 dark:border-white/5 shadow-inner">
-                            <TabsTrigger value="management" className="h-11 rounded-xl px-10 text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700 dark:data-[state=active]:text-white shadow-sm transition-all flex items-center gap-2">
+                            <TabsTrigger value="management" className="h-11 rounded-xl px-10 text-[10px] font-bold uppercase tracking-widest data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700 dark:data-[state=active]:text-white shadow-sm transition-all flex items-center gap-2">
                                 <Zap className="w-4 h-4" /> Audit Console
                             </TabsTrigger>
-                            <TabsTrigger value="personal" className="h-11 rounded-xl px-10 text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700 dark:data-[state=active]:text-white shadow-sm transition-all flex items-center gap-2">
+                            <TabsTrigger value="personal" className="h-11 rounded-xl px-10 text-[10px] font-bold uppercase tracking-widest data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700 dark:data-[state=active]:text-white shadow-sm transition-all flex items-center gap-2">
                                 <FileText className="w-4 h-4" /> My Vault
                             </TabsTrigger>
                         </TabsList>
@@ -287,10 +287,10 @@ export default function PayslipPage() {
                             <Card className="border-none bg-white dark:bg-slate-900 shadow-xl shadow-slate-200/40 dark:shadow-black/60 rounded-[2.5rem] overflow-hidden">
                                 <CardHeader className="p-10 border-b border-slate-50 dark:border-white/5 flex flex-row items-center justify-between">
                                     <div>
-                                        <CardTitle className="text-xl font-black">Electronic Archive</CardTitle>
+                                        <CardTitle className="text-xl font-bold">Electronic Archive</CardTitle>
                                         <CardDescription className="font-bold text-[10px] uppercase tracking-widest mt-1">Authorized User View</CardDescription>
                                     </div>
-                                    <Badge variant="secondary" className="rounded-lg px-2 h-6 text-[9px] font-black uppercase bg-slate-100 dark:bg-slate-800 text-slate-500 border-none tracking-widest">Sync: STABLE</Badge>
+                                    <Badge variant="secondary" className="rounded-lg px-2 h-6 text-[9px] font-bold uppercase bg-slate-100 dark:bg-slate-800 text-slate-500 border-none tracking-widest">Sync: STABLE</Badge>
                                 </CardHeader>
                                 <CardContent className="p-0">
                                     <ScrollArea className="w-full">
@@ -300,16 +300,16 @@ export default function PayslipPage() {
                                                     <div className="w-16 h-16 rounded-3xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-white/5 flex items-center justify-center mx-auto mb-6">
                                                         <FileText className="w-8 h-8 text-slate-200 dark:text-slate-700" />
                                                     </div>
-                                                    <h3 className="text-sm font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest leading-none">No Released Payslips</h3>
+                                                    <h3 className="text-sm font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest leading-none">No Released Payslips</h3>
                                                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Synchronizing with HR Manager Vault</p>
-                                                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest italic pt-4">Your payslips will appear here once released by HR.</p>
+                                                    <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest italic pt-4">Your payslips will appear here once released by HR.</p>
                                                 </div>
                                             ) : (
                                                 <table className="w-full text-left">
                                                     <thead className="bg-slate-50/50 dark:bg-slate-800/20">
                                                         <tr>
-                                                            <th className="px-10 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest">Period Reference</th>
-                                                            <th className="px-10 py-5 text-[10px] font-black uppercase text-slate-400 tracking-widest text-right">Actions</th>
+                                                            <th className="px-10 py-5 text-[10px] font-bold uppercase text-slate-400 tracking-widest">Period Reference</th>
+                                                            <th className="px-10 py-5 text-[10px] font-bold uppercase text-slate-400 tracking-widest text-right">Actions</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody className="divide-y divide-slate-50 dark:divide-white/5">
@@ -318,14 +318,14 @@ export default function PayslipPage() {
                                                                 <td className="px-10 py-6">
                                                                     <div className="flex items-center gap-4 text-slate-700 dark:text-slate-300">
                                                                         <FileText className="w-5 h-5 text-indigo-500" />
-                                                                        <span className="font-black text-xs uppercase tracking-wider">{slip.month} {slip.year}</span>
+                                                                        <span className="font-bold text-xs uppercase tracking-wider">{slip.month} {slip.year}</span>
                                                                     </div>
                                                                 </td>
                                                                 <td className="px-10 py-6 text-right flex items-center justify-end gap-3">
                                                                     <Button
                                                                         variant="outline"
                                                                         onClick={() => handleDownload(slip.id, `Payslip_${slip.month}_${slip.year}.pdf`)}
-                                                                        className="h-10 px-6 rounded-xl border-slate-200 dark:border-white/10 dark:text-white font-black uppercase text-[10px] tracking-widest hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all"
+                                                                        className="h-10 px-6 rounded-xl border-slate-200 dark:border-white/10 dark:text-white font-bold uppercase text-[10px] tracking-widest hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all"
                                                                     >
                                                                         <Download className="w-3.5 h-3.5 mr-2" /> Download
                                                                     </Button>
@@ -344,11 +344,11 @@ export default function PayslipPage() {
                             <Card className="border-none bg-slate-900 dark:bg-black text-white rounded-[2.5rem] p-10 space-y-8 relative overflow-hidden">
                                 <History className="absolute bottom-0 right-0 w-40 h-40 text-white/5 -mb-10 -mr-10" />
                                 <div className="relative z-10">
-                                    <Badge className="bg-indigo-600 hover:bg-indigo-600 text-white border-none rounded-lg px-2 h-6 text-[9px] font-black uppercase tracking-widest mb-4">Storage Protocol</Badge>
-                                    <h3 className="text-2xl font-black">Archival Discovery</h3>
+                                    <Badge className="bg-indigo-600 hover:bg-indigo-600 text-white border-none rounded-lg px-2 h-6 text-[9px] font-bold uppercase tracking-widest mb-4">Storage Protocol</Badge>
+                                    <h3 className="text-2xl font-bold">Archival Discovery</h3>
                                     <p className="text-sm font-medium text-slate-400 mt-3 leading-relaxed">Documents older than 12 months trigger compliance retrieval procedures.</p>
                                 </div>
-                                <Button onClick={handleRequestLegacy} disabled={requestingLegacy} className="w-full h-14 bg-white hover:bg-slate-100 text-slate-900 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-2xl relative z-10">
+                                <Button onClick={handleRequestLegacy} disabled={requestingLegacy} className="w-full h-14 bg-white hover:bg-slate-100 text-slate-900 rounded-2xl font-bold uppercase text-[10px] tracking-widest shadow-2xl relative z-10">
                                     {requestingLegacy ? "Initiating..." : "Request Records Clearance"}
                                 </Button>
                             </Card>
@@ -363,7 +363,7 @@ export default function PayslipPage() {
                                 <CardHeader className="p-10 border-b border-white/5 bg-gradient-to-br from-slate-900 to-indigo-950/40">
                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                                         <div>
-                                            <CardTitle className="text-2xl font-black flex items-center gap-3">
+                                            <CardTitle className="text-2xl font-bold flex items-center gap-3">
                                                 <Zap className="w-6 h-6 text-amber-400 fill-amber-400" />
                                                 Distribution Pipeline
                                             </CardTitle>
@@ -375,7 +375,7 @@ export default function PayslipPage() {
                                 <CardContent className="p-0">
                                     <ScrollArea className="h-[500px] w-full">
                                         {filteredPending.length === 0 ? (
-                                            <div className="p-20 text-center text-slate-500 font-black uppercase text-[10px] tracking-widest">Queue Status: NOMINAL / CLEAR</div>
+                                            <div className="p-20 text-center text-slate-500 font-bold uppercase text-[10px] tracking-widest">Queue Status: NOMINAL / CLEAR</div>
                                         ) : (
                                             <div className="p-6 space-y-4">
                                                 {filteredPending.map((slip) => (
@@ -385,9 +385,9 @@ export default function PayslipPage() {
                                                                 <User className="w-6 h-6" />
                                                             </div>
                                                             <div>
-                                                                <h4 className="font-black text-lg">{slip.user?.name}</h4>
+                                                                <h4 className="font-bold text-lg">{slip.user?.name}</h4>
                                                                 <div className="flex items-center gap-3 mt-1 underline-offset-4 decoration-indigo-500/30 decoration-2">
-                                                                    <Badge variant="outline" className="text-emerald-400 border-emerald-400/20 text-[8px] font-black px-2 py-0">READY</Badge>
+                                                                    <Badge variant="outline" className="text-emerald-400 border-emerald-400/20 text-[8px] font-bold px-2 py-0">READY</Badge>
                                                                     <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight flex items-center gap-2">
                                                                         <Calendar className="w-3 h-3" /> {slip.month} {slip.year}
                                                                         <span className="h-1 w-1 rounded-full bg-slate-700" />
@@ -398,13 +398,13 @@ export default function PayslipPage() {
                                                         </div>
                                                         <div className="text-right flex items-center gap-6">
                                                             <div>
-                                                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest text-right mb-1">Quantum Value</p>
-                                                                <p className="font-black text-xl text-indigo-400 tracking-tight">${mounted ? Number(slip.amount).toLocaleString() : slip.amount}</p>
+                                                                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-right mb-1">Quantum Value</p>
+                                                                <p className="font-bold text-xl text-indigo-400 tracking-tight">${mounted ? Number(slip.amount).toLocaleString() : slip.amount}</p>
                                                             </div>
                                                             <Button
                                                                 onClick={() => handleRelease(slip.id)}
                                                                 disabled={releasing === slip.id}
-                                                                className="bg-indigo-600 hover:bg-indigo-500 text-white font-black uppercase tracking-widest text-[9px] px-6 h-10 rounded-xl"
+                                                                className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold uppercase tracking-widest text-[9px] px-6 h-10 rounded-xl"
                                                             >
                                                                 {releasing === slip.id ? "Process..." : "Release"}
                                                             </Button>
@@ -436,12 +436,12 @@ export default function PayslipPage() {
             <Dialog open={showGenerateModal} onOpenChange={setShowGenerateModal}>
                 <DialogContent className="max-w-md bg-white dark:bg-slate-900 rounded-[2.5rem] border-none p-10 dark:text-white">
                     <DialogHeader>
-                        <DialogTitle className="text-2xl font-black">Issue Document</DialogTitle>
+                        <DialogTitle className="text-2xl font-bold">Issue Document</DialogTitle>
                         <DialogDescription className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Manual Payroll Dispatch Engine</DialogDescription>
                     </DialogHeader>
                     <div className="space-y-6 pt-6">
                         <div className="space-y-2">
-                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Target User</Label>
+                            <Label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Target User</Label>
                             <Select
                                 value={genData.userId}
                                 onValueChange={(v) => setGenData(prev => ({ ...prev, userId: v }))}
@@ -457,14 +457,14 @@ export default function PayslipPage() {
                                             </SelectItem>
                                         ))
                                     ) : (
-                                        <div className="p-4 text-center text-[10px] font-black uppercase text-slate-400">Loading Personnel...</div>
+                                        <div className="p-4 text-center text-[10px] font-bold uppercase text-slate-400">Loading Personnel...</div>
                                     )}
                                 </SelectContent>
                             </Select>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Month</Label>
+                                <Label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Month</Label>
                                 <Select
                                     value={genData.month}
                                     onValueChange={(v) => setGenData(prev => ({ ...prev, month: v }))}
@@ -480,7 +480,7 @@ export default function PayslipPage() {
                                 </Select>
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Year</Label>
+                                <Label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Year</Label>
                                 <Input
                                     type="text"
                                     value={genData.year}
@@ -493,7 +493,7 @@ export default function PayslipPage() {
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Salary Amount ($)</Label>
+                            <Label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Salary Amount ($)</Label>
                             <Input
                                 type="text"
                                 placeholder="0.00"
@@ -507,7 +507,7 @@ export default function PayslipPage() {
                         </div>
                     </div>
                     <DialogFooter className="pt-10">
-                        <Button onClick={handleGenerate} disabled={generating} className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-indigo-600/20">
+                        <Button onClick={handleGenerate} disabled={generating} className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold uppercase text-[10px] tracking-widest shadow-xl shadow-indigo-600/20">
                             {generating ? "Encrypting & Issuing..." : "Confirm & Issue Document"}
                         </Button>
                     </DialogFooter>

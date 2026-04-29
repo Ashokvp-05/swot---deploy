@@ -51,7 +51,7 @@ export default function LeavePolicyManager({ token }: { token: string }) {
             const data = await res.json()
             if (res.ok) setLeaveTypes(data)
             else toast.error("Failed to load policies")
-        } catch (err) { toast.error("Network error") }
+        } catch (err) { toast.error("Connection error") }
         finally { setLoading(false) }
     }, [token])
 
@@ -71,13 +71,13 @@ export default function LeavePolicyManager({ token }: { token: string }) {
                 body: JSON.stringify(formData)
             })
             if (res.ok) {
-                toast.success("Leave entitlement policy created")
+                toast.success("Leave policy created")
                 setIsAddOpen(false)
                 fetchLeaveTypes()
             } else {
                 toast.error("Failed to create policy")
             }
-        } catch (err) { toast.error("Network error") }
+        } catch (err) { toast.error("Connection error") }
     }
 
     const getIcon = (code: string) => {
@@ -98,58 +98,58 @@ export default function LeavePolicyManager({ token }: { token: string }) {
                         <div className="p-2 bg-emerald-500/10 rounded-lg border border-emerald-500/20">
                             <Sparkles className="w-5 h-5 text-emerald-400" />
                         </div>
-                        <h2 className="text-3xl font-black text-white uppercase tracking-tighter italic font-brand text-indigo-50 leading-none">Entitlement Portal</h2>
+                        <h2 className="text-3xl font-bold text-white uppercase tracking-tight font-brand text-indigo-50 leading-none">Leave Policies</h2>
                     </div>
-                    <p className="text-slate-500 font-bold text-[10px] uppercase tracking-[0.4em] ml-11">Governance of organizational leaves & accrual logic</p>
+                    <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest ml-11">Manage company leave policies and accrual rates</p>
                 </div>
 
                 <div className="flex items-center gap-4">
                     <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
                         <DialogTrigger asChild>
-                            <Button className="h-12 px-6 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl shadow-xl shadow-emerald-600/20 font-black uppercase text-[10px] tracking-widest gap-2">
+                            <Button className="h-12 px-6 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl shadow-xl shadow-emerald-600/20 font-bold uppercase text-[10px] tracking-widest gap-2">
                                 <Plus className="w-4 h-4" />
-                                Provision Entitlement
+                                Add Leave Type
                             </Button>
                         </DialogTrigger>
                         <DialogContent className="bg-slate-900 border-white/5 text-white max-w-lg rounded-[32px]">
                             <form onSubmit={handleCreate}>
                                 <DialogHeader>
-                                    <DialogTitle className="text-2xl font-black uppercase tracking-tight italic">Policy Architect</DialogTitle>
-                                    <DialogDescription className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Define annual quotas and accrual periodicity.</DialogDescription>
+                                    <DialogTitle className="text-2xl font-bold uppercase tracking-tight">Policy Settings</DialogTitle>
+                                    <DialogDescription className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Define annual quotas and accrual rates.</DialogDescription>
                                 </DialogHeader>
                                 <div className="space-y-6 py-8">
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Entitlement Name</label>
-                                            <Input className="bg-slate-950 border-white/5 h-14 rounded-2xl text-md font-bold" placeholder="e.g. Wellness Leave" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
+                                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Leave Name</label>
+                                            <Input className="bg-slate-950 border-white/5 h-14 rounded-2xl text-md font-bold" placeholder="e.g. wellness Leave" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Policy Code</label>
+                                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Policy Code</label>
                                             <Input className="bg-slate-950 border-white/5 h-14 rounded-2xl text-md font-bold" placeholder="WL-01" value={formData.code} onChange={e => setFormData({ ...formData, code: e.target.value })} />
                                         </div>
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Annual Quota (Days)</label>
+                                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Annual Quota (Days)</label>
                                             <Input type="number" className="bg-slate-950 border-white/5 h-14 rounded-2xl text-md font-bold" value={formData.totalDays} onChange={e => setFormData({ ...formData, totalDays: parseInt(e.target.value) })} />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Monthly Accrual Rate</label>
+                                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Monthly Accrual Rate</label>
                                             <Input type="number" step="0.1" className="bg-slate-950 border-white/5 h-14 rounded-2xl text-md font-bold" value={formData.accrualRate} onChange={e => setFormData({ ...formData, accrualRate: parseFloat(e.target.value) })} />
                                         </div>
                                     </div>
 
                                     <div className="bg-slate-950/50 p-6 rounded-2xl border border-white/5 flex items-center justify-between">
                                         <div className="space-y-1">
-                                            <span className="text-[10px] font-black text-white uppercase tracking-widest">Carry Forward Protocol</span>
+                                            <span className="text-[10px] font-bold text-white uppercase tracking-widest">Carry Forward</span>
                                             <p className="text-[8px] text-slate-500 uppercase font-bold">Accumulate unused days into following cycle</p>
                                         </div>
                                         <Switch checked={formData.isCarryForward} onCheckedChange={v => setFormData({ ...formData, isCarryForward: v })} />
                                     </div>
                                 </div>
                                 <DialogFooter>
-                                    <Button type="submit" className="w-full bg-white text-black hover:bg-slate-200 h-14 rounded-[20px] font-black uppercase text-[11px] tracking-[0.2em]">Deploy Entitlement</Button>
+                                    <Button type="submit" className="w-full bg-white text-black hover:bg-slate-200 h-14 rounded-[20px] font-bold uppercase text-[11px] tracking-widest">Save Policy</Button>
                                 </DialogFooter>
                             </form>
                         </DialogContent>
@@ -161,15 +161,15 @@ export default function LeavePolicyManager({ token }: { token: string }) {
                 {loading ? (
                     <div className="col-span-full h-64 flex flex-col items-center justify-center gap-4 text-slate-600">
                         <Loader2 className="w-12 h-12 animate-spin text-emerald-500/50" />
-                        <p className="font-bold text-[10px] uppercase tracking-[0.5em]">Synchronizing data lakes...</p>
+                        <p className="font-bold text-[10px] uppercase tracking-widest">Loading policies...</p>
                     </div>
                 ) : leaveTypes.length === 0 ? (
                     <div className="col-span-full h-72 border-2 border-dashed border-white/5 rounded-[40px] flex flex-col items-center justify-center text-center p-10 group hover:border-emerald-500/20 transition-all duration-500">
                         <div className="p-8 bg-slate-900 rounded-[32px] border border-white/5 mb-6 group-hover:scale-110 transition-transform duration-700">
                             <Umbrella className="w-12 h-12 text-slate-800" />
                         </div>
-                        <h4 className="text-white font-black uppercase tracking-tight text-xl italic leading-none">Vacuum Entitlement</h4>
-                        <p className="text-slate-600 font-bold text-[10px] uppercase tracking-widest mt-3 max-w-sm">No leave policies detected. Design your organizational entitlements to enable employee welfare management.</p>
+                        <h4 className="text-white font-bold uppercase tracking-tight text-xl leading-none">No Leave Policies</h4>
+                        <p className="text-slate-600 font-bold text-[10px] uppercase tracking-widest mt-3 max-w-sm">Add leave policies to manage employee balances and company welfare policies.</p>
                     </div>
                 ) : (
                     leaveTypes.map((lt, idx) => (
@@ -196,48 +196,48 @@ export default function LeavePolicyManager({ token }: { token: string }) {
                             </div>
 
                             <div className="space-y-1 mb-10">
-                                <h4 className="text-2xl font-black text-white tracking-tighter italic uppercase truncate">{lt.name}</h4>
+                                <h4 className="text-2xl font-bold text-white tracking-tight uppercase truncate">{lt.name}</h4>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">{lt.code}</span>
+                                    <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">{lt.code}</span>
                                     <div className="w-1 h-1 rounded-full bg-slate-700" />
-                                    <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Global Protocol</span>
+                                    <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Standard Policy</span>
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4 mb-8">
                                 <div className="p-5 bg-slate-950/60 rounded-[28px] border border-white/5">
-                                    <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest block mb-2">Annual Cap</span>
+                                    <span className="text-[9px] font-bold text-slate-600 uppercase tracking-widest block mb-2">Annual Cap</span>
                                     <div className="flex items-end gap-1.5">
-                                        <span className="text-3xl font-black text-white leading-none tracking-tighter">{lt.totalDays}</span>
+                                        <span className="text-3xl font-bold text-white leading-none tracking-tight">{lt.totalDays}</span>
                                         <span className="text-[10px] font-bold text-slate-500 uppercase mb-1">Days</span>
                                     </div>
                                 </div>
                                 <div className="p-5 bg-slate-950/60 rounded-[28px] border border-white/5">
-                                    <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest block mb-2">Velocity</span>
+                                    <span className="text-[9px] font-bold text-slate-600 uppercase tracking-widest block mb-2">Accrual</span>
                                     <div className="flex items-end gap-1.5">
-                                        <span className="text-3xl font-black text-emerald-400 leading-none tracking-tighter">{lt.accrualRate}</span>
+                                        <span className="text-3xl font-bold text-emerald-400 leading-none tracking-tight">{lt.accrualRate}</span>
                                         <span className="text-[10px] font-bold text-slate-500 uppercase mb-1">Mthly</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="flex items-center justify-between p-4 bg-slate-950/30 rounded-2xl border border-white/5">
-                                <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Carry Forward</span>
+                                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Carry Forward</span>
                                 {lt.isCarryForward ? (
                                     <div className="flex items-center gap-1.5 text-emerald-500">
                                         <CheckCircle2 className="w-3.5 h-3.5" />
-                                        <span className="text-[9px] font-black uppercase tracking-widest">Active</span>
+                                        <span className="text-[9px] font-bold uppercase tracking-widest">Active</span>
                                     </div>
                                 ) : (
                                     <div className="flex items-center gap-1.5 text-slate-700">
                                         <AlertCircle className="w-3.5 h-3.5" />
-                                        <span className="text-[9px] font-black uppercase tracking-widest">Disabled</span>
+                                        <span className="text-[9px] font-bold uppercase tracking-widest">Disabled</span>
                                     </div>
                                 )}
                             </div>
 
                             <div className="absolute bottom-6 right-8 opacity-0 group-hover:opacity-100 transition-opacity translate-x-4 group-hover:translate-x-0 duration-500">
-                                <Button variant="link" className="p-0 text-emerald-400 font-black uppercase text-[10px] tracking-widest gap-2">
+                                <Button variant="link" className="p-0 text-emerald-400 font-bold uppercase text-[10px] tracking-widest gap-2">
                                     View Analytics
                                     <ArrowRight className="w-3 h-3" />
                                 </Button>
@@ -253,10 +253,10 @@ export default function LeavePolicyManager({ token }: { token: string }) {
                     <RefreshCw className="w-8 h-8 text-indigo-400 animate-spin-slow" />
                 </div>
                 <div className="flex-1 text-center md:text-left">
-                    <h5 className="text-white font-black uppercase tracking-tight italic text-lg mb-1">Automated Accrual Engine</h5>
-                    <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-relaxed">System protocols automatically synchronize employee balances on the 1st of every month based on designated velocity rates.</p>
+                    <h5 className="text-white font-bold uppercase tracking-tight text-lg mb-1">Accrual System</h5>
+                    <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-relaxed">The system automatically synchronizes employee balances on the 1st of every month based on designated accrual rates.</p>
                 </div>
-                <Button className="h-12 border-indigo-500/20 bg-indigo-600/10 hover:bg-indigo-600/30 text-indigo-400 text-[9px] font-black uppercase tracking-widest px-8 rounded-2xl">Manual Sync</Button>
+                <Button className="h-12 border-indigo-500/20 bg-indigo-600/10 hover:bg-indigo-600/30 text-indigo-400 text-[9px] font-bold uppercase tracking-widest px-8 rounded-2xl">Manual Sync</Button>
             </div>
         </div>
     )

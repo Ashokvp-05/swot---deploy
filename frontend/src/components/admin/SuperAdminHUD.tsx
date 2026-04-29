@@ -58,9 +58,9 @@ export function SuperAdminHUD({ initialStats, token }: { initialStats: PlatformS
                             <div className={`p-2 rounded-lg ${stat.bg} ${stat.color} dark:bg-opacity-20`}>
                                 <stat.icon className="w-4 h-4" />
                             </div>
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">{stat.label}</p>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">{stat.label}</p>
                         </div>
-                        <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter tabular-nums leading-none">{stat.value}</h3>
+                        <h3 className="text-2xl font-bold text-slate-800 dark:text-white tracking-tight tabular-nums leading-none">{stat.value}</h3>
                     </Card>
                 ))}
             </div>
@@ -70,15 +70,15 @@ export function SuperAdminHUD({ initialStats, token }: { initialStats: PlatformS
                 <div className="flex items-center gap-6">
                     <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-widest">Platform Status: <span className="text-emerald-500">Nominal</span></span>
+                        <span className="text-[10px] font-bold text-slate-800 dark:text-white uppercase tracking-widest">Status: <span className="text-emerald-500">Good</span></span>
                     </div>
                     <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-800" />
                     <div className="flex items-center gap-2">
                         <Server className="w-3.5 h-3.5 text-slate-400" />
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Sync Latency: <span className="text-slate-900 dark:text-white">12ms</span></span>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Speed: <span className="text-slate-800 dark:text-white">12ms</span></span>
                     </div>
                 </div>
-                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest italic">Last Refreshed: {lastUpdated}</p>
+                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Last Refreshed: {lastUpdated}</p>
             </div>
         </div>
     )

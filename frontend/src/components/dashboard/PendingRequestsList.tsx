@@ -116,7 +116,7 @@ export function PendingRequestsList({ token }: PendingRequestsListProps) {
         return (
             <div className="p-12 text-center space-y-4">
                 <Loader2 className="w-8 h-8 animate-spin mx-auto text-indigo-600" />
-                <p className="text-[10px] uppercase font-black tracking-widest text-slate-400">Syncing Request Queue...</p>
+                <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400">Syncing Request Queue...</p>
             </div>
         )
     }
@@ -128,7 +128,7 @@ export function PendingRequestsList({ token }: PendingRequestsListProps) {
                     <Check className="w-8 h-8 text-emerald-500 transform transition-transform group-hover:scale-110" />
                 </div>
                 <div className="space-y-1">
-                    <p className="font-black uppercase tracking-widest text-xs text-slate-600 dark:text-slate-400">Queue Neutralized</p>
+                    <p className="font-bold uppercase tracking-widest text-xs text-slate-600 dark:text-slate-400">Queue Neutralized</p>
                     <p className="text-[10px] font-bold opacity-60">All pending authorizations have been processed</p>
                 </div>
             </div>
@@ -143,7 +143,7 @@ export function PendingRequestsList({ token }: PendingRequestsListProps) {
                         <div className="relative">
                             <Avatar className="h-12 w-12 border-2 border-white dark:border-slate-800 shadow-xl ring-1 ring-slate-100 dark:ring-white/5">
                                 <AvatarImage src={`https://api.dicebear.com/7.x/notionists/svg?seed=${req.user}`} />
-                                <AvatarFallback className="font-black text-indigo-600">{req.user[0]}</AvatarFallback>
+                                <AvatarFallback className="font-bold text-indigo-600">{req.user[0]}</AvatarFallback>
                             </Avatar>
                             <span className={cn(
                                 "absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-white dark:border-slate-800",
@@ -152,12 +152,12 @@ export function PendingRequestsList({ token }: PendingRequestsListProps) {
                         </div>
                         <div className="space-y-1">
                             <div className="flex items-center gap-2 flex-wrap">
-                                <h4 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">{req.user}</h4>
-                                <Badge variant="outline" className={cn("text-[8px] h-4 font-black uppercase border-none", req.badgeColor)}>
+                                <h4 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-tight">{req.user}</h4>
+                                <Badge variant="outline" className={cn("text-[8px] h-4 font-bold uppercase border-none", req.badgeColor)}>
                                     {req.status}
                                 </Badge>
                             </div>
-                            <p className="text-[10px] font-black text-slate-500 dark:text-slate-400 flex items-center gap-1.5 uppercase tracking-wider">
+                            <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1.5 uppercase tracking-wider">
                                 <req.icon className="w-3 h-3 text-indigo-500" />
                                 {req.type}
                             </p>
@@ -169,7 +169,7 @@ export function PendingRequestsList({ token }: PendingRequestsListProps) {
                         <Button
                             size="sm"
                             variant="ghost"
-                            className="h-8 px-4 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-xl transition-all"
+                            className="h-8 px-4 text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-xl transition-all"
                             onClick={() => toast.info(req.original.reason || "No details provided", { icon: <Eye className="w-4 h-4" /> })}
                         >
                             <Eye className="w-3.5 h-3.5 mr-2" /> Inspect

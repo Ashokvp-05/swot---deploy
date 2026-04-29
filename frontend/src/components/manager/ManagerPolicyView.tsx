@@ -40,14 +40,14 @@ export default function ManagerPolicyView({ token }: { token: string }) {
         <div className="space-y-10">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter italic">Strategic <span className="text-indigo-600">Governance</span></h2>
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Manage & disseminate organizational policies and guidelines</p>
+                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white uppercase tracking-tighter italic">Strategic <span className="text-indigo-600">Governance</span></h2>
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Manage & disseminate organizational policies and guidelines</p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Button variant="outline" className="h-14 border-slate-200 dark:border-slate-800 rounded-2xl px-8 text-[11px] font-black uppercase tracking-widest gap-3 hover:bg-slate-50 transition-all">
+                    <Button variant="outline" className="h-14 border-slate-200 dark:border-slate-800 rounded-2xl px-8 text-[11px] font-bold uppercase tracking-widest gap-3 hover:bg-slate-50 transition-all">
                         <Megaphone className="w-5 h-5 text-indigo-600" /> Broadcast Update
                     </Button>
-                    <Button className="h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-10 text-[11px] font-black uppercase tracking-widest gap-3 shadow-xl shadow-indigo-600/20">
+                    <Button className="h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-10 text-[11px] font-bold uppercase tracking-widest gap-3 shadow-xl shadow-indigo-600/20">
                         <Plus className="w-5 h-5" /> Enact Policy
                     </Button>
                 </div>
@@ -59,7 +59,7 @@ export default function ManagerPolicyView({ token }: { token: string }) {
                 {loading ? (
                     <div className="col-span-full py-20 flex flex-col items-center justify-center gap-4">
                         <Loader2 className="w-10 h-10 animate-spin text-indigo-500" />
-                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Synchronizing Governance Nodes...</p>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Synchronizing Governance Nodes...</p>
                     </div>
                 ) : policies.map((policy) => (
                     <Card key={policy.id} className="p-8 rounded-[3rem] border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl shadow-slate-200/40 dark:shadow-none group hover:border-indigo-500/20 transition-all">
@@ -69,14 +69,14 @@ export default function ManagerPolicyView({ token }: { token: string }) {
                                     <FileText className="w-6 h-6" />
                                 </div>
                                 <div className="flex flex-col">
-                                    <Badge className={`w-fit py-0 px-2 text-[8px] font-black uppercase tracking-widest rounded-md ${
+                                    <Badge className={`w-fit py-0 px-2 text-[8px] font-bold uppercase tracking-widest rounded-md ${
                                         policy.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-600' :
                                         policy.status === 'DRAFT' ? 'bg-amber-50 text-amber-600' :
                                         'bg-slate-100 text-slate-500'
                                     }`}>
                                         {policy.status}
                                     </Badge>
-                                    <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight italic mt-1">{policy.title}</h3>
+                                    <h3 className="text-xl font-bold text-slate-900 dark:text-white uppercase tracking-tight italic mt-1">{policy.title}</h3>
                                 </div>
                             </div>
                             <Button variant="ghost" size="icon" className="rounded-xl"><MoreHorizontal className="w-5 h-5 text-slate-400" /></Button>
@@ -84,16 +84,16 @@ export default function ManagerPolicyView({ token }: { token: string }) {
 
                         <div className="grid grid-cols-3 gap-4 mb-8">
                             <div className="flex flex-col gap-1">
-                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Protocol Type</p>
-                                <p className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-widest">{policy.category}</p>
+                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Protocol Type</p>
+                                <p className="text-[10px] font-bold text-slate-900 dark:text-white uppercase tracking-widest">{policy.category}</p>
                             </div>
                             <div className="flex flex-col gap-1">
-                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Version State</p>
-                                <p className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-widest">{policy.lastUpdated}</p>
+                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Version State</p>
+                                <p className="text-[10px] font-bold text-slate-900 dark:text-white uppercase tracking-widest">{policy.lastUpdated}</p>
                             </div>
                             <div className="flex flex-col gap-1">
-                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Global Reach</p>
-                                <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest italic">{policy.views} Accesses</p>
+                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Global Reach</p>
+                                <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest italic">{policy.views} Accesses</p>
                             </div>
                         </div>
 
@@ -103,7 +103,7 @@ export default function ManagerPolicyView({ token }: { token: string }) {
                                 <button className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-black/40 flex items-center justify-center"><Edit2 className="w-4 h-4 text-slate-400" /></button>
                             </div>
                             <div className="flex items-center gap-3">
-                                <Button variant="ghost" className="h-10 px-4 text-[9px] font-black uppercase text-slate-400 tracking-widest hover:bg-transparent hover:text-indigo-600 flex items-center gap-2">
+                                <Button variant="ghost" className="h-10 px-4 text-[9px] font-bold uppercase text-slate-400 tracking-widest hover:bg-transparent hover:text-indigo-600 flex items-center gap-2">
                                     <Eye className="w-4 h-4" /> Manifest View
                                 </Button>
                             </div>
@@ -118,11 +118,11 @@ export default function ManagerPolicyView({ token }: { token: string }) {
                     <div className="space-y-4">
                         <div className="flex items-center gap-4">
                             <Shield className="w-10 h-10" />
-                            <h4 className="text-3xl font-black uppercase tracking-tighter italic leading-none">Security Compliance <br /> <span className="opacity-50">Audit Active</span></h4>
+                            <h4 className="text-3xl font-bold uppercase tracking-tighter italic leading-none">Security Compliance <br /> <span className="opacity-50">Audit Active</span></h4>
                         </div>
                         <p className="text-xs uppercase font-bold tracking-[0.2em] opacity-80 max-w-lg">All organizational policies currently meet the ISO-27001 requirements for digital identity and governance security.</p>
                     </div>
-                    <Button className="h-16 bg-white text-indigo-600 hover:bg-slate-100 rounded-2xl px-10 text-xs font-black uppercase tracking-[0.2em] shadow-2xl">
+                    <Button className="h-16 bg-white text-indigo-600 hover:bg-slate-100 rounded-2xl px-10 text-xs font-bold uppercase tracking-[0.2em] shadow-2xl">
                         Review Compliance Audit
                     </Button>
                 </div>

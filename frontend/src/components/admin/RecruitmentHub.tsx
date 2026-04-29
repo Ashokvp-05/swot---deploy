@@ -44,7 +44,7 @@ export default function RecruitmentHub({ token }: { token: string }) {
             const data = await res.json()
             if (res.ok) setJobs(data)
         } catch (e) {
-            toast.error("Recruitment pipeline sync failure")
+            toast.error("Recruitment data error")
         } finally {
             setLoading(false)
         }
@@ -59,7 +59,7 @@ export default function RecruitmentHub({ token }: { token: string }) {
             const data = await res.json()
             if (res.ok) setApplicants(data)
         } catch (e) {
-            toast.error("Applicant data retrieval error")
+            toast.error("Error loading applicants")
         } finally {
             setLoading(false)
         }
@@ -80,13 +80,13 @@ export default function RecruitmentHub({ token }: { token: string }) {
                 if (selectedJob) fetchApplicants(selectedJob.id);
             }
         } catch (e) {
-            toast.error("Synchronization failure: Status not updated");
+            toast.error("Error: Status not updated");
         }
     }
 
     const handleCreateJob = async () => {
         if (!newJob.title || !newJob.department) {
-            return toast.error("Architecture incomplete: Title and Department required");
+            return toast.error("Please complete all fields: Title and Department required");
         }
         try {
             const res = await fetch(`${API_BASE_URL}/lifecycle/jobs`, {
@@ -98,13 +98,13 @@ export default function RecruitmentHub({ token }: { token: string }) {
                 body: JSON.stringify(newJob)
             })
             if (res.ok) {
-                toast.success("Recruitment node activated successfully");
+                toast.success("Job posted successfully");
                 setIsCreateOpen(false);
                 setNewJob({ title: "", department: "", location: "Remote", salaryRange: "", description: "", requirements: "" });
                 fetchJobs();
             }
         } catch (e) {
-            toast.error("Synchronization failure: Node not created");
+            toast.error("Error: Job not created");
         }
     }
 
@@ -117,20 +117,20 @@ export default function RecruitmentHub({ token }: { token: string }) {
             {/* HERO BAR */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter italic font-brand">Recruitment</h2>
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-3 leading-none italic">Manage job openings and candidates.</p>
+                    <h2 className="text-3xl font-bold text-slate-800 dark:text-white tracking-tight font-brand">Recruitment</h2>
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-3 leading-none">Manage job openings and candidates.</p>
                 </div>
                 <div className="flex gap-4">
                     <Button
                         variant="ghost"
                         onClick={() => { setView('JOBS'); setSelectedJob(null); }}
-                        className={`text-[10px] font-black uppercase tracking-widest ${view === 'JOBS' ? 'text-indigo-600' : 'text-slate-500'} font-brand`}
+                        className={`text-[10px] font-bold uppercase tracking-widest ${view === 'JOBS' ? 'text-indigo-600' : 'text-slate-500'} font-brand`}
                     >
                         Jobs
                     </Button>
                     <Button
                         onClick={() => setIsCreateOpen(true)}
-                        className="h-14 bg-indigo-600 hover:bg-black text-white rounded-2xl px-10 text-[11px] font-black uppercase tracking-widest transition-all active:scale-95 font-brand"
+                        className="h-14 bg-indigo-600 hover:bg-black text-white rounded-2xl px-10 text-[11px] font-bold uppercase tracking-widest transition-all active:scale-95 font-brand"
                     >
                         New Job
                     </Button>
@@ -142,7 +142,7 @@ export default function RecruitmentHub({ token }: { token: string }) {
                 {loading ? (
                     <div className="py-20 flex flex-col items-center justify-center gap-4 text-slate-700">
                         <Loader2 className="w-10 h-10 animate-spin text-indigo-500/30" />
-                        <p className="text-[10px] font-black uppercase tracking-[0.4em]">Scanning talent horizons...</p>
+                        <p className="text-[10px] font-bold uppercase tracking-widest">Loading jobs...</p>
                     </div>
                 ) : view === 'JOBS' ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
@@ -150,7 +150,7 @@ export default function RecruitmentHub({ token }: { token: string }) {
                             className="border-2 border-dashed border-slate-100 hover:border-indigo-500 transition-colors bg-white dark:bg-slate-900 rounded-[2.5rem] flex flex-col items-center justify-center p-12 text-center group cursor-pointer" 
                             onClick={() => setIsCreateOpen(true)}
                         >
-                            <h4 className="text-sm font-black uppercase tracking-widest text-slate-900 group-hover:text-indigo-600 transition-colors font-brand">Post Job</h4>
+                            <h4 className="text-sm font-bold uppercase tracking-widest text-slate-800 group-hover:text-indigo-600 transition-colors font-brand">Post Job</h4>
                             <p className="text-[10px] text-slate-400 mt-2 font-body uppercase tracking-widest">Add a new opening</p>
                         </Card>
                         {jobs.map((job) => (
@@ -160,25 +160,25 @@ export default function RecruitmentHub({ token }: { token: string }) {
                                          <div className="p-4 bg-indigo-500/10 rounded-2xl text-indigo-600">
                                              <Briefcase className="w-6 h-6" />
                                          </div>
-                                         <Badge variant="outline" className="border-emerald-500/20 text-emerald-500 font-black text-[8px] tracking-widest uppercase">{job.status}</Badge>
+                                         <Badge variant="outline" className="border-emerald-500/20 text-emerald-500 font-bold text-[8px] tracking-widest uppercase">{job.status}</Badge>
                                      </div>
-                                     <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight italic line-clamp-1">{job.title}</h3>
-                                     <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">{job.department} • {job.location}</p>
+                                     <h3 className="text-xl font-bold text-slate-800 dark:text-white tracking-tight line-clamp-1">{job.title}</h3>
+                                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">{job.department} • {job.location}</p>
                                  </CardHeader>
                                  <CardContent className="p-8 pt-4 space-y-6">
                                      <div className="flex items-center gap-6">
                                          <div className="flex items-center gap-2">
                                              <Users className="w-4 h-4 text-slate-400" />
-                                             <span className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase italic">{job._count?.applicants || 0} Candidates</span>
+                                             <span className="text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase">{job._count?.applicants || 0} Candidates</span>
                                          </div>
                                          <div className="flex items-center gap-2">
                                              <DollarSign className="w-4 h-4 text-slate-400" />
-                                             <span className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-tighter">{job.salaryRange || "TBD"}</span>
+                                             <span className="text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-widest">{job.salaryRange || "TBD"}</span>
                                          </div>
                                      </div>
                                      <div className="pt-6 border-t border-slate-50 dark:border-white/5 flex items-center justify-between">
                                          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Updated {new Date(job.updatedAt).toLocaleDateString()}</span>
-                                         <span className="text-[10px] font-black uppercase tracking-widest text-indigo-600 opacity-0 group-hover:opacity-100 transition-all">View</span>
+                                         <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-600 opacity-0 group-hover:opacity-100 transition-all">View</span>
                                      </div>
                                  </CardContent>
                              </Card>
@@ -189,7 +189,7 @@ export default function RecruitmentHub({ token }: { token: string }) {
                         <div className="flex items-center gap-4 bg-slate-50 dark:bg-slate-900/50 p-6 rounded-[2rem] border border-slate-200 dark:border-white/5">
                             <Button variant="ghost" onClick={() => { setView('JOBS'); setSelectedJob(null); }} className="p-2 h-auto text-slate-400 hover:text-indigo-600">Back</Button>
                              <div>
-                                <h4 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider italic font-brand">{selectedJob?.title}</h4>
+                                <h4 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider font-brand">{selectedJob?.title}</h4>
                                 <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest font-body">Applicants • {applicants.length}</p>
                             </div>
                         </div>
@@ -204,15 +204,15 @@ export default function RecruitmentHub({ token }: { token: string }) {
                                 >
                                     <div className="flex items-center gap-6">
                                         <div>
-                                            <h4 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">{app.name}</h4>
+                                            <h4 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">{app.name}</h4>
                                             <div className="flex items-center gap-4 mt-1">
                                                 <span className="flex items-center gap-1.5 text-[9px] font-bold text-slate-400 uppercase tracking-widest">{app.email}</span>
-                                                <span className="flex items-center gap-1.5 text-[9px] font-bold text-slate-400 uppercase tracking-widest">{app.phone || "No Pulse"}</span>
+                                                <span className="flex items-center gap-1.5 text-[9px] font-bold text-slate-400 uppercase tracking-widest">{app.phone || "No Phone"}</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-8">
-                                        <Badge className={`h-8 px-4 rounded-xl text-[9px] font-black uppercase tracking-tighter ${app.status === 'HIRED' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' :
+                                        <Badge className={`h-8 px-4 rounded-xl text-[9px] font-bold uppercase tracking-widest ${app.status === 'HIRED' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' :
                                                 app.status === 'REJECTED' ? 'bg-rose-500/10 text-rose-500 border-rose-500/20' :
                                                     'bg-indigo-500/10 text-indigo-500 border-indigo-500/20'
                                             }`}>
@@ -224,14 +224,14 @@ export default function RecruitmentHub({ token }: { token: string }) {
                                                     <Button 
                                                         variant="ghost" 
                                                         onClick={() => handleUpdateStatus(app.id, 'HIRED')}
-                                                        className="h-8 px-3 rounded-lg text-[9px] font-black uppercase tracking-widest text-emerald-600 hover:bg-emerald-50"
+                                                        className="h-8 px-3 rounded-lg text-[9px] font-bold uppercase tracking-widest text-emerald-600 hover:bg-emerald-50"
                                                     >
                                                         Hire
                                                     </Button>
                                                     <Button 
                                                         variant="ghost" 
                                                         onClick={() => handleUpdateStatus(app.id, 'REJECTED')}
-                                                        className="h-8 px-3 rounded-lg text-[9px] font-black uppercase tracking-widest text-rose-600 hover:bg-rose-50"
+                                                        className="h-8 px-3 rounded-lg text-[9px] font-bold uppercase tracking-widest text-rose-600 hover:bg-rose-50"
                                                     >
                                                         Reject
                                                     </Button>
@@ -245,18 +245,17 @@ export default function RecruitmentHub({ token }: { token: string }) {
                     </div>
                 )}
             </div>
-            
-            {/* PROVISIONING DIALOG */}
+                     {/* JOB DIALOG */}
             <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                  <DialogContent className="bg-white dark:bg-slate-900 border-none rounded-[3rem] shadow-2xl p-10 max-w-2xl font-sans">
                     <DialogHeader>
-                        <DialogTitle className="text-2xl font-black uppercase italic tracking-tighter text-slate-900 dark:text-white font-brand">Job Details</DialogTitle>
-                        <DialogDescription className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2 font-body">Fill out the information below</DialogDescription>
+                        <DialogTitle className="text-2xl font-bold uppercase tracking-tight text-slate-800 dark:text-white font-brand">Job Details</DialogTitle>
+                        <DialogDescription className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2 font-body">Fill out the information below</DialogDescription>
                     </DialogHeader>
                     
                     <div className="grid grid-cols-2 gap-6 py-6 font-sans">
                          <div className="space-y-2 col-span-2">
-                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Title</Label>
+                            <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Title</Label>
                             <Input 
                                 className="h-14 rounded-2xl bg-slate-50 dark:bg-black/40 border-slate-100 dark:border-white/5 px-6 font-bold text-slate-900 dark:text-white focus:ring-4 focus:ring-indigo-600/10 transition-all outline-none" 
                                 placeholder="e.g. Designer"
@@ -265,7 +264,7 @@ export default function RecruitmentHub({ token }: { token: string }) {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Department</Label>
+                            <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Department</Label>
                             <Input 
                                 className="h-14 rounded-2xl bg-slate-50 dark:bg-black/40 border-slate-100 dark:border-white/5 px-6 font-bold text-slate-900 dark:text-white" 
                                 placeholder="Engineering"
@@ -274,7 +273,7 @@ export default function RecruitmentHub({ token }: { token: string }) {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Location</Label>
+                            <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Location</Label>
                             <Input 
                                 className="h-14 rounded-2xl bg-slate-50 dark:bg-black/40 border-slate-100 dark:border-white/5 px-6 font-bold text-slate-900 dark:text-white" 
                                 placeholder="Remote / HQ"
@@ -283,7 +282,7 @@ export default function RecruitmentHub({ token }: { token: string }) {
                             />
                         </div>
                         <div className="space-y-2 col-span-2">
-                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Salary Range / Compensation</Label>
+                            <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Salary Range / Compensation</Label>
                             <Input 
                                 className="h-14 rounded-2xl bg-slate-50 dark:bg-black/40 border-slate-100 dark:border-white/5 px-6 font-bold text-slate-900 dark:text-white" 
                                 placeholder="$120k - $160k"
@@ -292,7 +291,7 @@ export default function RecruitmentHub({ token }: { token: string }) {
                             />
                         </div>
                          <div className="space-y-2 col-span-2">
-                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Job Description</Label>
+                            <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Job Description</Label>
                             <Textarea 
                                 className="min-h-[120px] rounded-2xl bg-slate-50 dark:bg-black/40 border-slate-100 dark:border-white/5 p-6 font-medium text-slate-900 dark:text-white" 
                                 placeholder="What is the role about?"
@@ -301,13 +300,13 @@ export default function RecruitmentHub({ token }: { token: string }) {
                             />
                         </div>
                     </div>
-
+ 
                      <DialogFooter className="pt-4">
                         <Button 
                             onClick={handleCreateJob}
-                            className="h-14 w-full bg-indigo-600 hover:bg-black text-white font-black uppercase text-[11px] tracking-[0.2em] transition-all active:scale-95 font-brand"
+                            className="h-14 w-full bg-indigo-600 hover:bg-black text-white font-bold uppercase text-[11px] tracking-widest transition-all active:scale-95 font-brand"
                         >
-                            Activate Recruitment Node
+                            Post Job
                         </Button>
                     </DialogFooter>
                 </DialogContent>

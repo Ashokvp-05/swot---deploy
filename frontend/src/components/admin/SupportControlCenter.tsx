@@ -122,7 +122,7 @@ export default function SupportControlCenter({ token }: { token: string }) {
             if (tRes.ok) setTickets(await tRes.json())
             if (aRes.ok) setAnalytics(await aRes.json())
         } catch (e) {
-            toast.error("Telemetry failure: Support node offline")
+            toast.error("Failed to load tickets. System offline.")
         } finally {
             setLoading(false)
         }
@@ -155,8 +155,8 @@ export default function SupportControlCenter({ token }: { token: string }) {
                         <Headphones className="w-6 h-6" />
                     </div>
                     <div>
-                        <h3 className="text-xl font-bold text-slate-900 tracking-tight font-brand uppercase italic">Support Center</h3>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">
+                        <h3 className="text-xl font-bold text-slate-800 font-brand">Support Center</h3>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
                             {activeNodesCount} Open · {tickets.length} Total
                         </p>
                     </div>
@@ -182,7 +182,7 @@ export default function SupportControlCenter({ token }: { token: string }) {
                     {loading && tickets.length === 0 ? (
                         <div className="h-64 flex flex-col items-center justify-center gap-4 text-slate-400">
                             <Loader2 className="w-10 h-10 animate-spin text-indigo-600" />
-                            <p className="text-[10px] font-black uppercase tracking-[0.5em]">Synchronizing support nodes...</p>
+                            <p className="text-[10px] font-bold uppercase tracking-widest">Loading tickets...</p>
                         </div>
                     ) : filtered.length === 0 ? (
                         <div className="py-32 flex flex-col items-center justify-center gap-6">
@@ -191,7 +191,7 @@ export default function SupportControlCenter({ token }: { token: string }) {
                                 <ShieldAlert className="w-10 h-10 text-indigo-600 relative z-10" />
                             </div>
                             <div className="text-center">
-                                <p className="text-[12px] font-black uppercase tracking-[0.5em] text-slate-800">Nothing Found</p>
+                                <p className="text-[12px] font-bold uppercase tracking-widest text-slate-800">No Tickets Found</p>
                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2 font-body">No tickets match your filter</p>
                             </div>
                         </div>
@@ -207,8 +207,8 @@ export default function SupportControlCenter({ token }: { token: string }) {
 
             {/* ── FOOTER PROTOCOL (LEAVE STYLE) ── */}
             <div className="p-6 border-t border-slate-50 bg-white flex justify-between items-center px-10 shrink-0">
-                <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Shard Integrity Validated 100%</span>
-                <button onClick={fetchData} className="flex items-center gap-2.5 text-[10px] font-black text-indigo-600 uppercase tracking-widest transition-all hover:scale-105 active:scale-95 group font-brand">
+                <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">System Secure</span>
+                <button onClick={fetchData} className="flex items-center gap-2.5 text-[10px] font-bold text-indigo-600 uppercase tracking-widest transition-all hover:scale-105 active:scale-95 group font-brand">
                     Refresh
                 </button>
             </div>
@@ -228,7 +228,7 @@ function TicketCard({ ticket, token, onUpdate }: { ticket: TicketData, token: st
                 body: JSON.stringify({ status: 'RESOLVED' })
             })
             if (res.ok) {
-                toast.success("Ticket Symmetrical: Resolved")
+                toast.success("Ticket resolved successfully")
                 onUpdate()
             }
         } catch { toast.error("Communication failure") }
@@ -248,7 +248,7 @@ function TicketCard({ ticket, token, onUpdate }: { ticket: TicketData, token: st
                     <div className="flex items-start md:items-center gap-5 flex-col md:flex-row">
                         {/* Dynamic Avatar with Multi-Hue System */}
                         <div className={cn(
-                            "w-12 h-12 rounded-[18px] flex items-center justify-center font-black text-sm shrink-0 shadow-sm border border-transparent transition-all duration-300 group-hover:scale-110",
+                            "w-12 h-12 rounded-[18px] flex items-center justify-center font-bold text-sm shrink-0 shadow-sm border border-transparent transition-all duration-300 group-hover:scale-110",
                             getAvatarColor(ticket.user.name)
                         )}>
                             {ticket.user?.name?.[0]?.toUpperCase()}
@@ -259,19 +259,19 @@ function TicketCard({ ticket, token, onUpdate }: { ticket: TicketData, token: st
                                 <h4 className="text-[17px] font-bold text-slate-900 tracking-tight font-brand group-hover:text-indigo-600 transition-colors uppercase truncate leading-none">
                                     {ticket.title}
                                 </h4>
-                                <Badge className={cn("text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-lg", PRIORITY_THEMES[ticket.priority])}>
+                                <Badge className={cn("text-[9px] font-bold uppercase tracking-widest px-3 py-1 rounded-lg", PRIORITY_THEMES[ticket.priority])}>
                                     {ticket.priority}
                                 </Badge>
-                                <Badge className={cn("text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-lg", STATUS_THEMES[ticket.status])}>
+                                <Badge className={cn("text-[9px] font-bold uppercase tracking-widest px-3 py-1 rounded-lg", STATUS_THEMES[ticket.status])}>
                                     {ticket.status.replace('_', ' ')}
                                 </Badge>
                             </div>
                             <div className="flex items-center gap-3 text-[11px] text-slate-400 font-medium">
-                                <span className="text-indigo-500 font-black tracking-widest uppercase text-[10px] bg-indigo-50/50 px-2 py-0.5 rounded-lg">{ticket.token}</span>
+                                <span className="text-indigo-500 font-bold tracking-widest uppercase text-[10px] bg-indigo-50/50 px-2 py-0.5 rounded-lg">{ticket.token}</span>
                                 <div className="w-1 h-1 rounded-full bg-slate-200 shrink-0" />
                                 <span className="font-bold text-slate-600 uppercase tracking-tight">{ticket.user.name}</span>
                                 <div className="w-1 h-1 rounded-full bg-slate-200 shrink-0" />
-                                <span className="italic truncate">{ticket.user.email}</span>
+                                <span className="truncate">{ticket.user.email}</span>
                             </div>
                         </div>
                     </div>
@@ -285,8 +285,8 @@ function TicketCard({ ticket, token, onUpdate }: { ticket: TicketData, token: st
                             </span>
                         </div>
                         <div className="flex items-center gap-2.5">
-                            <Label className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Category:</Label>
-                            <span className="text-[11px] font-black text-slate-900 tracking-tight font-brand uppercase px-3 py-1 bg-slate-50 rounded-lg border border-slate-100">
+                            <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Category:</Label>
+                            <span className="text-[11px] font-bold text-slate-800 tracking-tight font-brand uppercase px-3 py-1 bg-slate-50 rounded-lg border border-slate-100">
                                 {ticket.category}
                             </span>
                         </div>
@@ -296,7 +296,7 @@ function TicketCard({ ticket, token, onUpdate }: { ticket: TicketData, token: st
                     {ticket.description && (
                         <div className="mt-5 flex items-start gap-3 pl-4 border-l-2 border-indigo-50 leading-relaxed">
                             <CornerDownRight className="w-4 h-4 text-slate-200 mt-1 shrink-0" />
-                            <p className="text-[13.5px] text-slate-500 font-medium italic line-clamp-2 hover:line-clamp-none transition-all cursor-default">
+                            <p className="text-[13.5px] text-slate-500 font-medium line-clamp-2 hover:line-clamp-none transition-all cursor-default">
                                 "{ticket.description}"
                             </p>
                         </div>
@@ -310,29 +310,15 @@ function TicketCard({ ticket, token, onUpdate }: { ticket: TicketData, token: st
                             <Button 
                                 onClick={handleQuickResolve} 
                                 disabled={actionLoading}
-                                className="h-12 px-8 bg-slate-900 hover:bg-black text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-xl transition-all active:scale-95 font-brand"
+                                className="h-14 px-10 bg-slate-900 hover:bg-black text-white text-[10px] font-bold uppercase tracking-widest rounded-2xl transition-all active:scale-95 font-brand shadow-xl shadow-slate-200"
                             >
                                 {actionLoading ? "..." : "Resolve"}
                             </Button>
                         )}
-                        
-                        <TicketDetailSheet ticket={ticket} token={token} onUpdate={onUpdate} />
-
-                        <Button 
-                            variant="ghost"
-                            className="h-12 px-6 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all border border-transparent hover:border-slate-100"
-                            onClick={() => toast.info(`Accessing logs for ${ticket.token}`)}
-                        >
-                            Audit
-                        </Button>
                     </div>
                 </div>
             </div>
             
-            {/* BACKGROUND DECOR (LEAVE STYLE) */}
-            <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity">
-                <Headphones className="w-32 h-32 rotate-12" />
-            </div>
         </motion.div>
     )
 }
@@ -349,7 +335,7 @@ function TicketDetailSheet({ ticket, token, onUpdate }: { ticket: TicketData, to
                 body: JSON.stringify(data)
             })
             if (res.ok) {
-                toast.success("Synchronized")
+                toast.success("State Synchronized")
                 onUpdate()
             }
         } catch (e) {}
@@ -367,173 +353,173 @@ function TicketDetailSheet({ ticket, token, onUpdate }: { ticket: TicketData, to
             if (res.ok) {
                 setComment("")
                 onUpdate()
-                toast.success("Packet deployed")
+                toast.success("Message sent")
             }
         } catch (e) {} finally { setSubmitting(false) }
     }
 
-    const statusColor = {
-        OPEN: "bg-indigo-50 text-indigo-600",
-        IN_PROGRESS: "bg-amber-50 text-amber-600",
-        RESOLVED: "bg-emerald-50 text-emerald-600",
-        CLOSED: "bg-slate-100 text-slate-400"
-    }
-
-    const priorityColor = {
-        LOW: "bg-slate-50 text-slate-400",
-        MEDIUM: "bg-indigo-50 text-indigo-600",
-        HIGH: "bg-amber-50 text-amber-600",
-        CRITICAL: "bg-rose-100 text-rose-700"
+    const statusThemes: Record<string, string> = {
+        OPEN: "bg-indigo-600 text-white",
+        IN_PROGRESS: "bg-amber-500 text-white",
+        RESOLVED: "bg-emerald-600 text-white",
+        CLOSED: "bg-slate-500 text-white"
     }
 
     return (
         <Sheet>
             <SheetTrigger asChild>
-                <Button variant="ghost" className="h-12 px-8 text-indigo-600 hover:bg-indigo-50 rounded-xl text-[10px] font-black uppercase tracking-[0.4em] transition-all border border-indigo-100/30 font-brand">
+                <Button variant="ghost" className="h-12 px-8 text-indigo-600 hover:bg-indigo-50 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all border border-indigo-100/30 font-brand">
                     View
                 </Button>
             </SheetTrigger>
-            <SheetContent className="bg-white border-l border-slate-50 w-[600px] sm:w-[720px] p-0 rounded-l-[60px] shadow-2xl overflow-y-auto custom-scrollbar font-body">
-                <SheetHeader className="pt-24 px-14 pb-12 border-b border-slate-50/60 bg-slate-50/20 backdrop-blur-md sticky top-0 z-10">
-                    <div className="flex flex-col gap-8">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-6">
-                                <div>
-                                    <div className="flex items-center gap-4 mb-3">
-                                        <Badge className={cn("text-[10px] font-black uppercase tracking-[0.3em] px-5 py-2 rounded-full border-none ring-4 ring-white/80 shadow-sm", statusColor[ticket.status])}>{ticket.status}</Badge>
-                                        <span className="text-[12px] font-black text-indigo-500 uppercase tracking-widest bg-white border border-indigo-100 px-4 py-1.5 rounded-2xl shadow-sm">{ticket.token}</span>
-                                    </div>
-                                    <SheetTitle className="text-4xl font-black italic uppercase tracking-tighter leading-none font-brand text-slate-900">{ticket.title}</SheetTitle>
-                                </div>
-                            </div>
+            <SheetContent className="bg-white border-l border-slate-100 w-full sm:max-w-[700px] p-0 shadow-2xl flex flex-col font-body">
+                {/* ── SHEET HEADER ── */}
+                <div className="pt-20 px-10 pb-10 border-b border-slate-50 bg-[#f8fafc] shrink-0">
+                    <div className="flex flex-col gap-6">
+                        <div className="flex items-center gap-3">
+                            <Badge className={cn("text-[9px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border-none shadow-sm", statusThemes[ticket.status])}>
+                                {ticket.status}
+                            </Badge>
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-white border border-slate-200 px-4 py-1.5 rounded-xl">
+                                ID: {ticket.token}
+                            </span>
                         </div>
+                        <h2 className="text-3xl font-bold text-slate-800 leading-tight font-brand">
+                            {ticket.title}
+                        </h2>
                     </div>
-                </SheetHeader>
+                </div>
 
-                <div className="p-14 space-y-16">
-                    {/* REQUESTOR NODE */}
-                    <div className="grid grid-cols-2 gap-10">
-                        <div className="space-y-4">
-                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] pl-1">Primary Origin Node</Label>
-                            <div className="h-20 bg-slate-50/80 rounded-[32px] flex items-center gap-5 px-7 border border-slate-100 shadow-sm">
-                                <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm shadow-md", getAvatarColor(ticket.user.name))}>{ticket.user.name?.[0]}</div>
-                                <div className="min-w-0">
-                                    <p className="text-[13px] font-black text-slate-900 uppercase tracking-tight truncate">{ticket.user.name}</p>
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter truncate italic">{ticket.user.email}</p>
+                {/* ── SCROLLABLE BODY ── */}
+                <ScrollArea className="flex-1 custom-scrollbar">
+                    <div className="p-10 space-y-12">
+                        {/* ── METADATA GRID ── */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-4">
+                                <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">User</Label>
+                                <div className="p-5 bg-slate-50 rounded-[24px] border border-slate-100 flex items-center gap-4">
+                                    <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-sm text-white shadow-md", getAvatarColor(ticket.user.name).replace('bg-indigo-50', 'bg-indigo-600').replace('text-indigo-600', 'text-white'))}>
+                                        {ticket.user.name?.[0]}
+                                    </div>
+                                    <div className="min-w-0">
+                                        <p className="text-[13px] font-bold text-slate-800 uppercase truncate">{ticket.user.name}</p>
+                                        <p className="text-[10px] font-medium text-slate-400 truncate">{ticket.user.email}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="space-y-4">
+                                <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Priority</Label>
+                                <div className="grid grid-cols-4 gap-2">
+                                    {['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'].map((p) => (
+                                        <button 
+                                            key={p}
+                                            onClick={() => handleUpdate({ priority: p })}
+                                            className={cn(
+                                                "h-12 rounded-xl text-[8px] font-bold uppercase tracking-widest transition-all",
+                                                ticket.priority === p 
+                                                    ? "bg-slate-900 text-white shadow-lg scale-105" 
+                                                    : "bg-slate-50 text-slate-300 hover:bg-slate-100"
+                                            )}
+                                        >
+                                            {p}
+                                        </button>
+                                    ))}
                                 </div>
                             </div>
                         </div>
+
+                        {/* ── DESCRIPTION ── */}
                         <div className="space-y-4">
-                            <Label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] pl-1">Severity / Impact</Label>
-                            <div className="flex items-center gap-2">
-                                {['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'].map((p) => (
-                                    <button 
-                                        key={p}
-                                        onClick={() => handleUpdate({ priority: p })}
+                            <Label className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">Issue Details</Label>
+                            <div className="p-8 bg-indigo-50/30 rounded-[32px] border border-indigo-100/50 text-[14px] font-medium text-slate-700 leading-relaxed shadow-sm">
+                                "{ticket.description}"
+                            </div>
+                        </div>
+
+                        {/* ── STATE TRANSITION ── */}
+                        <div className="space-y-4">
+                            <Label className="text-[10px] font-bold text-amber-600 uppercase tracking-widest">Status Control</Label>
+                            <div className="grid grid-cols-3 gap-3">
+                                {[
+                                    { s: 'OPEN', label: 'Open' },
+                                    { s: 'IN_PROGRESS', label: 'Investigating' },
+                                    { s: 'RESOLVED', label: 'Resolve' }
+                                ].map((action) => (
+                                    <Button 
+                                        key={action.s}
+                                        variant="outline"
                                         className={cn(
-                                            "h-14 flex-1 rounded-[20px] text-[9px] font-black uppercase tracking-widest transition-all",
-                                            ticket.priority === p ? priorityColor[p] + " shadow-xl shadow-black/5 ring-4 ring-white scale-105 z-10" : "bg-slate-50 text-slate-300 opacity-40 hover:opacity-100"
+                                            "h-16 rounded-[20px] flex flex-col items-center justify-center gap-1 transition-all border-slate-100",
+                                            ticket.status === action.s 
+                                                ? "bg-white border-indigo-600 ring-1 ring-indigo-600 shadow-xl shadow-indigo-100" 
+                                                : "bg-slate-50 hover:bg-white"
                                         )}
+                                        onClick={() => handleUpdate({ status: action.s })}
                                     >
-                                        {p}
-                                    </button>
+                                        <span className={cn("text-[9px] font-bold uppercase tracking-widest", ticket.status === action.s ? "text-indigo-600" : "text-slate-400")}>{action.label}</span>
+                                    </Button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* ── AUDIT TRAIL ── */}
+                        <div className="space-y-8 pt-6 border-t border-slate-100">
+                            <div className="flex items-center justify-between">
+                                <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Activity History</Label>
+                                <Badge className="bg-slate-100 text-slate-600 text-[9px] font-bold uppercase px-4 py-1 rounded-full border-none">{ticket.comments.length} Messages</Badge>
+                            </div>
+
+                            <div className="space-y-8">
+                                {ticket.comments.map((c, i) => (
+                                    <div key={i} className={cn("flex gap-5", c.userId === ticket.userId ? "justify-start" : "justify-end flex-row-reverse")}>
+                                        <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center font-bold text-[10px] text-white shadow-sm shrink-0", getAvatarColor(c.user.name).replace('bg-', 'bg-').replace('text-', 'text-white').includes('indigo') ? 'bg-indigo-600' : 'bg-slate-800')}>
+                                            {c.user.name[0]}
+                                        </div>
+                                        <div className={cn("space-y-2 max-w-[85%]", c.userId !== ticket.userId && "flex flex-col items-end")}>
+                                            <div className={cn(
+                                                "p-6 rounded-[28px] relative shadow-sm",
+                                                c.userId === ticket.userId 
+                                                    ? "bg-slate-50 text-slate-700 rounded-tl-none border border-slate-100" 
+                                                    : "bg-slate-900 text-white rounded-tr-none shadow-xl shadow-slate-200",
+                                                c.isInternal && "bg-amber-50 text-amber-900 border-amber-200 ring-4 ring-amber-100/50"
+                                            )}>
+                                                {c.isInternal && <Badge className="absolute -top-3 right-4 bg-amber-500 text-white text-[8px] font-bold uppercase px-3 py-1 shadow-md border-none">Internal</Badge>}
+                                                <p className="text-[13px] font-medium leading-relaxed">{c.content}</p>
+                                            </div>
+                                            <p className="text-[8px] font-bold text-slate-300 uppercase tracking-widest px-2">{new Date(c.createdAt).toLocaleString()}</p>
+                                        </div>
+                                    </div>
                                 ))}
                             </div>
                         </div>
                     </div>
+                </ScrollArea>
 
-                    {/* CORE DESCRIPTION */}
-                    <div className="space-y-6">
-                        <div className="flex items-center gap-3 pl-1">
-                            <Label className="text-[11px] font-black text-indigo-600 uppercase tracking-[0.5em]">Packet Payload (Description)</Label>
-                        </div>
-                        <div className="p-12 bg-slate-50/50 rounded-[50px] text-sm font-semibold text-slate-700 leading-relaxed border border-slate-100 italic shadow-[inset_0_4px_12px_rgba(0,0,0,0.02)]">
-                            "{ticket.description}"
-                        </div>
-                    </div>
-
-                    {/* ORCHESTRATION CONTROLS */}
-                    <div className="space-y-8">
-                        <Label className="text-[11px] font-black text-amber-600 uppercase tracking-[0.5em] pl-1">Lifecycle Orchestration</Label>
-                        <div className="grid grid-cols-3 gap-4">
-                            {[
-                                { s: 'OPEN', label: 'Open' },
-                                { s: 'IN_PROGRESS', label: 'Working' },
-                                { s: 'RESOLVED', label: 'Done' }
-                            ].map((action) => (
-                                <Button 
-                                    key={action.s}
-                                    variant="ghost" 
-                                    className={cn(
-                                        "h-20 rounded-[32px] flex flex-col items-center justify-center gap-2 group border-2 border-transparent transition-all",
-                                        ticket.status === action.s ? "bg-white border-indigo-600/10 shadow-[0_15px_40px_rgba(0,0,0,0.05)] -translate-y-1 scale-105" : "bg-slate-50 hover:bg-white"
-                                    )}
-                                    onClick={() => handleUpdate({ status: action.s })}
-                                >
-                                    <span className={cn("text-[10px] font-black uppercase tracking-widest", ticket.status === action.s ? "text-slate-900" : "text-slate-400")}>{action.label}</span>
-                                </Button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* PACKET LOGS */}
-                    <div className="space-y-10">
-                        <div className="flex items-center justify-between pl-1">
-                            <Label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.5em]">Communication Stream</Label>
-                            <Badge className="bg-indigo-50 text-indigo-500 text-[10px] font-black uppercase px-5 py-2 rounded-full border-none shadow-sm">{ticket.comments.length} Log Entries</Badge>
-                        </div>
-
-                        <div className="space-y-8 max-h-[500px] overflow-y-auto pr-6 custom-scrollbar pb-10">
-                            {ticket.comments.map((c, i) => (
-                                <div key={i} className={cn("flex gap-5", c.userId === ticket.userId ? "justify-start" : "justify-end flex-row-reverse")}>
-                                    <div className={cn("w-10 h-10 rounded-2xl flex items-center justify-center font-black text-[11px] shadow-sm shrink-0", getAvatarColor(c.user.name))}>
-                                        {c.user.name[0]}
-                                    </div>
-                                    <div className={cn("space-y-3 max-w-[85%]", c.userId !== ticket.userId && "flex flex-col items-end")}>
-                                        <div className={cn(
-                                            "p-8 rounded-[36px] relative shadow-lg",
-                                            c.userId === ticket.userId ? "bg-slate-50 text-slate-700 rounded-tl-none border border-slate-100" : "bg-indigo-600 text-white rounded-tr-none shadow-indigo-100",
-                                            c.isInternal && "ring-8 ring-amber-500/10 bg-amber-50 text-amber-700 border-amber-200"
-                                        )}>
-                                            {c.isInternal && <Badge className="absolute -top-4 right-6 bg-amber-500 text-white text-[9px] font-black uppercase px-4 py-1.5 shadow-xl border-none">Secure Internal Link</Badge>}
-                                            <p className="text-[13px] font-medium leading-relaxed">{c.content}</p>
-                                        </div>
-                                        <p className="text-[9px] font-bold text-slate-300 uppercase tracking-[0.3em] px-4 italic">Synchronized Node: {new Date(c.createdAt).toLocaleTimeString()}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* INPUT CHANNEL */}
-                        <div className="space-y-6 pt-6 border-t border-slate-50 sticky bottom-0 bg-white pb-6 z-10">
-                            <div className="relative group">
-                                <Input 
-                                    placeholder="Write a message..." 
-                                    className="h-24 bg-slate-50/80 border-none rounded-[40px] px-12 text-[13px] font-bold tracking-widest uppercase italic shadow-[inset_0_4px_16px_rgba(0,0,0,0.03)] focus-visible:ring-indigo-600/10 placeholder:text-slate-200"
-                                    value={comment}
-                                    onChange={(e) => setComment(e.target.value)}
-                                    onKeyDown={(e) => e.key === 'Enter' && addComment()}
-                                />
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
-                                    <Button 
-                                        variant="ghost" 
-                                        className="h-16 w-16 rounded-[28px] bg-white shadow-xl border border-slate-50 hover:bg-amber-50 group/internal active:scale-95 transition-all"
-                                        onClick={() => addComment(true)}
-                                    >
-                                        Lock
-                                    </Button>
-                                    <Button 
-                                        disabled={submitting || !comment} 
-                                        className="h-16 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[28px] px-10 gap-4 group/send shadow-2xl shadow-indigo-200 active:scale-95 transition-all"
-                                        onClick={() => addComment(false)}
-                                    >
-                                        <span className="text-[10px] font-black uppercase tracking-widest">{submitting ? "..." : "Send"}</span>
-                                    </Button>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-3 px-8">
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic opacity-70">Internal notes are private.</p>
-                            </div>
+                {/* ── INPUT CHANNEL ── */}
+                <div className="p-8 bg-[#f8fafc] border-t border-slate-100 shrink-0">
+                    <div className="relative group">
+                        <Input 
+                            placeholder="Type a message..." 
+                            className="h-20 bg-white border-slate-200 rounded-[28px] px-8 text-[12px] font-bold tracking-widest uppercase shadow-sm focus-visible:ring-indigo-600/20 placeholder:text-slate-300"
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && addComment()}
+                        />
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                            <Button 
+                                variant="ghost" 
+                                className="h-14 px-5 rounded-2xl bg-white border border-slate-200 hover:bg-amber-50 text-amber-600 text-[9px] font-bold uppercase tracking-widest transition-all"
+                                onClick={() => addComment(true)}
+                            >
+                                Internal
+                            </Button>
+                            <Button 
+                                disabled={submitting || !comment} 
+                                className="h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-8 shadow-xl shadow-indigo-100 active:scale-95 transition-all"
+                                onClick={() => addComment(false)}
+                            >
+                                <span className="text-[10px] font-bold uppercase tracking-widest">{submitting ? "..." : "Send"}</span>
+                            </Button>
                         </div>
                     </div>
                 </div>

@@ -107,9 +107,9 @@ export default function HelpPage() {
                             <div className="p-2.5 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-200">
                                 <HelpCircle className="w-5 h-5 text-white" />
                             </div>
-                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-600 dark:text-indigo-400 italic">Operational Support</span>
+                            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-indigo-600 dark:text-indigo-400 italic">Operational Support</span>
                         </div>
-                        <h1 className="text-5xl font-black text-slate-950 dark:text-white tracking-tighter italic uppercase font-brand leading-none">Intelligence Hub</h1>
+                        <h1 className="text-5xl font-bold text-slate-950 dark:text-white tracking-tighter italic uppercase font-brand leading-none">Intelligence Hub</h1>
                         <p className="text-slate-500 dark:text-slate-400 text-base font-medium tracking-tight max-w-2xl">Access organizational wisdom and administrative support channels.</p>
                     </div>
                 </div>
@@ -123,7 +123,7 @@ export default function HelpPage() {
                         <section className="space-y-6">
                             <div className="flex items-center gap-3 px-2">
                                 <Zap className="w-4 h-4 text-amber-500" />
-                                <h2 className="text-sm font-black uppercase tracking-[0.2em] text-slate-900 dark:text-white italic">Core FAQ Registry</h2>
+                                <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-slate-900 dark:text-white italic">Core FAQ Registry</h2>
                             </div>
                             <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 rounded-[32px] overflow-hidden shadow-sm">
                                 <CardContent className="p-0">
@@ -161,13 +161,13 @@ export default function HelpPage() {
                                 <div className="p-3.5 bg-indigo-600 rounded-2xl w-fit mb-6 shadow-xl shadow-indigo-600/20">
                                     <Ticket className="w-6 h-6 text-white" />
                                 </div>
-                                <CardTitle className="text-2xl font-black text-slate-950 dark:text-white italic uppercase tracking-tighter leading-none">Raise Ticket</CardTitle>
+                                <CardTitle className="text-2xl font-bold text-slate-950 dark:text-white italic uppercase tracking-tighter leading-none">Raise Ticket</CardTitle>
                                 <CardDescription className="text-slate-500 dark:text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] mt-3">Contact HR or SysAdmin</CardDescription>
                             </CardHeader>
                             <CardContent className="p-10 pt-0 relative z-10">
                                 <form onSubmit={handleSubmitTicket} className="space-y-6">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Subject Matter</label>
+                                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Subject Matter</label>
                                         <Input 
                                             name="subject"
                                             placeholder="e.g. Leave Sync Correction" 
@@ -176,7 +176,7 @@ export default function HelpPage() {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Priority Protocol</label>
+                                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Priority Protocol</label>
                                         <select name="priority" className="flex h-12 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-[11px] text-slate-600 dark:text-slate-300 font-bold uppercase tracking-widest transition-all focus:ring-2 focus:ring-indigo-100">
                                             <option>Normal</option>
                                             <option>High</option>
@@ -184,7 +184,7 @@ export default function HelpPage() {
                                         </select>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Incident Description</label>
+                                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Incident Description</label>
                                         <Textarea
                                             name="description"
                                             placeholder="Provide technical or contextual details..."
@@ -192,7 +192,7 @@ export default function HelpPage() {
                                             required
                                         />
                                     </div>
-                                    <Button className="w-full h-14 bg-indigo-600 text-white hover:bg-slate-900 hover:text-white dark:hover:bg-indigo-500 rounded-[20px] font-black uppercase tracking-[0.15em] text-xs shadow-xl shadow-indigo-600/10 transition-all active:scale-95" type="submit" disabled={loading}>
+                                    <Button className="w-full h-14 bg-indigo-600 text-white hover:bg-slate-900 hover:text-white dark:hover:bg-indigo-500 rounded-[20px] font-bold uppercase tracking-[0.15em] text-xs shadow-xl shadow-indigo-600/10 transition-all active:scale-95" type="submit" disabled={loading}>
                                         {loading ? "Transmitting..." : "Initialize Ticket"}
                                     </Button>
                                 </form>

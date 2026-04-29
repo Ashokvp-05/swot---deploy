@@ -199,7 +199,7 @@ export default function AdminReportsPage() {
                             variant="ghost"
                             size="sm"
                             onClick={() => setActiveFilter(null)}
-                            className="text-[10px] font-black uppercase text-indigo-500 hover:text-indigo-600 gap-2 border border-indigo-200 bg-indigo-50/50 rounded-xl px-4"
+                            className="text-[10px] font-bold uppercase text-indigo-500 hover:text-indigo-600 gap-2 border border-indigo-200 bg-indigo-50/50 rounded-xl px-4"
                         >
                             <X className="w-3 h-3" /> Clear Filters
                         </Button>
@@ -226,7 +226,7 @@ export default function AdminReportsPage() {
 
                     <Button
                         onClick={handleStrategicExport}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-[10px] rounded-xl px-6 h-11 shadow-lg shadow-indigo-500/30 gap-2"
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold uppercase tracking-widest text-[10px] rounded-xl px-6 h-11 shadow-lg shadow-indigo-500/30 gap-2"
                     >
                         <Download className="w-4 h-4" /> Strategic Analysis
                     </Button>
@@ -267,8 +267,8 @@ export default function AdminReportsPage() {
                                         <stat.icon className="w-6 h-6" />
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{stat.label}</p>
-                                        <p className="text-3xl font-black text-slate-900 dark:text-white">{stat.value}</p>
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{stat.label}</p>
+                                        <p className="text-3xl font-bold text-slate-900 dark:text-white">{stat.value}</p>
                                     </div>
                                 </div>
                             </CardContent>
@@ -283,7 +283,7 @@ export default function AdminReportsPage() {
                     <div className="flex flex-col xl:flex-row items-start xl:items-end justify-between gap-6">
                         <div className="flex flex-wrap items-end gap-6 w-full xl:w-auto">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Data Window</label>
+                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Data Window</label>
                                 <div className="flex items-center gap-2">
                                     <Popover>
                                         <PopoverTrigger asChild>
@@ -353,13 +353,13 @@ export default function AdminReportsPage() {
                     <CardContent className="relative z-10 space-y-6">
                         <div className="grid grid-cols-2 gap-6">
                             <div className="space-y-1">
-                                <p className="text-[10px] font-black text-indigo-200 uppercase tracking-widest">Worker Intensity</p>
-                                <p className="text-3xl font-black">{stats.avgHours}h</p>
+                                <p className="text-[10px] font-bold text-indigo-200 uppercase tracking-widest">Worker Intensity</p>
+                                <p className="text-3xl font-bold">{stats.avgHours}h</p>
                                 <p className="text-[10px] text-indigo-200">Per session avg</p>
                             </div>
                             <div className="space-y-1">
-                                <p className="text-[10px] font-black text-indigo-200 uppercase tracking-widest">Personnel Factor</p>
-                                <p className="text-3xl font-black">{stats.entries}</p>
+                                <p className="text-[10px] font-bold text-indigo-200 uppercase tracking-widest">Personnel Factor</p>
+                                <p className="text-3xl font-bold">{stats.entries}</p>
                                 <p className="text-[10px] text-indigo-200">Total check-ins</p>
                             </div>
                         </div>
@@ -381,14 +381,14 @@ export default function AdminReportsPage() {
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <span className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Clock Accuracy</span>
-                                <span className="text-sm font-black text-emerald-600">99.98%</span>
+                                <span className="text-sm font-bold text-emerald-600">99.98%</span>
                             </div>
                             <div className="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                 <div className="h-full bg-emerald-500 w-[99.98%]" />
                             </div>
                             <div className="flex items-center justify-between pt-2">
                                 <span className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Audit Compliance</span>
-                                <span className="text-sm font-black text-indigo-600">CERTIFIED</span>
+                                <span className="text-sm font-bold text-indigo-600">CERTIFIED</span>
                             </div>
                             <div className="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                 <div className="h-full bg-indigo-500 w-full" />
@@ -489,7 +489,7 @@ export default function AdminReportsPage() {
                             {loading ? (
                                 <Skeleton className="h-6 w-32 rounded-full" />
                             ) : (
-                                <div className="px-3 py-1 bg-indigo-600 text-white text-[10px] font-black rounded-full uppercase tracking-widest border border-indigo-500 shadow-sm shadow-indigo-500/20">
+                                <div className="px-3 py-1 bg-indigo-600 text-white text-[10px] font-bold rounded-full uppercase tracking-widest border border-indigo-500 shadow-sm shadow-indigo-500/20">
                                     {filteredData.length} Valid Records
                                 </div>
                             )}
@@ -500,12 +500,12 @@ export default function AdminReportsPage() {
                             <table className="w-full text-left border-collapse">
                                 <thead>
                                     <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/20 dark:bg-slate-900/40">
-                                        <th className="p-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-8">Personnel</th>
-                                        <th className="p-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Verification Date</th>
-                                        <th className="p-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">In</th>
-                                        <th className="p-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Out</th>
-                                        <th className="p-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Modality</th>
-                                        <th className="p-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-right pr-8">Intensity</th>
+                                        <th className="p-5 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] pl-8">Personnel</th>
+                                        <th className="p-5 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Verification Date</th>
+                                        <th className="p-5 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">In</th>
+                                        <th className="p-5 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Out</th>
+                                        <th className="p-5 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Modality</th>
+                                        <th className="p-5 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] text-right pr-8">Intensity</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -534,24 +534,24 @@ export default function AdminReportsPage() {
                                                         {format(new Date(row.clockIn), "dd MMM, yyyy")}
                                                     </td>
                                                     <td className="p-5 text-center">
-                                                        <span className="text-[11px] font-black font-mono px-3 py-1 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-lg border border-emerald-100/50 dark:border-emerald-800/30">
+                                                        <span className="text-[11px] font-bold font-mono px-3 py-1 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-lg border border-emerald-100/50 dark:border-emerald-800/30">
                                                             {format(new Date(row.clockIn), "HH:mm")}
                                                         </span>
                                                     </td>
                                                     <td className="p-5 text-center">
                                                         {row.clockOut ? (
-                                                            <span className="text-[11px] font-black font-mono px-3 py-1 bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 rounded-lg border border-rose-100/50 dark:border-rose-800/30">
+                                                            <span className="text-[11px] font-bold font-mono px-3 py-1 bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 rounded-lg border border-rose-100/50 dark:border-rose-800/30">
                                                                 {format(new Date(row.clockOut), "HH:mm")}
                                                             </span>
                                                         ) : (
-                                                            <span className="inline-flex items-center gap-1.5 text-[9px] font-black text-amber-500 uppercase tracking-widest bg-amber-50 dark:bg-amber-900/20 px-3 py-1 rounded-lg border border-amber-100/50 dark:border-amber-800/30">
+                                                            <span className="inline-flex items-center gap-1.5 text-[9px] font-bold text-amber-500 uppercase tracking-widest bg-amber-50 dark:bg-amber-900/20 px-3 py-1 rounded-lg border border-amber-100/50 dark:border-amber-800/30">
                                                                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
                                                                 Active
                                                             </span>
                                                         )}
                                                     </td>
                                                     <td className="p-5">
-                                                        <span className={`px-3 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase border ${row.clockType === 'IN_OFFICE' ? 'border-indigo-200 bg-indigo-50 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-400 dark:border-indigo-800/50' :
+                                                        <span className={`px-3 py-1 rounded-lg text-[9px] font-bold tracking-widest uppercase border ${row.clockType === 'IN_OFFICE' ? 'border-indigo-200 bg-indigo-50 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-400 dark:border-indigo-800/50' :
                                                             row.clockType === 'REMOTE' ? 'border-amber-200 bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800/50' :
                                                                 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/50'
                                                             }`}>
@@ -559,7 +559,7 @@ export default function AdminReportsPage() {
                                                         </span>
                                                     </td>
                                                     <td className="p-5 text-right pr-8">
-                                                        <span className="text-sm font-black text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-lg ring-1 ring-slate-200/50 dark:ring-slate-700/50">
+                                                        <span className="text-sm font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-lg ring-1 ring-slate-200/50 dark:ring-slate-700/50">
                                                             {Number(row.hoursWorked).toFixed(2)}h
                                                         </span>
                                                     </td>
@@ -587,7 +587,7 @@ export default function AdminReportsPage() {
             <div className="flex items-center justify-between pt-8 opacity-40 grayscale border-t border-slate-200 dark:border-slate-800">
                 <div className="flex items-center gap-4">
                     <TrendingUp className="w-4 h-4" />
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[1em]">Rudratic Intelligence System</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[1em]">Rudratic Intelligence System</p>
                 </div>
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic">Admin Protocol Stability v.4.0.1</p>
             </div>

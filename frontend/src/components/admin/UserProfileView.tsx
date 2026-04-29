@@ -285,7 +285,7 @@ export default function UserProfileView({ user: initialUser, token, onClose, onE
     // ─── Section Header ───
     const SectionTitle = ({ title, subtitle }: { title: string; subtitle?: string }) => (
         <div className="mb-6">
-            <h3 className="text-[13px] font-black text-slate-900 uppercase tracking-[0.1em] font-brand">{title}</h3>
+            <h3 className="text-[13px] font-bold text-slate-800 uppercase tracking-widest font-brand">{title}</h3>
             {subtitle && <p className="text-[10px] text-slate-400 font-medium mt-1">{subtitle}</p>}
         </div>
     )
@@ -346,7 +346,7 @@ export default function UserProfileView({ user: initialUser, token, onClose, onE
                             </div>
                         </div>
 
-                        <h1 className="text-xl font-black text-white tracking-tight text-center leading-tight mb-2">{displayUser?.name}</h1>
+                        <h1 className="text-xl font-bold text-white tracking-tight text-center leading-tight mb-2">{displayUser?.name}</h1>
                         <Badge className="bg-white/10 text-white/70 border-white/10 px-4 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-[0.2em] hover:bg-white/15">
                             {roleName || "Employee"}
                         </Badge>
@@ -357,7 +357,7 @@ export default function UserProfileView({ user: initialUser, token, onClose, onE
                         {[
                             { icon: Mail, label: displayUser?.email || "—" },
                             { icon: Building2, label: displayUser?.department?.name || "Unassigned" },
-                            { icon: Briefcase, label: displayUser?.designation?.name || "Pending" },
+                            { icon: Briefcase, label: displayUser?.designation?.name || "Not assigned" },
                             { icon: MapPin, label: displayUser?.branch?.name || "Global" },
                             { icon: Calendar, label: `Joined ${joiningDate}` },
                         ].map((item, i) => (
@@ -506,7 +506,7 @@ export default function UserProfileView({ user: initialUser, token, onClose, onE
                                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                                             <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
                                                 <SectionTitle title="Position Details" subtitle="Current role and reporting structure" />
-                                                <FieldRow icon={Briefcase} label="Designation" value={val(displayUser?.designation?.name || displayUser?.designation)} />
+                                                <FieldRow icon={Briefcase} label="Job Title" value={val(displayUser?.designation?.name || displayUser?.designation, "Not assigned")} />
                                                 <FieldRow icon={Building2} label="Department" value={val(displayUser?.department?.name)} />
                                                 <FieldRow icon={MapPin} label="Branch" value={val(displayUser?.branch?.name, "Global")} />
                                                 <FieldRow icon={Home} label="Work Location" value={val(profile?.workLocation, "Hybrid")} />

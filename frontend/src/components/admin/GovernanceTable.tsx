@@ -72,8 +72,8 @@ export function GovernanceTable({ token }: { token: string }) {
     const startEditing = () => {
         setTempData(JSON.parse(JSON.stringify(permData)))
         setIsEditing(true)
-        toast.info("Protocol Unlocked", { 
-            description: "Administrative clearance verified. Session active.",
+        toast.info("Edit Mode Enabled", { 
+            description: "You can now modify permissions.",
         })
     }
 
@@ -83,15 +83,15 @@ export function GovernanceTable({ token }: { token: string }) {
         setPermData(tempData)
         setIsEditing(false)
         setIsSyncing(false)
-        toast.success("Handshake Complete", { 
-            description: "Security matrix synchronized with central registry.",
+        toast.success("Settings Saved", { 
+            description: "Permissions have been updated.",
         })
     }
 
     const cancelChanges = () => {
         setIsEditing(false)
         setTempData(permData)
-        toast.error("Session Aborted")
+        toast.error("Changes Cancelled")
     }
 
     const toggleAllByRole = (roleId: string) => {
@@ -105,29 +105,29 @@ export function GovernanceTable({ token }: { token: string }) {
         <div className="bg-white border border-slate-100 rounded-[32px] overflow-hidden shadow-sm h-full flex flex-col font-body mb-10">
             <GlobalStyles />
             
-            {/* ── HIGH-DENSITY TERMINAL HEADER ── */}
+            {/* ── PERMISSIONS OVERVIEW ── */}
             <div className="p-8 border-b border-slate-50 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 bg-white shrink-0">
                 <div className="flex items-center gap-5">
                     <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-50">
                         <Shield className="w-6 h-6" />
                     </div>
                     <div>
-                        <h3 className="text-xl font-bold text-slate-900 tracking-tight font-brand">Administrative Protocol Hub</h3>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">
-                            Matrix Version 4.8.2 · {roles.length} Permission Tiers
+                        <h3 className="text-xl font-bold text-slate-800 tracking-tight font-brand">Permissions Management</h3>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+                            Version 4.8.2 · {roles.length} Roles
                         </p>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-4 w-full xl:w-auto">
                     <div className={cn(
-                        "flex items-center gap-2 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all",
+                        "flex items-center gap-2 px-4 py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all",
                         isEditing 
                             ? "bg-amber-500/10 text-amber-600 border border-amber-500/20 animate-pulse" 
                             : "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
                     )}>
                         <div className={cn("w-1.5 h-1.5 rounded-full", isEditing ? "bg-amber-500" : "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]")} />
-                        {isEditing ? "Configuration Active" : "Protocol Sync Live"}
+                        {isEditing ? "Editing..." : "System Secure"}
                     </div>
                     
                     <div className="h-6 w-px bg-slate-100 mx-2" />
@@ -135,39 +135,39 @@ export function GovernanceTable({ token }: { token: string }) {
                     {!isEditing ? (
                         <Button 
                             onClick={startEditing}
-                            className="h-11 bg-slate-900 hover:bg-black text-white rounded-xl px-6 text-[10px] font-black uppercase tracking-widest gap-2 shadow-lg active:scale-95 transition-all"
+                            className="h-11 bg-slate-900 hover:bg-black text-white rounded-xl px-6 text-[10px] font-bold uppercase tracking-widest gap-2 shadow-lg active:scale-95 transition-all"
                         >
-                            <Edit3 className="w-4 h-4" /> Edit Protocols
+                            <Edit3 className="w-4 h-4" /> Edit Permissions
                         </Button>
                     ) : (
                         <div className="flex items-center gap-3">
                             <Button 
                                 variant="ghost"
                                 onClick={cancelChanges}
-                                className="h-11 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl px-5 text-[10px] font-black uppercase tracking-widest gap-2 transition-all"
+                                className="h-11 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl px-5 text-[10px] font-bold uppercase tracking-widest gap-2 transition-all"
                             >
-                                <RotateCcw className="w-4 h-4" /> Abort
+                                <RotateCcw className="w-4 h-4" /> Cancel
                             </Button>
                             <Button 
                                 onClick={saveChanges}
                                 disabled={isSyncing}
-                                className="h-11 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-8 text-[10px] font-black uppercase tracking-widest gap-3 shadow-xl shadow-indigo-100 transition-all active:scale-95"
+                                className="h-11 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-8 text-[10px] font-bold uppercase tracking-widest gap-3 shadow-xl shadow-indigo-100 transition-all active:scale-95"
                             >
                                 {isSyncing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                                Sync Registry
+                                Save Changes
                             </Button>
                         </div>
                     )}
                 </div>
             </div>
 
-            {/* ── PROTOCOL MATRIX (INTERNAL SCROLL) ── */}
+            {/* ── PERMISSIONS TABLE ── */}
             <div className="flex-1 overflow-x-auto custom-scrollbar bg-slate-50/10">
                 <div className="min-w-[1240px]">
-                    {/* TABLE HEADER - GLASSMORPHIC STYLE */}
+                    {/* TABLE HEADER */}
                     <div className="flex items-center bg-slate-900 shadow-xl relative z-10 py-2">
                         <div className="w-[300px] px-10 py-6">
-                            <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.4em] font-brand italic">Functional Definition</span>
+                            <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest font-brand">Module Name</span>
                         </div>
                         {roles.map(role => (
                             <div key={role.id} className="flex-1 px-6 py-6 border-l border-white/5 text-center">
@@ -180,7 +180,7 @@ export function GovernanceTable({ token }: { token: string }) {
                                     )}
                                 >
                                     <span className={cn(
-                                        "text-[10px] font-black uppercase tracking-[0.2em] font-brand transition-colors leading-none",
+                                        "text-[10px] font-bold uppercase tracking-widest font-brand transition-colors leading-none",
                                         isEditing ? "text-indigo-300 group-hover:text-white" : "text-white/70"
                                     )}>
                                         {role.label.replace('_', ' ')}
@@ -195,7 +195,7 @@ export function GovernanceTable({ token }: { token: string }) {
                         ))}
                     </div>
 
-                    {/* TABLE BODY - CARD ROWS */}
+                    {/* TABLE BODY */}
                     <div className="divide-y divide-slate-50 relative">
                         {(isEditing ? tempData : permData).map((row, i) => (
                             <motion.div 
@@ -205,7 +205,7 @@ export function GovernanceTable({ token }: { token: string }) {
                                 transition={{ delay: i * 0.05 }}
                                 className="protocol-row flex items-center group/row"
                             >
-                                {/* MODULE LABEL NODE */}
+                                {/* MODULE */}
                                 <div className="w-[300px] px-10 py-8 flex items-center gap-6 border-r border-slate-50 bg-white/50 backdrop-blur-sm sticky left-0 z-20">
                                     <div className={cn(
                                         "w-11 h-11 rounded-[18px] flex items-center justify-center transition-all shadow-sm border border-transparent group-hover/row:border-indigo-100",
@@ -214,14 +214,14 @@ export function GovernanceTable({ token }: { token: string }) {
                                         <row.icon className="w-5 h-5" strokeWidth={1.5} />
                                     </div>
                                     <div className="min-w-0">
-                                        <p className="text-[14px] font-black text-slate-900 tracking-tight uppercase italic font-brand leading-none mb-1 group-hover/row:text-indigo-600 transition-colors">
+                                        <p className="text-[14px] font-bold text-slate-800 tracking-tight font-brand leading-none mb-1 group-hover/row:text-indigo-600 transition-colors">
                                             {row.module}
                                         </p>
-                                        <p className="text-[8px] font-bold text-slate-300 uppercase tracking-widest truncate">System Protocol Node</p>
+                                        <p className="text-[8px] font-semibold text-slate-300 uppercase tracking-widest truncate">System Module</p>
                                     </div>
                                 </div>
 
-                                {/* PERMISSION NODES */}
+                                {/* PERMISSION */}
                                 {roles.map(role => {
                                     const hasAccess = (row as any)[role.id]
                                     return (
@@ -257,21 +257,20 @@ export function GovernanceTable({ token }: { token: string }) {
                 </div>
             </div>
 
-            {/* ── SECURITY INTEGRITY FOOTER ── */}
+            {/* ── SYSTEM STATUS ── */}
             <div className="p-8 border-t border-slate-50 bg-white flex justify-between items-center px-12 shrink-0">
                 <div className="flex items-center gap-6">
                     <div className="flex items-center gap-2.5">
                         <ShieldAlert className="w-4 h-4 text-emerald-500" />
-                        <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none">Matrix Integrity Status: Verified</span>
+                        <span className="text-[10px] font-bold text-slate-900 uppercase tracking-widest leading-none">Status: Secure</span>
                     </div>
                     <div className="w-px h-4 bg-slate-100 mx-2" />
-                    <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] leading-none italic font-brand">Protocol 4.8.2-Stable</span>
+                    <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest leading-none font-brand">v4.8.2 Stable</span>
                 </div>
                 <div className="flex items-center gap-6">
-                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Shard Latency: 1ms</span>
-                    <div className="flex items-center gap-3 text-[11px] font-black text-indigo-600 uppercase tracking-widest transition-all hover:scale-105 group">
+                    <div className="flex items-center gap-3 text-[11px] font-bold text-indigo-600 uppercase tracking-widest transition-all hover:scale-105 group">
                         <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_12px_rgba(16,185,129,0.8)]" />
-                        Handshake Operational
+                        System Online
                     </div>
                 </div>
             </div>

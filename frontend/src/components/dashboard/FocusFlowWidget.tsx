@@ -59,7 +59,7 @@ export default function FocusFlowWidget() {
                 </div>
             </CardHeader>
             <CardContent className="flex flex-col items-center justify-center space-y-4">
-                <div className="text-5xl font-black tracking-tighter font-mono bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70">
+                <div className="text-5xl font-bold tracking-tighter font-mono bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70">
                     {formatTime(seconds)}
                 </div>
 

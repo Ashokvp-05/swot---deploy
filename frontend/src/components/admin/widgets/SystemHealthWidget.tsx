@@ -14,8 +14,8 @@ export function SystemHealthWidget({ health }: any) {
                     <Activity className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" />
                 </div>
                 <div>
-                    <h3 className="text-white font-black uppercase text-sm tracking-widest italic leading-none">System Pulse</h3>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Infrastructure Health</p>
+                    <h3 className="text-white font-bold text-sm tracking-widest leading-none">System Health</h3>
+                    <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mt-1">System Status</p>
                 </div>
             </div>
 
@@ -29,16 +29,16 @@ export function SystemHealthWidget({ health }: any) {
                     <div key={i} className="space-y-2 p-5 bg-slate-950 rounded-[24px] border border-white/5 group/node hover:border-emerald-500/20 transition-all">
                         <div className="flex items-center gap-3">
                             <s.icon className={`w-4 h-4 ${s.color} group-hover/node:scale-110 transition-transform`} />
-                            <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{s.label}</span>
+                            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{s.label}</span>
                         </div>
-                        <p className="text-xs font-black text-white uppercase italic tracking-wide">{s.status}</p>
+                        <p className="text-xs font-bold text-white uppercase tracking-wide">{s.status}</p>
                     </div>
                 ))}
             </div>
 
             <div className="pt-6 border-t border-white/5 flex items-center justify-between group/sync cursor-pointer">
                 <div className="flex items-center gap-2">
-                    <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Global Integrity</span>
+                    <span className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">System Integrity</span>
                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-lg shadow-emerald-500/50" />
                 </div>
                 <RefreshCw className="w-3 h-3 text-slate-700 group-hover/sync:text-emerald-400 group-hover/sync:rotate-180 transition-all duration-700" />

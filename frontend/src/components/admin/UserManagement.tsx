@@ -112,7 +112,7 @@ export default function UserManagement({ token, userRole = "" }: { token: string
                 body: JSON.stringify(formData)
             })
             if (res.ok) {
-                toast.success("Personnel account provisioned")
+                toast.success("Staff account created successfully")
                 setIsAddOpen(false)
                 fetchUsers()
             } else {
@@ -128,248 +128,265 @@ export default function UserManagement({ token, userRole = "" }: { token: string
     )
 
     return (
-        <div className="space-y-6 font-body">
-            <GlobalStyles />
+        <div className="min-h-full bg-[#fcfcfd] font-body pb-20 relative overflow-hidden">
+            {/* Background Accent */}
+            <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-indigo-50/30 to-transparent pointer-events-none" />
 
-            {/* SEARCH & PRIMARY ACTIONS */}
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-5">
-                <div className="flex items-center gap-3 w-full lg:w-[450px]">
-                    <div className="relative flex-1 group">
-                        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-indigo-500 transition-colors" />
-                        <Input
-                            placeholder="Find personnel by name, email or ID..."
-                            className="pl-11 h-12 bg-slate-900/60 border-white/5 text-white rounded-[14px] focus:ring-1 focus:ring-indigo-500 font-medium placeholder:text-slate-600 shadow-inner"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
-                    </div>
-                </div>
+            <div className="max-w-[1400px] mx-auto space-y-10 relative z-10 px-4">
+                <GlobalStyles />
 
-                <div className="flex items-center gap-3 w-full lg:w-auto">
-                    <Button variant="outline" className="h-12 border-white/5 bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-800 rounded-[14px] gap-2 font-bold text-[10px] uppercase tracking-widest flex-1 lg:flex-none">
-                        <FileDown className="w-4 h-4" />
-                        Export Census
-                    </Button>
-
-                    {canManage && (
-                        <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-                            <DialogTrigger asChild>
-                                <Button className="h-12 px-6 bg-white text-black hover:bg-slate-200 rounded-[14px] shadow-xl shadow-white/5 font-black uppercase text-[10px] tracking-widest flex-1 lg:flex-none font-brand">
-                                    Add Employee
-                                </Button>
-                            </DialogTrigger>
-                        <DialogContent className="bg-slate-950 border-white/10 text-white max-w-2xl rounded-[32px] overflow-hidden p-0 shadow-2xl">
-                            <form onSubmit={handleAddUser}>
-                                <div className="p-8 border-b border-white/5 bg-slate-900/50">
-                                    <DialogHeader>
-                                        <DialogTitle className="text-2xl font-black uppercase tracking-tight italic font-brand">Add Employee</DialogTitle>
-                                        <DialogDescription className="text-slate-500 font-bold text-[10px] uppercase tracking-widest mt-2">Fill out the form below.</DialogDescription>
-                                    </DialogHeader>
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 p-8">
-                                    <div className="space-y-5">
-                                        <div className="space-y-1.5">
-                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Full Name</label>
-                                            <Input className="bg-slate-900/50 border-white/10 h-12 rounded-xl text-sm font-medium focus:ring-indigo-500" placeholder="e.g. John Doe" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
-                                        </div>
-                                        <div className="space-y-1.5">
-                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Primary Email</label>
-                                            <Input className="bg-slate-900/50 border-white/10 h-12 rounded-xl text-sm font-medium focus:ring-indigo-500" type="email" placeholder="john@company.com" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
-                                        </div>
-                                        <div className="space-y-1.5">
-                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Access Role</label>
-                                            <Select value={formData.roleName} onValueChange={(v) => setFormData({ ...formData, roleName: v })}>
-                                                <SelectTrigger className="bg-slate-900/50 border-white/10 h-12 rounded-xl text-xs font-bold uppercase tracking-widest">
-                                                    <SelectValue placeholder="Select Role" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-slate-900 border-white/10 text-white">
-                                                    <SelectItem value="EMPLOYEE">Standard Employee</SelectItem>
-                                                    <SelectItem value="HR_ADMIN">HR Administrator</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-5">
-                                        <div className="space-y-1.5">
-                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Department Unit</label>
-                                            <Select value={formData.deptId} onValueChange={(v) => setFormData({ ...formData, deptId: v })}>
-                                                <SelectTrigger className="bg-slate-900/50 border-white/10 h-12 rounded-xl text-xs font-bold uppercase tracking-widest">
-                                                    <SelectValue placeholder="Unassigned" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-slate-900 border-white/10 text-white">
-                                                    {depts.map(d => <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                        <div className="space-y-1.5">
-                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Job Designation</label>
-                                            <Select value={formData.designationId} onValueChange={(v) => setFormData({ ...formData, designationId: v })}>
-                                                <SelectTrigger className="bg-slate-900/50 border-white/10 h-12 rounded-xl text-xs font-bold uppercase tracking-widest">
-                                                    <SelectValue placeholder="Unassigned" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-slate-900 border-white/10 text-white">
-                                                    {desigs.map(d => <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                        <div className="space-y-1.5">
-                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Operational Branch</label>
-                                            <Select value={formData.branchId} onValueChange={(v) => setFormData({ ...formData, branchId: v })}>
-                                                <SelectTrigger className="bg-slate-900/50 border-white/10 h-12 rounded-xl text-xs font-bold uppercase tracking-widest">
-                                                    <SelectValue placeholder="Unassigned" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-slate-900 border-white/10 text-white">
-                                                    {branches.map(b => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="p-8 bg-slate-900/50 flex font-brand">
-                                    <Button type="submit" className="w-full bg-white text-black hover:bg-slate-200 h-14 rounded-2xl font-black uppercase text-[11px] tracking-widest shadow-xl shadow-white/5 transition-transform active:scale-95">Complete Provisioning</Button>
-                                </div>
-                            </form>
-                        </DialogContent>
-                        </Dialog>
-                    )}
-                </div>
-            </div>
-
-            {/* EMPLOYEE LIST */}
-            <div className="bg-slate-950/40 border border-white/5 rounded-[32px] overflow-hidden shadow-2xl relative">
-                <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent" />
-
-                {loading ? (
-                    <div className="h-[500px] flex flex-col items-center justify-center gap-4 text-slate-500 font-brand">
-                        <Loader2 className="w-12 h-12 animate-spin text-indigo-600" />
-                        <p className="font-bold text-[10px] uppercase tracking-[0.5em]">Calibrating personnel registry...</p>
-                    </div>
-                ) : filteredUsers.length === 0 ? (
-                    <div className="h-[500px] flex flex-col items-center justify-center text-center p-12">
-                        <div className="p-6 bg-slate-900 rounded-full mb-6 border border-white/5 opacity-50">
-                            <Users className="w-16 h-16 text-slate-700" />
+                {/* ── HEADER & SEARCH ── */}
+                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8">
+                    <div className="flex items-center gap-6">
+                        <div className="w-14 h-14 bg-indigo-600 rounded-[22px] flex items-center justify-center text-white shadow-2xl shadow-indigo-100">
+                            <Users className="w-7 h-7" />
                         </div>
-                        <h4 className="text-white font-black uppercase tracking-tight text-xl font-brand italic">Zero Registry Results</h4>
-                        <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-2 max-w-sm leading-relaxed">No personnel identities match your current search parameters or filter criteria.</p>
-                        <Button variant="link" onClick={() => setSearch("")} className="text-indigo-400 font-black uppercase text-[10px] tracking-widest mt-4">Reset Query</Button>
+                        <div>
+                            <h1 className="text-[26px] font-bold text-slate-800 font-brand leading-none">
+                                Employee Directory
+                            </h1>
+                            <p className="text-slate-500 font-medium text-[11px] mt-2">
+                                Manage staff profiles and access levels
+                            </p>
+                        </div>
                     </div>
-                ) : (
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
-                            <thead>
-                                <tr className="border-b border-white/5 bg-slate-900/40 font-brand italic">
-                                    <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Name</th>
-                                    <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Department</th>
-                                    <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Status</th>
-                                    <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Date</th>
-                                    <th className="px-8 py-5 text-right"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredUsers.map((user, idx) => (
-                                    <motion.tr
-                                        key={user.id}
-                                        initial={{ opacity: 0, x: -10 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: idx * 0.03 }}
-                                        className="glass-table-row border-b border-white/[0.03] group last:border-0"
-                                    >
-                                        <td className="px-8 py-6">
-                                            <div className="flex items-center gap-5">
-                                                <div className="relative">
-                                                    <Avatar className="h-11 w-11 border border-white/10 shadow-xl group-hover:border-indigo-500/50 transition-colors duration-500 ring-2 ring-transparent group-hover:ring-indigo-500/10">
-                                                        <AvatarImage src={(user as any).avatarUrl} />
-                                                        <AvatarFallback className="bg-slate-900 text-[10px] font-black text-indigo-400 leading-none">
-                                                            {user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
-                                                        </AvatarFallback>
-                                                    </Avatar>
-                                                    {user.status === 'ACTIVE' && (
-                                                        <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-slate-950 rounded-full flex items-center justify-center">
-                                                            <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                                                        </div>
-                                                    )}
+
+                    <div className="flex flex-col md:flex-row items-center gap-4 w-full lg:w-auto">
+                        <div className="relative w-full md:w-[400px] group">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                            <Input
+                                placeholder="Search by name, email or ID..."
+                                className="pl-11 h-14 bg-white border-slate-100 text-slate-900 rounded-[20px] focus:ring-4 focus:ring-indigo-500/10 font-bold text-[11px] uppercase tracking-widest shadow-sm transition-all"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                            />
+                        </div>
+
+                        <div className="flex items-center gap-3 w-full md:w-auto">
+                            <Button variant="outline" className="h-14 px-8 border-slate-100 bg-white text-slate-400 hover:text-slate-900 rounded-[20px] shadow-sm gap-2 font-bold text-[10px] uppercase tracking-widest flex-1 lg:flex-none transition-all">
+                                <FileDown className="w-4 h-4" />
+                                Export Records
+                            </Button>
+
+                            {canManage && (
+                                <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+                                    <DialogTrigger asChild>
+                                        <Button className="h-14 px-10 bg-slate-900 hover:bg-black text-white rounded-[20px] shadow-xl shadow-slate-200 font-bold uppercase text-[10px] tracking-widest flex-1 lg:flex-none font-brand transition-all active:scale-95">
+                                            Add New Staff
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="bg-white border-none text-slate-900 max-w-2xl rounded-[40px] overflow-hidden p-0 shadow-2xl">
+                                        <form onSubmit={handleAddUser}>
+                                            <div className="p-10 border-b border-slate-50 bg-slate-50/30">
+                                                <DialogHeader>
+                                                    <DialogTitle className="text-2xl font-bold tracking-tight font-brand text-slate-800">Add New Staff</DialogTitle>
+                                                    <DialogDescription className="text-slate-400 font-semibold text-[10px] uppercase tracking-widest mt-2">Enter the employee details below.</DialogDescription>
+                                                </DialogHeader>
+                                            </div>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8 p-10">
+                                                <div className="space-y-6">
+                                                    <div className="space-y-2">
+                                                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Full Name</label>
+                                                        <Input className="bg-slate-50 border-none h-14 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-indigo-500/10 transition-all" placeholder="e.g. John Doe" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Email Address</label>
+                                                        <Input className="bg-slate-50 border-none h-14 rounded-2xl text-sm font-semibold focus:ring-4 focus:ring-indigo-500/10 transition-all" type="email" placeholder="john@company.com" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Role</label>
+                                                        <Select value={formData.roleName} onValueChange={(v) => setFormData({ ...formData, roleName: v })}>
+                                                            <SelectTrigger className="bg-slate-50 border-none h-14 rounded-2xl text-[10px] font-bold uppercase tracking-widest px-6">
+                                                                <SelectValue placeholder="Select Role" />
+                                                            </SelectTrigger>
+                                                            <SelectContent className="bg-white border-slate-100 rounded-2xl">
+                                                                <SelectItem value="EMPLOYEE">Regular Staff</SelectItem>
+                                                                <SelectItem value="HR_ADMIN">HR Manager</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
                                                 </div>
-                                                <div className="flex flex-col gap-0.5">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="text-[15px] font-bold text-white tracking-tight group-hover:text-indigo-400 transition-colors duration-300 font-brand">
-                                                            {user.name}
-                                                        </span>
-                                                        {user.role?.name === 'ADMIN' && (
-                                                            <div className="p-1 bg-amber-500/10 rounded-md">
-                                                                <Crown className="w-3 h-3 text-amber-500" />
+                                                <div className="space-y-6">
+                                                    <div className="space-y-2">
+                                                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Department</label>
+                                                        <Select value={formData.deptId} onValueChange={(v) => setFormData({ ...formData, deptId: v })}>
+                                                            <SelectTrigger className="bg-slate-50 border-none h-14 rounded-2xl text-[10px] font-bold uppercase tracking-widest px-6">
+                                                                <SelectValue placeholder="None" />
+                                                            </SelectTrigger>
+                                                            <SelectContent className="bg-white border-slate-100 rounded-2xl">
+                                                                {depts.map(d => <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Job Title</label>
+                                                        <Select value={formData.designationId} onValueChange={(v) => setFormData({ ...formData, designationId: v })}>
+                                                            <SelectTrigger className="bg-slate-50 border-none h-14 rounded-2xl text-[10px] font-bold uppercase tracking-widest px-6">
+                                                                <SelectValue placeholder="None" />
+                                                            </SelectTrigger>
+                                                            <SelectContent className="bg-white border-slate-100 rounded-2xl">
+                                                                {desigs.map(d => <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Branch</label>
+                                                        <Select value={formData.branchId} onValueChange={(v) => setFormData({ ...formData, branchId: v })}>
+                                                            <SelectTrigger className="bg-slate-50 border-none h-14 rounded-2xl text-[10px] font-bold uppercase tracking-widest px-6">
+                                                                <SelectValue placeholder="None" />
+                                                            </SelectTrigger>
+                                                            <SelectContent className="bg-white border-slate-100 rounded-2xl">
+                                                                {branches.map(b => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="p-10 bg-slate-50/50 flex">
+                                                <Button type="submit" className="w-full bg-slate-900 text-white hover:bg-black h-16 rounded-[24px] font-bold uppercase text-[11px] tracking-widest shadow-xl shadow-slate-200 transition-all active:scale-95">Add Employee</Button>
+                                            </div>
+                                        </form>
+                                    </DialogContent>
+                                </Dialog>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                {/* ── EMPLOYEE LIST TABLE ── */}
+                <div className="bg-white border border-slate-100 rounded-[40px] overflow-hidden shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all">
+                    {loading ? (
+                        <div className="h-[500px] flex flex-col items-center justify-center gap-6 text-slate-400 font-brand">
+                            <Loader2 className="w-12 h-12 animate-spin text-indigo-600" />
+                            <p className="font-bold text-[12px] uppercase tracking-widest">Loading Employee List...</p>
+                        </div>
+                    ) : filteredUsers.length === 0 ? (
+                        <div className="h-[500px] flex flex-col items-center justify-center text-center p-12">
+                            <div className="p-8 bg-slate-50 rounded-full mb-8 border border-slate-100 opacity-50">
+                                <Users className="w-16 h-16 text-slate-300" />
+                            </div>
+                            <h4 className="text-slate-800 font-bold tracking-tight text-xl font-brand leading-none">No employees found</h4>
+                            <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-3 max-w-sm leading-relaxed">No staff match your search or filters at this time.</p>
+                            <Button variant="link" onClick={() => setSearch("")} className="text-indigo-600 font-bold uppercase text-[10px] tracking-widest mt-6">Reset Search</Button>
+                        </div>
+                    ) : (
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left border-collapse">
+                                <thead>
+                                    <tr className="bg-slate-50/30 border-b border-slate-100">
+                                        <th className="px-10 py-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Employee</th>
+                                        <th className="px-10 py-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Department</th>
+                                        <th className="px-10 py-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Status</th>
+                                        <th className="px-10 py-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Joined</th>
+                                        <th className="px-10 py-6 text-right"></th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-50">
+                                    {filteredUsers.map((user, idx) => (
+                                        <motion.tr
+                                            key={user.id}
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: idx * 0.03 }}
+                                            className="group hover:bg-[#fcfcfd] transition-all duration-300"
+                                        >
+                                            <td className="px-10 py-6">
+                                                <div className="flex items-center gap-6">
+                                                    <div className="relative">
+                                                        <Avatar className="h-14 w-14 border border-slate-100 shadow-sm group-hover:scale-110 transition-all duration-500">
+                                                            <AvatarImage src={(user as any).avatarUrl} />
+                                                            <AvatarFallback className="bg-slate-50 text-[11px] font-bold text-slate-400 leading-none">
+                                                                {user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+                                                            </AvatarFallback>
+                                                        </Avatar>
+                                                        {user.status === 'ACTIVE' && (
+                                                            <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-white rounded-full flex items-center justify-center shadow-sm">
+                                                                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm" />
                                                             </div>
                                                         )}
                                                     </div>
-                                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.05em] flex items-center gap-2">
-                                                        {user.designation?.name || <span className="text-slate-700 italic">No Designation</span>}
-                                                        <span className="text-slate-800">•</span>
-                                                        <span className="lowercase font-medium">{user.email}</span>
-                                                    </span>
+                                                    <div className="flex flex-col gap-1 min-w-0">
+                                                        <div className="flex items-center gap-3">
+                                                            <span className="text-[15px] font-bold text-slate-800 tracking-tight group-hover:text-indigo-600 transition-colors duration-300 font-brand">
+                                                                {user.name}
+                                                            </span>
+                                                            {user.role?.name === 'ADMIN' && (
+                                                                <div className="p-1.5 bg-amber-50 rounded-lg shadow-sm">
+                                                                    <Crown className="w-3.5 h-3.5 text-amber-500" />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-3 truncate">
+                                                            {user.designation?.name || 'New Staff'}
+                                                            <span className="text-slate-200">•</span>
+                                                            <span className="lowercase font-medium">{user.email}</span>
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-6">
-                                            <div className="flex flex-col gap-1.5">
-                                                <div className="flex items-center gap-2 text-slate-400">
-                                                    <Building className="w-3.5 h-3.5 text-indigo-500/70" />
-                                                    <span className="text-[11px] font-bold uppercase tracking-widest leading-none group-hover:text-white transition-colors">
-                                                        {user.department?.name || <span className="text-slate-700">Unassigned</span>}
-                                                    </span>
+                                            </td>
+                                            <td className="px-10 py-6">
+                                                <div className="flex flex-col gap-1.5">
+                                                    <div className="flex items-center gap-2.5 text-slate-600">
+                                                        <Building className="w-4 h-4 text-indigo-400" />
+                                                        <span className="text-[11px] font-bold uppercase tracking-widest group-hover:text-slate-900 transition-colors">
+                                                            {user.department?.name || 'General Staff'}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center gap-2.5 text-slate-400">
+                                                        <MapPin className="w-4 h-4" />
+                                                        <span className="text-[11px] font-bold uppercase tracking-wide">
+                                                            {user.branch?.name || 'Office'}
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                                <div className="flex items-center gap-2 text-slate-600">
-                                                    <MapPin className="w-3.5 h-3.5" />
-                                                    <span className="text-[11px] font-bold uppercase tracking-wider leading-none">
-                                                        {user.branch?.name || <span className="text-slate-800">Global Node</span>}
-                                                    </span>
+                                            </td>
+                                            <td className="px-10 py-6">
+                                                <Badge className={cn(
+                                                    "border-none px-4 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-widest shadow-sm",
+                                                    user.status === 'ACTIVE' ? "bg-emerald-600 text-white" :
+                                                        user.status === 'PENDING' ? "bg-amber-100 text-amber-700" :
+                                                            "bg-rose-600 text-white"
+                                                )}>
+                                                    {user.status}
+                                                </Badge>
+                                            </td>
+                                            <td className="px-10 py-6">
+                                                <div className="flex flex-col gap-1.5">
+                                                    <div className="flex items-center gap-2.5 text-slate-900">
+                                                        <Calendar className="w-4 h-4 text-indigo-400" />
+                                                        <span className="text-[12px] font-bold tracking-tight">
+                                                            {user.joiningDate ? new Date(user.joiningDate).toLocaleDateString() : "Starting soon"}
+                                                        </span>
+                                                    </div>
+                                                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Added: {new Date(user.createdAt).toLocaleDateString()}</span>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-6">
-                                            <Badge className={cn(
-                                                "border-none h-6 px-3 rounded-full text-[9px] font-black uppercase tracking-[0.15em] shadow-lg",
-                                                user.status === 'ACTIVE' ? "bg-emerald-500/10 text-emerald-500 shadow-emerald-500/5" :
-                                                    user.status === 'PENDING' ? "bg-amber-500/10 text-amber-500 shadow-amber-500/5" :
-                                                        "bg-rose-500/10 text-rose-500 shadow-rose-500/5"
-                                            )}>
-                                                {user.status}
-                                            </Badge>
-                                        </td>
-                                        <td className="px-8 py-6">
-                                            <div className="flex flex-col gap-1">
-                                                <div className="flex items-center gap-2 text-white">
-                                                    <Calendar className="w-3.5 h-3.5 text-indigo-400" />
-                                                    <span className="text-[11px] font-bold tracking-tight">
-                                                        {user.joiningDate ? new Date(user.joiningDate).toLocaleDateString() : "Provisioning..."}
-                                                    </span>
+                                            </td>
+                                            <td className="px-10 py-6 text-right">
+                                                <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0">
+                                                    <Button size="icon" variant="ghost" className="h-10 w-10 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all">
+                                                        <Edit3 className="w-4 h-4" />
+                                                    </Button>
+                                                    <Button size="icon" variant="ghost" className="h-10 w-10 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all">
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </Button>
+                                                    <Button size="icon" variant="ghost" className="h-10 w-10 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all">
+                                                        <MoreVertical className="w-4 h-4" />
+                                                    </Button>
                                                 </div>
-                                                <span className="text-[9px] font-black text-slate-600 uppercase tracking-tighter">Registry: {new Date(user.createdAt).toLocaleDateString()}</span>
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-6 text-right">
-                                            <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
-                                                <Button size="icon" variant="ghost" className="h-9 w-9 text-slate-500 hover:text-white hover:bg-white/5 rounded-xl transition-all">
-                                                    <Edit3 className="w-4 h-4" />
-                                                </Button>
-                                                <Button size="icon" variant="ghost" className="h-9 w-9 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all">
-                                                    <Trash2 className="w-4 h-4" />
-                                                </Button>
-                                                <Button size="icon" variant="ghost" className="h-9 w-9 text-slate-500 hover:text-white hover:bg-white/5 rounded-xl transition-all">
-                                                    <MoreVertical className="w-4 h-4" />
-                                                </Button>
-                                            </div>
-                                        </td>
-                                    </motion.tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                                            </td>
+                                        </motion.tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
 
-                <div className="p-6 border-t border-white/5 bg-slate-900/40 flex flex-col sm:flex-row justify-between items-center px-8 gap-4 mt-auto">
-                    <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] font-brand italic">Personnel Synchronized: {filteredUsers.length} Units</p>
-                    <div className="flex gap-3">
-                        <Button variant="outline" size="sm" className="h-9 px-5 border-white/5 bg-transparent text-[9px] font-black uppercase text-slate-500 tracking-widest hover:bg-white/5 hover:text-white rounded-xl transition-all">Previous Block</Button>
-                        <Button variant="outline" size="sm" className="h-9 px-5 border-white/5 bg-transparent text-[9px] font-black uppercase text-slate-500 tracking-widest hover:bg-white/5 hover:text-white rounded-xl transition-all">Next Block</Button>
+                    <div className="p-8 border-t border-slate-50 bg-slate-50/10 flex flex-col sm:flex-row justify-between items-center px-10 gap-6 mt-auto">
+                        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest font-brand">Total: {filteredUsers.length} Employees</p>
+                        <div className="flex gap-4">
+                            <Button variant="outline" size="sm" className="h-11 px-8 border-slate-100 bg-white text-[10px] font-bold uppercase text-slate-400 tracking-widest hover:bg-slate-50 hover:text-slate-900 rounded-xl shadow-sm transition-all">Previous</Button>
+                            <Button variant="outline" size="sm" className="h-11 px-8 border-slate-100 bg-white text-[10px] font-bold uppercase text-slate-400 tracking-widest hover:bg-slate-50 hover:text-slate-900 rounded-xl shadow-sm transition-all">Next</Button>
+                        </div>
                     </div>
                 </div>
             </div>

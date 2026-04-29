@@ -75,7 +75,7 @@ export default function AdminSettingsPage() {
         return (
             <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
                 <Loader2 className="w-10 h-10 text-indigo-500 animate-spin" />
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Synchronizing system parameters...</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">Synchronizing system parameters...</p>
             </div>
         )
     }
@@ -90,7 +90,7 @@ export default function AdminSettingsPage() {
                         <Settings className="w-8 h-8 text-white" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic text-indigo-600">Core Configuration</h1>
+                        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white uppercase italic text-indigo-600">Core Configuration</h1>
                         <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Global administrative flags and organizational master parameters.</p>
                     </div>
                 </div>
@@ -98,7 +98,7 @@ export default function AdminSettingsPage() {
                     <Button
                         onClick={handleSave}
                         disabled={saving}
-                        className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl gap-3 px-8 shadow-xl shadow-indigo-600/20 border-none font-black uppercase tracking-widest text-[10px] transition-all active:scale-95"
+                        className="h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl gap-3 px-8 shadow-xl shadow-indigo-600/20 border-none font-bold uppercase tracking-widest text-[10px] transition-all active:scale-95"
                     >
                         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                         Save Configuration
@@ -116,14 +116,14 @@ export default function AdminSettingsPage() {
                                         <Building className="w-5 h-5" />
                                     </div>
                                     <div>
-                                        <CardTitle className="text-lg font-black uppercase tracking-tight italic">Organization</CardTitle>
+                                        <CardTitle className="text-lg font-bold uppercase tracking-tight italic">Organization</CardTitle>
                                         <CardDescription className="text-[10px] font-bold uppercase tracking-widest opacity-60">Identity & Branding</CardDescription>
                                     </div>
                                 </div>
                             </CardHeader>
                             <CardContent className="p-8 space-y-6">
                                 <div className="space-y-2">
-                                    <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Workspace Designation</Label>
+                                    <Label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Workspace Designation</Label>
                                     <Input
                                         className="h-12 rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-bold"
                                         value={settings.companyName}
@@ -131,7 +131,7 @@ export default function AdminSettingsPage() {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Master Support Node</Label>
+                                    <Label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Master Support Node</Label>
                                     <Input
                                         className="h-12 rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-bold"
                                         type="email"
@@ -149,14 +149,14 @@ export default function AdminSettingsPage() {
                                         <Globe className="w-5 h-5" />
                                     </div>
                                     <div>
-                                        <CardTitle className="text-lg font-black uppercase tracking-tight italic">Temporal</CardTitle>
+                                        <CardTitle className="text-lg font-bold uppercase tracking-tight italic">Temporal</CardTitle>
                                         <CardDescription className="text-[10px] font-bold uppercase tracking-widest opacity-60">Regional Synchronization</CardDescription>
                                     </div>
                                 </div>
                             </CardHeader>
                             <CardContent className="p-8 space-y-6">
                                 <div className="space-y-2">
-                                    <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Temporal Offset (Timezone)</Label>
+                                    <Label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Temporal Offset (Timezone)</Label>
                                     <Input
                                         className="h-12 rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-bold"
                                         value={settings.timezone}
@@ -164,7 +164,7 @@ export default function AdminSettingsPage() {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Session TTL (Hours)</Label>
+                                    <Label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Session TTL (Hours)</Label>
                                     <Input
                                         className="h-12 rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-bold"
                                         type="number"
@@ -183,7 +183,7 @@ export default function AdminSettingsPage() {
                                     <Shield className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <CardTitle className="text-lg font-black uppercase tracking-tight italic">Governance</CardTitle>
+                                    <CardTitle className="text-lg font-bold uppercase tracking-tight italic">Governance</CardTitle>
                                     <CardDescription className="text-[10px] font-bold uppercase tracking-widest opacity-60">Security & Operational Overrides</CardDescription>
                                 </div>
                             </div>
@@ -191,12 +191,12 @@ export default function AdminSettingsPage() {
                         <CardContent className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="flex items-center justify-between p-6 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/5 transition-all hover:bg-white dark:hover:bg-slate-800 shadow-sm hover:shadow-md">
                                 <div>
-                                    <p className="text-sm font-black uppercase tracking-tight text-slate-900 dark:text-white italic">Remote Authorization</p>
+                                    <p className="text-sm font-bold uppercase tracking-tight text-slate-900 dark:text-white italic">Remote Authorization</p>
                                     <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Allow personnel to clock-in via mobile nodes.</p>
                                 </div>
                                 <Button
                                     variant={settings.allowRemoteClockIn ? "default" : "outline"}
-                                    className={`h-10 rounded-xl font-black uppercase tracking-widest text-[10px] px-6 ${settings.allowRemoteClockIn ? "bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-500/20" : ""}`}
+                                    className={`h-10 rounded-xl font-bold uppercase tracking-widest text-[10px] px-6 ${settings.allowRemoteClockIn ? "bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-500/20" : ""}`}
                                     onClick={() => setSettings({ ...settings, allowRemoteClockIn: !settings.allowRemoteClockIn })}
                                 >
                                     {settings.allowRemoteClockIn ? "Active" : "Disabled"}
@@ -205,12 +205,12 @@ export default function AdminSettingsPage() {
 
                             <div className="flex items-center justify-between p-6 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/5 transition-all hover:bg-white dark:hover:bg-slate-800 shadow-sm hover:shadow-md">
                                 <div>
-                                    <p className="text-sm font-black uppercase tracking-tight text-slate-900 dark:text-white italic text-rose-600">Maintenance Protocol</p>
+                                    <p className="text-sm font-bold uppercase tracking-tight text-slate-900 dark:text-white italic text-rose-600">Maintenance Protocol</p>
                                     <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1 text-rose-400/60">Restrict system access to ROOT only.</p>
                                 </div>
                                 <Button
                                     variant={settings.maintenanceMode ? "destructive" : "outline"}
-                                    className={`h-10 rounded-xl font-black uppercase tracking-widest text-[10px] px-6 ${settings.maintenanceMode ? "shadow-lg shadow-rose-500/20 animate-pulse" : ""}`}
+                                    className={`h-10 rounded-xl font-bold uppercase tracking-widest text-[10px] px-6 ${settings.maintenanceMode ? "shadow-lg shadow-rose-500/20 animate-pulse" : ""}`}
                                     onClick={() => setSettings({ ...settings, maintenanceMode: !settings.maintenanceMode })}
                                 >
                                     {settings.maintenanceMode ? "OFFLINE" : "STABLE_LIVE"}
@@ -227,19 +227,19 @@ export default function AdminSettingsPage() {
                         </div>
                         <div className="relative z-10 space-y-8">
                             <div className="space-y-4">
-                                <h4 className="text-xl font-black uppercase tracking-tighter italic">System Nucleus</h4>
+                                <h4 className="text-xl font-bold uppercase tracking-tighter italic">System Nucleus</h4>
                                 <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest leading-relaxed">Modification of these parameters will propagate across all terminal nodes instantly.</p>
                             </div>
 
                             <div className="p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/10">
                                 <div className="flex items-center justify-between mb-4">
-                                    <p className="text-[9px] font-black uppercase tracking-widest text-indigo-400">Consistency Health</p>
+                                    <p className="text-[9px] font-bold uppercase tracking-widest text-indigo-400">Consistency Health</p>
                                     <Activity className="w-3 h-3 text-emerald-500" />
                                 </div>
                                 <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
                                     <div className="h-full w-full bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]" />
                                 </div>
-                                <p className="text-[9px] font-black uppercase text-white/40 mt-3 text-right">Data Integrity: 100%</p>
+                                <p className="text-[9px] font-bold uppercase text-white/40 mt-3 text-right">Data Integrity: 100%</p>
                             </div>
                         </div>
                     </Card>
@@ -248,8 +248,8 @@ export default function AdminSettingsPage() {
                         <div className="absolute top-0 right-0 p-8 opacity-10">
                             <Zap className="w-24 h-24" />
                         </div>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-indigo-200 mb-2">Protocol Pulse</p>
-                        <h4 className="text-xl font-black italic uppercase leading-tight">System re-synchronization occurs on every configuration save.</h4>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-indigo-200 mb-2">Protocol Pulse</p>
+                        <h4 className="text-xl font-bold italic uppercase leading-tight">System re-synchronization occurs on every configuration save.</h4>
                     </div>
                 </div>
             </div>

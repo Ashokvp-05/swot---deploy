@@ -43,14 +43,14 @@ export default async function AdminLeavesPage() {
                         <Calendar className="w-8 h-8 text-white" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic">Leave Authorization</h1>
+                        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white uppercase italic">Leave Authorization</h1>
                         <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Approve, reject and orchestrate workforce absence cycles.</p>
                     </div>
                 </div>
                 <div className="relative z-10 flex gap-4">
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-rose-500/10 border border-rose-500/20 rounded-xl">
                         <div className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
-                        <span className="text-[10px] font-black uppercase text-rose-600 dark:text-rose-400">{leaves.length} Pending Actions</span>
+                        <span className="text-[10px] font-bold uppercase text-rose-600 dark:text-rose-400">{leaves.length} Pending Actions</span>
                     </div>
                 </div>
             </div>
@@ -61,8 +61,8 @@ export default async function AdminLeavesPage() {
                         <CardHeader className="p-8 border-b border-slate-50 dark:border-white/5">
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
-                                    <CardTitle className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Active Approval <span className="text-indigo-600 italic">Queue</span></CardTitle>
-                                    <CardDescription className="text-[10px] font-black uppercase tracking-widest text-slate-400">Resource requests requiring immediate validation</CardDescription>
+                                    <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-tight">Active Approval <span className="text-indigo-600 italic">Queue</span></CardTitle>
+                                    <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Resource requests requiring immediate validation</CardDescription>
                                 </div>
                                 <div className="p-4 bg-indigo-50 dark:bg-slate-800 rounded-2xl">
                                     <Briefcase className="w-5 h-5 text-indigo-600" />
@@ -86,8 +86,8 @@ export default async function AdminLeavesPage() {
                                 <CalendarCheck className="w-6 h-6 text-white" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-black text-white italic uppercase tracking-tight leading-none">Resource Governance</h2>
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Configure organizational leave entitlements & rules.</p>
+                                <h2 className="text-2xl font-bold text-white italic uppercase tracking-tight leading-none">Resource Governance</h2>
+                                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Configure organizational leave entitlements & rules.</p>
                             </div>
                         </div>
                         <LeavePolicyManager token={token} />
@@ -99,24 +99,24 @@ export default async function AdminLeavesPage() {
                         <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
                             <ShieldAlert className="w-24 h-24" />
                         </div>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-2">Policy Enforcement</p>
-                        <h4 className="text-xl font-black italic uppercase leading-tight max-w-[200px] mb-2 tracking-tight">Strategic balance mapping prevents operational bottlenecking.</h4>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-indigo-400 mb-2">Policy Enforcement</p>
+                        <h4 className="text-xl font-bold italic uppercase leading-tight max-w-[200px] mb-2 tracking-tight">Strategic balance mapping prevents operational bottlenecking.</h4>
                         <div className="h-1 w-12 bg-indigo-600 rounded-full group-hover:w-24 transition-all" />
                     </div>
 
                     <Card className="border-0 shadow-xl bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 space-y-4">
                         <div className="flex items-center justify-between">
-                            <h4 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em]">Health Distribution</h4>
+                            <h4 className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em]">Health Distribution</h4>
                             <Activity className="w-4 h-4 text-indigo-500" />
                         </div>
                         <div className="space-y-4 pt-2">
                             <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5">
-                                <span className="text-[10px] font-black uppercase text-slate-500">Wait Time Avg</span>
-                                <span className="text-sm font-black text-indigo-600">4.2h</span>
+                                <span className="text-[10px] font-bold uppercase text-slate-500">Wait Time Avg</span>
+                                <span className="text-sm font-bold text-indigo-600">4.2h</span>
                             </div>
                             <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5">
-                                <span className="text-[10px] font-black uppercase text-slate-500">Approval Rate</span>
-                                <span className="text-sm font-black text-emerald-600">92%</span>
+                                <span className="text-[10px] font-bold uppercase text-slate-500">Approval Rate</span>
+                                <span className="text-sm font-bold text-emerald-600">92%</span>
                             </div>
                         </div>
                     </Card>

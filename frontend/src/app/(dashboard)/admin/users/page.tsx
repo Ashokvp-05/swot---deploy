@@ -23,7 +23,7 @@ export default async function AdminUsersPage() {
                         <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                     </div>
                     <div>
-                        <h2 className="text-3xl font-black tracking-tight text-white uppercase italic font-brand">Personnel Registry</h2>
+                        <h2 className="text-3xl font-bold tracking-tight text-white uppercase italic font-brand">Personnel Registry</h2>
                         <p className="text-slate-500 font-bold text-xs uppercase tracking-widest opacity-80 mt-1">Manage, audit and provision organizational human resources.</p>
                     </div>
                 </div>

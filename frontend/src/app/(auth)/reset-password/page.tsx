@@ -177,7 +177,7 @@ function ResetFormContent() {
             >
                 <div className="flex items-center gap-6 mb-6">
                     <RudraticLogo className="w-24 h-24 drop-shadow-[0_0_60px_rgba(168,85,247,0.4)]" />
-                    <h1 className="font-brand text-[3.5rem] leading-none font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400 drop-shadow-sm tracking-tight">RUDRATIC</h1>
+                    <h1 className="font-brand text-[3.5rem] leading-none font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400 drop-shadow-sm tracking-tight">RUDRATIC</h1>
                 </div>
                 <h2 className="pl-[8.5rem] -mt-4 mb-8 font-tech text-3xl text-slate-300 tracking-[0.25em] font-semibold uppercase opacity-90">NEXUS HR</h2>
                 <p className="pl-[8.6rem] text-sm text-slate-500 font-medium tracking-wider uppercase border-l border-white/10 pl-5 leading-relaxed">Credential Update<br /><span className="text-[10px] text-purple-400/80 mt-1 block">Security Override Protocol</span></p>

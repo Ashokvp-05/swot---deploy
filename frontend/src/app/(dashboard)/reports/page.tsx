@@ -189,8 +189,8 @@ export default function ReportsPage() {
                                             <stat.icon className="w-6 h-6" />
                                         </div>
                                         <div className="text-right">
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{stat.label}</p>
-                                            <p className="text-3xl font-black text-slate-900 dark:text-white">{stat.value}</p>
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{stat.label}</p>
+                                            <p className="text-3xl font-bold text-slate-900 dark:text-white">{stat.value}</p>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -204,7 +204,7 @@ export default function ReportsPage() {
                     <CardHeader className="bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-800/50 py-6">
                         <div className="flex items-center justify-between">
                             <div>
-                                <CardTitle className="text-sm font-black uppercase tracking-[0.2em] text-indigo-600 flex items-center gap-3">
+                                <CardTitle className="text-sm font-bold uppercase tracking-[0.2em] text-indigo-600 flex items-center gap-3">
                                     <FileSearch className="w-5 h-5" /> Work Log
                                 </CardTitle>
                                 <CardDescription className="text-xs font-medium mt-1">History of your time at work.</CardDescription>
@@ -212,7 +212,7 @@ export default function ReportsPage() {
                             {loading ? (
                                 <Skeleton className="h-6 w-32 rounded-full" />
                             ) : (
-                                <div className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 text-[10px] font-black rounded-full uppercase tracking-widest border border-slate-200 dark:border-slate-700">
+                                <div className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 text-[10px] font-bold rounded-full uppercase tracking-widest border border-slate-200 dark:border-slate-700">
                                     {entries.length} Ledger Entries
                                 </div>
                             )}
@@ -223,10 +223,10 @@ export default function ReportsPage() {
                             <table className="w-full text-left border-collapse">
                                 <thead>
                                     <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/20 dark:bg-slate-900/40">
-                                        <th className="p-5 text-[10px] font-black text-slate-400 uppercase tracking-widest pl-10">Date</th>
-                                        <th className="p-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Clock In</th>
-                                        <th className="p-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Clock Out</th>
-                                        <th className="p-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right pr-10">Hours</th>
+                                        <th className="p-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-10">Date</th>
+                                        <th className="p-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Clock In</th>
+                                        <th className="p-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Clock Out</th>
+                                        <th className="p-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right pr-10">Hours</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -252,24 +252,24 @@ export default function ReportsPage() {
                                                         </div>
                                                     </td>
                                                     <td className="p-5 text-center">
-                                                        <span className="text-[11px] font-black font-mono px-3 py-1 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-lg border border-emerald-100/50 dark:border-emerald-800/30">
+                                                        <span className="text-[11px] font-bold font-mono px-3 py-1 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-lg border border-emerald-100/50 dark:border-emerald-800/30">
                                                             {format(new Date(row.clockIn), "HH:mm")}
                                                         </span>
                                                     </td>
                                                     <td className="p-5 text-center">
                                                         {row.clockOut ? (
-                                                            <span className="text-[11px] font-black font-mono px-3 py-1 bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 rounded-lg border border-rose-100/50 dark:border-rose-800/30">
+                                                            <span className="text-[11px] font-bold font-mono px-3 py-1 bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 rounded-lg border border-rose-100/50 dark:border-rose-800/30">
                                                                 {format(new Date(row.clockOut), "HH:mm")}
                                                             </span>
                                                         ) : (
-                                                            <span className="inline-flex items-center gap-1.5 text-[9px] font-black text-amber-500 uppercase tracking-widest bg-amber-50 dark:bg-amber-900/20 px-3 py-1 rounded-lg border border-amber-100/50 dark:border-amber-800/30">
+                                                            <span className="inline-flex items-center gap-1.5 text-[9px] font-bold text-amber-500 uppercase tracking-widest bg-amber-50 dark:bg-amber-900/20 px-3 py-1 rounded-lg border border-amber-100/50 dark:border-amber-800/30">
                                                                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
                                                                 Active
                                                             </span>
                                                         )}
                                                     </td>
                                                     <td className="p-5 text-right pr-10">
-                                                        <span className="text-sm font-black text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-lg ring-1 ring-slate-200 dark:ring-slate-700">
+                                                        <span className="text-sm font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-lg ring-1 ring-slate-200 dark:ring-slate-700">
                                                             {Number(row.hoursWorked).toFixed(2)}h
                                                         </span>
                                                     </td>
@@ -280,7 +280,7 @@ export default function ReportsPage() {
                                                     <td colSpan={4} className="p-24 text-center">
                                                         <div className="flex flex-col items-center gap-3 opacity-30">
                                                             <SearchX className="w-12 h-12" />
-                                                            <p className="text-xs font-black uppercase tracking-widest">No Intelligence Recorded</p>
+                                                            <p className="text-xs font-bold uppercase tracking-widest">No Intelligence Recorded</p>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -295,8 +295,8 @@ export default function ReportsPage() {
                     {/* PAGINATION */}
                     {!loading && totalPages > 1 && (
                         <div className="px-8 py-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/20 dark:bg-slate-900/20">
-                            <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                Displaying <span className="text-indigo-600 font-black">Page {currentPage}</span> of {totalPages}
+                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                Displaying <span className="text-indigo-600 font-bold">Page {currentPage}</span> of {totalPages}
                             </div>
                             <div className="flex items-center gap-3">
                                 <Button
@@ -325,7 +325,7 @@ export default function ReportsPage() {
                 <div className="flex items-center justify-between pt-8 opacity-40 grayscale border-t border-slate-200 dark:border-slate-800">
                     <div className="flex items-center gap-4">
                         <History className="w-4 h-4" />
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[1em]">Rudratic Intelligence</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[1em]">Rudratic Intelligence</p>
                     </div>
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic">Audit Stability v.3.1.2</p>
                 </div>

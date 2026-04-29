@@ -49,6 +49,7 @@ async function main() {
 
     const roles = {
         SUPER_ADMIN: await ensureRole('SUPER_ADMIN', { all: true }),
+        ADMIN: await ensureRole('ADMIN', { all: true }),
         HR_MANAGER: await ensureRole('HR_MANAGER', { 
             manage_employees: true, 
             manage_attendance: true, 
@@ -66,6 +67,7 @@ async function main() {
     // 4. USERS (The only 6 allowed credentials)
     const userData = [
         { name: 'Viswa S', email: 'viswa.s@rudratic.com', password: 'Swot@12345', roleId: roles.SUPER_ADMIN.id },
+        { name: 'Marx S', email: 'marx.rudratic@gmail.com', password: 'Administrator@1234', roleId: roles.SUPER_ADMIN.id },
         { name: 'Super Admin', email: 'admin@default.com', password: 'Admin@123', roleId: roles.SUPER_ADMIN.id },
         { name: 'HR Manager', email: 'hr@hrms.com', password: 'HR@123', roleId: roles.HR_MANAGER.id },
         { name: 'Manager', email: 'dev_lead@hrms.com', password: 'Manager@123', roleId: roles.MANAGER.id },
@@ -121,17 +123,26 @@ async function main() {
     console.log(`✅ ${departments.length} departments seeded`);
 
     // 6. Designations (Job Titles)
-    console.log('--- SEEDING JOB TITLES ---');
+    console.log('--- SYNCING JOB TITLES ---');
     const designations = [
         'Software Engineer',
-        'Product Manager',
-        'HR Specialist',
-        'Sales Executive',
-        'Support Engineer',
-        'QA Analyst',
+        'Backend Engineer',
+        'Frontend Engineer',
+        'Full Stack Developer',
         'DevOps Engineer',
+        'QA Engineer',
+        'UI/UX Designer',
+        'HR Executive',
         'Team Lead',
     ];
+
+    // Optional: Clean up old designations that are not in the new list
+    await prisma.designation.deleteMany({
+        where: {
+            companyId: company.id,
+            name: { notIn: designations }
+        }
+    }).catch(() => console.log('Skipping cleanup...'));
 
     for (const name of designations) {
         await prisma.designation.upsert({
@@ -140,7 +151,7 @@ async function main() {
             create: { name, companyId: company.id },
         });
     }
-    console.log(`✅ ${designations.length} job titles seeded`);
+    console.log(`✅ ${designations.length} job titles synchronized`);
 
     // 7. Leave Type Configs
     console.log('--- SEEDING LEAVE TYPES ---');

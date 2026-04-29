@@ -86,7 +86,7 @@ export const getDashboardOverview = async (companyId: string, managerId?: string
 
     // Dynamic scoping filter
     const scopeFilter = managerId ? { managerId: managerId, companyId } : { companyId };
-    const userScopeFilter = { ...scopeFilter, status: 'ACTIVE' as const };
+    const userScopeFilter = { ...scopeFilter, status: 'ACTIVE' as const, role: { name: { not: 'SUPER_ADMIN' } } };
 
     // Run all database queries in parallel for maximum speed
     const [

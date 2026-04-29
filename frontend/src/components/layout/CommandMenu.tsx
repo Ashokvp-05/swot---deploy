@@ -78,7 +78,7 @@ export function CommandMenu() {
                         {(session?.user?.role as string)?.includes('HR') && (
                             <>
                                 <Command.Separator className="h-px bg-slate-100 dark:bg-slate-800 mx-2 my-2" />
-                                <Command.Group heading="HR Intelligence" className="px-2 py-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">
+                                <Command.Group heading="HR Tools" className="px-2 py-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">
                                     <Command.Item
                                         onSelect={() => runCommand(() => router.push("/hr"))}
                                         className="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 rounded-lg cursor-pointer aria-selected:bg-indigo-50 dark:aria-selected:bg-indigo-900/20 aria-selected:text-indigo-600 dark:aria-selected:text-indigo-400 transition-colors"
@@ -86,7 +86,7 @@ export function CommandMenu() {
                                         <div className="h-4 w-4 rounded-full bg-indigo-500/20 flex items-center justify-center">
                                             <div className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
                                         </div>
-                                        <span>HR Command Center</span>
+                                        <span>HR Dashboard</span>
                                         <span className="ml-auto text-xs text-slate-400">H R</span>
                                     </Command.Item>
                                     <Command.Item
@@ -94,15 +94,15 @@ export function CommandMenu() {
                                         className="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 rounded-lg cursor-pointer aria-selected:bg-indigo-50 dark:aria-selected:bg-indigo-900/20 aria-selected:text-indigo-600 dark:aria-selected:text-indigo-400 transition-colors"
                                     >
                                         <User className="h-4 w-4" />
-                                        <span>Onboard New Talent</span>
-                                        <span className="ml-auto text-xs text-slate-400">N T</span>
+                                        <span>Onboarding</span>
+                                        <span className="ml-auto text-xs text-slate-400">O B</span>
                                     </Command.Item>
                                     <Command.Item
                                         onSelect={() => runCommand(() => router.push("/hr/recruitment"))}
                                         className="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 rounded-lg cursor-pointer aria-selected:bg-indigo-50 dark:aria-selected:bg-indigo-900/20 aria-selected:text-indigo-600 dark:aria-selected:text-indigo-400 transition-colors"
                                     >
                                         <Search className="h-4 w-4" />
-                                        <span>Recruitment Pipeline</span>
+                                        <span>Recruitment</span>
                                         <span className="ml-auto text-xs text-slate-400">A T S</span>
                                     </Command.Item>
                                 </Command.Group>
@@ -138,13 +138,13 @@ export function CommandMenu() {
 function CommandGroup({ role, router, runCommand }: { role: string, router: any, runCommand: (c: any) => void }) {
     if (role === 'SUPER_ADMIN') {
         return (
-            <Command.Group heading="Rudratic Operator" className="px-2 py-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">
+            <Command.Group heading="Super Admin" className="px-2 py-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">
                 <Command.Item
                     onSelect={() => runCommand(() => router.push("/super-admin"))}
                     className="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 rounded-lg cursor-pointer aria-selected:bg-indigo-50 dark:aria-selected:bg-indigo-900/20 aria-selected:text-indigo-600 dark:aria-selected:text-indigo-400 transition-colors"
                 >
                     <LayoutDashboard className="h-4 w-4" />
-                    <span>Global Dashboard</span>
+                    <span>Dashboard</span>
                     <span className="ml-auto text-xs text-slate-400">D</span>
                 </Command.Item>
                 <Command.Item
@@ -152,7 +152,7 @@ function CommandGroup({ role, router, runCommand }: { role: string, router: any,
                     className="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 rounded-lg cursor-pointer aria-selected:bg-indigo-50 dark:aria-selected:bg-indigo-900/20 aria-selected:text-indigo-600 dark:aria-selected:text-indigo-400 transition-colors"
                 >
                     <Building2 className="h-4 w-4" />
-                    <span>Enterprise Registrar</span>
+                    <span>Companies</span>
                     <span className="ml-auto text-xs text-slate-400">E</span>
                 </Command.Item>
                 <Command.Item
@@ -160,7 +160,7 @@ function CommandGroup({ role, router, runCommand }: { role: string, router: any,
                     className="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 rounded-lg cursor-pointer aria-selected:bg-indigo-50 dark:aria-selected:bg-indigo-900/20 aria-selected:text-indigo-600 dark:aria-selected:text-indigo-400 transition-colors"
                 >
                     <Users className="h-4 w-4" />
-                    <span>Platform Council</span>
+                    <span>Admins</span>
                     <span className="ml-auto text-xs text-slate-400">C</span>
                 </Command.Item>
                 <Command.Item
@@ -168,7 +168,7 @@ function CommandGroup({ role, router, runCommand }: { role: string, router: any,
                     className="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 rounded-lg cursor-pointer aria-selected:bg-indigo-50 dark:aria-selected:bg-indigo-900/20 aria-selected:text-indigo-600 dark:aria-selected:text-indigo-400 transition-all"
                 >
                     <CreditCard className="h-4 w-4" />
-                    <span>SaaS Billing Hub</span>
+                    <span>Billing</span>
                     <span className="ml-auto text-xs text-slate-400">B</span>
                 </Command.Item>
                 <Command.Item
@@ -176,7 +176,7 @@ function CommandGroup({ role, router, runCommand }: { role: string, router: any,
                     className="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 rounded-lg cursor-pointer aria-selected:bg-indigo-50 dark:aria-selected:bg-indigo-900/20 aria-selected:text-indigo-600 dark:aria-selected:text-indigo-400 transition-all"
                 >
                     <Ticket className="h-4 w-4" />
-                    <span>Resolution Hub</span>
+                    <span>Support</span>
                     <span className="ml-auto text-xs text-slate-400">R</span>
                 </Command.Item>
                 <Command.Item
@@ -184,7 +184,7 @@ function CommandGroup({ role, router, runCommand }: { role: string, router: any,
                     className="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 rounded-lg cursor-pointer aria-selected:bg-indigo-50 dark:aria-selected:bg-indigo-900/20 aria-selected:text-indigo-600 dark:aria-selected:text-indigo-400 transition-all"
                 >
                     <Activity className="h-4 w-4" />
-                    <span>Audit Trail</span>
+                    <span>Audit Logs</span>
                     <span className="ml-auto text-xs text-slate-400">T</span>
                 </Command.Item>
                 <Command.Item
@@ -192,7 +192,7 @@ function CommandGroup({ role, router, runCommand }: { role: string, router: any,
                     className="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 rounded-lg cursor-pointer aria-selected:bg-indigo-50 dark:aria-selected:bg-indigo-900/20 aria-selected:text-indigo-600 dark:aria-selected:text-indigo-400 transition-all"
                 >
                     <Shield className="h-4 w-4" />
-                    <span>Infrastructure Pulsar</span>
+                    <span>Security</span>
                     <span className="ml-auto text-xs text-slate-400">I</span>
                 </Command.Item>
             </Command.Group>

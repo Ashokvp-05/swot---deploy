@@ -120,7 +120,7 @@ export default function AuditorDashboardPage() {
             {/* Professional Sidebar */}
             <aside className="w-64 h-full hidden lg:flex flex-col bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 py-8 px-4 z-50">
                 <div className="mb-8 px-3">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Read-Only Access</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Read-Only Access</p>
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">Audit Console</h2>
                 </div>
 
@@ -204,7 +204,7 @@ export default function AuditorDashboardPage() {
                                                  <stat.icon className={cn("w-5 h-5", stat.color)} />
                                              </div>
                                              <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">{stat.label}</p>
-                                             <h3 className="text-2xl font-black text-slate-900 dark:text-white tabular-nums tracking-tight">{stat.value}</h3>
+                                             <h3 className="text-2xl font-bold text-slate-900 dark:text-white tabular-nums tracking-tight">{stat.value}</h3>
                                          </div>
                                      ))}
                                  </div>
@@ -219,14 +219,14 @@ export default function AuditorDashboardPage() {
                                              <SearchCheck className="w-8 h-8 text-white" />
                                          </div>
                                          <div>
-                                             <h2 className="text-2xl font-black tracking-tighter text-slate-900 dark:text-white uppercase leading-none italic">Global Event <span className="text-indigo-600">Registry</span></h2>
-                                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mt-3">Historical Compliance Stream // SEC-AUD-01</p>
+                                             <h2 className="text-2xl font-bold tracking-tighter text-slate-900 dark:text-white uppercase leading-none italic">Global Event <span className="text-indigo-600">Registry</span></h2>
+                                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.4em] mt-3">Historical Compliance Stream // SEC-AUD-01</p>
                                          </div>
                                      </div>
                                      <div className="flex items-center gap-4 p-1.5 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/5">
                                          <div className="px-6 py-2 flex items-center gap-2">
                                              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Shard Sync: Active</span>
+                                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Shard Sync: Active</span>
                                          </div>
                                      </div>
                                  </div>
@@ -234,22 +234,22 @@ export default function AuditorDashboardPage() {
                                  <div className="space-y-4 px-6 relative z-10 pb-6 min-h-[500px]">
                                      {auditLogs.length === 0 ? (
                                          <div className="p-20 text-center rounded-[3rem] bg-slate-50/20 border-2 border-dashed border-slate-100">
-                                             <h3 className="text-xl font-black text-slate-900 uppercase italic tracking-tighter">Initializing Data Shards</h3>
+                                             <h3 className="text-xl font-bold text-slate-900 uppercase italic tracking-tighter">Initializing Data Shards</h3>
                                          </div>
                                      ) : (
                                          auditLogs.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((log, i) => (
                                              <div key={log.id} className="group p-8 rounded-[2.5rem] bg-slate-50/30 dark:bg-slate-800/20 border border-transparent hover:border-indigo-100 hover:bg-white transition-all duration-500">
                                                  <div className="flex items-center justify-between">
                                                      <div className="flex items-center gap-8">
-                                                         <span className="text-[11px] font-black text-slate-400 tabular-nums italic shrink-0 leading-none">[{log.time}]</span>
+                                                         <span className="text-[11px] font-bold text-slate-400 tabular-nums italic shrink-0 leading-none">[{log.time}]</span>
                                                          <div className="flex items-center gap-4">
-                                                             <Badge className="bg-indigo-50 text-indigo-600 border-none px-4 py-1 font-black rounded-lg uppercase text-[9px] tracking-[0.1em]">AUDIT</Badge>
-                                                             <p className="text-[15px] font-black text-slate-900 uppercase italic tracking-tight leading-none">&gt; {log.msg}</p>
+                                                             <Badge className="bg-indigo-50 text-indigo-600 border-none px-4 py-1 font-bold rounded-lg uppercase text-[9px] tracking-[0.1em]">AUDIT</Badge>
+                                                             <p className="text-[15px] font-bold text-slate-900 uppercase italic tracking-tight leading-none">&gt; {log.msg}</p>
                                                          </div>
                                                      </div>
                                                      <div className="text-right">
-                                                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic group-hover:text-indigo-500 transition-colors">{log.user}</p>
-                                                         <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest mt-1 tabular-nums">{log.id}</p>
+                                                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic group-hover:text-indigo-500 transition-colors">{log.user}</p>
+                                                         <p className="text-[9px] font-bold text-slate-300 uppercase tracking-widest mt-1 tabular-nums">{log.id}</p>
                                                      </div>
                                                  </div>
                                              </div>
@@ -263,7 +263,7 @@ export default function AuditorDashboardPage() {
                                              variant="outline" 
                                              disabled={currentPage === 1}
                                              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                                             className="h-10 rounded-xl border-slate-100 px-6 text-[9px] font-black uppercase tracking-widest hover:bg-indigo-50 transition-all"
+                                             className="h-10 rounded-xl border-slate-100 px-6 text-[9px] font-bold uppercase tracking-widest hover:bg-indigo-50 transition-all"
                                          >
                                              Previous
                                          </Button>
@@ -273,7 +273,7 @@ export default function AuditorDashboardPage() {
                                                      key={i} 
                                                      onClick={() => setCurrentPage(i + 1)}
                                                      className={cn(
-                                                         "w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-black transition-all",
+                                                         "w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-bold transition-all",
                                                          currentPage === i + 1 ? "bg-indigo-600 text-white shadow-lg shadow-indigo-200" : "text-slate-400 hover:text-indigo-600 hover:bg-indigo-50"
                                                      )}
                                                  >
@@ -285,12 +285,12 @@ export default function AuditorDashboardPage() {
                                              variant="outline" 
                                              disabled={currentPage === Math.ceil(auditLogs.length / pageSize)}
                                              onClick={() => setCurrentPage(prev => Math.min(Math.ceil(auditLogs.length / pageSize), prev + 1))}
-                                             className="h-10 rounded-xl border-slate-100 px-6 text-[9px] font-black uppercase tracking-widest hover:bg-indigo-50 transition-all"
+                                             className="h-10 rounded-xl border-slate-100 px-6 text-[9px] font-bold uppercase tracking-widest hover:bg-indigo-50 transition-all"
                                          >
                                              Next
                                          </Button>
                                      </div>
-                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">
+                                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic">
                                          Showing {Math.min(auditLogs.length, (currentPage - 1) * pageSize + 1)}-{Math.min(auditLogs.length, currentPage * pageSize)} of {auditLogs.length} Records
                                      </p>
                                  </div>
@@ -301,10 +301,10 @@ export default function AuditorDashboardPage() {
                             <Card className="p-12 rounded-[4rem] border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl shadow-indigo-100/20">
                                  <div className="flex items-center justify-between mb-12">
                                      <div>
-                                         <h2 className="text-2xl font-black italic text-slate-900 dark:text-white tracking-tighter uppercase">Governance Integrity</h2>
-                                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">Verified organizational policy adherence</p>
+                                         <h2 className="text-2xl font-bold italic text-slate-900 dark:text-white tracking-tighter uppercase">Governance Integrity</h2>
+                                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">Verified organizational policy adherence</p>
                                      </div>
-                                     <Badge className="bg-emerald-50 text-emerald-600 border-none px-6 py-2.5 font-black rounded-xl uppercase text-[10px] tracking-widest shadow-sm">Optimal Mode</Badge>
+                                     <Badge className="bg-emerald-50 text-emerald-600 border-none px-6 py-2.5 font-bold rounded-xl uppercase text-[10px] tracking-widest shadow-sm">Optimal Mode</Badge>
                                  </div>
                                  <div className="space-y-6">
                                       {[
@@ -318,11 +318,11 @@ export default function AuditorDashboardPage() {
                                                         <c.icon className="w-6 h-6 text-indigo-600" />
                                                     </div>
                                                     <div>
-                                                        <h4 className="text-[15px] font-black text-slate-900 dark:text-white uppercase tracking-tight italic">{c.label}</h4>
-                                                        <p className="text-[9px] text-slate-400 font-black mt-1.5 uppercase tracking-widest">{c.date}</p>
+                                                        <h4 className="text-[15px] font-bold text-slate-900 dark:text-white uppercase tracking-tight italic">{c.label}</h4>
+                                                        <p className="text-[9px] text-slate-400 font-bold mt-1.5 uppercase tracking-widest">{c.date}</p>
                                                     </div>
                                                </div>
-                                               <span className="text-[10px] font-black text-indigo-700 px-8 py-3 bg-white dark:bg-indigo-900/20 rounded-2xl group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-sm">{c.status}</span>
+                                               <span className="text-[10px] font-bold text-indigo-700 px-8 py-3 bg-white dark:bg-indigo-900/20 rounded-2xl group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-sm">{c.status}</span>
                                           </div>
                                       ))}
                                  </div>

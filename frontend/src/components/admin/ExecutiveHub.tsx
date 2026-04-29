@@ -51,31 +51,31 @@ function BigKpiCard({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.4, delay: index * 0.07, ease: "easeOut" }}
             className={cn(
-                "relative overflow-hidden rounded-2xl p-8 flex flex-col justify-between min-h-[200px]",
+                "relative overflow-hidden rounded-2xl p-7 flex flex-col justify-between min-h-[180px]",
                 "shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-default",
                 gradient
             )}
         >
             <div className={cn("absolute -right-4 -bottom-4 opacity-10", bgIcon)}>
-                <Icon className="w-36 h-36" strokeWidth={1} />
+                <Icon className="w-32 h-32" strokeWidth={1} />
             </div>
             <div className="flex items-start justify-between">
                 <div className="p-3 rounded-xl bg-white/20 backdrop-blur-sm">
-                    <Icon className="w-6 h-6 text-white" strokeWidth={2} />
+                    <Icon className="w-5 h-5 text-white" strokeWidth={2} />
                 </div>
                 {trend && (
                     <div className="flex items-center gap-1 bg-white/20 backdrop-blur-sm rounded-full px-2.5 py-1">
-                        {trendUp ? <TrendingUp className="w-3.5 h-3.5 text-white" /> : <TrendingDown className="w-3.5 h-3.5 text-white" />}
-                        <span className="text-xs font-bold text-white">{trend}</span>
+                        {trendUp ? <TrendingUp className="w-3 h-3 text-white" /> : <TrendingDown className="w-3 h-3 text-white" />}
+                        <span className="text-[10px] font-bold text-white">{trend}</span>
                     </div>
                 )}
             </div>
             <div>
                 <AnimatePresence mode="wait">
                     <motion.div key={String(value)} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.25 }}
-                        className="text-6xl font-black text-white tracking-tight leading-none mb-3">{value}</motion.div>
+                        className="text-4xl font-bold text-white tracking-tight leading-none mb-2">{value}</motion.div>
                 </AnimatePresence>
-                <p className="text-white/80 text-sm font-semibold uppercase tracking-widest">{label}</p>
+                <p className="text-white/90 text-[11px] font-bold uppercase tracking-wider">{label}</p>
             </div>
         </motion.div>
     )
@@ -102,7 +102,7 @@ function AttendanceTrendChart({ stats }: { stats: LiveStats }) {
             className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between mb-6">
                 <div>
-                    <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Weekly Attendance</h3>
+                    <h3 className="text-sm font-bold text-slate-800 uppercase tracking-widest">Weekly Attendance</h3>
                     <p className="text-xs text-slate-400 mt-1">Presence vs leave this week</p>
                 </div>
                 <div className="flex items-center gap-4 text-xs">
@@ -167,7 +167,7 @@ function DepartmentChart({ token }: { token: string }) {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
             className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm hover:shadow-md transition-shadow">
             <div className="mb-6">
-                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Department Distribution</h3>
+                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-widest">Department Distribution</h3>
                 <p className="text-xs text-slate-400 mt-1">Workforce by department</p>
             </div>
             <div className="flex items-center gap-6">
@@ -231,7 +231,7 @@ function ActivityFeed({ token }: { token: string }) {
             className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between mb-5">
                 <div>
-                    <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Live Activity</h3>
+                    <h3 className="text-sm font-bold text-slate-800 uppercase tracking-widest">Live Activity</h3>
                     <p className="text-xs text-slate-400 mt-1">Recent system events</p>
                 </div>
                 <span className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
@@ -271,7 +271,7 @@ function QuickActions() {
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
             className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm hover:shadow-md transition-shadow">
-            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-5">Quick Actions</h3>
+            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-widest mb-5">Quick Actions</h3>
             <div className="grid grid-cols-2 gap-3">
                 {actions.map((a) => {
                     const Icon = a.icon
@@ -334,7 +334,7 @@ function WorkforceInsights({ token }: { token: string }) {
             className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between mb-4">
                 <div>
-                    <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Workforce Insights</h3>
+                    <h3 className="text-sm font-bold text-slate-800 uppercase tracking-widest">Workforce Insights</h3>
                     <p className="text-xs text-slate-400 mt-1">Actionable HR data</p>
                 </div>
             </div>
@@ -346,7 +346,7 @@ function WorkforceInsights({ token }: { token: string }) {
                     return (
                         <button key={t.id} onClick={() => setActiveTab(t.id)}
                             className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all border",
-                                activeTab === t.id ? `${t.bg} ${t.color} ${t.border}` : "bg-slate-50 text-slate-400 border-transparent hover:bg-slate-100")}>
+                                activeTab === t.id ? `${t.bg} ${t.color} ${t.border}` : "bg-slate-50 text-slate-500 border-transparent hover:bg-slate-100")}>
                             <Icon className="w-3.5 h-3.5" />
                             {t.label}
                             {t.count > 0 && <span className={cn("ml-1 px-1.5 py-0.5 rounded-full text-[9px]", activeTab === t.id ? "bg-white/80" : "bg-slate-200")}>{t.count}</span>}
@@ -441,7 +441,11 @@ export default function ExecutiveHub({ token }: { token: string; hideVitals?: bo
                 totalEmployees: ov.totalActiveUsers ?? ov.totalUsers ?? 0,
                 activeToday: ov.clockedIn ?? 0,
                 pendingApprovals: lvArr.filter(l => l.status === "PENDING").length,
-                leaveApproved: lvArr.filter(l => l.status === "APPROVED").length,
+                leaveApproved: lvArr.filter(l => {
+                    if (l.status !== "APPROVED") return false;
+                    const u = new Date(l.updatedAt || l.createdAt);
+                    return u >= todayStart && u <= todayEnd;
+                }).length,
                 leaveToday,
                 timestamp: new Date().toISOString(),
             })
@@ -524,7 +528,7 @@ export default function ExecutiveHub({ token }: { token: string; hideVitals?: bo
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-black text-slate-900 tracking-tight">Executive Dashboard</h2>
+                    <h2 className="text-2xl font-bold text-slate-800 tracking-tight">Executive Dashboard</h2>
                     <p className="text-sm text-slate-500 mt-1">
                         Real-time workforce data
                         {lastUpdated && (
@@ -570,7 +574,7 @@ export default function ExecutiveHub({ token }: { token: string; hideVitals?: bo
                 <div className="flex items-center gap-2">
                     <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
                     <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">
-                        {isLive ? "WebSocket Connected — Updates every 10s" : "HTTP Polling — Reconnecting WebSocket..."}
+                        {isLive ? "Live Stream Active — Real-time Updates" : "Reconnecting Real-time Stream..."}
                     </span>
                 </div>
                 <div className="flex-1 h-px bg-slate-700" />

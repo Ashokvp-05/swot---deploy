@@ -14,8 +14,8 @@ export function SystemHealthWidget({ health }: any) {
                     <Activity className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" />
                 </div>
                 <div>
-                    <h3 className="text-white font-black uppercase text-sm tracking-widest italic leading-none">System Pulse</h3>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Infrastructure Health</p>
+                    <h3 className="text-white font-bold text-sm tracking-widest leading-none">System Health</h3>
+                    <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mt-1">System Status</p>
                 </div>
             </div>
 
@@ -29,16 +29,16 @@ export function SystemHealthWidget({ health }: any) {
                     <div key={i} className="space-y-2 p-5 bg-slate-950 rounded-[24px] border border-white/5 group/node hover:border-emerald-500/20 transition-all">
                         <div className="flex items-center gap-3">
                             <s.icon className={`w-4 h-4 ${s.color} group-hover/node:scale-110 transition-transform`} />
-                            <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{s.label}</span>
+                            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{s.label}</span>
                         </div>
-                        <p className="text-xs font-black text-white uppercase italic tracking-wide">{s.status}</p>
+                        <p className="text-xs font-bold text-white uppercase tracking-wide">{s.status}</p>
                     </div>
                 ))}
             </div>
 
             <div className="pt-6 border-t border-white/5 flex items-center justify-between group/sync cursor-pointer">
                 <div className="flex items-center gap-2">
-                    <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Global Integrity</span>
+                    <span className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">System Integrity</span>
                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-lg shadow-emerald-500/50" />
                 </div>
                 <RefreshCw className="w-3 h-3 text-slate-700 group-hover/sync:text-emerald-400 group-hover/sync:rotate-180 transition-all duration-700" />
@@ -59,16 +59,16 @@ export function ComplianceWidget({ stats }: any) {
                     <ShieldCheck className="w-5 h-5 text-amber-400" />
                 </div>
                 <div>
-                    <h3 className="text-white font-black uppercase text-sm tracking-widest italic leading-none">Legal Compliance</h3>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Regulatory Governance</p>
+                    <h3 className="text-white font-bold text-sm tracking-widest leading-none">Compliance</h3>
+                    <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mt-1">Company Policies</p>
                 </div>
             </div>
 
             <div className="space-y-6">
                 <div className="p-6 bg-slate-950 rounded-[28px] border border-white/5 space-y-4">
                     <div className="flex justify-between items-center px-1">
-                        <span className="text-[10px] font-black text-white uppercase tracking-widest">Core Integrity</span>
-                        <span className="text-[10px] font-black text-emerald-400 font-mono">92%</span>
+                        <span className="text-[10px] font-bold text-white uppercase tracking-widest">Overall Completion</span>
+                        <span className="text-[10px] font-bold text-emerald-400 font-mono">92%</span>
                     </div>
                     <div className="h-2 w-full bg-slate-900 rounded-full overflow-hidden">
                         <div className="h-full w-[92%] bg-gradient-to-r from-emerald-600 to-emerald-400 rounded-full shadow-lg" />
@@ -77,18 +77,18 @@ export function ComplianceWidget({ stats }: any) {
 
                 <div className="grid grid-cols-2 gap-4">
                     <div className="p-5 bg-slate-950/60 rounded-[24px] border border-white/5 group/c hover:border-amber-500/20 transition-all">
-                        <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest block mb-1">Incomplete</span>
-                        <span className="text-xl font-black text-amber-500 leading-none group-hover/c:text-amber-400 transition-colors">{data.incompleteProfiles}</span>
+                        <span className="text-[9px] font-bold text-slate-600 uppercase tracking-widest block mb-1">Incomplete</span>
+                        <span className="text-xl font-bold text-amber-500 leading-none group-hover/c:text-amber-400 transition-colors">{data.incompleteProfiles}</span>
                     </div>
                     <div className="p-5 bg-slate-950/60 rounded-[24px] border border-white/5 group/c hover:border-emerald-500/20 transition-all">
-                        <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest block mb-1">Alerts</span>
-                        <span className="text-xl font-black text-white leading-none">0</span>
+                        <span className="text-[9px] font-bold text-slate-600 uppercase tracking-widest block mb-1">Alerts</span>
+                        <span className="text-xl font-bold text-white leading-none">0</span>
                     </div>
                 </div>
             </div>
 
             <div className="pt-6 border-t border-white/5 text-center">
-                <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest hover:text-white cursor-pointer transition-colors italic">Initiate Compliance Audit Cycle</p>
+                <p className="text-[9px] font-bold text-slate-600 uppercase tracking-widest hover:text-white cursor-pointer transition-colors">Run Compliance Audit</p>
             </div>
         </div>
     )

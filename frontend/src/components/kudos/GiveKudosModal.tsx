@@ -99,8 +99,8 @@ export default function GiveKudosModal({ token, onClose, onSuccess }: any) {
                             <Heart className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-black text-white italic uppercase tracking-tight">Grant Kudos</h3>
-                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Public recognition protocol</p>
+                            <h3 className="text-xl font-bold text-white italic uppercase tracking-tight">Grant Kudos</h3>
+                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Public recognition protocol</p>
                         </div>
                     </div>
                     <Button size="icon" variant="ghost" className="text-slate-500 hover:text-white" onClick={onClose}>
@@ -111,19 +111,19 @@ export default function GiveKudosModal({ token, onClose, onSuccess }: any) {
                 <div className="p-10 space-y-8">
                     {/* RECIPIENT SEARCH */}
                     <div className="space-y-4">
-                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-1">Target Personnel</label>
+                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] px-1">Target Personnel</label>
                         {selectedUser ? (
                             <div className="p-4 bg-slate-950 rounded-2xl border border-indigo-500/30 flex items-center justify-between group">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-xl bg-indigo-600/10 flex items-center justify-center text-indigo-400 font-black">
+                                    <div className="w-10 h-10 rounded-xl bg-indigo-600/10 flex items-center justify-center text-indigo-400 font-bold">
                                         {selectedUser.name.charAt(0)}
                                     </div>
                                     <div>
-                                        <p className="text-white text-xs font-black uppercase tracking-wide">{selectedUser.name}</p>
+                                        <p className="text-white text-xs font-bold uppercase tracking-wide">{selectedUser.name}</p>
                                         <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{selectedUser.designation}</p>
                                     </div>
                                 </div>
-                                <Button size="sm" variant="ghost" className="text-rose-500 hover:bg-rose-500/5 text-[9px] font-black uppercase" onClick={() => setSelectedUser(null)}>Reset</Button>
+                                <Button size="sm" variant="ghost" className="text-rose-500 hover:bg-rose-500/5 text-[9px] font-bold uppercase" onClick={() => setSelectedUser(null)}>Reset</Button>
                             </div>
                         ) : (
                             <div className="relative">
@@ -151,7 +151,7 @@ export default function GiveKudosModal({ token, onClose, onSuccess }: any) {
                                                         {u.name.charAt(0)}
                                                     </div>
                                                     <div>
-                                                        <p className="text-white text-[11px] font-black uppercase tracking-wide">{u.name}</p>
+                                                        <p className="text-white text-[11px] font-bold uppercase tracking-wide">{u.name}</p>
                                                         <p className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">{u.designation || "Personnel"}</p>
                                                     </div>
                                                 </button>
@@ -165,7 +165,7 @@ export default function GiveKudosModal({ token, onClose, onSuccess }: any) {
 
                     {/* CATEGORY SELECTION */}
                     <div className="space-y-4">
-                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-1">Recognition Pillar</label>
+                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] px-1">Recognition Pillar</label>
                         <div className="grid grid-cols-3 gap-3">
                             {CATEGORIES.map((cat) => (
                                 <button
@@ -174,7 +174,7 @@ export default function GiveKudosModal({ token, onClose, onSuccess }: any) {
                                     className={`p-4 rounded-2xl border transition-all flex flex-col items-center gap-2 text-center group ${category === cat.id ? 'bg-indigo-600 border-indigo-600 shadow-xl shadow-indigo-600/20' : 'bg-slate-950 border-white/5 hover:border-white/20'}`}
                                 >
                                     <cat.icon className={`w-5 h-5 ${category === cat.id ? 'text-white' : cat.color}`} />
-                                    <span className={`text-[8px] font-black uppercase tracking-widest ${category === cat.id ? 'text-white' : 'text-slate-500'}`}>{cat.label}</span>
+                                    <span className={`text-[8px] font-bold uppercase tracking-widest ${category === cat.id ? 'text-white' : 'text-slate-500'}`}>{cat.label}</span>
                                 </button>
                             ))}
                         </div>
@@ -182,7 +182,7 @@ export default function GiveKudosModal({ token, onClose, onSuccess }: any) {
 
                     {/* MESSAGE */}
                     <div className="space-y-4">
-                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-1">Broadcast Message</label>
+                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] px-1">Broadcast Message</label>
                         <Textarea
                             className="bg-slate-950 border-white/5 rounded-2xl min-h-[120px] p-6 text-xs font-bold leading-relaxed resize-none focus:ring-1 focus:ring-indigo-500"
                             placeholder="Detail the exceptional output or cultural impact..."
@@ -193,11 +193,11 @@ export default function GiveKudosModal({ token, onClose, onSuccess }: any) {
                 </div>
 
                 <div className="p-8 bg-slate-950/40 border-t border-white/5 flex gap-4">
-                    <Button variant="ghost" className="flex-1 h-14 rounded-2xl text-[10px] font-black uppercase tracking-widest" onClick={onClose}>Abort</Button>
+                    <Button variant="ghost" className="flex-1 h-14 rounded-2xl text-[10px] font-bold uppercase tracking-widest" onClick={onClose}>Abort</Button>
                     <Button
                         disabled={loading}
                         onClick={handleSubmit}
-                        className="flex-[2] h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest gap-2 shadow-xl shadow-indigo-600/20"
+                        className="flex-[2] h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-[10px] font-bold uppercase tracking-widest gap-2 shadow-xl shadow-indigo-600/20"
                     >
                         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Rocket className="w-4 h-4" />}
                         Transmit Recognition

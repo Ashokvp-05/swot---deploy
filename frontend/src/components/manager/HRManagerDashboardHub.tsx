@@ -93,16 +93,16 @@ export default function HRManagerDashboardHub({ token, onNavigate }: ManagerDash
             {/* 🚀 Header & Command Center */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div className="space-y-1">
-                    <h1 className="text-4xl font-black text-slate-900 tracking-tighter italic uppercase leading-none">Workforce Intelligence</h1>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] ml-1">Real-time Organizational Telemetry</p>
+                    <h1 className="text-4xl font-bold text-slate-900 tracking-tighter italic uppercase leading-none">Workforce Intelligence</h1>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.4em] ml-1">Real-time Organizational Telemetry</p>
                 </div>
                 <div className="flex items-center gap-4">
                     <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                        <Button onClick={() => setShowMessageModal(true)} className="h-14 px-8 bg-purple-600 hover:bg-purple-700 text-white rounded-[20px] shadow-xl shadow-purple-200 font-black uppercase text-[11px] tracking-widest gap-3">
+                        <Button onClick={() => setShowMessageModal(true)} className="h-14 px-8 bg-purple-600 hover:bg-purple-700 text-white rounded-[20px] shadow-xl shadow-purple-200 font-bold uppercase text-[11px] tracking-widest gap-3">
                             <Send className="w-4 h-4" /> Message Hub
                         </Button>
                     </motion.div>
-                    <Button variant="outline" className="h-14 px-8 border-slate-100 bg-white text-slate-600 rounded-[20px] font-black uppercase text-[11px] tracking-widest hover:bg-slate-50 hover:shadow-lg transition-all">
+                    <Button variant="outline" className="h-14 px-8 border-slate-100 bg-white text-slate-600 rounded-[20px] font-bold uppercase text-[11px] tracking-widest hover:bg-slate-50 hover:shadow-lg transition-all">
                         <ArrowRight className="w-4 h-4 mr-2" /> Global Audit
                     </Button>
                 </div>
@@ -129,8 +129,8 @@ export default function HRManagerDashboardHub({ token, onNavigate }: ManagerDash
                                 <s.icon className={cn("w-5 h-5", s.color)} />
                             </div>
                             <div>
-                                <h4 className="text-4xl font-black text-slate-900 tracking-tighter tabular-nums leading-none mb-2">{s.value}</h4>
-                                <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">{s.label}</p>
+                                <h4 className="text-4xl font-bold text-slate-900 tracking-tighter tabular-nums leading-none mb-2">{s.value}</h4>
+                                <p className="text-[10px] font-bold uppercase text-slate-400 tracking-[0.2em]">{s.label}</p>
                             </div>
                         </div>
                     </motion.div>
@@ -144,10 +144,10 @@ export default function HRManagerDashboardHub({ token, onNavigate }: ManagerDash
                     <Card className="rounded-[3.5rem] border border-slate-100 shadow-xl shadow-slate-200/30 bg-white overflow-hidden flex flex-col h-[600px]">
                         <div className="p-10 border-b border-slate-50 flex justify-between items-center">
                             <div>
-                                <h3 className="text-xl font-black text-slate-900 uppercase italic tracking-tight">Departmental Matrix</h3>
+                                <h3 className="text-xl font-bold text-slate-900 uppercase italic tracking-tight">Departmental Matrix</h3>
                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">Unit Distribution Protocol</p>
                             </div>
-                            <Button variant="ghost" className="h-12 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest text-purple-600 hover:bg-purple-50" onClick={() => onNavigate?.('employees')}>
+                            <Button variant="ghost" className="h-12 px-6 rounded-2xl text-[10px] font-bold uppercase tracking-widest text-purple-600 hover:bg-purple-50" onClick={() => onNavigate?.('employees')}>
                                 Full Directory <ArrowRight className="w-4 h-4 ml-2" />
                             </Button>
                         </div>
@@ -172,12 +172,12 @@ export default function HRManagerDashboardHub({ token, onNavigate }: ManagerDash
                                                 <dept.icon className="w-6 h-6" />
                                             </div>
                                             <div>
-                                                <span className="text-[11px] font-black uppercase tracking-widest text-slate-400 block mb-1">Sector</span>
-                                                <span className="text-lg font-black text-slate-800 uppercase tracking-tight">{dept.label}</span>
+                                                <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400 block mb-1">Sector</span>
+                                                <span className="text-lg font-bold text-slate-800 uppercase tracking-tight">{dept.label}</span>
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <span className="text-2xl font-black text-slate-900 tabular-nums">{dept.count}</span>
+                                            <span className="text-2xl font-bold text-slate-900 tabular-nums">{dept.count}</span>
                                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-2">Units</span>
                                         </div>
                                     </div>
@@ -200,7 +200,7 @@ export default function HRManagerDashboardHub({ token, onNavigate }: ManagerDash
                     <Card className="rounded-[3.5rem] border border-slate-100 shadow-xl shadow-slate-200/30 bg-white overflow-hidden flex flex-col h-[600px] relative">
                         <div className="p-10 border-b border-slate-50 flex justify-between items-center">
                             <div>
-                                <h3 className="text-xl font-black text-slate-900 uppercase italic tracking-tight">Signal Stream</h3>
+                                <h3 className="text-xl font-bold text-slate-900 uppercase italic tracking-tight">Signal Stream</h3>
                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">Live Audit Relay</p>
                             </div>
                             <div className="flex h-3 w-3 relative">
@@ -213,7 +213,7 @@ export default function HRManagerDashboardHub({ token, onNavigate }: ManagerDash
                             {activities.length === 0 ? (
                                 <div className="h-full flex flex-col items-center justify-center text-slate-300 space-y-6 opacity-40">
                                     <Activity className="w-12 h-12 animate-pulse" />
-                                    <p className="text-[10px] font-black uppercase tracking-[0.4em]">Listening for signals...</p>
+                                    <p className="text-[10px] font-bold uppercase tracking-[0.4em]">Listening for signals...</p>
                                 </div>
                             ) : (
                                 <div className="space-y-8">
@@ -235,8 +235,8 @@ export default function HRManagerDashboardHub({ token, onNavigate }: ManagerDash
                                             </div>
                                             <div className="pb-2 flex-1">
                                                 <div className="flex items-center justify-between gap-2 mb-2">
-                                                    <span className="text-[13px] font-black text-slate-900 uppercase tracking-tight">{act.user}</span>
-                                                    <span className="text-[9px] font-black text-slate-400 tabular-nums uppercase">{act.time}</span>
+                                                    <span className="text-[13px] font-bold text-slate-900 uppercase tracking-tight">{act.user}</span>
+                                                    <span className="text-[9px] font-bold text-slate-400 tabular-nums uppercase">{act.time}</span>
                                                 </div>
                                                 <p className="text-[12px] font-bold text-slate-500 leading-relaxed uppercase tracking-tight">{act.detail}</p>
                                             </div>
@@ -247,7 +247,7 @@ export default function HRManagerDashboardHub({ token, onNavigate }: ManagerDash
                         </div>
                         
                         <div className="p-8 border-t border-slate-50 bg-slate-50/30">
-                            <Button variant="ghost" className="w-full h-14 rounded-2xl text-[10px] font-black uppercase tracking-widest text-purple-600 hover:bg-white hover:shadow-md transition-all">
+                            <Button variant="ghost" className="w-full h-14 rounded-2xl text-[10px] font-bold uppercase tracking-widest text-purple-600 hover:bg-white hover:shadow-md transition-all">
                                 View Intelligence Logs
                             </Button>
                         </div>

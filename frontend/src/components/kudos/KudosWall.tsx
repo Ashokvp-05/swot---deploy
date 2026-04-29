@@ -45,12 +45,12 @@ export default function KudosWall({ token }: { token: string }) {
             {/* HERO BAR */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter italic">Recognition <span className="text-indigo-600">Wall</span></h2>
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Immutable proof of excellence</p>
+                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white uppercase tracking-tighter italic">Recognition <span className="text-indigo-600">Wall</span></h2>
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Immutable proof of excellence</p>
                 </div>
                 <Button
                     onClick={() => setShowModal(true)}
-                    className="h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-10 text-[11px] font-black uppercase tracking-widest gap-3 shadow-xl shadow-indigo-600/20 active:scale-95 transition-all"
+                    className="h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-10 text-[11px] font-bold uppercase tracking-widest gap-3 shadow-xl shadow-indigo-600/20 active:scale-95 transition-all"
                 >
                     <Heart className="w-5 h-5 fill-current" />
                     Recognize Personnel
@@ -62,12 +62,12 @@ export default function KudosWall({ token }: { token: string }) {
                 {loading ? (
                     <div className="col-span-full py-20 flex flex-col items-center justify-center gap-4 text-slate-700">
                         <Loader2 className="w-10 h-10 animate-spin text-indigo-500/30" />
-                        <p className="text-[10px] font-black uppercase tracking-[0.4em]">Deciphering culturall patterns...</p>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.4em]">Deciphering culturall patterns...</p>
                     </div>
                 ) : feed.length === 0 ? (
                     <div className="col-span-full py-20 flex flex-col items-center justify-center gap-6 text-slate-700 bg-slate-50 dark:bg-slate-900/50 rounded-[40px] border border-dashed border-slate-200 dark:border-white/5">
                         <MessageSquare className="w-16 h-16 opacity-5" />
-                        <p className="text-[11px] font-black uppercase tracking-[0.4em]">Awaiting first recognition cycle</p>
+                        <p className="text-[11px] font-bold uppercase tracking-[0.4em]">Awaiting first recognition cycle</p>
                     </div>
                 ) : (
                     <AnimatePresence>
@@ -87,12 +87,12 @@ export default function KudosWall({ token }: { token: string }) {
                                         <div className="flex gap-4">
                                             <div className="relative h-14 w-14">
                                                 <div className="absolute inset-0 bg-indigo-500/10 rounded-2xl animate-pulse" />
-                                                <div className="relative h-full w-full rounded-2xl bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500 font-black text-xl italic uppercase">
+                                                <div className="relative h-full w-full rounded-2xl bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500 font-bold text-xl italic uppercase">
                                                     {kudos.toUser.name.charAt(0)}
                                                 </div>
                                             </div>
                                             <div>
-                                                <h4 className="text-slate-900 dark:text-white font-black text-sm uppercase tracking-wider uppercase group-hover:text-indigo-600 transition-colors">{kudos.toUser.name}</h4>
+                                                <h4 className="text-slate-900 dark:text-white font-bold text-sm uppercase tracking-wider uppercase group-hover:text-indigo-600 transition-colors">{kudos.toUser.name}</h4>
                                                 <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">{kudos.toUser.designation || "Executive"}</p>
                                             </div>
                                         </div>
@@ -107,10 +107,10 @@ export default function KudosWall({ token }: { token: string }) {
 
                                     <div className="flex items-center justify-between pt-6 border-t border-slate-100 dark:border-white/5">
                                         <div className="flex items-center gap-2">
-                                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest italic">From:</span>
-                                            <span className="text-[10px] font-black text-indigo-600 uppercase tracking-tight">{kudos.fromUser.name}</span>
+                                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest italic">From:</span>
+                                            <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-tight">{kudos.fromUser.name}</span>
                                         </div>
-                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{formatDistanceToNow(new Date(kudos.createdAt))} ago</span>
+                                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{formatDistanceToNow(new Date(kudos.createdAt))} ago</span>
                                     </div>
                                 </motion.div>
                             )

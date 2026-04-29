@@ -67,7 +67,7 @@ export function TwoFactorSetup({ token, onComplete }: { token: string, onComplet
                 <div className="mx-auto w-16 h-16 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl flex items-center justify-center mb-4">
                     <ShieldCheck className="w-8 h-8 text-indigo-600" />
                 </div>
-                <CardTitle className="text-2xl font-black">2FA Security Protocol</CardTitle>
+                <CardTitle className="text-2xl font-bold">2FA Security Protocol</CardTitle>
                 <CardDescription className="text-[10px] uppercase font-bold tracking-[0.2em] text-slate-500">
                     Mandated Multi-Factor Authentication
                 </CardDescription>
@@ -94,7 +94,7 @@ export function TwoFactorSetup({ token, onComplete }: { token: string, onComplet
                             <img src={qrData.qrCode} alt="2FA QR Code" className="w-48 h-48" />
                         </div>
                         <div className="space-y-2 text-left">
-                            <p className="text-[10px] font-black uppercase text-slate-400">Manual Entry Key</p>
+                            <p className="text-[10px] font-bold uppercase text-slate-400">Manual Entry Key</p>
                             <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-lg font-mono text-xs font-bold break-all border border-slate-100 dark:border-white/5 select-all">
                                 {qrData.secret}
                             </div>
@@ -114,22 +114,22 @@ export function TwoFactorSetup({ token, onComplete }: { token: string, onComplet
                 {step === 'VERIFY' && (
                     <div className="space-y-6">
                         <div className="space-y-2">
-                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Verification Code</Label>
+                            <Label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Verification Code</Label>
                             <Input
                                 value={code}
                                 onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                                 placeholder="000000"
-                                className="h-14 text-center text-2xl font-black tracking-[0.5em] rounded-xl border-slate-100 bg-slate-50 dark:bg-slate-800"
+                                className="h-14 text-center text-2xl font-bold tracking-[0.5em] rounded-xl border-slate-100 bg-slate-50 dark:bg-slate-800"
                             />
                         </div>
                         <Button
                             onClick={handleVerify}
                             disabled={loading || code.length !== 6}
-                            className="w-full h-14 bg-indigo-600 hover:bg-black text-white font-black uppercase tracking-widest text-xs"
+                            className="w-full h-14 bg-indigo-600 hover:bg-black text-white font-bold uppercase tracking-widest text-xs"
                         >
                             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Verify Identity"}
                         </Button>
-                        <button onClick={() => setStep('QR')} className="w-full text-[10px] font-black uppercase text-slate-400 hover:text-indigo-600 transition-colors">
+                        <button onClick={() => setStep('QR')} className="w-full text-[10px] font-bold uppercase text-slate-400 hover:text-indigo-600 transition-colors">
                             Back to QR Code
                         </button>
                     </div>
@@ -141,7 +141,7 @@ export function TwoFactorSetup({ token, onComplete }: { token: string, onComplet
                             <CheckCircle2 className="w-8 h-8 text-emerald-500" />
                         </div>
                         <div className="space-y-2">
-                            <h3 className="text-xl font-black">Account Secured</h3>
+                            <h3 className="text-xl font-bold">Account Secured</h3>
                             <p className="text-sm text-slate-500 font-medium">Your Multi-Factor Identity Matrix is now active.</p>
                         </div>
                         <Button

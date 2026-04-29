@@ -130,7 +130,7 @@ export function PayslipDetailedView({ data }: { data: PayslipData }) {
                     </div>
                     <div className="p-6 bg-slate-50/10 flex flex-col justify-center items-center">
                         <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1 text-center">Employee Net Pay</p>
-                        <h3 className="text-5xl font-black text-slate-900 tracking-tight mb-2">{formatCurrency(data.netSalary)}</h3>
+                        <h3 className="text-5xl font-bold text-slate-900 tracking-tight mb-2">{formatCurrency(data.netSalary)}</h3>
                         <p className="text-[10px] font-bold text-slate-400 py-1.5 px-3 border border-slate-200 rounded-full">
                             Paid Days : 30 | LOP Days : 0
                         </p>
@@ -202,7 +202,7 @@ export function PayslipDetailedView({ data }: { data: PayslipData }) {
                             <span className="font-bold text-[14px] uppercase tracking-[0.1em] text-slate-900">Total Net Payable</span>
                         </div>
                         <div className="w-[160px] flex justify-center items-center py-4 bg-slate-50 border-l border-slate-200">
-                            <span className="text-lg font-black text-slate-900">{formatCurrency(data.netSalary)}</span>
+                            <span className="text-lg font-bold text-slate-900">{formatCurrency(data.netSalary)}</span>
                         </div>
                     </div>
                 </div>
@@ -220,7 +220,7 @@ export function PayslipDetailedView({ data }: { data: PayslipData }) {
 
                 {/* 6. Legal Footer */}
                 <div className="mt-12 text-center border-t border-slate-100 pt-6 opacity-30">
-                    <p className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-300">
+                    <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-slate-300">
                         Digitally Verified Document • Rudratic HR Ecosystem
                     </p>
                 </div>

@@ -11,7 +11,10 @@ export const getAllUsers = async (query: { companyId: string; page?: number; lim
         skip = 0;
     }
 
-    const where: any = { companyId: query.companyId };
+    const where: any = { 
+        companyId: query.companyId,
+        role: { name: { not: 'SUPER_ADMIN' } }
+    };
     if (query.status && query.status !== 'ALL') {
         where.status = query.status;
     }

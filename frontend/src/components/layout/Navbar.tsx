@@ -10,6 +10,7 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -33,6 +34,7 @@ import {
     Megaphone,
     Monitor,
     ExternalLink,
+    MoreHorizontal,
 } from "lucide-react"
 
 import { getDashboardByRole } from "@/lib/role-redirect"
@@ -108,10 +110,12 @@ export default function Navbar({ role, token, companyName }: { role?: string; to
     const navItems = getNavItems(role)
     const roleString = session?.user?.role || role || 'USER'
 
-    if (!isMounted) return <aside className="w-[72px] lg:w-[280px] bg-[#ffffff] border-r border-slate-200/80 flex flex-col h-screen sticky top-0 shrink-0" />
+    const isLight = true // Force lite theme globally per user request
+
+    if (!isMounted) return <aside className={`w-[72px] lg:w-[280px] ${isLight ? 'bg-white border-r border-slate-200' : 'bg-[#1a1f36]'} flex flex-col h-screen sticky top-0 shrink-0`} />
 
     return (
-        <aside className="w-[72px] lg:w-[280px] bg-[#ffffff] border-r border-slate-200/80 flex flex-col h-screen sticky top-0 z-[100] shrink-0 custom-scrollbar-sidebar">
+        <aside className={`w-[72px] lg:w-[280px] ${isLight ? 'bg-white border-r border-slate-200' : 'bg-[#1a1f36]'} flex flex-col h-screen sticky top-0 z-[100] shrink-0 ${isLight ? 'custom-scrollbar-sidebar-light' : 'custom-scrollbar-sidebar'} shadow-[4px_0_30px_rgba(0,0,0,0.15)] overflow-hidden`}>
             <style jsx global>{`
                 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
                 .font-brand { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -119,32 +123,39 @@ export default function Navbar({ role, token, companyName }: { role?: string; to
                 
                 .custom-scrollbar-sidebar::-webkit-scrollbar { width: 4px; }
                 .custom-scrollbar-sidebar::-webkit-scrollbar-track { background: transparent; }
-                .custom-scrollbar-sidebar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-                .custom-scrollbar-sidebar:hover::-webkit-scrollbar-thumb { background: #cbd5e1; }
+                .custom-scrollbar-sidebar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+                .custom-scrollbar-sidebar:hover::-webkit-scrollbar-thumb { background: #475569; }
+
+                .custom-scrollbar-sidebar-light::-webkit-scrollbar { width: 4px; }
+                .custom-scrollbar-sidebar-light::-webkit-scrollbar-track { background: transparent; }
+                .custom-scrollbar-sidebar-light::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+                .custom-scrollbar-sidebar-light:hover::-webkit-scrollbar-thumb { background: #94a3b8; }
             `}</style>
 
+            {/* Background Glow */}
+            {!isLight && <div className="absolute top-0 left-0 w-full h-[300px] bg-gradient-to-b from-indigo-500/5 to-transparent pointer-events-none" />}
+            {isLight && <div className="absolute top-0 left-0 w-full h-[300px] bg-gradient-to-b from-slate-50/50 to-transparent pointer-events-none" />}
+
             {/* BRAND HEADER */}
-            <div className="pt-8 pb-8 px-4 lg:px-7 border-b border-slate-100/60">
-                <div className="hidden lg:flex items-center gap-3.5">
-                    <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-[12px] flex items-center justify-center shadow-[0_8px_16px_-6px_rgba(79,70,229,0.4)] hover:scale-105 transition-transform cursor-pointer" onClick={() => router.push('/')}>
-                        <Shield className="w-5 h-5 text-white" strokeWidth={2.5} />
+            <div className="pt-10 pb-10 px-6 lg:px-8 relative z-10">
+                <div className="hidden lg:flex items-center gap-4">
+                    <div className="w-12 h-12 bg-indigo-600 rounded-[18px] flex items-center justify-center shadow-lg shadow-indigo-500/30 transition-transform hover:scale-110 active:scale-95 cursor-pointer" onClick={() => router.push('/')}>
+                        <Shield className="w-6 h-6 text-white" strokeWidth={2.5} />
                     </div>
                     <div>
-                        <h2 className="text-[18px] font-extrabold text-slate-900 tracking-tight font-brand leading-none">Rudratic</h2>
-                        <p className="text-[10px] font-semibold text-indigo-600 uppercase tracking-widest mt-1.5 leading-none bg-indigo-50 px-1.5 py-0.5 rounded pl-1.5 inline-block">
-                            Workspace
-                        </p>
+                        <h2 className={cn("text-xl font-bold tracking-tight leading-none", isLight ? "text-slate-900" : "text-white")}>Rudratic</h2>
+                        <p className={cn("text-[9px] font-bold uppercase tracking-[0.2em] mt-2 leading-none", isLight ? "text-indigo-600" : "text-indigo-400")}>Workspace</p>
                     </div>
                 </div>
                 <div className="lg:hidden flex items-center justify-center">
-                    <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-[12px] flex items-center justify-center shadow-lg" onClick={() => router.push('/')}>
+                    <div className="w-11 h-11 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30" onClick={() => router.push('/')}>
                         <Shield className="w-5 h-5 text-white" />
                     </div>
                 </div>
             </div>
 
             {/* NAVIGATION */}
-            <nav className="flex-1 px-3 lg:px-5 py-6 overflow-y-auto custom-scrollbar-sidebar">
+            <nav className={`flex-1 px-4 lg:px-5 py-2 overflow-y-auto ${isLight ? 'custom-scrollbar-sidebar-light' : 'custom-scrollbar-sidebar'} relative z-10`}>
                 <div className="space-y-8">
                     {['core', 'hr', 'finance', 'company', 'admin', 'tools'].map(group => {
                         const groupItems = navItems.filter(i => i.group === group)
@@ -153,62 +164,64 @@ export default function Navbar({ role, token, companyName }: { role?: string; to
                         const groupLabels: Record<string, string> = {
                             'core': 'Overview',
                             'hr': 'Personnel',
-                            'finance': 'Operations & Pay',
+                            'finance': 'Operations',
                             'company': 'Organization',
-                            'admin': 'System & Security',
-                            'tools': 'Tools & Integrations'
+                            'admin': 'System',
+                            'tools': 'Integrations'
                         }
 
                         return (
                             <div key={group} className="space-y-1.5">
-                                <p className="hidden lg:block text-[10px] font-bold text-slate-400/80 uppercase tracking-widest px-3 mb-3 font-brand ml-1">{groupLabels[group]}</p>
-                                {groupItems.map(item => {
-                                    const Icon = item.icon
+                                <p className={cn("hidden lg:block text-[9px] font-bold uppercase tracking-[0.3em] px-4 mb-3", isLight ? "text-slate-400" : "text-slate-500")}>{groupLabels[group]}</p>
+                                <div className="space-y-0.5">
+                                    {groupItems.map(item => {
+                                        const Icon = item.icon
 
-                                    // Robust active logic
-                                    const isQueryLink = item.href.includes("?tab=")
-                                    const baseHref = item.href.split("?")[0]
-                                    const tabValue = item.href.split("tab=")[1]
-                                    const currentTab = searchParams?.get("tab")
+                                        // Robust active logic
+                                        const isQueryLink = item.href.includes("?tab=")
+                                        const baseHref = item.href.split("?")[0]
+                                        const tabValue = item.href.split("tab=")[1]
+                                        const currentTab = searchParams?.get("tab")
 
-                                    let isActive = false
-                                    if (isQueryLink) {
-                                        isActive = pathname === baseHref && (currentTab === tabValue || (!currentTab && tabValue === 'dashboard'))
-                                    } else {
-                                        isActive = pathname === baseHref
-                                    }
+                                        let isActive = false
+                                        if (isQueryLink) {
+                                            isActive = pathname === baseHref && (currentTab === tabValue || (!currentTab && tabValue === 'dashboard'))
+                                        } else {
+                                            isActive = pathname === baseHref
+                                        }
 
-                                    const isExternal = 'external' in item && (item as any).external
+                                        const isExternal = 'external' in item && (item as any).external
 
-                                    return (
-                                        <button
-                                            key={item.href}
-                                            onClick={() => {
-                                                if (isExternal) {
-                                                    window.location.href = item.href
-                                                } else {
-                                                    router.push(item.href)
-                                                }
-                                            }}
-                                            title={item.name}
-                                            className={cn(
-                                                "w-full flex items-center justify-between px-3.5 py-2.5 rounded-[12px] text-[13px] font-medium transition-all duration-200 group relative outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40",
-                                                isActive
-                                                    ? "bg-indigo-50/80 text-indigo-700 font-semibold"
-                                                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
-                                            )}
-                                        >
-                                            <div className="flex items-center justify-center lg:justify-start gap-3 w-full">
-                                                <Icon className={cn("w-[18px] h-[18px] shrink-0 transition-colors duration-200", isActive ? "text-indigo-600" : "text-slate-400 group-hover:text-slate-600")} strokeWidth={isActive ? 2.5 : 2} />
-                                                <span className="hidden lg:inline-block text-left truncate">{item.name}</span>
-                                                {isExternal && <ExternalLink className="hidden lg:block w-3.5 h-3.5 text-slate-400 group-hover:text-slate-500 shrink-0 ml-auto" />}
-                                            </div>
-                                            {isActive && (
-                                                <motion.div layoutId="globalActiveNav" className="hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-indigo-600 rounded-r-full" />
-                                            )}
-                                        </button>
-                                    )
-                                })}
+                                        return (
+                                            <button
+                                                key={item.href}
+                                                onClick={() => {
+                                                    if (isExternal) {
+                                                        window.location.href = item.href
+                                                    } else {
+                                                        router.push(item.href)
+                                                    }
+                                                }}
+                                                title={item.name}
+                                                className={cn(
+                                                    "w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 group relative outline-none",
+                                                    isActive
+                                                        ? (isLight ? "bg-indigo-50 text-indigo-700 font-bold" : "bg-indigo-600 text-white shadow-md shadow-indigo-600/25")
+                                                        : (isLight ? "text-slate-500 hover:bg-slate-50 hover:text-indigo-700" : "text-slate-400 hover:bg-white/5 hover:text-white")
+                                                )}
+                                            >
+                                                <div className="flex items-center justify-center lg:justify-start gap-3.5 w-full">
+                                                    <Icon className={cn("w-[18px] h-[18px] shrink-0 transition-colors duration-200", isActive ? (isLight ? "text-indigo-600" : "text-white") : (isLight ? "text-slate-400 group-hover:text-indigo-600" : "text-slate-500 group-hover:text-white"))} strokeWidth={isActive ? 2.5 : 1.8} />
+                                                    <span className="hidden lg:inline-block text-left truncate">{item.name}</span>
+                                                    {isExternal && <ExternalLink className={cn("hidden lg:block w-3.5 h-3.5 shrink-0 ml-auto", isActive ? (isLight ? "text-indigo-400" : "text-indigo-200") : (isLight ? "text-slate-400 group-hover:text-indigo-600" : "text-slate-500 group-hover:text-white"))} />}
+                                                </div>
+                                                {isActive && (
+                                                    <motion.div layoutId="globalActiveSidebarIndicator" className={cn("hidden lg:block absolute -left-[5px] top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full", isLight ? "bg-indigo-600" : "bg-indigo-400")} />
+                                                )}
+                                            </button>
+                                        )
+                                    })}
+                                </div>
                             </div>
                         )
                     })}
@@ -216,34 +229,34 @@ export default function Navbar({ role, token, companyName }: { role?: string; to
             </nav>
 
             {/* USER IDENTITY FOOTER */}
-            <div className="px-3 lg:px-5 py-5 mt-auto border-t border-slate-100/60 bg-slate-50/30">
+            <div className={cn("px-5 py-6 mt-auto border-t relative z-10", isLight ? "border-slate-100" : "border-slate-700/40")}>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <button className="w-full flex items-center gap-3 p-2 rounded-[14px] hover:bg-white border border-transparent hover:border-slate-200 hover:shadow-sm transition-all group outline-none">
-                            <div className="w-9 h-9 shrink-0 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center text-white font-bold text-sm relative">
+                        <button className={cn("w-full flex items-center gap-4 p-3 rounded-xl transition-all group outline-none", isLight ? "hover:bg-slate-50" : "hover:bg-white/5")}>
+                            <div className="w-10 h-10 shrink-0 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-sm relative shadow-md shadow-indigo-500/30">
                                 {(session?.user?.name || "E")[0].toUpperCase()}
-                                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full" />
+                                <div className={cn("absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 border-2 rounded-full", isLight ? "border-white" : "border-[#1a1f36]")} />
                             </div>
                             <div className="hidden lg:flex flex-col items-start min-w-0 flex-1">
-                                <span className="text-[13px] font-semibold text-slate-900 leading-none truncate w-full">{session?.user?.name?.split(' ')[0] || 'Employee'}</span>
-                                <span className="text-[11px] font-medium text-slate-500 mt-1 truncate w-full">{roleString.replace('_', ' ')}</span>
+                                <span className={cn("text-[13px] font-bold leading-none truncate w-full", isLight ? "text-slate-800" : "text-white")}>{session?.user?.name?.split(' ')[0] || 'Employee'}</span>
+                                <span className={cn("text-[9px] font-medium uppercase tracking-wider mt-1.5 truncate w-full", isLight ? "text-slate-500" : "text-slate-500")}>{roleString.replace('_', ' ')}</span>
                             </div>
-                            <MoreVertical className="hidden lg:block w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors shrink-0" />
+
                         </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-64 bg-white border border-slate-200 rounded-2xl p-2 shadow-[0_20px_60px_rgba(0,0,0,0.08)] ml-2 mb-2" side="top" align="start">
-                        <div className="px-3 py-3 mb-1 bg-slate-50/50 rounded-xl">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1.5">Authenticated Account</p>
-                            <p className="text-[13px] font-semibold text-slate-900 truncate">{session?.user?.email || "employee@hr.com"}</p>
+                    <DropdownMenuContent className="w-64 bg-white border border-slate-100 rounded-[32px] p-3 shadow-2xl ml-4 mb-4">
+                        <div className="px-5 py-4 mb-2 bg-slate-50/50 rounded-[22px]">
+                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-2">Email Address</p>
+                            <p className="text-[13px] font-bold text-slate-900 truncate font-brand">{session?.user?.email || "employee@company.com"}</p>
                         </div>
-                        <div className="h-px bg-slate-100 mx-2 my-2" />
-                        <DropdownMenuItem onClick={() => router.push("/profile")} className="rounded-xl px-3 py-2.5 focus:bg-slate-50 group cursor-pointer text-slate-600 transition-colors">
-                            <User className="w-4 h-4 mr-2.5 text-slate-400 group-hover:text-slate-900 transition-colors" />
-                            <span className="text-[12px] font-medium">My Profile</span>
+                        <DropdownMenuItem onClick={() => router.push("/profile")} className="rounded-xl px-4 py-3 focus:bg-slate-50 group cursor-pointer text-slate-600 transition-all">
+                            <User className="w-4 h-4 mr-3 text-slate-400 group-hover:text-slate-900" />
+                            <span className="text-[11px] font-bold uppercase tracking-widest">My Profile</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/login' })} className="rounded-xl px-3 py-2.5 focus:bg-rose-50 group cursor-pointer text-rose-500 focus:text-rose-600 transition-colors">
-                            <LogOut className="w-4 h-4 mr-2.5" />
-                            <span className="text-[12px] font-medium">Secure Sign Out</span>
+                        <DropdownMenuSeparator className="bg-slate-50 my-2" />
+                        <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/login' })} className="rounded-xl px-4 py-3 focus:bg-rose-50 group cursor-pointer text-rose-500 transition-all">
+                            <LogOut className="w-4 h-4 mr-3" />
+                            <span className="text-[11px] font-bold uppercase tracking-widest">Logout</span>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
@@ -251,3 +264,4 @@ export default function Navbar({ role, token, companyName }: { role?: string; to
         </aside>
     )
 }
+

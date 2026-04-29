@@ -200,7 +200,7 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                                 <motion.span 
                                     initial={{ opacity: 0, scale: 0.8 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 text-[9px] font-black uppercase tracking-widest ml-2"
+                                    className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 text-[9px] font-bold uppercase tracking-widest ml-2"
                                 >
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                     Live
@@ -210,17 +210,17 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                     </div>
                     {liveTime && (
                         <div className="hidden md:flex items-baseline gap-1 bg-white rounded-2xl px-5 py-2.5 border border-slate-100 shadow-sm">
-                            <span className="text-2xl font-black tabular-nums text-slate-900 tracking-tighter">
+                            <span className="text-2xl font-bold tabular-nums text-slate-900 tracking-tighter">
                                 {format(liveTime, "hh:mm")}
                             </span>
-                            <span className="text-base font-black tabular-nums text-indigo-500 tracking-tighter">
+                            <span className="text-base font-bold tabular-nums text-indigo-500 tracking-tighter">
                                 :{format(liveTime, "ss")}
                             </span>
                             <div className="ml-1 flex flex-col items-start">
-                                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">
+                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none">
                                     {format(liveTime, "a")}
                                 </span>
-                                <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest leading-none mt-0.5">
+                                <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest leading-none mt-0.5">
                                     IST
                                 </span>
                             </div>
@@ -239,7 +239,7 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                             <div className="flex items-start gap-4">
                                 <Avatar className="w-14 h-14 border-2 border-indigo-50 shrink-0">
                                     <AvatarImage src={userData?.avatarUrl || user?.image} className="object-cover" />
-                                    <AvatarFallback className="bg-indigo-600 text-white font-black text-lg">
+                                    <AvatarFallback className="bg-indigo-600 text-white font-bold text-lg">
                                         {initials}
                                     </AvatarFallback>
                                 </Avatar>
@@ -278,7 +278,7 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                         <div className="bg-slate-900 rounded-2xl overflow-hidden shadow-xl">
                             {/* Top label */}
                             <div className="px-6 pt-5 pb-4 border-b border-white/5 flex items-center justify-between">
-                                <span className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">Shift Timer</span>
+                                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em]">Shift Timer</span>
                                 <div className="flex items-center gap-2">
                                     <span className={cn(
                                         "w-2 h-2 rounded-full",
@@ -300,12 +300,12 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                                         {[timerParts.h, timerParts.m, timerParts.s].map((part, i) => (
                                             <div key={i} className="flex items-center gap-1">
                                                 <span className={cn(
-                                                    "text-[44px] font-black tabular-nums leading-none tracking-tighter",
+                                                    "text-[44px] font-bold tabular-nums leading-none tracking-tighter",
                                                     i === 2 ? "text-indigo-400" : "text-white"
                                                 )}>
                                                     {part}
                                                 </span>
-                                                {i < 2 && <span className="text-2xl font-black text-slate-700 leading-none self-start pt-2">:</span>}
+                                                {i < 2 && <span className="text-2xl font-bold text-slate-700 leading-none self-start pt-2">:</span>}
                                             </div>
                                         ))}
                                     </div>
@@ -328,7 +328,7 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                                                     key={type}
                                                     onClick={() => setClockType(type)}
                                                     className={cn(
-                                                        "flex-1 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
+                                                        "flex-1 py-2 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all",
                                                         clockType === type
                                                             ? "bg-white text-slate-900 shadow-sm"
                                                             : "text-slate-500 hover:text-slate-300"
@@ -347,7 +347,7 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                                     disabled={status === 'LOADING'}
                                     id="clock-btn"
                                     className={cn(
-                                        "w-full h-12 rounded-xl font-black text-[10px] uppercase tracking-[0.15em] transition-all active:scale-[0.98] flex items-center justify-center gap-2",
+                                        "w-full h-12 rounded-xl font-bold text-[10px] uppercase tracking-[0.15em] transition-all active:scale-[0.98] flex items-center justify-center gap-2",
                                         status === 'ACTIVE'
                                             ? "bg-rose-500 hover:bg-rose-600 text-white"
                                             : "bg-indigo-500 hover:bg-indigo-600 text-white"
@@ -410,7 +410,7 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                                         <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
                                             {stat.label}
                                         </p>
-                                        <p className="text-3xl font-black text-slate-900 tabular-nums leading-none">
+                                        <p className="text-3xl font-bold text-slate-900 tabular-nums leading-none">
                                             {stat.value}
                                         </p>
                                         <p className="text-[10px] text-slate-400 font-medium mt-1">{stat.sub}</p>
@@ -469,7 +469,7 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                                                 {format(day, 'eee')}
                                             </p>
                                             <span className={cn(
-                                                "text-sm font-black",
+                                                "text-sm font-bold",
                                                 isToday ? "text-white" : "text-slate-800"
                                             )}>
                                                 {format(day, 'dd')}

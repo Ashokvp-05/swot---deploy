@@ -43,8 +43,8 @@ export default function PerformanceRadar({ token }: { token: string }) {
                             <Star className="w-6 h-6 text-indigo-500" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Aggregate Velocity</p>
-                            <h3 className="text-3xl font-black text-slate-900 dark:text-white tracking-tighter italic">
+                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Aggregate Velocity</p>
+                            <h3 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tighter italic">
                                 {latestReview ? latestReview.overallRating : "0.00"}
                             </h3>
                         </div>
@@ -58,8 +58,8 @@ export default function PerformanceRadar({ token }: { token: string }) {
                             <Target className="w-6 h-6 text-emerald-500" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">KPI Realization</p>
-                            <h3 className="text-3xl font-black text-slate-900 dark:text-white tracking-tighter italic">
+                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">KPI Realization</p>
+                            <h3 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tighter italic">
                                 {latestReview ? latestReview.ratings.length : "0"} / 5
                             </h3>
                         </div>
@@ -73,8 +73,8 @@ export default function PerformanceRadar({ token }: { token: string }) {
                             <TrendingUp className="w-6 h-6 text-amber-500" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Growth Vector</p>
-                            <h3 className="text-3xl font-black text-slate-900 dark:text-white tracking-tighter italic">OPTIMAL</h3>
+                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Growth Vector</p>
+                            <h3 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tighter italic">OPTIMAL</h3>
                         </div>
                     </div>
                     <div className="flex gap-1">
@@ -89,10 +89,10 @@ export default function PerformanceRadar({ token }: { token: string }) {
             <div className="space-y-6">
                 <div className="flex items-center justify-between px-2">
                     <div>
-                        <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight italic">Review <span className="text-indigo-600">History</span></h3>
-                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Chronological performance snapshots</p>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white uppercase tracking-tight italic">Review <span className="text-indigo-600">History</span></h3>
+                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Chronological performance snapshots</p>
                     </div>
-                    <Button variant="ghost" className="text-[10px] font-black uppercase text-indigo-500 tracking-widest">View Full Archive</Button>
+                    <Button variant="ghost" className="text-[10px] font-bold uppercase text-indigo-500 tracking-widest">View Full Archive</Button>
                 </div>
 
                 <div className="space-y-4">
@@ -103,7 +103,7 @@ export default function PerformanceRadar({ token }: { token: string }) {
                     ) : reviews.length === 0 ? (
                         <div className="py-20 flex flex-col items-center justify-center gap-6 text-slate-700 bg-slate-50 dark:bg-slate-900/50 rounded-[40px] border border-dashed border-slate-200 dark:border-white/5">
                             <AlertCircle className="w-12 h-12 opacity-5" />
-                            <p className="text-[10px] font-black uppercase tracking-[0.4em]">Initial performance cycle pending</p>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.4em]">Initial performance cycle pending</p>
                         </div>
                     ) : (
                         reviews.map((review) => (
@@ -115,11 +115,11 @@ export default function PerformanceRadar({ token }: { token: string }) {
                             >
                                 <div className="flex items-center gap-6">
                                     <div className="w-16 h-16 rounded-[20px] bg-slate-50 dark:bg-black/40 flex flex-col items-center justify-center border border-slate-100 dark:border-white/5 group-hover:bg-indigo-600 transition-colors">
-                                        <span className="text-[10px] font-black text-slate-400 group-hover:text-white/50 uppercase leading-none">CYCLE</span>
-                                        <span className="text-lg font-black text-slate-900 dark:text-white group-hover:text-white uppercase leading-none mt-1">{review.reviewCycle}</span>
+                                        <span className="text-[10px] font-bold text-slate-400 group-hover:text-white/50 uppercase leading-none">CYCLE</span>
+                                        <span className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-white uppercase leading-none mt-1">{review.reviewCycle}</span>
                                     </div>
                                     <div>
-                                        <h4 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">{review.reviewer.name}</h4>
+                                        <h4 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">{review.reviewer.name}</h4>
                                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{review.reviewer.designation}</p>
                                     </div>
                                 </div>
@@ -129,15 +129,15 @@ export default function PerformanceRadar({ token }: { token: string }) {
                                         <div className="flex gap-2">
                                             {review.ratings.slice(0, 3).map((r: any, idx: number) => (
                                                 <div key={idx} className="px-3 py-1 bg-slate-50 dark:bg-black/20 rounded-lg border border-slate-100 dark:border-white/5 flex items-center gap-2">
-                                                    <span className="text-[8px] font-black text-slate-500 uppercase">{r.kpi.name}</span>
-                                                    <span className="text-[9px] font-black text-indigo-500">{r.rating}/5</span>
+                                                    <span className="text-[8px] font-bold text-slate-500 uppercase">{r.kpi.name}</span>
+                                                    <span className="text-[9px] font-bold text-indigo-500">{r.rating}/5</span>
                                                 </div>
                                             ))}
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter italic">{review.overallRating}</p>
-                                        <p className="text-[8px] font-black text-emerald-500 uppercase tracking-[0.2em]">FINALIZED</p>
+                                        <p className="text-2xl font-bold text-slate-900 dark:text-white tracking-tighter italic">{review.overallRating}</p>
+                                        <p className="text-[8px] font-bold text-emerald-500 uppercase tracking-[0.2em]">FINALIZED</p>
                                     </div>
                                     <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-indigo-500 transition-colors" />
                                 </div>

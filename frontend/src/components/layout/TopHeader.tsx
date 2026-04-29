@@ -48,7 +48,7 @@ export default function TopHeader({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-56 bg-white border border-slate-100 rounded-2xl p-2 shadow-xl mt-3 animate-in slide-in-from-top-2 duration-200" align="end">
                             <DropdownMenuLabel className="px-3 py-2">
-                                <p className="text-[11px] font-normal text-slate-400 leading-none mb-1">Signed in as</p>
+                                <p className="text-[11px] font-normal text-slate-400 leading-none mb-1">Logged in as</p>
                                 <p className="text-[13px] font-medium text-slate-900 truncate">{session?.user?.email || "user@hr.com"}</p>
                             </DropdownMenuLabel>
                             <DropdownMenuSeparator className="bg-slate-100 my-1" />
@@ -62,7 +62,7 @@ export default function TopHeader({
                                 className="rounded-xl px-3 py-2 focus:bg-rose-50 cursor-pointer text-[13px] font-medium text-rose-500 focus:text-rose-600 transition-colors gap-2.5"
                             >
                                 <LogOut className="w-4 h-4 text-rose-400" />
-                                Secure Sign Out
+                                Logout
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>

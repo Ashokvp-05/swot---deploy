@@ -74,7 +74,7 @@ export default function OnboardingSuite({ token }: { token: string }) {
             if (rolesRes.ok && dRes.ok && dgRes.ok) {
                 setMetadata({ roles: await rolesRes.json(), depts: await dRes.json(), designations: await dgRes.json() })
             }
-        } catch { toast.error("Sync failed") }
+        } catch { toast.error("Update failed") }
         finally { setLoading(false) }
     }
 
@@ -98,7 +98,7 @@ export default function OnboardingSuite({ token }: { token: string }) {
             } else {
                 toast.error("Cannot load leave data")
             }
-        } catch { toast.error("Network error") }
+        } catch { toast.error("Connection error") }
         finally { setLeaveLoading(prev => ({ ...prev, [id]: false })) }
     }
 
@@ -122,7 +122,7 @@ export default function OnboardingSuite({ token }: { token: string }) {
                 const d = await res.json()
                 toast.error(d.error || "Failed to save")
             }
-        } catch { toast.error("Network error") }
+        } catch { toast.error("Connection error") }
         finally { setSavingLeave(false) }
     }
 
@@ -149,7 +149,7 @@ export default function OnboardingSuite({ token }: { token: string }) {
                 const d = await res.json()
                 toast.error(d.error || "Failed to initialize")
             }
-        } catch { toast.error("Network error") }
+        } catch { toast.error("Connection error") }
         finally { setInitializingLeave(prev => ({ ...prev, [employeeId]: false })) }
     }
 
@@ -175,12 +175,12 @@ export default function OnboardingSuite({ token }: { token: string }) {
             } else {
                 toast.error(data.error || "Onboarding failed")
             }
-        } catch { toast.error("Network error") }
+        } catch { toast.error("Connection error") }
         finally { setIsDeploying(false) }
     }
 
     const inp = "h-11 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-slate-600 outline-none px-4 w-full focus:border-indigo-500/50 transition-colors"
-    const lbl = "text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 block"
+    const lbl = "text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1.5 block"
     const sel = "h-11 bg-white/5 border border-white/10 rounded-xl text-sm text-white outline-none px-3 w-full cursor-pointer appearance-none focus:border-indigo-500/50 transition-colors"
 
     return (
@@ -195,22 +195,22 @@ export default function OnboardingSuite({ token }: { token: string }) {
                             <div className="w-12 h-12 bg-indigo-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-indigo-500/20">
                                 <UserPlus className="w-6 h-6 text-white" />
                             </div>
-                            <CardTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
-                                Onboard Personnel
+                            <CardTitle className="text-2xl font-bold tracking-tight flex items-center gap-3">
+                                Add Employee
                                 {showSuccess && <Sparkles className="w-5 h-5 text-emerald-400 animate-bounce" />}
                             </CardTitle>
                             <CardDescription className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-2">
-                                Provision a new employee identity with immediate system access
+                                Create a new employee profile
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="p-10 pt-0 relative z-10">
                             <div className="grid grid-cols-2 gap-5">
                                 <div className="col-span-2">
                                     <label className={lbl}>Full Name</label>
-                                    <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Enter legal name" className={inp} />
+                                    <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Enter name" className={inp} />
                                 </div>
                                 <div>
-                                    <label className={lbl}>Role Access</label>
+                                    <label className={lbl}>Role</label>
                                     <select value={form.roleId} onChange={e => setForm({ ...form, roleId: e.target.value })} className={sel}>
                                         <option value="" className="bg-slate-900">Select Role</option>
                                         {metadata.roles.filter(r => r.name !== 'SUPER_ADMIN').map(r => <option key={r.id} value={r.id} className="bg-slate-900">{r.name}</option>)}
@@ -225,7 +225,7 @@ export default function OnboardingSuite({ token }: { token: string }) {
                                 </div>
                                 <div>
                                     <label className={lbl}>Email Address</label>
-                                    <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="name@corp.com" className={inp} />
+                                    <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="name@company.com" className={inp} />
                                 </div>
                                 <div>
                                     <label className={lbl}>Password</label>
@@ -234,7 +234,7 @@ export default function OnboardingSuite({ token }: { token: string }) {
                                 <div className="col-span-2">
                                     <label className={lbl}>Job Title (Optional)</label>
                                     <select value={form.designationId} onChange={e => setForm({ ...form, designationId: e.target.value })} className={sel}>
-                                        <option value="" className="bg-slate-900">Select Designation</option>
+                                        <option value="" className="bg-slate-900">Select Title</option>
                                         {metadata.designations.map(d => <option key={d.id} value={d.id} className="bg-slate-900">{d.name}</option>)}
                                     </select>
                                 </div>
@@ -242,27 +242,27 @@ export default function OnboardingSuite({ token }: { token: string }) {
                             <Button
                                 onClick={handleDeploy}
                                 disabled={isDeploying}
-                                className="w-full h-13 bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-800 text-white rounded-2xl font-black uppercase text-[10px] tracking-[0.2em] shadow-xl shadow-indigo-600/20 mt-7 transition-all active:scale-95 py-4"
+                                className="w-full h-13 bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-800 text-white rounded-2xl font-bold uppercase text-[10px] tracking-widest shadow-xl shadow-indigo-600/20 mt-7 transition-all active:scale-95 py-4"
                             >
-                                {isDeploying ? <Loader2 className="w-4 h-4 animate-spin" /> : "Confirm & Deploy Identity"}
+                                {isDeploying ? <Loader2 className="w-4 h-4 animate-spin" /> : "Add Employee"}
                             </Button>
                         </CardContent>
                     </Card>
                 </div>
 
-                {/* ── DEPLOYMENT MANIFEST ── */}
+                {/* ── EMPLOYEE LIST ── */}
                 <div className="xl:col-span-7">
                     <Card className="border-none bg-white shadow-xl shadow-slate-200/40 rounded-[2.5rem] overflow-hidden flex flex-col h-full">
                         <CardHeader className="px-10 py-8 border-b border-slate-50 flex flex-row items-center justify-between shrink-0">
                             <div>
-                                <CardTitle className="text-xl font-black tracking-tight">Employee Directory</CardTitle>
+                                <CardTitle className="text-xl font-bold tracking-tight">Employee Directory</CardTitle>
                                 <CardDescription className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
-                                    Click any employee to manage leave balances
+                                    Select an employee to manage leave balances
                                 </CardDescription>
                             </div>
                             <div className="flex items-center gap-2">
                                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                                <span className="text-[10px] font-black uppercase text-slate-400">Live</span>
+                                <span className="text-[10px] font-bold uppercase text-slate-400">Live</span>
                             </div>
                         </CardHeader>
 
@@ -270,11 +270,11 @@ export default function OnboardingSuite({ token }: { token: string }) {
                             {loading ? (
                                 <div className="p-20 flex flex-col items-center gap-3">
                                     <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
-                                    <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Querying registry…</p>
+                                    <p className="text-[10px] font-bold uppercase text-slate-400 tracking-widest">Loading directory…</p>
                                 </div>
                             ) : candidates.length === 0 ? (
                                 <div className="p-20 text-center">
-                                    <p className="text-[11px] font-black uppercase text-slate-400 tracking-widest">No employees found</p>
+                                    <p className="text-[11px] font-bold uppercase text-slate-400 tracking-widest">No employees found</p>
                                 </div>
                             ) : (
                                 <div className="divide-y divide-slate-50">
@@ -285,15 +285,15 @@ export default function OnboardingSuite({ token }: { token: string }) {
                                                 onClick={() => handleExpand(c.id)}
                                                 className="w-full flex items-center gap-4 px-8 py-5 hover:bg-slate-50/70 transition-colors text-left group"
                                             >
-                                                <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center font-black text-xs text-slate-600 shrink-0 group-hover:scale-110 transition-transform">
+                                                <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center font-bold text-xs text-slate-600 shrink-0 group-hover:scale-110 transition-transform">
                                                     {c.name[0]}
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="text-[13px] font-black text-slate-900 truncate">{c.name}</p>
+                                                    <p className="text-[13px] font-bold text-slate-900 truncate">{c.name}</p>
                                                     <p className="text-[10px] font-bold text-slate-400 mt-0.5">{c.role}</p>
                                                 </div>
                                                 <Badge className={cn(
-                                                    "text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border-none shadow-none shrink-0",
+                                                    "text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg border-none shadow-none shrink-0",
                                                     c.status === 'ACTIVE' ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"
                                                 )}>
                                                     {c.status}
@@ -316,23 +316,23 @@ export default function OnboardingSuite({ token }: { token: string }) {
                                                         className="overflow-hidden"
                                                     >
                                                         <div className="bg-slate-50/60 border-t border-slate-100 px-8 py-6">
-                                                            {/* ── PERSONNEL OVERVIEW ── */}
+                                                            {/* ── EMPLOYEE DETAILS ── */}
                                                             <div className="grid grid-cols-3 gap-6 mb-8 bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
                                                                 <div>
-                                                                    <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1.5 flex items-center gap-1.5">
-                                                                        <FileText className="w-3 h-3 text-indigo-400" /> Professional Email
+                                                                    <p className="text-[10px] font-bold uppercase text-slate-400 tracking-widest mb-1.5 flex items-center gap-1.5">
+                                                                        <FileText className="w-3 h-3 text-indigo-400" /> Email
                                                                     </p>
                                                                     <p className="text-[12px] font-bold text-slate-700">{c.email}</p>
                                                                 </div>
                                                                 <div>
-                                                                    <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1.5 flex items-center gap-1.5">
-                                                                        <Building2 className="w-3 h-3 text-indigo-400" /> Assigned Unit
+                                                                    <p className="text-[10px] font-bold uppercase text-slate-400 tracking-widest mb-1.5 flex items-center gap-1.5">
+                                                                        <Building2 className="w-3 h-3 text-indigo-400" /> Department
                                                                     </p>
                                                                     <p className="text-[12px] font-bold text-slate-700">{c.dept}</p>
                                                                 </div>
                                                                 <div>
-                                                                    <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1.5 flex items-center gap-1.5">
-                                                                        <Briefcase className="w-3 h-3 text-indigo-400" /> Role Designation
+                                                                    <p className="text-[10px] font-bold uppercase text-slate-400 tracking-widest mb-1.5 flex items-center gap-1.5">
+                                                                        <Briefcase className="w-3 h-3 text-indigo-400" /> Job Title
                                                                     </p>
                                                                     <p className="text-[12px] font-bold text-slate-700">{c.designation}</p>
                                                                 </div>
@@ -340,8 +340,8 @@ export default function OnboardingSuite({ token }: { token: string }) {
 
                                                             <div className="flex items-center gap-2 mb-5">
                                                                 <Clock className="w-3.5 h-3.5 text-indigo-500" />
-                                                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600">
-                                                                    Leave Entitlements — {new Date().getFullYear()}
+                                                                <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-600">
+                                                                    Leave Balances — {new Date().getFullYear()}
                                                                 </span>
                                                                 <Edit3 className="w-3 h-3 text-slate-400 ml-1" />
                                                             </div>
@@ -349,7 +349,7 @@ export default function OnboardingSuite({ token }: { token: string }) {
                                                             {leaveLoading[c.id] ? (
                                                                 <div className="flex items-center gap-3 py-4">
                                                                     <Loader2 className="w-4 h-4 animate-spin text-indigo-400" />
-                                                                    <span className="text-[10px] font-black uppercase text-slate-400">Loading balances…</span>
+                                                                    <span className="text-[10px] font-bold uppercase text-slate-400">Loading balances…</span>
                                                                 </div>
                                                             ) : !leaveMap[c.id] || leaveMap[c.id].length === 0 ? (
                                                                 <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
@@ -358,7 +358,7 @@ export default function OnboardingSuite({ token }: { token: string }) {
                                                                             <Clock className="w-5 h-5 text-amber-500" />
                                                                         </div>
                                                                         <div className="flex-1 min-w-0">
-                                                                            <p className="text-[13px] font-black text-slate-800 mb-1">No leave balances found</p>
+                                                                            <p className="text-[13px] font-bold text-slate-800 mb-1">No leave balances found</p>
                                                                             <p className="text-[11px] text-slate-500 leading-relaxed mb-4">
                                                                                 This employee doesn&apos;t have leave balances set up yet. Initialize now to assign
                                                                                 the company default entitlements (Sick, Casual, Earned).
@@ -366,12 +366,12 @@ export default function OnboardingSuite({ token }: { token: string }) {
                                                                             <Button
                                                                                 onClick={() => handleInitLeaves(c.id)}
                                                                                 disabled={initializingLeave[c.id]}
-                                                                                className="h-9 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black uppercase text-[9px] tracking-widest px-5 shadow-sm transition-all active:scale-95"
+                                                                                className="h-9 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold uppercase text-[9px] tracking-widest px-5 shadow-sm transition-all active:scale-95"
                                                                             >
                                                                                 {initializingLeave[c.id] ? (
                                                                                     <><Loader2 className="w-3 h-3 animate-spin mr-1.5" />Initializing…</>
                                                                                 ) : (
-                                                                                    <><Sparkles className="w-3 h-3 mr-1.5" />Initialize Leave Balances</>
+                                                                                    <><Sparkles className="w-3 h-3 mr-1.5" />Apply Default Leave</>
                                                                                 )}
                                                                             </Button>
                                                                         </div>
@@ -382,7 +382,7 @@ export default function OnboardingSuite({ token }: { token: string }) {
                                                                     <div className="grid grid-cols-3 gap-4 mb-5">
                                                                         {leaveMap[c.id].map((b) => (
                                                                             <div key={b.id} className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
-                                                                                <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-3">
+                                                                                <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-3">
                                                                                     {b.leaveTypeConfig?.name || b.leaveTypeConfig?.code}
                                                                                 </p>
                                                                                 {/* Editable total */}
@@ -393,7 +393,7 @@ export default function OnboardingSuite({ token }: { token: string }) {
                                                                                         min={0}
                                                                                         value={leaveEdits[b.id] ?? b.total}
                                                                                         onChange={e => setLeaveEdits(prev => ({ ...prev, [b.id]: parseInt(e.target.value) || 0 }))}
-                                                                                        className="w-16 h-8 rounded-lg border border-slate-200 text-center text-sm font-black text-slate-900 focus:outline-none focus:border-indigo-400 transition-colors"
+                                                                                        className="w-16 h-8 rounded-lg border border-slate-200 text-center text-sm font-bold text-slate-900 focus:outline-none focus:border-indigo-400 transition-colors"
                                                                                     />
                                                                                 </div>
                                                                                 <div className="flex gap-3 text-[10px] font-bold text-slate-400">
@@ -407,14 +407,14 @@ export default function OnboardingSuite({ token }: { token: string }) {
                                                                         <Button
                                                                             onClick={() => handleSaveLeave(c.id)}
                                                                             disabled={savingLeave}
-                                                                            className="h-9 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black uppercase text-[9px] tracking-widest px-5 shadow-sm transition-all active:scale-95"
+                                                                            className="h-9 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold uppercase text-[9px] tracking-widest px-5 shadow-sm transition-all active:scale-95"
                                                                         >
                                                                             {savingLeave ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Check className="w-3 h-3 mr-1.5" />Save Changes</>}
                                                                         </Button>
                                                                         <Button
                                                                             variant="ghost"
                                                                             onClick={() => setExpandedId(null)}
-                                                                            className="h-9 text-slate-500 hover:text-slate-700 rounded-xl font-black uppercase text-[9px] tracking-widest px-5"
+                                                                            className="h-9 text-slate-500 hover:text-slate-700 rounded-xl font-bold uppercase text-[9px] tracking-widest px-5"
                                                                         >
                                                                             <X className="w-3 h-3 mr-1.5" />Dismiss
                                                                         </Button>
@@ -432,16 +432,15 @@ export default function OnboardingSuite({ token }: { token: string }) {
                         </CardContent>
 
                         <div className="border-t border-slate-50 px-10 py-5 flex justify-between items-center bg-slate-50/30 shrink-0">
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                                <ShieldAlert className="w-3 h-3" /> Encrypted Protocol Active
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                <ShieldAlert className="w-3 h-3" /> System Secure
                             </span>
-                            <button onClick={fetchSync} className="text-[10px] font-black uppercase text-indigo-600 hover:underline">
+                            <button onClick={fetchSync} className="text-[10px] font-bold uppercase text-indigo-600 hover:underline">
                                 Re-Sync
                             </button>
                         </div>
                     </Card>
                 </div>
-
             </div>
         </div>
     )

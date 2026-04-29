@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { motion } from "framer-motion"
 import {
     Users, Clock, Calendar, CheckCircle2,
@@ -10,6 +10,22 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
+import { useWebSocket } from "@/hooks/useWebSocket"
+import html2canvas from "html2canvas-pro"
+import { jsPDF } from "jspdf"
+import { Badge } from "@/components/ui/badge"
+
+const GlobalStyles = () => (
+    <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600;700&display=swap');
+        .font-brand { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-body { font-family: 'Inter', sans-serif; }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+    `}</style>
+)
 
 interface ReportData {
     totalEmployees: number
@@ -29,7 +45,7 @@ export default function ManagerReports({ token }: { token: string }) {
     })
     const [loading, setLoading] = useState(true)
 
-    const fetchReports = async () => {
+    const fetchReports = useCallback(async () => {
         setLoading(true)
         try {
             const [usersRes, deptRes, leaveRes] = await Promise.all([
@@ -69,9 +85,50 @@ export default function ManagerReports({ token }: { token: string }) {
         } finally {
             setLoading(false)
         }
-    }
+    }, [token])
 
-    useEffect(() => { fetchReports() }, [token])
+    const onMessage = useCallback((msg: any) => {
+        if (msg.type === "DASHBOARD_STATS") {
+            const p = msg.payload;
+            setData({
+                totalEmployees: p.totalEmployees,
+                presentToday: p.activeToday,
+                onLeave: p.leaveToday,
+                pendingLeaves: p.pendingApprovals,
+                departments: p.departmentMetrics || []
+            });
+        }
+    }, []);
+
+    const { status } = useWebSocket({ onMessage, enabled: !!token });
+
+    const exportToPDF = async () => {
+        const element = document.getElementById("reports-manifest");
+        if (!element) return;
+
+        const toastId = toast.loading("Generating professional report...");
+        try {
+            await new Promise(r => setTimeout(r, 300));
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                backgroundColor: "#f8fafc",
+                windowWidth: 1200
+            });
+            const imgData = canvas.toDataURL("image/png");
+            const pdf = new jsPDF("p", "mm", "a4");
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+            pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+            pdf.save(`HRMS_Executive_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+            toast.success("Professional report downloaded", { id: toastId });
+        } catch (error) {
+            toast.error("Report generation failed", { id: toastId });
+        }
+    };
+
+    useEffect(() => { fetchReports() }, [fetchReports])
 
     const attendanceRate = data.totalEmployees > 0
         ? Math.round((data.presentToday / data.totalEmployees) * 100)
@@ -82,279 +139,122 @@ export default function ManagerReports({ token }: { token: string }) {
     })
 
     const kpis = [
-        {
-            label: "Total Employees",
-            value: data.totalEmployees,
-            suffix: "",
-            sub: "+2 this month",
-            icon: Users,
-            accent: "#4F46E5",
-            bg: "#EEF2FF",
-            trend: "up",
-        },
-        {
-            label: "Attendance Rate",
-            value: attendanceRate,
-            suffix: "%",
-            sub: attendanceRate >= 90 ? "Good standing" : "Needs attention",
-            icon: UserCheck,
-            accent: "#059669",
-            bg: "#ECFDF5",
-            trend: attendanceRate >= 90 ? "up" : "down",
-        },
-        {
-            label: "On Leave Today",
-            value: data.onLeave,
-            suffix: "",
-            sub: "Approved absences",
-            icon: Calendar,
-            accent: "#D97706",
-            bg: "#FFFBEB",
-            trend: "neutral",
-        },
-        {
-            label: "Pending Approvals",
-            value: data.pendingLeaves,
-            suffix: "",
-            sub: data.pendingLeaves > 0 ? "Action required" : "All clear",
-            icon: AlertCircle,
-            accent: data.pendingLeaves > 0 ? "#DC2626" : "#6B7280",
-            bg: data.pendingLeaves > 0 ? "#FEF2F2" : "#F9FAFB",
-            trend: data.pendingLeaves === 0 ? "up" : "down",
-        },
+        { label: "Total Employees", value: data.totalEmployees, suffix: "", sub: "+2 this month", icon: Users, accent: "#1e40af", bg: "bg-[#eff6ff]" },
+        { label: "Attendance Rate", value: attendanceRate, suffix: "%", sub: "Good standing", icon: UserCheck, accent: "#166534", bg: "bg-[#f0fdf4]" },
+        { label: "On Leave Today", value: data.onLeave, suffix: "", sub: "Approved absences", icon: Calendar, accent: "#92400e", bg: "bg-[#fffbeb]" },
+        { label: "Pending Approvals", value: data.pendingLeaves, suffix: "", sub: "All clear", icon: AlertCircle, accent: "#dc2626", bg: "bg-[#fef2f2]" },
     ]
 
     return (
-        <div className="min-h-full bg-[#f8fafc] font-body">
-            <div className="max-w-5xl mx-auto px-6 py-10 space-y-10">
-
-                {/* ── PAGE HEADER ── */}
-                <div className="flex items-start justify-between">
-                    <div>
-                        <p className="text-xs font-semibold text-slate-400 uppercase tracking-[0.18em] mb-2">
-                            Reports & Analytics
-                        </p>
-                        <h1 className="text-[28px] font-bold text-slate-900 tracking-tight leading-tight">
-                            Summary Overview
-                        </h1>
-                        <p className="text-sm text-slate-500 mt-1 font-normal">{today}</p>
-                    </div>
-                    <div className="flex items-center gap-2 pt-1">
-                        <button
-                            onClick={fetchReports}
-                            className="inline-flex items-center gap-2 h-9 px-4 bg-white border border-slate-200 text-slate-500 hover:text-indigo-600 hover:border-indigo-200 rounded-lg text-xs font-semibold transition-all shadow-sm"
-                        >
-                            <RefreshCcw className={cn("w-3.5 h-3.5", loading && "animate-spin")} />
-                            Refresh
-                        </button>
-                        <button
-                            onClick={() => toast.success("PDF export initiated")}
-                            className="inline-flex items-center gap-2 h-9 px-4 bg-slate-900 hover:bg-indigo-600 text-white rounded-lg text-xs font-semibold transition-all shadow-sm"
-                        >
-                            <Download className="w-3.5 h-3.5" />
-                            Export PDF
-                        </button>
-                    </div>
-                </div>
-
-                {/* ── KPI CARDS ── */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    {kpis.map((kpi, i) => (
-                        <motion.div
-                            key={i}
-                            initial={{ opacity: 0, y: 12 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: i * 0.06, duration: 0.35 }}
-                            className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm flex flex-col justify-between min-h-[140px] hover:shadow-md transition-shadow"
-                        >
-                            <div className="flex items-start justify-between">
-                                <div
-                                    className="w-9 h-9 rounded-xl flex items-center justify-center"
-                                    style={{ background: kpi.bg }}
-                                >
-                                    <kpi.icon className="w-4 h-4" style={{ color: kpi.accent }} />
-                                </div>
-                                {kpi.trend === "up" && (
-                                    <div className="flex items-center gap-1 text-emerald-600 bg-emerald-50 rounded-full px-2 py-0.5">
-                                        <ArrowUpRight className="w-3 h-3" />
-                                        <span className="text-[10px] font-semibold">Good</span>
-                                    </div>
-                                )}
-                                {kpi.trend === "down" && (
-                                    <div className="flex items-center gap-1 text-rose-600 bg-rose-50 rounded-full px-2 py-0.5">
-                                        <TrendingDown className="w-3 h-3" />
-                                        <span className="text-[10px] font-semibold">Alert</span>
-                                    </div>
-                                )}
-                                {kpi.trend === "neutral" && (
-                                    <div className="flex items-center gap-1 text-slate-400 bg-slate-50 rounded-full px-2 py-0.5">
-                                        <Minus className="w-3 h-3" />
-                                        <span className="text-[10px] font-semibold">Info</span>
-                                    </div>
-                                )}
-                            </div>
-                            <div className="mt-4">
-                                <div className="flex items-end gap-0.5">
-                                    <span
-                                        className="text-3xl font-bold tracking-tight leading-none"
-                                        style={{ color: kpi.accent }}
-                                    >
-                                        {loading ? "—" : kpi.value}
-                                    </span>
-                                    {kpi.suffix && (
-                                        <span className="text-lg font-bold mb-0.5" style={{ color: kpi.accent }}>
-                                            {kpi.suffix}
-                                        </span>
-                                    )}
-                                </div>
-                                <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mt-1.5 leading-none">
-                                    {kpi.label}
-                                </p>
-                                <p className="text-[11px] text-slate-400 mt-1">{kpi.sub}</p>
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
-
-                {/* ── DEPARTMENT TABLE ── */}
-                <div className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
-                    {/* Table Header */}
-                    <div className="px-6 py-5 border-b border-slate-50 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
-                                <Building2 className="w-4 h-4 text-indigo-600" />
-                            </div>
-                            <div>
-                                <h2 className="text-sm font-semibold text-slate-800">Department Overview</h2>
-                                <p className="text-xs text-slate-400 mt-0.5">Attendance and leave usage by team</p>
-                            </div>
+        <div className="min-h-full bg-[#fcfcfd] font-body pb-20 relative overflow-hidden">
+            {/* Subtle Background Accent */}
+            <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-indigo-50/30 to-transparent pointer-events-none" />
+            
+            <GlobalStyles />
+            <div className="max-w-[1400px] mx-auto px-6 py-10 space-y-12 relative z-10">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div className="flex items-center gap-6">
+                        <div className="w-14 h-14 bg-indigo-600 rounded-[22px] flex items-center justify-center text-white shadow-2xl shadow-indigo-200">
+                            <BarChart3 className="w-7 h-7" />
                         </div>
-                        <span className="text-xs font-semibold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">
-                            {data.departments.length} teams
-                        </span>
+                        <div>
+                            <h1 className="text-[26px] font-bold text-slate-900 tracking-tighter font-brand uppercase italic leading-none">
+                                Reports & Analytics
+                            </h1>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mt-2">
+                                {data.totalEmployees} Active · {today}
+                            </p>
+                        </div>
                     </div>
 
-                    {/* Column Headers */}
-                    <div className="grid grid-cols-4 px-6 py-3 bg-slate-50/60 border-b border-slate-100">
-                        {["Department", "Staff", "Attendance", "Leave Used"].map((h, i) => (
-                            <p key={h} className={cn(
-                                "text-[10px] font-semibold text-slate-400 uppercase tracking-widest",
-                                i > 0 && "text-center"
-                            )}>{h}</p>
+                    <div className="flex items-center gap-3">
+                        <div className={cn(
+                            "flex items-center gap-2 px-4 h-11 rounded-2xl border text-[10px] font-bold uppercase tracking-widest transition-all shadow-sm",
+                            status === "connected" ? "bg-white border-emerald-100 text-emerald-600" : "bg-white border-slate-100 text-slate-400"
+                        )}>
+                            <div className={cn("w-2 h-2 rounded-full", status === "connected" ? "bg-emerald-500 animate-pulse" : "bg-slate-300")} />
+                            {status === "connected" ? "Live Stream" : "System Offline"}
+                        </div>
+
+                        <button onClick={fetchReports} className="h-11 px-6 bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-200 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all shadow-sm flex items-center gap-2">
+                            <RefreshCcw className={cn("w-3.5 h-3.5", loading && "animate-spin")} />
+                            Sync
+                        </button>
+                        <button onClick={exportToPDF} className="h-11 px-6 bg-slate-900 hover:bg-black text-white rounded-2xl text-[10px] font-bold uppercase tracking-[0.2em] transition-all shadow-xl shadow-slate-200 flex items-center gap-2">
+                            <Download className="w-3.5 h-3.5" />
+                            Download Report
+                        </button>
+                    </div>
+                </div>
+
+                <div id="reports-manifest" className="space-y-12">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {kpis.map((kpi, i) => (
+                            <motion.div key={i} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} className={cn("p-8 rounded-[32px] border border-slate-100 shadow-sm relative overflow-hidden group", kpi.bg)}>
+                                <div className="relative z-10">
+                                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-4 group-hover:text-indigo-600 transition-colors" style={{ color: kpi.accent }}>{kpi.label}</p>
+                                    <h2 className="text-4xl font-bold tracking-tighter" style={{ color: kpi.accent }}>{loading ? "—" : kpi.value}{kpi.suffix}</h2>
+                                    <p className="text-[10px] font-bold mt-2 opacity-60" style={{ color: kpi.accent }}>{kpi.sub}</p>
+                                </div>
+                            </motion.div>
                         ))}
                     </div>
 
-                    {/* Rows */}
-                    {loading ? (
-                        <div className="h-36 flex items-center justify-center">
-                            <div className="w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+                    <div className="space-y-6">
+                        <div className="flex items-center justify-between px-2">
+                            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-[0.2em]">Departmental Performance</h3>
+                            <div className="h-px flex-1 mx-8 bg-slate-100" />
+                            <Badge className="bg-indigo-50 text-indigo-600 border-none font-bold text-[10px] px-4 py-1.5 rounded-full">{data.departments.length} Units</Badge>
                         </div>
-                    ) : data.departments.length === 0 ? (
-                        <div className="h-36 flex items-center justify-center">
-                            <p className="text-sm text-slate-300 font-medium">No departments found</p>
-                        </div>
-                    ) : (
-                        data.departments.map((dept, i) => {
-                            const dotColors = ["#4F46E5", "#059669", "#D97706", "#DC2626", "#7C3AED", "#0891B2"]
-                            return (
-                                <motion.div
-                                    key={i}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ delay: 0.1 + i * 0.04 }}
-                                    className="grid grid-cols-4 px-6 py-4 border-b border-slate-50 last:border-0 hover:bg-slate-50/40 transition-colors items-center"
-                                >
-                                    {/* Name */}
-                                    <div className="flex items-center gap-3">
-                                        <span
-                                            className="w-2 h-2 rounded-full shrink-0"
-                                            style={{ background: dotColors[i % dotColors.length] }}
-                                        />
-                                        <span className="text-sm font-medium text-slate-700">{dept.name}</span>
-                                    </div>
 
-                                    {/* Staff */}
-                                    <p className="text-sm font-semibold text-slate-600 text-center">{dept.staff}</p>
-
-                                    {/* Attendance */}
-                                    <div className="flex items-center justify-center gap-3">
-                                        <div className="w-20 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                                            <div
-                                                className="h-full rounded-full"
-                                                style={{
-                                                    width: `${dept.attendance}%`,
-                                                    background: dept.attendance >= 90 ? "#059669" : dept.attendance >= 80 ? "#D97706" : "#DC2626"
-                                                }}
-                                            />
+                        <div className="grid grid-cols-1 gap-4">
+                            {data.departments.map((dept, i) => (
+                                <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 + i * 0.05 }} className="bg-white border border-slate-100 p-8 rounded-[32px] hover:shadow-xl hover:shadow-slate-200/50 transition-all group relative overflow-hidden">
+                                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 relative z-10">
+                                        <div className="flex items-center gap-6">
+                                            <div className="w-14 h-14 bg-slate-50 border border-slate-100 rounded-[20px] flex items-center justify-center text-xl font-bold text-indigo-600 group-hover:scale-110 transition-transform">{dept.name[0]}</div>
+                                            <div>
+                                                <div className="flex items-center gap-3 mb-2">
+                                                    <h4 className="text-lg font-bold text-slate-900 uppercase italic tracking-tight">{dept.name}</h4>
+                                                    <Badge className={cn("text-[9px] font-bold uppercase px-3 py-1 rounded-lg border-none", dept.attendance >= 90 ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600")}>{dept.attendance >= 90 ? "Optimal" : "Review Needed"}</Badge>
+                                                </div>
+                                                <div className="flex items-center gap-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                                                    <span className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5" /> {dept.staff} Personnel</span>
+                                                    <div className="w-1 h-1 rounded-full bg-slate-200" />
+                                                    <span className="text-indigo-500 font-bold tracking-tight underline underline-offset-4">ID: DEPT-{100 + i}</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <span className={cn(
-                                            "text-sm font-semibold tabular-nums",
-                                            dept.attendance >= 90 ? "text-emerald-600" : dept.attendance >= 80 ? "text-amber-600" : "text-rose-600"
-                                        )}>
-                                            {dept.attendance}%
-                                        </span>
+                                        <div className="flex flex-wrap items-center gap-4">
+                                            <div className="bg-slate-50 px-5 py-2.5 rounded-2xl border border-slate-100 flex flex-col items-center">
+                                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Attendance</span>
+                                                <span className={cn("text-sm font-bold", dept.attendance >= 90 ? "text-emerald-600" : "text-amber-600")}>{dept.attendance}%</span>
+                                            </div>
+                                            <div className="bg-slate-50 px-5 py-2.5 rounded-2xl border border-slate-100 flex flex-col items-center">
+                                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Leave Usage</span>
+                                                <span className="text-sm font-bold text-slate-700">{dept.leavedays} Days</span>
+                                            </div>
+                                            <button className="h-14 px-8 bg-slate-100 hover:bg-slate-200 text-slate-900 text-[10px] font-bold uppercase tracking-[0.3em] rounded-2xl transition-all ml-4">Drill Down</button>
+                                        </div>
                                     </div>
-
-                                    {/* Leave */}
-                                    <p className="text-sm text-slate-500 text-center">{dept.leavedays} days</p>
                                 </motion.div>
-                            )
-                        })
-                    )}
-                </div>
+                            ))}
+                        </div>
+                    </div>
 
-                {/* ── BOTTOM SUMMARY ROW ── */}
-                <div className="grid grid-cols-3 gap-4">
-                    {[
-                        {
-                            label: "Active Employees",
-                            value: data.presentToday,
-                            note: `out of ${data.totalEmployees} total`,
-                            icon: UserCheck,
-                            color: "text-emerald-600",
-                            bg: "bg-emerald-50",
-                            iconColor: "text-emerald-600"
-                        },
-                        {
-                            label: "Currently on Leave",
-                            value: data.onLeave,
-                            note: "approved absences",
-                            icon: UserX,
-                            color: "text-amber-600",
-                            bg: "bg-amber-50",
-                            iconColor: "text-amber-600"
-                        },
-                        {
-                            label: "Pending Requests",
-                            value: data.pendingLeaves,
-                            note: data.pendingLeaves > 0 ? "awaiting approval" : "nothing pending",
-                            icon: Clock,
-                            color: data.pendingLeaves > 0 ? "text-rose-600" : "text-slate-400",
-                            bg: data.pendingLeaves > 0 ? "bg-rose-50" : "bg-slate-50",
-                            iconColor: data.pendingLeaves > 0 ? "text-rose-600" : "text-slate-400"
-                        },
-                    ].map((s, i) => (
-                        <motion.div
-                            key={i}
-                            initial={{ opacity: 0, y: 8 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3 + i * 0.06 }}
-                            className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow"
-                        >
-                            <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0", s.bg)}>
-                                <s.icon className={cn("w-4.5 h-4.5", s.iconColor)} />
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-10 border-t border-slate-200">
+                        {[
+                            { label: "Personnel Density", sub: "Active Nodes", value: data.totalEmployees },
+                            { label: "Duty Coverage", sub: "Synced Today", value: data.presentToday },
+                            { label: "Approval Latency", sub: "Pending Packets", value: data.pendingLeaves },
+                        ].map((s, i) => (
+                            <div key={i} className="bg-white border border-slate-200 p-10 rounded-[32px] flex flex-col items-center text-center">
+                                <h3 className="text-5xl font-bold text-slate-900 tracking-tighter mb-2">{loading ? "—" : s.value}</h3>
+                                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-[0.4em]">{s.sub}</p>
                             </div>
-                            <div>
-                                <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider leading-none mb-1">{s.label}</p>
-                                <p className={cn("text-2xl font-bold tracking-tight leading-none", s.color)}>
-                                    {loading ? "—" : s.value}
-                                </p>
-                                <p className="text-[11px] text-slate-400 mt-1">{s.note}</p>
-                            </div>
-                        </motion.div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
-
             </div>
         </div>
     )

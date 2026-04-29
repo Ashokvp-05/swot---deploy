@@ -67,7 +67,7 @@ export default function AttendanceMonthlyPulse({ token }: AttendanceMonthlyPulse
     if (loading) return (
         <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white min-h-[400px] flex flex-col items-center justify-center gap-4 border border-white/5 shadow-2xl">
             <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Initializing Core...</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Initializing Core...</span>
         </div>
     )
 
@@ -78,7 +78,7 @@ export default function AttendanceMonthlyPulse({ token }: AttendanceMonthlyPulse
             
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-8 relative z-10">
                 <div>
-                    <h3 className="text-sm font-black uppercase italic tracking-tight text-white flex items-center gap-2">
+                    <h3 className="text-sm font-bold uppercase italic tracking-tight text-white flex items-center gap-2">
                         <Zap className="w-3.5 h-3.5 text-indigo-400 group-hover:scale-110 transition-transform" />
                         {viewMode === 'MONTH' ? 'Monthly' : 'Yearly'} Presence Pulse
                     </h3>
@@ -89,7 +89,7 @@ export default function AttendanceMonthlyPulse({ token }: AttendanceMonthlyPulse
                     <button 
                         onClick={() => setViewMode('MONTH')}
                         className={cn(
-                            "flex-1 sm:px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all duration-300",
+                            "flex-1 sm:px-4 py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all duration-300",
                             viewMode === 'MONTH' ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/40 translate-y-[-1px]" : "text-slate-500 hover:text-slate-300"
                         )}
                     >
@@ -98,7 +98,7 @@ export default function AttendanceMonthlyPulse({ token }: AttendanceMonthlyPulse
                     <button 
                         onClick={() => setViewMode('YEAR')}
                         className={cn(
-                            "flex-1 sm:px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all duration-300",
+                            "flex-1 sm:px-4 py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all duration-300",
                             viewMode === 'YEAR' ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/40 translate-y-[-1px]" : "text-slate-500 hover:text-slate-300"
                         )}
                     >
@@ -146,7 +146,7 @@ export default function AttendanceMonthlyPulse({ token }: AttendanceMonthlyPulse
                         </PieChart>
                     </ResponsiveContainer>
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center select-none">
-                        <span className="text-3xl sm:text-4xl font-black block tracking-tighter leading-none">{ratio}%</span>
+                        <span className="text-3xl sm:text-4xl font-bold block tracking-tighter leading-none">{ratio}%</span>
                         <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">Ratio</span>
                     </div>
                 </div>
@@ -155,10 +155,10 @@ export default function AttendanceMonthlyPulse({ token }: AttendanceMonthlyPulse
                     <div className="p-5 rounded-3xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] transition-all group/stat shadow-sm">
                         <div className="flex items-center gap-2 mb-2">
                             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                            <span className="text-[10px] font-black uppercase text-slate-500 tracking-tight">Present</span>
+                            <span className="text-[10px] font-bold uppercase text-slate-500 tracking-tight">Present</span>
                         </div>
                         <div className="flex items-baseline gap-2">
-                            <span className="text-3xl font-black tracking-tighter">{totalPresent}</span>
+                            <span className="text-3xl font-bold tracking-tighter">{totalPresent}</span>
                             <span className="text-[11px] text-slate-600 font-bold uppercase italic">Days</span>
                         </div>
                     </div>
@@ -166,10 +166,10 @@ export default function AttendanceMonthlyPulse({ token }: AttendanceMonthlyPulse
                     <div className="p-5 rounded-3xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] transition-all group/stat shadow-sm">
                         <div className="flex items-center gap-2 mb-2">
                             <Clock className="w-3.5 h-3.5 text-rose-500" />
-                            <span className="text-[10px] font-black uppercase text-slate-500 tracking-tight">Expected</span>
+                            <span className="text-[10px] font-bold uppercase text-slate-500 tracking-tight">Expected</span>
                         </div>
                         <div className="flex items-baseline gap-2">
-                            <span className="text-3xl font-black tracking-tighter">{totalAbsent}</span>
+                            <span className="text-3xl font-bold tracking-tighter">{totalAbsent}</span>
                             <span className="text-[11px] text-slate-600 font-bold uppercase italic">Days</span>
                         </div>
                     </div>
@@ -187,7 +187,7 @@ export default function AttendanceMonthlyPulse({ token }: AttendanceMonthlyPulse
                 </div>
                 <div className="flex items-center gap-1.5 opacity-50 group-hover:opacity-100 transition-opacity">
                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-600">Sync Active</span>
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-slate-600">Sync Active</span>
                 </div>
             </div>
         </div>

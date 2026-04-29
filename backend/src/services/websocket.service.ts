@@ -18,7 +18,7 @@ export function initWebSocket(server: Server) {
             console.error('[WS] Initial send failed:', err);
         }
 
-        ws.on('message', (msg: Buffer) => {
+        ws.on('message', (msg: any) => {
             try {
                 const data = JSON.parse(msg.toString());
                 if (data.type === 'PING') {
@@ -61,6 +61,16 @@ export function broadcast(type: string, payload: any) {
     });
 }
 
+export async function triggerDashboardUpdate() {
+    if (!wss) return;
+    try {
+        const stats = await getLiveStats();
+        broadcast('DASHBOARD_STATS', stats);
+    } catch (err) {
+        console.error('[WS] Immediate broadcast failed:', err);
+    }
+}
+
 async function getLiveStats() {
     const now = new Date();
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -72,8 +82,14 @@ async function getLiveStats() {
         pendingLeaves,
         approvedLeaves,
         leavesToday,
+        departments,
     ] = await Promise.all([
-        prisma.user.count({ where: { isActive: true } }),
+        prisma.user.count({ 
+            where: { 
+                status: 'ACTIVE',
+                role: { name: { not: 'SUPER_ADMIN' } }
+            } 
+        }),
         prisma.timeEntry.count({
             where: {
                 clockIn: { gte: todayStart, lt: todayEnd },
@@ -81,7 +97,12 @@ async function getLiveStats() {
             },
         }).catch(() => 0),
         prisma.leaveRequest.count({ where: { status: 'PENDING' } }).catch(() => 0),
-        prisma.leaveRequest.count({ where: { status: 'APPROVED' } }).catch(() => 0),
+        prisma.leaveRequest.count({ 
+            where: { 
+                status: 'APPROVED',
+                updatedAt: { gte: todayStart, lt: todayEnd }
+            } 
+        }).catch(() => 0),
         prisma.leaveRequest.count({
             where: {
                 status: 'APPROVED',
@@ -89,6 +110,9 @@ async function getLiveStats() {
                 endDate:   { gte: todayStart },
             },
         }).catch(() => 0),
+        (prisma as any).department.findMany({
+            include: { _count: { select: { users: true } } }
+        }).catch(() => []),
     ]);
 
     return {
@@ -97,6 +121,12 @@ async function getLiveStats() {
         pendingApprovals: pendingLeaves,
         leaveApproved: approvedLeaves,
         leaveToday: leavesToday,
+        departmentMetrics: departments.map((d: any, i: number) => ({
+            name: d.name,
+            staff: d._count?.users || 0,
+            attendance: Math.floor(87 + ((i * 4) % 12)), // Consistent mock for now
+            leavedays: Math.floor((i * 3) % 9) + 1
+        })),
         timestamp: now.toISOString(),
     };
 }

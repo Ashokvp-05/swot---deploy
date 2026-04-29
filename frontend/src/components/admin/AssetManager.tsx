@@ -30,7 +30,7 @@ export default function AssetManager({ token }: { token: string }) {
             const data = await res.json()
             if (res.ok) setAssets(data)
         } catch (e) {
-            toast.error("Inventory sync collision")
+            toast.error("Failed to sync inventory")
         } finally {
             setLoading(false)
         }
@@ -47,16 +47,16 @@ export default function AssetManager({ token }: { token: string }) {
             {/* HERO BAR */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter italic">Resource <span className="text-emerald-600">Inventory</span></h2>
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Personnel infrastructure & asset audit</p>
+                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white uppercase tracking-tight">Asset <span className="text-emerald-600">Inventory</span></h2>
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Manage company assets and hardware</p>
                 </div>
                 <div className="flex gap-4">
 
                     <Button
-                        className="h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-8 text-[11px] font-black uppercase tracking-widest gap-2 shadow-xl shadow-emerald-600/20"
+                        className="h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-8 text-[11px] font-bold uppercase tracking-widest gap-2 shadow-xl shadow-emerald-600/20"
                     >
                         <Plus className="w-4 h-4" />
-                        Ingest Asset
+                        Add Asset
                     </Button>
                 </div>
             </div>
@@ -66,12 +66,12 @@ export default function AssetManager({ token }: { token: string }) {
                 {loading ? (
                     <div className="col-span-full py-20 flex flex-col items-center justify-center gap-4 text-slate-700">
                         <Loader2 className="w-10 h-10 animate-spin text-emerald-500/30" />
-                        <p className="text-[10px] font-black uppercase tracking-[0.4em]">Auditing ledger hardware...</p>
+                        <p className="text-[10px] font-bold uppercase tracking-widest">Loading hardware records...</p>
                     </div>
                 ) : filtered.length === 0 ? (
                     <div className="col-span-full py-20 flex flex-col items-center justify-center gap-4 text-slate-700 bg-slate-50 dark:bg-slate-900/50 rounded-[40px] border border-dashed border-slate-200 dark:border-white/5">
                         <HardDrive className="w-12 h-12 opacity-5" />
-                        <p className="text-[10px] font-black uppercase tracking-widest">No active hardware records</p>
+                        <p className="text-[10px] font-bold uppercase tracking-widest">No assets found</p>
                     </div>
                 ) : filtered.map((asset) => {
                     const Icon = ASSET_ICONS[asset.type] || HardDrive
@@ -82,7 +82,7 @@ export default function AssetManager({ token }: { token: string }) {
                                     <div className="p-4 bg-slate-50 dark:bg-black/40 rounded-2xl border border-slate-100 dark:border-white/5 group-hover:bg-emerald-600 group-hover:text-white transition-all">
                                         <Icon className="w-6 h-6" />
                                     </div>
-                                    <Badge variant="outline" className={`text-[8px] font-black uppercase tracking-widest ${asset.status === 'AVAILABLE' ? 'border-emerald-500 text-emerald-500' :
+                                    <Badge variant="outline" className={`text-[8px] font-bold uppercase tracking-widest ${asset.status === 'AVAILABLE' ? 'border-emerald-500 text-emerald-500' :
                                             asset.status === 'ASSIGNED' ? 'border-indigo-500 text-indigo-500' :
                                                 'border-amber-500 text-amber-500'
                                         }`}>
@@ -91,7 +91,7 @@ export default function AssetManager({ token }: { token: string }) {
                                 </div>
 
                                 <div>
-                                    <h4 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">{asset.name}</h4>
+                                    <h4 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wide">{asset.name}</h4>
                                     <p className="flex items-center gap-1.5 text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">
                                         <Hash className="w-3 h-3" /> {asset.serialNumber || "NO_SERIAL"}
                                     </p>
@@ -100,13 +100,13 @@ export default function AssetManager({ token }: { token: string }) {
                                 <div className="pt-6 border-t border-slate-50 dark:border-white/5 flex items-center justify-between">
                                     {asset.assignedTo ? (
                                         <div className="flex items-center gap-2">
-                                            <div className="w-6 h-6 rounded-lg bg-indigo-500/10 flex items-center justify-center text-[10px] text-indigo-500 font-black italic">
+                                            <div className="w-6 h-6 rounded-lg bg-indigo-500/10 flex items-center justify-center text-[10px] text-indigo-500 font-bold">
                                                 {asset.assignedTo.name.charAt(0)}
                                             </div>
-                                            <span className="text-[9px] font-black text-slate-700 dark:text-white uppercase line-clamp-1">{asset.assignedTo.name}</span>
+                                            <span className="text-[9px] font-bold text-slate-700 dark:text-white uppercase line-clamp-1">{asset.assignedTo.name}</span>
                                         </div>
                                     ) : (
-                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-tighter italic">Unassigned Node</span>
+                                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">Unassigned</span>
                                     )}
                                     <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-emerald-500">
                                         <MoreHorizontal className="w-4 h-4" />

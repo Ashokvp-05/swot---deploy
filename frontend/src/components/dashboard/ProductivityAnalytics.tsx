@@ -50,18 +50,18 @@ export function ProductivityAnalytics({ token }: { token: string }) {
             <CardHeader className="pb-4 border-b border-border/50 bg-slate-50/30 dark:bg-black/20">
                 <div className="flex items-center justify-between">
                     <div className="space-y-1">
-                        <CardTitle className="text-[10px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                        <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
                             <Gauge className="w-3.5 h-3.5 text-indigo-500" /> Operational Spectrum
                         </CardTitle>
-                        <CardDescription className="text-3xl font-black text-slate-900 dark:text-white mt-1">
-                            {efficiency} <span className="text-[10px] text-muted-foreground font-black uppercase tracking-tighter">Intensity Meta-Score</span>
+                        <CardDescription className="text-3xl font-bold text-slate-900 dark:text-white mt-1">
+                            {efficiency} <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-tighter">Intensity Meta-Score</span>
                         </CardDescription>
                     </div>
                     <div className="flex flex-col items-end">
                         <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 shadow-inner">
                             <TrendingUp className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
                         </div>
-                        <span className="text-[8px] font-black text-emerald-500 uppercase mt-2 tracking-widest">{trend}</span>
+                        <span className="text-[8px] font-bold text-emerald-500 uppercase mt-2 tracking-widest">{trend}</span>
                     </div>
                 </div>
             </CardHeader>
@@ -88,12 +88,12 @@ export function ProductivityAnalytics({ token }: { token: string }) {
                     </div>
                     <div className="relative z-10 flex items-center justify-between h-full">
                         <div className="space-y-0.5">
-                            <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest leading-none">Live Pulse</p>
-                            <p className="text-xl font-black text-indigo-600 dark:text-indigo-400 tracking-tighter">{status}</p>
+                            <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest leading-none">Live Pulse</p>
+                            <p className="text-xl font-bold text-indigo-600 dark:text-indigo-400 tracking-tighter">{status}</p>
                         </div>
                         <div className="glass px-2 py-1 rounded-lg border border-indigo-500/20 flex items-center gap-1.5">
                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                            <span className="text-[9px] font-black uppercase text-slate-700 dark:text-slate-300">Synchronized</span>
+                            <span className="text-[9px] font-bold uppercase text-slate-700 dark:text-slate-300">Synchronized</span>
                         </div>
                     </div>
                 </div>
@@ -101,7 +101,7 @@ export function ProductivityAnalytics({ token }: { token: string }) {
                 {/* Performance Spectrum */}
                 <div className="space-y-6">
                     <div className="flex items-center justify-between px-1">
-                        <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Analytic Breakdown</h4>
+                        <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Analytic Breakdown</h4>
                         <BarChart3 className="w-3.5 h-3.5 text-muted-foreground opacity-50" />
                     </div>
 
@@ -109,10 +109,10 @@ export function ProductivityAnalytics({ token }: { token: string }) {
                         {metrics.map((metric) => (
                             <div key={metric.label} className="group space-y-1.5">
                                 <div className="flex items-center justify-between px-1">
-                                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 group-hover:text-indigo-500 transition-colors uppercase">
+                                    <span className="text-[9px] font-bold uppercase tracking-widest text-slate-500 group-hover:text-indigo-500 transition-colors uppercase">
                                         {metric.label}
                                     </span>
-                                    <span className="text-[10px] font-black tabular-nums text-slate-700 dark:text-slate-300">
+                                    <span className="text-[10px] font-bold tabular-nums text-slate-700 dark:text-slate-300">
                                         {metric.value}%
                                     </span>
                                 </div>
@@ -133,9 +133,9 @@ export function ProductivityAnalytics({ token }: { token: string }) {
                 <div className="pt-4 border-t border-border/50 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <Flame className="w-4 h-4 text-orange-500 fill-orange-500" />
-                        <span className="text-[9px] font-black uppercase text-muted-foreground tracking-tighter">Peak Cognitive State Detected</span>
+                        <span className="text-[9px] font-bold uppercase text-muted-foreground tracking-tighter">Peak Cognitive State Detected</span>
                     </div>
-                    <Link href="/admin?tab=reports" className="text-[9px] font-black uppercase text-indigo-600 hover:text-indigo-500 underline underline-offset-4">Full Audit</Link>
+                    <Link href="/admin?tab=reports" className="text-[9px] font-bold uppercase text-indigo-600 hover:text-indigo-500 underline underline-offset-4">Full Audit</Link>
                 </div>
             </CardContent>
         </Card>

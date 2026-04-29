@@ -112,7 +112,7 @@ export default function DocumentsModule({ token }: { token: string }) {
                 setUsers(Array.isArray(data) ? data : (data.users || []))
             }
         } catch {
-            toast.error("Telemetry failure: Vault offline")
+            toast.error("Failed to load documents")
         } finally {
             setLoading(false)
         }
@@ -146,16 +146,16 @@ export default function DocumentsModule({ token }: { token: string }) {
         <div className="bg-white border border-slate-100 rounded-[40px] overflow-hidden shadow-sm h-full flex flex-col font-body">
             <GlobalStyles />
             
-            {/* ── HIGH-DENSITY VAULT HEADER ── */}
+            {/* ── DOCUMENTS OVERVIEW ── */}
             <div className="p-10 border-b border-slate-50 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-8 bg-white shrink-0">
                 <div className="flex items-center gap-6">
                     <div className="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-2xl shadow-indigo-100">
                         <Database className="w-7 h-7" />
                     </div>
                     <div>
-                        <h3 className="text-2xl font-black text-slate-900 tracking-tighter italic uppercase font-brand leading-none">Personnel <span className="text-indigo-600">Records</span></h3>
-                        <p className="text-[10px] font-black text-slate-400 font-brand uppercase tracking-[0.2em] mt-2.5">
-                            {docs.length} Synchronized Records · Restricted Executive Access
+                        <h3 className="text-2xl font-bold text-slate-800 tracking-tight font-brand leading-none">Employee <span className="text-indigo-600">Documents</span></h3>
+                        <p className="text-[10px] font-bold text-slate-400 font-brand uppercase tracking-widest mt-2.5">
+                            {docs.length} Total Documents · Secure Storage
                         </p>
                     </div>
                 </div>
@@ -166,8 +166,8 @@ export default function DocumentsModule({ token }: { token: string }) {
                         <Input 
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Scan personnel identity..."
-                            className="h-14 pl-14 bg-slate-50/80 border-none rounded-2xl text-[11px] font-black uppercase tracking-widest placeholder:text-slate-400 focus-visible:ring-4 focus-visible:ring-indigo-100"
+                            placeholder="Search by name or email..."
+                            className="h-14 pl-14 bg-slate-50/80 border-none rounded-2xl text-[11px] font-bold uppercase tracking-widest placeholder:text-slate-400 focus-visible:ring-4 focus-visible:ring-indigo-100"
                         />
                     </div>
                     <Button variant="outline" className="h-14 w-14 rounded-2xl border-slate-100 flex items-center justify-center p-0 text-slate-400">
@@ -176,13 +176,13 @@ export default function DocumentsModule({ token }: { token: string }) {
                 </div>
             </div>
 
-            {/* ── PERSONNEL REGISTRY LIST ── */}
+            {/* ── EMPLOYEE DOCUMENTS ── */}
             <ScrollArea className="flex-1 bg-slate-50/20 custom-scrollbar">
                 <div className="p-10 space-y-6">
                     {filteredUsers.length === 0 ? (
                         <div className="py-48 flex flex-col items-center justify-center gap-6 opacity-40">
                             <ShieldAlert className="w-16 h-16 text-slate-100" />
-                            <p className="text-[11px] font-black uppercase tracking-[0.5em] text-slate-300 italic">No Personnel Nodes Discovered</p>
+                            <p className="text-[11px] font-bold uppercase tracking-widest text-slate-300">No employees found</p>
                         </div>
                     ) : (
                         filteredUsers.map((user, idx) => {
@@ -220,7 +220,7 @@ export default function DocumentsModule({ token }: { token: string }) {
                                         a.click();
                                     }
                                 } catch (e) {
-                                    toast.error("Telemetry error: Failed to decode artifact");
+                                    toast.error("Failed to open document");
                                 }
                             }
 
@@ -241,29 +241,29 @@ export default function DocumentsModule({ token }: { token: string }) {
                                     >
                                         <div className="flex items-center gap-7">
                                             <div className={cn(
-                                                "w-16 h-16 rounded-[22px] flex items-center justify-center font-black text-lg italic shadow-xl group-hover:scale-110 transition-transform font-brand",
+                                                "w-16 h-16 rounded-[22px] flex items-center justify-center font-bold text-lg shadow-xl group-hover:scale-110 transition-transform font-brand",
                                                 getAvatarColor(user.name)
                                             )}>
                                                 {user.name?.[0]}{user.name?.[1]}
                                             </div>
                                             <div>
                                                 <div className="flex items-center gap-4 mb-2">
-                                                    <h4 className="text-xl font-black text-slate-900 tracking-tighter uppercase italic font-brand leading-none group-hover:text-indigo-600 transition-colors">
+                                                    <h4 className="text-xl font-bold text-slate-800 tracking-tight font-brand leading-none group-hover:text-indigo-600 transition-colors">
                                                         {user.name}
                                                     </h4>
-                                                    <Badge className="bg-white/50 backdrop-blur-md text-slate-400 text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-lg border border-slate-100">
+                                                    <Badge className="bg-white/50 backdrop-blur-md text-slate-400 text-[9px] font-bold uppercase tracking-widest px-3 py-1 rounded-lg border border-slate-100">
                                                         {user.role?.name || user.role}
                                                     </Badge>
                                                 </div>
                                                 <div className="flex items-center gap-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-                                                    <span className="italic truncate">{user.email}</span>
+                                                    <span className="truncate">{user.email}</span>
                                                     <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />
                                                     <span className={cn(
                                                         "flex items-center gap-2",
                                                         userDocs.length > 0 ? "text-indigo-600" : "text-slate-300"
                                                     )}>
                                                         <FileText className="w-4 h-4" />
-                                                        {userDocs.length} Locked Manifests
+                                                        {userDocs.length} Documents
                                                     </span>
                                                 </div>
                                             </div>
@@ -274,7 +274,7 @@ export default function DocumentsModule({ token }: { token: string }) {
                                                 userDocs.length >= 4 ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-amber-50 text-amber-600 border-amber-100"
                                             )}>
                                                 {userDocs.length >= 4 ? <CheckCircle2 className="w-4 h-4" /> : <ShieldAlert className="w-4 h-4" />}
-                                                <span className="text-[10px] font-black uppercase tracking-widest">{userDocs.length >= 4 ? "COMPLETE RECORD" : "INCOMPLETE DOSSIER"}</span>
+                                                <span className="text-[10px] font-bold uppercase tracking-widest">{userDocs.length >= 4 ? "COMPLETE" : "INCOMPLETE"}</span>
                                             </div>
                                             <div className={cn(
                                                 "w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 transition-all group-hover:bg-indigo-600 group-hover:text-white group-hover:shadow-lg shadow-indigo-100",
@@ -295,7 +295,7 @@ export default function DocumentsModule({ token }: { token: string }) {
                                             >
                                                 <div className="matrix-gradient p-10 space-y-10">
                                                     
-                                                    {/* CRITICAL DOCUMENT MANIFEST SHARDS */}
+                                                    {/* CRITICAL DOCUMENTS */}
                                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                                                         {criticalSlots.map((slot) => {
                                                             const docObj = userDocs.find(d => d.type === slot.category || d.name?.includes(slot.label));
@@ -323,11 +323,11 @@ export default function DocumentsModule({ token }: { token: string }) {
                                                                         )}
                                                                     </div>
                                                                     <div>
-                                                                        <h5 className="text-[13px] font-black text-slate-900 uppercase italic font-brand tracking-tight mb-1">{slot.label}</h5>
+                                                                        <h5 className="text-[13px] font-bold text-slate-800 font-brand tracking-tight mb-1">{slot.label}</h5>
                                                                         <div className="flex items-center gap-2">
                                                                             <div className={cn("w-1.5 h-1.5 rounded-full", exists ? "bg-emerald-500" : "bg-rose-500 animate-pulse")} />
-                                                                            <span className={cn("text-[9px] font-black uppercase tracking-widest", exists ? "text-emerald-600" : "text-rose-500")}>
-                                                                                {exists ? "Verified Identity" : "Missing Fragment"}
+                                                                            <span className={cn("text-[9px] font-bold uppercase tracking-widest", exists ? "text-emerald-600" : "text-rose-500")}>
+                                                                                {exists ? "Verified" : "Missing"}
                                                                             </span>
                                                                         </div>
                                                                     </div>
@@ -335,11 +335,11 @@ export default function DocumentsModule({ token }: { token: string }) {
                                                                         disabled={!exists}
                                                                         onClick={() => exists && triggerDownload(docObj.fileUrl, docObj.name)}
                                                                         className={cn(
-                                                                            "w-full h-12 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] gap-2 transition-all shadow-lg",
+                                                                            "w-full h-12 rounded-2xl text-[9px] font-bold uppercase tracking-widest gap-2 transition-all shadow-lg",
                                                                             exists ? "bg-slate-900 text-white border-none hover:bg-slate-800" : "bg-slate-100 border border-slate-200 text-slate-300 cursor-not-allowed"
                                                                         )}
                                                                     >
-                                                                        {exists ? <><Eye className="w-4 h-4 text-white" /> View Document</> : <><Lock className="w-4 h-4" /> Pending Action</>}
+                                                                        {exists ? <><Eye className="w-4 h-4 text-white" /> View Document</> : <><Lock className="w-4 h-4" /> Pending</>}
                                                                     </Button>
                                                                 </div>
                                                             )
@@ -348,20 +348,20 @@ export default function DocumentsModule({ token }: { token: string }) {
 
                                                     {/* STANDARD DOCUMENT REGISTER */}
                                                     <div className="space-y-4">
-                                                        <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] font-brand italic ml-1">Personnel Document Registry</h5>
+                                                        <h5 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-brand ml-1">Employee Document Registry</h5>
                                                         {userDocs.length === 0 ? (
                                                             <div className="py-16 flex flex-col items-center justify-center gap-4 bg-white rounded-[32px] border border-dashed border-slate-200">
                                                                 <Archive className="w-12 h-12 text-slate-100" />
-                                                                <p className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-300 italic">Global Vault Synchronized: No Documents Found</p>
+                                                                <p className="text-[11px] font-bold uppercase tracking-widest text-slate-300">System Synchronized: No Documents Found</p>
                                                             </div>
                                                         ) : (
                                                             <div className="bg-white rounded-[32px] border border-slate-100 overflow-hidden shadow-sm">
                                                                 <table className="w-full text-left">
                                                                     <thead>
                                                                         <tr className="bg-slate-50/50 border-b border-slate-100">
-                                                                            <th className="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-widest font-brand">Document Name</th>
-                                                                            <th className="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-widest font-brand text-center">Category</th>
-                                                                            <th className="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-widest font-brand text-right">Connectivity</th>
+                                                                            <th className="px-8 py-5 text-[9px] font-bold text-slate-400 uppercase tracking-widest font-brand">Document Name</th>
+                                                                            <th className="px-8 py-5 text-[9px] font-bold text-slate-400 uppercase tracking-widest font-brand text-center">Category</th>
+                                                                            <th className="px-8 py-5 text-[9px] font-bold text-slate-400 uppercase tracking-widest font-brand text-right">Actions</th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody className="divide-y divide-slate-50 font-medium">
@@ -373,13 +373,13 @@ export default function DocumentsModule({ token }: { token: string }) {
                                                                                             <File className="w-5 h-5" />
                                                                                         </div>
                                                                                         <div>
-                                                                                            <p className="text-[14px] font-black text-slate-900 uppercase italic font-brand tracking-tighter leading-none mb-2">{doc.name}</p>
-                                                                                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none shrink-0">SHA-256 Validated · {new Date(doc.createdAt).toLocaleDateString()}</p>
+                                                                                            <p className="text-[14px] font-bold text-slate-900 uppercase font-brand tracking-tight leading-none mb-2">{doc.name}</p>
+                                                                                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none shrink-0">Validated · {new Date(doc.createdAt).toLocaleDateString()}</p>
                                                                                         </div>
                                                                                     </div>
                                                                                 </td>
                                                                                 <td className="px-8 py-6 text-center">
-                                                                                    <Badge className="bg-slate-100 text-slate-400 border-none text-[8px] font-black uppercase tracking-widest px-4 py-1.5 rounded-xl group-hover/doc:bg-indigo-100 group-hover/doc:text-indigo-600 transition-colors">
+                                                                                    <Badge className="bg-slate-100 text-slate-400 border-none text-[8px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-xl group-hover/doc:bg-indigo-100 group-hover/doc:text-indigo-600 transition-colors">
                                                                                         {doc.type}
                                                                                     </Badge>
                                                                                 </td>
@@ -407,16 +407,16 @@ export default function DocumentsModule({ token }: { token: string }) {
                 </div>
             </ScrollArea>
 
-            {/* ── VAULT INTEGRITY FOOTER ── */}
+            {/* ── SYSTEM STATUS ── */}
             <div className="p-8 border-t border-slate-50 bg-white flex justify-between items-center px-12 shrink-0">
                 <div className="flex items-center gap-8">
                     <div className="flex items-center gap-3">
                         <ShieldCheck className="w-5 h-5 text-emerald-500" />
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Shard Integrity: 100% VALID</span>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Status: Secure</span>
                     </div>
                 </div>
-                <button onClick={fetchData} className="flex items-center gap-4 text-[11px] font-black text-indigo-600 uppercase tracking-widest hover:scale-105 transition-all group">
-                    <span className="bg-indigo-50 px-3 py-1.5 rounded-lg group-hover:bg-indigo-100 transition-colors">Handshake Registry Re-Sync</span>
+                <button onClick={fetchData} className="flex items-center gap-4 text-[11px] font-bold text-indigo-600 uppercase tracking-widest hover:scale-105 transition-all group">
+                    <span className="bg-indigo-50 px-3 py-1.5 rounded-lg group-hover:bg-indigo-100 transition-colors">Refresh</span>
                     <RefreshCcw className={cn("w-4 h-4", loading && "animate-spin")} />
                 </button>
             </div>

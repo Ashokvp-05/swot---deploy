@@ -110,16 +110,16 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
             {/* ── HIGH-FIDELITY LIFECYCLE HEADER ── */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div className="space-y-1">
-                    <h2 className="text-3xl font-black text-slate-900 uppercase italic tracking-tighter font-brand leading-none">Onboarding <span className="text-indigo-600">People</span></h2>
+                    <h2 className="text-3xl font-bold text-slate-900 uppercase italic tracking-tighter font-brand leading-none">Onboarding <span className="text-indigo-600">People</span></h2>
                     <div className="flex items-center gap-3">
-                        <Badge className="bg-indigo-50 text-indigo-600 border-none text-[9px] font-black uppercase tracking-widest px-2.5 py-1.5 leading-none">Phase 3</Badge>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Verify Identity & Setup New Members</p>
+                        <Badge className="bg-indigo-50 text-indigo-600 border-none text-[9px] font-bold uppercase tracking-widest px-2.5 py-1.5 leading-none">Phase 3</Badge>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Verify Identity & Setup New Members</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
                      <Button 
                         onClick={onAddEmployee}
-                        className="h-14 bg-slate-900 hover:bg-black text-white rounded-[20px] px-8 text-[11px] font-black uppercase tracking-[0.2em] gap-3 shadow-2xl active:scale-95 shadow-slate-200"
+                        className="h-14 bg-slate-900 hover:bg-black text-white rounded-[20px] px-8 text-[11px] font-bold uppercase tracking-[0.2em] gap-3 shadow-2xl active:scale-95 shadow-slate-200"
                     >
                         <UserPlus className="w-4 h-4" /> Initialize Personnel
                     </Button>
@@ -140,8 +140,8 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                                 <s.icon className={cn("w-5 h-5", s.color)} />
                             </div>
                             <div className="space-y-1">
-                                <h3 className="text-4xl font-black text-slate-900 tabular-nums italic tracking-tighter leading-none">{s.value}</h3>
-                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] whitespace-nowrap">{s.label}</p>
+                                <h3 className="text-4xl font-bold text-slate-900 tabular-nums italic tracking-tighter leading-none">{s.value}</h3>
+                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] whitespace-nowrap">{s.label}</p>
                             </div>
                         </div>
                         <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-slate-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-full blur-2xl" />
@@ -157,8 +157,8 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                              <ShieldCheck className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-black text-slate-900 uppercase italic tracking-tighter leading-none font-brand">Setup <span className="text-indigo-600">Status</span></h3>
-                            <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1.5 flex items-center gap-2">
+                            <h3 className="text-xl font-bold text-slate-900 uppercase italic tracking-tighter leading-none font-brand">Setup <span className="text-indigo-600">Status</span></h3>
+                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5 flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
                                 System Status: 100% Operational
                             </div>
@@ -178,9 +178,9 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                                     <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center">
                                          <CheckCircle2 className="w-4 h-4 text-indigo-500" />
                                     </div>
-                                    <Badge className="bg-indigo-50 text-indigo-600 border-none text-[8px] font-black uppercase px-2 py-0.5">Ready</Badge>
+                                    <Badge className="bg-indigo-50 text-indigo-600 border-none text-[8px] font-bold uppercase px-2 py-0.5">Ready</Badge>
                                 </div>
-                                <p className="text-[10px] font-black text-slate-800 uppercase tracking-tight italic mt-1 font-brand">{item.label}</p>
+                                <p className="text-[10px] font-bold text-slate-800 uppercase tracking-tight italic mt-1 font-brand">{item.label}</p>
                             </div>
                         ))}
                     </div>
@@ -194,23 +194,23 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                 {loading ? (
                     <div className="col-span-full py-40 flex flex-col items-center justify-center gap-6">
                         <Loader2 className="w-12 h-12 animate-spin text-indigo-500" />
-                        <p className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-300 italic">Syncing Operational Shards...</p>
+                        <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-slate-300 italic">Syncing Operational Shards...</p>
                     </div>
                 ) : employees.length === 0 ? (
                     <div className="col-span-full py-40 text-center bg-slate-50/30 rounded-[3rem] border-2 border-dashed border-slate-100">
                         <UserCircle className="w-20 h-20 text-slate-100 mx-auto mb-8" />
-                        <h4 className="text-[15px] font-black text-slate-300 uppercase tracking-[0.4em] italic">Personnel Manifest Validated</h4>
+                        <h4 className="text-[15px] font-bold text-slate-300 uppercase tracking-[0.4em] italic">Personnel Manifest Validated</h4>
                         <p className="text-[10px] font-bold text-slate-300 mt-3 uppercase tracking-widest">No pending lifecycle nodes detected.</p>
                     </div>
                 ) : viewMode === 'table' ? (
                     <div className="col-span-full border border-slate-100 rounded-[2.5rem] bg-white overflow-hidden shadow-sm">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="border-b border-slate-50 bg-slate-50/50 text-[10px] uppercase font-black tracking-widest text-slate-400 font-brand">
-                                    <th className="p-6 font-black">Employee Name</th>
-                                    <th className="p-6 font-black">Department</th>
-                                    <th className="p-6 font-black w-48">Onboarding Matrix</th>
-                                    <th className="p-6 font-black text-right">Active Status</th>
+                                <tr className="border-b border-slate-50 bg-slate-50/50 text-[10px] uppercase font-bold tracking-widest text-slate-400 font-brand">
+                                    <th className="p-6 font-bold">Employee Name</th>
+                                    <th className="p-6 font-bold">Department</th>
+                                    <th className="p-6 font-bold w-48">Onboarding Matrix</th>
+                                    <th className="p-6 font-bold text-right">Active Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -218,7 +218,7 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                                     <tr key={emp.id} className="border-b border-slate-50 hover:bg-slate-50/100 transition-colors cursor-pointer group" onClick={() => setSelectedUser(emp)}>
                                         <td className="p-6">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black italic text-xs shadow-md group-hover:scale-105 transition-transform">{emp.name[0]}{emp.name[1]}</div>
+                                                <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold italic text-xs shadow-md group-hover:scale-105 transition-transform">{emp.name[0]}{emp.name[1]}</div>
                                                 <span className="font-bold text-sm tracking-tight text-slate-900 italic font-brand uppercase">{emp.name}</span>
                                             </div>
                                         </td>
@@ -226,11 +226,11 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                                         <td className="p-6">
                                             <div className="flex items-center gap-3">
                                                 <div className="flex-1 h-2 rounded-full bg-slate-100 overflow-hidden"><div className="h-full bg-indigo-500" style={{width: `${emp.progress || 48}%`}}/></div>
-                                                <span className="text-[10px] font-black text-slate-500">{emp.progress || 48}%</span>
+                                                <span className="text-[10px] font-bold text-slate-500">{emp.progress || 48}%</span>
                                             </div>
                                         </td>
                                         <td className="p-6 text-right">
-                                            <Badge className="bg-indigo-50 text-indigo-600 border-none px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.2em] rounded-md shadow-sm">Active</Badge>
+                                            <Badge className="bg-indigo-50 text-indigo-600 border-none px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.2em] rounded-md shadow-sm">Active</Badge>
                                         </td>
                                     </tr>
                                 ))}
@@ -250,21 +250,21 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                             <Card className="p-7 rounded-[40px] border border-slate-100 bg-white shadow-sm hover:shadow-2xl hover:border-indigo-100 transition-all duration-500 group relative">
                                 <div className="flex justify-between items-start mb-10">
                                     <div className="flex items-center gap-7">
-                                        <div className="w-20 h-20 rounded-[32px] bg-slate-950 flex items-center justify-center text-2xl font-black text-indigo-400 italic shadow-2xl shadow-slate-200 font-brand transition-transform group-hover:scale-105">
+                                        <div className="w-20 h-20 rounded-[32px] bg-slate-950 flex items-center justify-center text-2xl font-bold text-indigo-400 italic shadow-2xl shadow-slate-200 font-brand transition-transform group-hover:scale-105">
                                             {emp.name[0]}{emp.name[1]}
                                         </div>
                                         <div>
-                                            <h4 className="text-2xl font-black text-slate-900 uppercase italic font-brand tracking-tighter leading-none">{emp.name}</h4>
+                                            <h4 className="text-2xl font-bold text-slate-900 uppercase italic font-brand tracking-tighter leading-none">{emp.name}</h4>
                                             <div className="grid grid-cols-2 gap-x-6 gap-y-2 mt-4">
-                                                <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-slate-300 rounded-full" /><p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">ID: EMP-00{idx + 1}</p></div>
-                                                <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-slate-300 rounded-full" /><p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{emp.department?.name || 'Operations'}</p></div>
-                                                <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-slate-300 rounded-full" /><p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Joined: {format(new Date(), 'dd MMM yyyy')}</p></div>
-                                                <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-slate-300 rounded-full" /><p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Manager: System Admin</p></div>
+                                                <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-slate-300 rounded-full" /><p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">ID: EMP-00{idx + 1}</p></div>
+                                                <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-slate-300 rounded-full" /><p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{emp.department?.name || 'Operations'}</p></div>
+                                                <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-slate-300 rounded-full" /><p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Joined: {format(new Date(), 'dd MMM yyyy')}</p></div>
+                                                <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-slate-300 rounded-full" /><p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Manager: System Admin</p></div>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="flex flex-col items-end gap-2">
-                                         <Badge className="bg-indigo-50 text-indigo-600 border-none px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] rounded-full shadow-sm">Active</Badge>
+                                         <Badge className="bg-indigo-50 text-indigo-600 border-none px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] rounded-full shadow-sm">Active</Badge>
                                          <p className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">Sync Active</p>
                                     </div>
                                 </div>
@@ -273,8 +273,8 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                                     {/* ONBOARDING PULSE BAR */}
                                     <div className="space-y-4">
                                         <div className="flex justify-between items-center px-1">
-                                            <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Lifecycle Manifest completion</span>
-                                            <span className="text-[12px] font-black text-indigo-600 italic tracking-tighter">{emp.progress || 48}% VALIDATED</span>
+                                            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em]">Lifecycle Manifest completion</span>
+                                            <span className="text-[12px] font-bold text-indigo-600 italic tracking-tighter">{emp.progress || 48}% VALIDATED</span>
                                         </div>
                                         <div className="h-2.5 rounded-full bg-slate-50 overflow-hidden border border-slate-100 p-0.5">
                                             <motion.div 
@@ -298,7 +298,7 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                                                 <div className={cn("w-7 h-7 rounded-lg flex items-center justify-center shadow-sm border border-white", task.bg)}>
                                                     <task.icon className={cn("w-3.5 h-3.5", task.color)} />
                                                 </div>
-                                                <span className={cn("text-[10px] font-black uppercase tracking-widest font-brand", task.status === 'complete' ? "text-slate-600" : "text-slate-400")}>
+                                                <span className={cn("text-[10px] font-bold uppercase tracking-widest font-brand", task.status === 'complete' ? "text-slate-600" : "text-slate-400")}>
                                                     {task.label}
                                                 </span>
                                             </div>
@@ -311,21 +311,21 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                                             <Button 
                                                 variant="outline" 
                                                 onClick={(e) => { e.stopPropagation(); toast.info("Correction request dispatched."); }} 
-                                                className="h-11 rounded-xl border-slate-200 text-slate-500 bg-white hover:bg-slate-50 font-black text-[8px] uppercase tracking-widest transition-all px-2"
+                                                className="h-11 rounded-xl border-slate-200 text-slate-500 bg-white hover:bg-slate-50 font-bold text-[8px] uppercase tracking-widest transition-all px-2"
                                             >
                                                 Request Correction
                                             </Button>
                                             <Button 
                                                 variant="outline"
                                                 onClick={(e) => { e.stopPropagation(); setSelectedUser(emp); }} 
-                                                className="h-11 rounded-xl border-indigo-100 text-indigo-600 bg-indigo-50/50 hover:bg-indigo-100 font-black text-[8px] uppercase tracking-widest transition-all gap-2 px-2"
+                                                className="h-11 rounded-xl border-indigo-100 text-indigo-600 bg-indigo-50/50 hover:bg-indigo-100 font-bold text-[8px] uppercase tracking-widest transition-all gap-2 px-2"
                                             >
                                                 <UserCircle className="w-3.5 h-3.5" /> View Profile
                                             </Button>
                                         </div>
                                         <Button 
                                             onClick={(e) => { e.stopPropagation(); toast.success("Member Approved."); }} 
-                                            className="w-full h-12 rounded-xl bg-indigo-600 hover:bg-slate-950 text-white font-black text-[9px] uppercase tracking-widest transition-all gap-2 shadow-lg shadow-indigo-100"
+                                            className="w-full h-12 rounded-xl bg-indigo-600 hover:bg-slate-950 text-white font-bold text-[9px] uppercase tracking-widest transition-all gap-2 shadow-lg shadow-indigo-100"
                                         >
                                             Confirm Onboarding
                                         </Button>

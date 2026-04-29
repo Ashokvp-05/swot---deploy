@@ -37,14 +37,14 @@ export default function AuditLogsPage() {
                         <ShieldAlert className="w-8 h-8 text-white" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic">Security Audit Telemetry</h1>
+                        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white uppercase italic">Security Audit Telemetry</h1>
                         <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Real-time surveillance of administrative operations and system-level mutations.</p>
                     </div>
                 </div>
                 <div className="relative z-10 flex gap-4">
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-[10px] font-black uppercase text-emerald-600 dark:text-emerald-400">Surveillance Active</span>
+                        <span className="text-[10px] font-bold uppercase text-emerald-600 dark:text-emerald-400">Surveillance Active</span>
                     </div>
                 </div>
             </div>
@@ -54,7 +54,7 @@ export default function AuditLogsPage() {
                     <Card className="border-0 shadow-xl bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden">
                         <CardHeader className="p-8 border-b border-slate-50 dark:border-white/5 flex flex-row items-center justify-between bg-slate-50/50 dark:bg-black/10">
                             <div className="space-y-1">
-                                <CardTitle className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">System Event <span className="text-indigo-600 italic">Feed</span></CardTitle>
+                                <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-tight">System Event <span className="text-indigo-600 italic">Feed</span></CardTitle>
                                 <CardDescription className="text-xs font-bold text-slate-400 italic font-medium">Monitoring the last 50 high-criticality administrative interventions.</CardDescription>
                             </div>
                             <div className="p-4 bg-slate-100 dark:bg-slate-800 rounded-2xl">
@@ -65,17 +65,17 @@ export default function AuditLogsPage() {
                             {loading ? (
                                 <div className="flex flex-col items-center justify-center p-32 gap-4">
                                     <Loader2 className="w-12 h-12 text-slate-400 animate-spin" />
-                                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Decoding encrypted session logs...</p>
+                                    <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">Decoding encrypted session logs...</p>
                                 </div>
                             ) : (
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left text-sm border-collapse">
                                         <thead>
                                             <tr className="bg-slate-50/50 dark:bg-black/20 border-b border-slate-100 dark:border-white/5">
-                                                <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-500">Operation Type</th>
-                                                <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-500">Authorized Personnel</th>
-                                                <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-500">Payload Details</th>
-                                                <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-500 text-right">Temporal Signature</th>
+                                                <th className="p-6 text-[10px] font-bold uppercase tracking-widest text-slate-500">Operation Type</th>
+                                                <th className="p-6 text-[10px] font-bold uppercase tracking-widest text-slate-500">Authorized Personnel</th>
+                                                <th className="p-6 text-[10px] font-bold uppercase tracking-widest text-slate-500">Payload Details</th>
+                                                <th className="p-6 text-[10px] font-bold uppercase tracking-widest text-slate-500 text-right">Temporal Signature</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-50 dark:divide-white/5">
@@ -86,18 +86,18 @@ export default function AuditLogsPage() {
                                                     <td className="p-6">
                                                         <div className="flex items-center gap-3">
                                                             <div className="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]" />
-                                                            <span className="px-3 py-1 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 rounded-lg text-[9px] font-black uppercase tracking-tighter border border-indigo-200/50 dark:border-indigo-500/20 group-hover:scale-105 transition-transform">
+                                                            <span className="px-3 py-1 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 rounded-lg text-[9px] font-bold uppercase tracking-tighter border border-indigo-200/50 dark:border-indigo-500/20 group-hover:scale-105 transition-transform">
                                                                 {log.action}
                                                             </span>
                                                         </div>
                                                     </td>
                                                     <td className="p-6">
                                                         <div className="flex items-center gap-3">
-                                                            <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-black text-[10px] text-slate-500 border border-slate-200 dark:border-slate-700 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                                                            <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-[10px] text-slate-500 border border-slate-200 dark:border-slate-700 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
                                                                 {log.admin?.name?.charAt(0) || '?'}
                                                             </div>
                                                             <div>
-                                                                <div className="font-black text-slate-900 dark:text-white uppercase tracking-tight italic group-hover:text-indigo-600 transition-colors">{log.admin?.name || 'ROOT'}</div>
+                                                                <div className="font-bold text-slate-900 dark:text-white uppercase tracking-tight italic group-hover:text-indigo-600 transition-colors">{log.admin?.name || 'ROOT'}</div>
                                                                 <div className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">{log.admin?.designation || 'SYSTEM_ADMIN'}</div>
                                                             </div>
                                                         </div>
@@ -108,7 +108,7 @@ export default function AuditLogsPage() {
                                                         </div>
                                                     </td>
                                                     <td className="p-6 text-right">
-                                                        <div suppressHydrationWarning className="text-[10px] font-black text-slate-900 dark:text-white tabular-nums tracking-tighter">{new Date(log.createdAt).toLocaleDateString('en-IN')}</div>
+                                                        <div suppressHydrationWarning className="text-[10px] font-bold text-slate-900 dark:text-white tabular-nums tracking-tighter">{new Date(log.createdAt).toLocaleDateString('en-IN')}</div>
                                                         <div suppressHydrationWarning className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1 tabular-nums">{new Date(log.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}</div>
                                                     </td>
                                                 </tr>
@@ -128,22 +128,22 @@ export default function AuditLogsPage() {
                         </div>
                         <div className="relative z-10 space-y-8">
                             <div className="space-y-4">
-                                <h4 className="text-xl font-black uppercase tracking-tighter italic">Integrity Verification</h4>
+                                <h4 className="text-xl font-bold uppercase tracking-tighter italic">Integrity Verification</h4>
                                 <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest leading-relaxed">Cryptographic proof of all administrative operations.</p>
                             </div>
 
                             <div className="p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/10">
                                 <div className="flex items-center justify-between mb-4">
-                                    <p className="text-[9px] font-black uppercase tracking-widest text-indigo-400">Buffer Load</p>
+                                    <p className="text-[9px] font-bold uppercase tracking-widest text-indigo-400">Buffer Load</p>
                                     <Activity className="w-3 h-3 text-emerald-500 animate-pulse" />
                                 </div>
                                 <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
                                     <div className="h-full w-[45%] bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]" />
                                 </div>
-                                <p className="text-[9px] font-black uppercase text-white/40 mt-3 text-right">4.2GB Log Cycle</p>
+                                <p className="text-[9px] font-bold uppercase text-white/40 mt-3 text-right">4.2GB Log Cycle</p>
                             </div>
 
-                            <Button variant="outline" className="w-full h-12 border-white/10 bg-white/5 hover:bg-white text-white hover:text-slate-900 rounded-xl font-black uppercase tracking-widest text-[9px] transition-all">
+                            <Button variant="outline" className="w-full h-12 border-white/10 bg-white/5 hover:bg-white text-white hover:text-slate-900 rounded-xl font-bold uppercase tracking-widest text-[9px] transition-all">
                                 Full Surveillance Export
                             </Button>
                         </div>
@@ -153,8 +153,8 @@ export default function AuditLogsPage() {
                         <div className="absolute top-0 right-0 p-8 opacity-10">
                             <Eye className="w-24 h-24" />
                         </div>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-indigo-200 mb-2">Omnipresence Core</p>
-                        <h4 className="text-xl font-black italic uppercase leading-tight">Every system mutation is captured and indexed for permanent record.</h4>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-indigo-200 mb-2">Omnipresence Core</p>
+                        <h4 className="text-xl font-bold italic uppercase leading-tight">Every system mutation is captured and indexed for permanent record.</h4>
                     </div>
                 </div>
             </div>

@@ -1,20 +1,22 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
     ClipboardList, CheckCircle2, XCircle, Clock,
     User, Calendar, Tag, Loader2, AlertCircle,
     MessageSquare, ChevronDown, Filter, Search, ArrowRight,
     Briefcase, ShieldCheck, Zap, RefreshCcw, UserCheck,
-    CalendarDays, CornerDownRight, CloudOff, Info
+    CalendarDays, CornerDownRight, CloudOff, Info,
+    ArrowUpDown, MoreHorizontal, ChevronLeft, ChevronRight,
+    ChevronsLeft, ChevronsRight, Download
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
+import { useWebSocket } from "@/hooks/useWebSocket"
 
 interface LeaveRequest {
     id: string
@@ -28,50 +30,41 @@ interface LeaveRequest {
 }
 
 const TYPE_COLORS: Record<string, string> = {
-    SICK: "bg-rose-50 text-rose-600 border-none px-2 py-0.5",
-    CASUAL: "bg-indigo-50 text-indigo-600 border-none px-2 py-0.5",
-    EARNED: "bg-emerald-50 text-emerald-600 border-none px-2 py-0.5",
-    MEDICAL: "bg-amber-50 text-amber-600 border-none px-2 py-0.5",
+    SICK: "text-rose-500",
+    CASUAL: "text-indigo-500",
+    EARNED: "text-emerald-500",
+    MEDICAL: "text-amber-500",
+    MATERNITY: "text-violet-500",
+    PATERNITY: "text-orange-500",
 }
 
-const STATUS_COLORS: Record<string, string> = {
-    PENDING: "bg-amber-50 text-amber-600 border-none",
-    APPROVED: "bg-emerald-50 text-emerald-600 border-none",
-    REJECTED: "bg-rose-50 text-rose-600 border-none",
+const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
+    PENDING: { label: "New", color: "text-emerald-600", bg: "bg-emerald-50" },
+    APPROVED: { label: "Approved", color: "text-emerald-600", bg: "bg-emerald-50" },
+    REJECTED: { label: "Rejected", color: "text-rose-500", bg: "bg-rose-50" },
 }
 
-const GlobalStyles = () => (
-    <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
-        .font-brand { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .font-body { font-family: 'Inter', sans-serif; }
-        
-        .enterprise-card {
-            background: #ffffff;
-            border: 1px solid #F1F5F9;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .enterprise-card:hover {
-            border-color: #E2E8F0;
-            box-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.05);
-        }
-
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #F1F5F9; border-radius: 10px; }
-    `}</style>
-)
+type SortKey = "name" | "type" | "department" | "days" | "startDate" | "endDate" | "status"
+type SortDir = "asc" | "desc"
 
 export default function LeaveApprovalCenter({ token }: { token: string }) {
     const API = process.env.NEXT_PUBLIC_API_URL
     const [leaves, setLeaves] = useState<LeaveRequest[]>([])
     const [loading, setLoading] = useState(true)
-    const [filter, setFilter] = useState<"ALL" | "PENDING" | "APPROVED" | "REJECTED">("PENDING")
+    const [filter, setFilter] = useState<"ALL" | "PENDING" | "APPROVED" | "REJECTED">("ALL")
     const [search, setSearch] = useState("")
     const [rejectId, setRejectId] = useState<string | null>(null)
     const [rejectReason, setRejectReason] = useState("")
     const [actionLoading, setActionLoading] = useState<string | null>(null)
+    const [actionMenuId, setActionMenuId] = useState<string | null>(null)
+
+    // Sorting
+    const [sortKey, setSortKey] = useState<SortKey>("startDate")
+    const [sortDir, setSortDir] = useState<SortDir>("desc")
+
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1)
+    const pageSize = 10
 
     const fetchLeaves = async () => {
         setLoading(true)
@@ -86,6 +79,25 @@ export default function LeaveApprovalCenter({ token }: { token: string }) {
 
     useEffect(() => { fetchLeaves() }, [token])
 
+    // ── REAL-TIME WEBSOCKET ──
+    const onWsMessage = useCallback((msg: { type: string; payload?: any }) => {
+        if (msg.type === 'LEAVE_CREATED') {
+            // A new leave was submitted — add it to the list
+            setLeaves(prev => {
+                const exists = prev.some(l => l.id === msg.payload?.id)
+                if (exists) return prev
+                return [msg.payload, ...prev]
+            })
+            toast.info(`New leave request from ${msg.payload?.user?.name || 'an employee'}`)
+        }
+        if (msg.type === 'LEAVE_UPDATED') {
+            // A leave was approved/rejected — update it in place
+            setLeaves(prev => prev.map(l => l.id === msg.payload?.id ? { ...l, ...msg.payload } : l))
+        }
+    }, [])
+
+    const { status: wsStatus } = useWebSocket({ onMessage: onWsMessage, enabled: !!token })
+
     const approve = async (id: string) => {
         setActionLoading(id)
         try {
@@ -93,15 +105,15 @@ export default function LeaveApprovalCenter({ token }: { token: string }) {
                 method: "PUT", headers: { "Authorization": `Bearer ${token}` }
             })
             if (res.ok) {
-                toast.success("Request accepted")
+                toast.success("Leave approved")
                 setLeaves(l => l.map(x => x.id === id ? { ...x, status: "APPROVED" } : x))
             }
-        } catch { toast.error("Execution failure") }
-        finally { setActionLoading(null) }
+        } catch { toast.error("Action failed") }
+        finally { setActionLoading(null); setActionMenuId(null) }
     }
 
     const reject = async (id: string) => {
-        if (!rejectReason.trim()) { toast.error("Audit reason required"); return }
+        if (!rejectReason.trim()) { toast.error("Reason required"); return }
         setActionLoading(id)
         try {
             const res = await fetch(`${API}/leaves/${id}/reject`, {
@@ -109,151 +121,383 @@ export default function LeaveApprovalCenter({ token }: { token: string }) {
                 body: JSON.stringify({ reason: rejectReason })
             })
             if (res.ok) {
-                toast.success("Request declined")
+                toast.success("Leave rejected")
                 setLeaves(l => l.map(x => x.id === id ? { ...x, status: "REJECTED" } : x))
                 setRejectId(null); setRejectReason("")
             }
-        } catch { toast.error("Execution failure") }
-        finally { setActionLoading(null) }
+        } catch { toast.error("Action failed") }
+        finally { setActionLoading(null); setActionMenuId(null) }
     }
 
-    const filtered = leaves.filter(l => (filter === "ALL" || l.status === filter) &&
-        (!search || l.user?.name?.toLowerCase().includes(search.toLowerCase())))
+    const getDays = (start: string, end: string) =>
+        Math.ceil((new Date(end).getTime() - new Date(start).getTime()) / 86400000) + 1
+
+    const formatDate = (d: string) =>
+        new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+
+    const formatLeaveType = (t: string) => {
+        return t.split('_').map(w => w.charAt(0) + w.slice(1).toLowerCase()).join(' ')
+    }
+
+    // Filter + Search
+    const filtered = useMemo(() => {
+        return leaves.filter(l =>
+            (filter === "ALL" || l.status === filter) &&
+            (!search || l.user?.name?.toLowerCase().includes(search.toLowerCase()) ||
+                l.user?.department?.name?.toLowerCase().includes(search.toLowerCase()))
+        )
+    }, [leaves, filter, search])
+
+    // Sorting
+    const sorted = useMemo(() => {
+        return [...filtered].sort((a, b) => {
+            let cmp = 0
+            switch (sortKey) {
+                case "name": cmp = (a.user?.name || "").localeCompare(b.user?.name || ""); break
+                case "type": cmp = a.type.localeCompare(b.type); break
+                case "department": cmp = (a.user?.department?.name || "").localeCompare(b.user?.department?.name || ""); break
+                case "days": cmp = getDays(a.startDate, a.endDate) - getDays(b.startDate, b.endDate); break
+                case "startDate": cmp = new Date(a.startDate).getTime() - new Date(b.startDate).getTime(); break
+                case "endDate": cmp = new Date(a.endDate).getTime() - new Date(b.endDate).getTime(); break
+                case "status": cmp = a.status.localeCompare(b.status); break
+            }
+            return sortDir === "asc" ? cmp : -cmp
+        })
+    }, [filtered, sortKey, sortDir])
+
+    // Pagination
+    const totalPages = Math.max(1, Math.ceil(sorted.length / pageSize))
+    const paginated = sorted.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+
+    const toggleSort = (key: SortKey) => {
+        if (sortKey === key) setSortDir(d => d === "asc" ? "desc" : "asc")
+        else { setSortKey(key); setSortDir("asc") }
+    }
 
     const pendingCount = leaves.filter(l => l.status === "PENDING").length
 
-    return (
-        <div className="bg-white border border-slate-100 rounded-[32px] overflow-hidden shadow-sm h-full flex flex-col font-body">
-            <GlobalStyles />
-
-
-
-            {/* HIGH-DENSITY HEADER */}
-            <div className="p-6 md:p-8 border-b border-slate-50 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 bg-white shrink-0">
-                {/* Module-specific filters remain active for high-density control */}
-
-                <div className="flex items-center gap-2 bg-slate-50 p-1.5 rounded-xl border border-slate-100 w-full xl:w-auto overflow-x-auto no-scrollbar">
-                    {(["PENDING", "APPROVED", "REJECTED", "ALL"] as const).map(s => (
-                        <button key={s} onClick={() => setFilter(s)}
-                            className={cn("h-9 px-4 md:px-6 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all shrink-0",
-                                filter === s ? "bg-white text-indigo-600 shadow-sm border border-slate-100" : "text-slate-400 hover:text-slate-600 hover:bg-white/50")}>
-                            {s}
-                        </button>
-                    ))}
-                </div>
+    const SortHeader = ({ label, sortKeyVal }: { label: string; sortKeyVal: SortKey }) => (
+        <th
+            className="px-4 py-4 text-left cursor-pointer select-none group"
+            onClick={() => toggleSort(sortKeyVal)}
+        >
+            <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400 group-hover:text-slate-700 transition-colors">
+                {label}
+                <ArrowUpDown className={cn("w-3 h-3 transition-colors", sortKey === sortKeyVal ? "text-indigo-500" : "text-slate-300")} />
             </div>
+        </th>
+    )
 
-            {/* SCROLLABLE LIST - HIGH DENSITY */}
-            <ScrollArea className="flex-1 bg-slate-50/10 custom-scrollbar">
-                <div className="p-6 md:p-8 space-y-4">
-                    {loading ? (
-                        <div className="h-64 flex flex-col items-center justify-center gap-4">
-                            <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-                            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300">Synchronizing registry Nodes...</p>
+    return (
+        <div className="min-h-full bg-[#fcfcfd] pb-10">
+            <div className="max-w-[1400px] mx-auto px-6 py-8 space-y-8">
+
+                {/* ── HEADER ── */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div>
+                        <div className="flex items-center gap-3">
+                            <h1 className="text-2xl font-bold text-slate-800 tracking-tight leading-none">
+                                Employee&apos;s Leave
+                            </h1>
+                            {wsStatus === "connected" && (
+                                <span className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 rounded-lg border border-emerald-100">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                    <span className="text-[9px] font-bold text-emerald-600 uppercase tracking-widest">Live</span>
+                                </span>
+                            )}
                         </div>
-                    ) : filtered.length === 0 ? (
-                        <div className="h-64 flex flex-col items-center justify-center gap-4 opacity-40">
-                            <ShieldCheck className="w-12 h-12 text-slate-100" />
-                            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Zero active requests in manifest</p>
+                        {pendingCount > 0 && (
+                            <p className="text-[11px] text-slate-400 mt-1.5">{pendingCount} pending request{pendingCount > 1 ? "s" : ""}</p>
+                        )}
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                        {/* Search */}
+                        <div className="relative">
+                            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
+                            <Input
+                                value={search}
+                                onChange={e => { setSearch(e.target.value); setCurrentPage(1) }}
+                                placeholder="Search"
+                                className="h-10 w-52 pl-10 border-slate-200 rounded-xl bg-white text-sm placeholder:text-slate-300 focus-visible:ring-indigo-200"
+                            />
+                        </div>
+
+                        {/* Download Report */}
+                        <Button
+                            variant="outline"
+                            className="h-10 px-5 rounded-xl border-slate-200 text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-indigo-600 hover:border-indigo-200 gap-2"
+                        >
+                            <Download className="w-3.5 h-3.5" />
+                            Download Report
+                        </Button>
+
+                        {/* Filter Tabs */}
+                        <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-100 shadow-sm">
+                            {(["ALL", "PENDING", "APPROVED", "REJECTED"] as const).map(s => (
+                                <button
+                                    key={s}
+                                    onClick={() => { setFilter(s); setCurrentPage(1) }}
+                                    className={cn(
+                                        "h-8 px-4 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all",
+                                        filter === s
+                                            ? "bg-slate-900 text-white shadow-sm"
+                                            : "text-slate-400 hover:text-slate-600 hover:bg-slate-50"
+                                    )}
+                                >
+                                    {s === "PENDING" ? "New" : s === "ALL" ? "All" : s.charAt(0) + s.slice(1).toLowerCase()}
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Refresh */}
+                        <button
+                            onClick={fetchLeaves}
+                            className="h-10 w-10 bg-white border border-slate-200 text-slate-400 hover:text-indigo-600 rounded-xl flex items-center justify-center shadow-sm transition-all"
+                        >
+                            <RefreshCcw className={cn("w-4 h-4", loading && "animate-spin")} />
+                        </button>
+                    </div>
+                </div>
+
+                {/* ── TABLE ── */}
+                <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                    {loading ? (
+                        <div className="py-32 flex flex-col items-center justify-center gap-4">
+                            <Loader2 className="w-10 h-10 animate-spin text-indigo-500" />
+                            <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Loading records...</p>
+                        </div>
+                    ) : sorted.length === 0 ? (
+                        <div className="py-32 flex flex-col items-center justify-center gap-4">
+                            <CalendarDays className="w-14 h-14 text-slate-200" />
+                            <p className="text-sm font-semibold text-slate-400">No leave records found</p>
+                            <p className="text-[11px] text-slate-300">Try adjusting your filters or search query</p>
                         </div>
                     ) : (
-                        filtered.map((leave) => (
-                            <motion.div key={leave.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                                className="enterprise-card p-6 md:p-8 rounded-[28px] group bg-white shadow-sm ring-1 ring-slate-100/50">
-                                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 lg:gap-12">
-                                    
-                                    {/* CORE INFO GROUP */}
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-start md:items-center gap-5 flex-col md:flex-row">
-                                            {/* Avatar/Badge */}
-                                            <div className="w-12 h-12 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center justify-center text-slate-400 font-bold shrink-0 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
-                                                {leave.user?.name?.[0]?.toUpperCase() || <User className="w-5 h-5" />}
-                                            </div>
-                                            
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center gap-3 flex-wrap mb-1">
-                                                    <h4 className="text-[16px] font-bold text-slate-900 tracking-tight font-brand group-hover:text-indigo-600 transition-colors uppercase truncate">{leave.user?.name}</h4>
-                                                    <Badge className={cn("text-[8px] font-black uppercase tracking-widest", TYPE_COLORS[leave.type] || "bg-slate-50")}>{leave.type}</Badge>
-                                                    <Badge className={cn("text-[8px] font-black uppercase tracking-widest", STATUS_COLORS[leave.status])}>{leave.status}</Badge>
-                                                </div>
-                                                <div className="flex items-center gap-3 text-[11px] text-slate-400 font-medium">
-                                                    <span className="truncate italic">{leave.user?.email}</span>
-                                                    <div className="w-1 h-1 rounded-full bg-slate-200 shrink-0" />
-                                                    <span className="uppercase tracking-widest text-[9px] font-bold">{leave.user?.department?.name || "Structural Node"}</span>
-                                                </div>
-                                            </div>
-                                        </div>
+                        <>
+                            <div className="overflow-x-auto">
+                                <table className="w-full">
+                                    <thead>
+                                        <tr className="border-b border-slate-100 bg-slate-50/50">
+                                            <SortHeader label="Name" sortKeyVal="name" />
+                                            <SortHeader label="Leave Type" sortKeyVal="type" />
+                                            <SortHeader label="Department" sortKeyVal="department" />
+                                            <SortHeader label="Days" sortKeyVal="days" />
+                                            <SortHeader label="Start" sortKeyVal="startDate" />
+                                            <SortHeader label="End" sortKeyVal="endDate" />
+                                            <SortHeader label="Status" sortKeyVal="status" />
+                                            <th className="px-4 py-4 text-left">
+                                                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Action</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <AnimatePresence>
+                                            {paginated.map((leave, idx) => (
+                                                <motion.tr
+                                                    key={leave.id}
+                                                    initial={{ opacity: 0 }}
+                                                    animate={{ opacity: 1 }}
+                                                    transition={{ delay: idx * 0.03 }}
+                                                    className="border-b border-slate-50 hover:bg-indigo-50/30 transition-colors group"
+                                                >
+                                                    {/* Name */}
+                                                    <td className="px-4 py-4">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="w-9 h-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors shrink-0">
+                                                                <span className="text-xs font-bold">{leave.user?.name?.[0]?.toUpperCase() || "E"}</span>
+                                                            </div>
+                                                            <span className="text-sm font-semibold text-slate-700">{leave.user?.name || "Employee"}</span>
+                                                        </div>
+                                                    </td>
 
-                                        {/* COMPACT METRICS */}
-                                        <div className="mt-5 flex flex-wrap items-center gap-6">
-                                            <div className="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100/50">
-                                                <CalendarDays className="w-4 h-4 text-indigo-500" />
-                                                <span className="text-[11px] font-bold text-slate-700">
-                                                    {new Date(leave.startDate).toLocaleDateString()}
-                                                    <ArrowRight className="inline w-3 h-3 mx-2 text-slate-300" />
-                                                    {new Date(leave.endDate).toLocaleDateString()}
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center gap-2.5">
-                                                <Zap className="w-3.5 h-3.5 text-emerald-500" />
-                                                <span className="text-[12px] font-black text-slate-900 tracking-tight font-brand">
-                                                    {Math.ceil((new Date(leave.endDate).getTime() - new Date(leave.startDate).getTime()) / 86400000) + 1} DAYS
-                                                </span>
-                                            </div>
-                                        </div>
+                                                    {/* Leave Type */}
+                                                    <td className="px-4 py-4">
+                                                        <span className={cn("text-sm font-semibold italic", TYPE_COLORS[leave.type] || "text-slate-500")}>
+                                                            {formatLeaveType(leave.type)}
+                                                        </span>
+                                                    </td>
 
-                                        {/* INLINE REASON - REDUCED HEIGHT */}
-                                        {leave.reason && (
-                                            <div className="mt-4 flex items-start gap-3 pl-3 border-l-2 border-indigo-50 leading-relaxed">
-                                                <CornerDownRight className="w-3.5 h-3.5 text-slate-200 mt-1 shrink-0" />
-                                                <p className="text-[13px] text-slate-500 font-medium italic line-clamp-2 hover:line-clamp-none transition-all cursor-default">
-                                                    "{leave.reason}"
-                                                </p>
-                                            </div>
-                                        )}
-                                    </div>
+                                                    {/* Department */}
+                                                    <td className="px-4 py-4">
+                                                        <span className="text-sm text-slate-500">{leave.user?.department?.name || "—"}</span>
+                                                    </td>
 
-                                    {/* ACTION BLOCK - RESPONSIVE STACK */}
-                                    {leave.status === "PENDING" && (
-                                        <div className="flex flex-col sm:flex-row items-stretch lg:items-center gap-3 shrink-0">
-                                            {rejectId === leave.id ? (
-                                                <div className="flex items-center gap-2">
-                                                    <Input autoFocus value={rejectReason} onChange={e => setRejectReason(e.target.value)} placeholder="Personnel Insight..."
-                                                        className="h-10 w-full sm:w-64 bg-slate-50 border-slate-100 rounded-lg text-xs font-bold" />
-                                                    <Button onClick={() => reject(leave.id)} disabled={actionLoading === leave.id} className="h-10 bg-rose-600 text-white font-bold rounded-lg px-6 text-xs">Commit</Button>
-                                                    <Button onClick={() => setRejectId(null)} variant="ghost" className="h-10 w-10 p-0 text-slate-400 hover:text-slate-900 rounded-lg">
-                                                        <XCircle className="w-5 h-5" />
-                                                    </Button>
-                                                </div>
+                                                    {/* Days */}
+                                                    <td className="px-4 py-4">
+                                                        <span className="text-sm font-medium text-slate-600">{getDays(leave.startDate, leave.endDate)} Days</span>
+                                                    </td>
+
+                                                    {/* Start */}
+                                                    <td className="px-4 py-4">
+                                                        <span className="text-sm text-slate-500">{formatDate(leave.startDate)}</span>
+                                                    </td>
+
+                                                    {/* End */}
+                                                    <td className="px-4 py-4">
+                                                        <span className="text-sm text-slate-500">{formatDate(leave.endDate)}</span>
+                                                    </td>
+
+                                                    {/* Status */}
+                                                    <td className="px-4 py-4">
+                                                        {leave.status === "PENDING" ? (
+                                                            <div className="relative">
+                                                                <button
+                                                                    onClick={() => setActionMenuId(actionMenuId === leave.id ? null : leave.id)}
+                                                                    className="flex items-center gap-1.5 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors"
+                                                                >
+                                                                    New
+                                                                    <ChevronDown className="w-3.5 h-3.5" />
+                                                                </button>
+
+                                                                {actionMenuId === leave.id && (
+                                                                    <>
+                                                                        <div className="fixed inset-0 z-40" onClick={() => { setActionMenuId(null); setRejectId(null) }} />
+                                                                        <div className="absolute top-8 left-0 z-50 bg-white rounded-xl border border-slate-100 shadow-xl py-1.5 w-40 animate-in fade-in zoom-in-95 duration-200">
+                                                                            <button
+                                                                                onClick={() => approve(leave.id)}
+                                                                                disabled={actionLoading === leave.id}
+                                                                                className="w-full px-4 py-2.5 text-left text-sm font-medium text-emerald-600 hover:bg-emerald-50 transition-colors flex items-center gap-2"
+                                                                            >
+                                                                                <CheckCircle2 className="w-4 h-4" />
+                                                                                {actionLoading === leave.id ? "..." : "Approve"}
+                                                                            </button>
+                                                                            <button
+                                                                                onClick={() => setRejectId(leave.id)}
+                                                                                className="w-full px-4 py-2.5 text-left text-sm font-medium text-rose-500 hover:bg-rose-50 transition-colors flex items-center gap-2"
+                                                                            >
+                                                                                <XCircle className="w-4 h-4" />
+                                                                                Reject
+                                                                            </button>
+                                                                        </div>
+                                                                    </>
+                                                                )}
+                                                            </div>
+                                                        ) : (
+                                                            <span className={cn("text-sm font-semibold flex items-center gap-1",
+                                                                leave.status === "APPROVED" ? "text-emerald-600" : "text-rose-500"
+                                                            )}>
+                                                                {STATUS_CONFIG[leave.status]?.label}
+                                                                <ChevronDown className="w-3.5 h-3.5 opacity-30" />
+                                                            </span>
+                                                        )}
+                                                    </td>
+
+                                                    {/* Action */}
+                                                    <td className="px-4 py-4">
+                                                        <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-400 hover:text-slate-600">
+                                                            <MoreHorizontal className="w-4 h-4" />
+                                                        </button>
+                                                    </td>
+                                                </motion.tr>
+                                            ))}
+                                        </AnimatePresence>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* ── PAGINATION ── */}
+                            <div className="px-6 py-4 border-t border-slate-100 flex items-center justify-between">
+                                <p className="text-[11px] font-medium text-emerald-500">
+                                    Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, sorted.length)} of {sorted.length} entries
+                                </p>
+
+                                <div className="flex items-center gap-1.5">
+                                    <button
+                                        onClick={() => setCurrentPage(1)}
+                                        disabled={currentPage === 1}
+                                        className="p-2 rounded-lg hover:bg-slate-100 text-slate-400 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        <ChevronsLeft className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                        disabled={currentPage === 1}
+                                        className="p-2 rounded-lg hover:bg-slate-100 text-slate-400 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        <ChevronLeft className="w-4 h-4" />
+                                    </button>
+
+                                    {Array.from({ length: totalPages }, (_, i) => i + 1)
+                                        .filter(p => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
+                                        .reduce<(number | "...")[]>((acc, p, i, arr) => {
+                                            if (i > 0 && p - (arr[i - 1] || 0) > 1) acc.push("...")
+                                            acc.push(p)
+                                            return acc
+                                        }, [])
+                                        .map((p, i) =>
+                                            p === "..." ? (
+                                                <span key={`dots-${i}`} className="px-2 text-slate-300 text-sm">...</span>
                                             ) : (
-                                                <>
-                                                    <Button onClick={() => approve(leave.id)} disabled={actionLoading === leave.id}
-                                                        className="h-12 px-8 bg-slate-900 hover:bg-black text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-xl shadow-lg transition-all active:scale-95 group/btn">
-                                                        {actionLoading === leave.id ? <Loader2 className="w-4 h-4 animate-spin" /> : "Accept Request"}
-                                                    </Button>
-                                                    <Button onClick={() => setRejectId(leave.id)} variant="ghost"
-                                                        className="h-12 px-6 text-rose-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all border border-transparent hover:border-rose-100">
-                                                        Decline
-                                                    </Button>
-                                                </>
-                                            )}
-                                        </div>
-                                    )}
+                                                <button
+                                                    key={p}
+                                                    onClick={() => setCurrentPage(p)}
+                                                    className={cn(
+                                                        "w-9 h-9 rounded-lg text-sm font-semibold transition-all",
+                                                        currentPage === p
+                                                            ? "bg-indigo-600 text-white shadow-md shadow-indigo-200"
+                                                            : "text-slate-500 hover:bg-slate-100"
+                                                    )}
+                                                >
+                                                    {p}
+                                                </button>
+                                            )
+                                        )
+                                    }
+
+                                    <button
+                                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                        disabled={currentPage === totalPages}
+                                        className="p-2 rounded-lg hover:bg-slate-100 text-slate-400 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        <ChevronRight className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                        onClick={() => setCurrentPage(totalPages)}
+                                        disabled={currentPage === totalPages}
+                                        className="p-2 rounded-lg hover:bg-slate-100 text-slate-400 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        <ChevronsRight className="w-4 h-4" />
+                                    </button>
                                 </div>
-                            </motion.div>
-                        ))
+                            </div>
+                        </>
                     )}
                 </div>
-            </ScrollArea>
 
-            {/* FOOTER - COMPACT */}
-            <div className="p-6 border-t border-slate-50 bg-white flex justify-between items-center px-10 shrink-0">
-                <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Shard Integrity Validated 100%</span>
-                <button onClick={fetchLeaves} className="flex items-center gap-2.5 text-[10px] font-black text-indigo-600 uppercase tracking-widest transition-all">
-                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                    Registry Re-sync
-                    <RefreshCcw className="w-3 h-3" />
-                </button>
+                {/* ── REJECT MODAL ── */}
+                {rejectId && (
+                    <>
+                        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50" onClick={() => { setRejectId(null); setRejectReason("") }} />
+                        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-2xl border border-slate-100 shadow-2xl p-8 w-[440px] animate-in fade-in zoom-in-95 duration-200">
+                            <h3 className="text-lg font-bold text-slate-800 mb-1">Reject Leave Request</h3>
+                            <p className="text-sm text-slate-400 mb-6">Please provide a reason for the rejection.</p>
+                            <Input
+                                autoFocus
+                                value={rejectReason}
+                                onChange={e => setRejectReason(e.target.value)}
+                                placeholder="Enter reason..."
+                                className="h-12 border-slate-200 rounded-xl text-sm mb-4"
+                            />
+                            <div className="flex items-center gap-3 justify-end">
+                                <Button
+                                    variant="ghost"
+                                    onClick={() => { setRejectId(null); setRejectReason("") }}
+                                    className="h-10 px-5 rounded-xl text-sm font-medium"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    onClick={() => reject(rejectId)}
+                                    disabled={actionLoading === rejectId}
+                                    className="h-10 px-6 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-semibold shadow-lg shadow-rose-100"
+                                >
+                                    {actionLoading === rejectId ? <Loader2 className="w-4 h-4 animate-spin" /> : "Confirm Reject"}
+                                </Button>
+                            </div>
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     )

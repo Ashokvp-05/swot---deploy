@@ -55,7 +55,7 @@ export default function OnboardingCenter({ token }: { token: string }) {
     if (loading) return (
         <div className="py-20 flex flex-col items-center justify-center gap-4 text-slate-700">
             <Loader2 className="w-10 h-10 animate-spin text-indigo-500/30" />
-            <p className="text-[10px] font-black uppercase tracking-[0.4em]">Calibrating onboarding vectors...</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.4em]">Calibrating onboarding vectors...</p>
         </div>
     )
 
@@ -74,15 +74,15 @@ export default function OnboardingCenter({ token }: { token: string }) {
                             <Rocket className="w-8 h-8 text-white" />
                         </div>
                         <div>
-                            <h2 className="text-3xl font-black italic uppercase tracking-tighter">Mission <span className="underline decoration-indigo-300 decoration-4">Onboarding</span></h2>
-                            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-indigo-100 opacity-60">Identity realization protocol in progress</p>
+                            <h2 className="text-3xl font-bold italic uppercase tracking-tighter">Mission <span className="underline decoration-indigo-300 decoration-4">Onboarding</span></h2>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-indigo-100 opacity-60">Identity realization protocol in progress</p>
                         </div>
                     </div>
 
                     <div className="space-y-4 max-w-xl">
                         <div className="flex justify-between items-end px-1">
-                            <p className="text-[10px] font-black uppercase tracking-[0.2em]">{completedCount} of {tasks.length} Segments Resolved</p>
-                            <p className="text-2xl font-black italic">{Math.round(progress)}%</p>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.2em]">{completedCount} of {tasks.length} Segments Resolved</p>
+                            <p className="text-2xl font-bold italic">{Math.round(progress)}%</p>
                         </div>
                         <Progress value={progress} className="h-3 bg-white/10 rounded-full" />
                     </div>
@@ -114,7 +114,7 @@ export default function OnboardingCenter({ token }: { token: string }) {
                                         {task.isCompleted ? <CheckCircle2 className="w-6 h-6" /> : <Circle className="w-6 h-6" />}
                                     </div>
                                     <div>
-                                        <h4 className={`text-sm font-black uppercase tracking-wider ${task.isCompleted ? 'text-emerald-600 line-through' : 'text-slate-900 dark:text-white'}`}>{task.title}</h4>
+                                        <h4 className={`text-sm font-bold uppercase tracking-wider ${task.isCompleted ? 'text-emerald-600 line-through' : 'text-slate-900 dark:text-white'}`}>{task.title}</h4>
                                         <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">
                                             {task.isCompleted ? `Resolved at ${new Date(task.completedAt).toLocaleDateString()}` : "Action Required"}
                                         </p>
@@ -129,7 +129,7 @@ export default function OnboardingCenter({ token }: { token: string }) {
 
             <div className="flex items-center gap-6 py-6 opacity-30 justify-center">
                 <Cpu className="w-5 h-5 text-slate-500" />
-                <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.6em]">Lifecycle Integration Core v.4.0</p>
+                <p className="text-[9px] font-bold text-slate-500 uppercase tracking-[0.6em]">Lifecycle Integration Core v.4.0</p>
             </div>
         </div>
     )

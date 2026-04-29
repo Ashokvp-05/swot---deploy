@@ -32,7 +32,7 @@ export default function AttendancePage() {
                         <ScanLine className="w-8 h-8 text-white" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-black tracking-tighter text-slate-900 dark:text-white uppercase italic leading-none">Temporal Audit</h1>
+                        <h1 className="text-3xl font-bold tracking-tighter text-slate-900 dark:text-white uppercase italic leading-none">Temporal Audit</h1>
                         <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-2">Live synchronization of shifts, attendance, and biometric logs.</p>
                     </div>
                 </div>
@@ -40,7 +40,7 @@ export default function AttendancePage() {
                 <div className="relative z-10">
                     <div className="flex items-center gap-3 px-4 py-2 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/5">
                         <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-[10px] font-black uppercase text-slate-600 dark:text-slate-400 tracking-widest">Shard: Live-01</span>
+                        <span className="text-[10px] font-bold uppercase text-slate-600 dark:text-slate-400 tracking-widest">Shard: Live-01</span>
                     </div>
                 </div>
             </div>
@@ -57,19 +57,19 @@ export default function AttendancePage() {
                     
                     <div className="bg-white dark:bg-slate-950 rounded-[3rem] border border-slate-200 dark:border-white/5 shadow-xl overflow-hidden">
                         <div className="p-8 border-b border-slate-50 dark:border-white/5 flex items-center justify-between">
-                            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Monthly Matrix</h3>
+                            <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">Monthly Matrix</h3>
                             <Zap className="w-4 h-4 text-indigo-500" />
                         </div>
                         <div className="p-10">
                             <AttendanceCalendar token={token} />
                             <div className="flex gap-8 justify-center mt-10 pt-8 border-t border-slate-50 dark:border-white/5">
-                                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                                <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">
                                     <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full" /> Present
                                 </div>
-                                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                                <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">
                                     <div className="w-2.5 h-2.5 bg-indigo-500 rounded-full" /> Holiday
                                 </div>
-                                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                                <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">
                                     <div className="w-2.5 h-2.5 bg-rose-500 rounded-full" /> Absent
                                 </div>
                             </div>

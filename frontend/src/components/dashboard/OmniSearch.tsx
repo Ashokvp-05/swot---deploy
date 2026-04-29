@@ -55,10 +55,10 @@ export default function OmniSearch() {
                 className="hidden lg:flex items-center gap-4 px-6 h-12 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 rounded-2xl text-slate-400 hover:text-indigo-500 transition-all hover:ring-2 hover:ring-indigo-500/20"
             >
                 <Search className="w-4 h-4" />
-                <span className="text-[10px] font-black uppercase tracking-widest">Protocol Search...</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest">Protocol Search...</span>
                 <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-white/10">
                     <Command className="w-2.5 h-2.5" />
-                    <span className="text-[10px] font-black">K</span>
+                    <span className="text-[10px] font-bold">K</span>
                 </div>
             </button>
 
@@ -83,18 +83,18 @@ export default function OmniSearch() {
                                 <input
                                     autoFocus
                                     placeholder="Search command palette..."
-                                    className="flex-1 bg-transparent border-none outline-none text-xl font-black italic uppercase tracking-tight text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-700"
+                                    className="flex-1 bg-transparent border-none outline-none text-xl font-bold italic uppercase tracking-tight text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-700"
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
                                 />
-                                <div className="px-3 py-1 bg-slate-50 dark:bg-black/40 rounded-xl text-[9px] font-black text-slate-400 uppercase tracking-widest border border-slate-100 dark:border-white/5">ESC</div>
+                                <div className="px-3 py-1 bg-slate-50 dark:bg-black/40 rounded-xl text-[9px] font-bold text-slate-400 uppercase tracking-widest border border-slate-100 dark:border-white/5">ESC</div>
                             </div>
 
                             <div className="max-h-[50vh] overflow-y-auto p-6 scrollbar-hide">
                                 {filtered.length === 0 ? (
                                     <div className="py-20 flex flex-col items-center justify-center gap-4">
                                         <X className="w-10 h-10 text-slate-200 dark:text-slate-800" />
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Zero matches for this signal</p>
+                                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Zero matches for this signal</p>
                                     </div>
                                 ) : (
                                     <div className="grid grid-cols-1 gap-2">
@@ -108,7 +108,7 @@ export default function OmniSearch() {
                                                     <div className={`p-4 bg-${item.color}-500/10 rounded-2xl text-${item.color}-500 group-hover:bg-${item.color}-500 group-hover:text-white transition-all`}>
                                                         <item.icon className="w-6 h-6" />
                                                     </div>
-                                                    <span className="text-sm font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 group-hover:text-indigo-600 transition-colors">{item.label}</span>
+                                                    <span className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 group-hover:text-indigo-600 transition-colors">{item.label}</span>
                                                 </div>
                                                 <ArrowRight className="w-5 h-5 text-slate-200 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all translate-x-[-10px] group-hover:translate-x-0" />
                                             </button>
@@ -120,15 +120,15 @@ export default function OmniSearch() {
                             <div className="p-6 bg-slate-50 dark:bg-black/20 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
                                 <div className="flex items-center gap-6">
                                     <div className="flex items-center gap-2">
-                                        <kbd className="px-2 py-1 bg-white dark:bg-slate-800 rounded-md text-[9px] font-black border border-slate-200 dark:border-white/10">↑↓</kbd>
-                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Navigate</span>
+                                        <kbd className="px-2 py-1 bg-white dark:bg-slate-800 rounded-md text-[9px] font-bold border border-slate-200 dark:border-white/10">↑↓</kbd>
+                                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Navigate</span>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <kbd className="px-2 py-1 bg-white dark:bg-slate-800 rounded-md text-[9px] font-black border border-slate-200 dark:border-white/10">↵</kbd>
-                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Select</span>
+                                        <kbd className="px-2 py-1 bg-white dark:bg-slate-800 rounded-md text-[9px] font-bold border border-slate-200 dark:border-white/10">↵</kbd>
+                                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Select</span>
                                     </div>
                                 </div>
-                                <p className="text-[9px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-[0.4em]">OmniSearch v5.0</p>
+                                <p className="text-[9px] font-bold text-slate-300 dark:text-slate-600 uppercase tracking-[0.4em]">OmniSearch v5.0</p>
                             </div>
                         </motion.div>
                     </motion.div>

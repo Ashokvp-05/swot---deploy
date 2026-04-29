@@ -68,7 +68,7 @@ export function BroadcastCenter({ token }: { token: string }) {
         if (e.target.files && e.target.files.length > 0) {
             const newFiles = Array.from(e.target.files).map(file => file.name)
             setAttachedFiles(prev => [...prev, ...newFiles])
-            toast.info(`Authorized file(s) linked: ${newFiles.join(", ")}`)
+            toast.info(`File(s) attached: ${newFiles.join(", ")}`)
             // clear the input value so the same file could be uploaded again if removed
             if (fileInputRef.current) fileInputRef.current.value = ""
         }
@@ -90,7 +90,7 @@ export function BroadcastCenter({ token }: { token: string }) {
         }
         
         setIsSending(true)
-        // Simulate network transmit latency
+        // Send announcement
         setTimeout(() => {
             setIsSending(false)
             setTitle("")
@@ -99,7 +99,7 @@ export function BroadcastCenter({ token }: { token: string }) {
             setPriority("NORMAL")
             setTargetAudience("ALL")
             setSelectedRecipients([])
-            toast.success("Intelligence Broadcast successfully transmitted to targets.")
+            toast.success("Announcement sent successfully.")
         }, 1500)
     }
 
@@ -112,7 +112,7 @@ export function BroadcastCenter({ token }: { token: string }) {
                         <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200">
                             <Megaphone className="w-5 h-5 text-white" />
                         </div>
-                        <h1 className="text-3xl font-black text-slate-900 tracking-tighter uppercase italic font-brand">Announcements</h1>
+                        <h1 className="text-3xl font-bold text-slate-800 font-brand">Announcements</h1>
                     </div>
                     <p className="text-slate-500 font-medium text-sm ml-13">Send messages, updates, and documents to all employees.</p>
                 </div>
@@ -124,29 +124,29 @@ export function BroadcastCenter({ token }: { token: string }) {
                         className="bg-white border-slate-200 text-slate-600 hover:bg-slate-50 font-bold uppercase tracking-widest text-[10px] h-10 px-6 rounded-xl"
                     >
                         <History className="w-4 h-4 mr-2" />
-                        {showHistory ? "Close History" : "View Transmission Logs"}
+                        {showHistory ? "Close History" : "View History"}
                     </Button>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 
-                {/* LEFT COL: Configuration */}
+                {/* CONFIGURATION */}
                 <div className="col-span-1 space-y-8">
                     
-                    {/* AUDIENCE SELECTOR */}
+                    {/* RECIPIENTS */}
                     <div className="bg-white rounded-[24px] p-6 border border-slate-100 shadow-sm relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-full -z-10 group-hover:scale-110 transition-transform duration-500" />
-                        <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                            <Users className="w-4 h-4 text-indigo-400" /> Target Node
+                        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <Users className="w-4 h-4 text-indigo-400" /> Recipients
                         </h3>
                         
                         <div className="space-y-3">
                             {[
-                                { id: "ALL", label: "All Personnel" },
+                                { id: "ALL", label: "All Employees" },
                                 { id: "MANAGERS", label: "Managers Only" },
                                 { id: "EMPLOYEES", label: "Staff Only" },
-                                { id: "SPECIFIC", label: "Specific Personnel" }
+                                { id: "SPECIFIC", label: "Specific Employees" }
                             ].map((aud) => (
                                 <button
                                     key={aud.id}
@@ -164,7 +164,7 @@ export function BroadcastCenter({ token }: { token: string }) {
                             ))}
                         </div>
                         
-                        {/* SPECIFIC EMPLOYEE SELECTOR (ANIMATED REVEAL) */}
+                        {/* SPECIFIC EMPLOYEE SELECTOR */}
                         <AnimatePresence>
                             {targetAudience === "SPECIFIC" && (
                                 <motion.div 
@@ -179,7 +179,7 @@ export function BroadcastCenter({ token }: { token: string }) {
                                             <div className="flex flex-wrap gap-2 mb-2">
                                                 {selectedRecipients.map((recip) => (
                                                     <div key={recip.id} className="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 border border-indigo-100 rounded-lg shadow-sm">
-                                                        <div className="w-5 h-5 rounded-full bg-white text-indigo-700 flex items-center justify-center font-black text-[10px] shadow-sm border border-indigo-100">
+                                                        <div className="w-5 h-5 rounded-full bg-white text-indigo-700 flex items-center justify-center font-bold text-[10px] shadow-sm border border-indigo-100">
                                                             {recip.name[0]?.toUpperCase()}
                                                         </div>
                                                         <span className="text-xs font-bold text-slate-700">{recip.name}</span>
@@ -241,16 +241,16 @@ export function BroadcastCenter({ token }: { token: string }) {
                         </AnimatePresence>
                     </div>
 
-                    {/* PRIORITY MATRIX */}
+                    {/* PRIORITY */}
                     <div className="bg-white rounded-[24px] p-6 border border-slate-100 shadow-sm">
-                        <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                            <Zap className="w-4 h-4 text-amber-400" /> Protocol Priority
+                        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <Zap className="w-4 h-4 text-amber-400" /> Priority Level
                         </h3>
                         <div className="flex bg-slate-50 rounded-xl p-1.5 border border-slate-100">
                             {[
                                 { id: "NORMAL", color: "bg-white text-slate-700 shadow-sm" },
-                                { id: "HIGH", color: "bg-amber-500 text-white shadow-md shadow-amber-200 text-amber-900 font-extrabold" },
-                                { id: "URGENT", color: "bg-rose-600 text-white shadow-md shadow-rose-200 animate-pulse font-black" }
+                                { id: "HIGH", color: "bg-amber-500 text-white shadow-md shadow-amber-200 text-amber-900 font-bold" },
+                                { id: "URGENT", color: "bg-rose-600 text-white shadow-md shadow-rose-200 animate-pulse font-bold" }
                             ].map((pri) => (
                                 <button
                                     key={pri.id}
@@ -267,23 +267,23 @@ export function BroadcastCenter({ token }: { token: string }) {
                     </div>
                 </div>
 
-                {/* RIGHT COL: Compose & Transmit */}
+                {/* COMPOSE MESSAGE */}
                 <div className="col-span-1 lg:col-span-2 space-y-6">
                     <div className="bg-white rounded-[24px] border border-slate-100 shadow-sm flex flex-col overflow-hidden">
                         
                         <div className="p-1 border-b border-slate-100 bg-slate-50/50">
                             <input
                                 type="text"
-                                placeholder="Subject Line / Directive Title..."
+                                placeholder="Subject Line..."
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
-                                className="w-full bg-transparent px-5 py-4 outline-none text-lg font-black tracking-tight text-slate-800 placeholder:text-slate-300 font-brand"
+                                className="w-full bg-transparent px-5 py-4 outline-none text-lg font-bold tracking-tight text-slate-800 placeholder:text-slate-300 font-brand"
                             />
                         </div>
 
                         <div className="flex-1 p-6">
                             <textarea
-                                placeholder="Write official announcement, instruction, or details here. High-priority messages trigger immediate staff push notifications..."
+                                placeholder="Write official announcement, instruction, or details here. High-priority messages trigger immediate notifications..."
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
                                 className="w-full h-48 resize-none bg-transparent outline-none text-[15px] leading-relaxed text-slate-600 placeholder:text-slate-300 font-medium"
@@ -321,13 +321,13 @@ export function BroadcastCenter({ token }: { token: string }) {
                     <div className="flex items-center justify-between pt-4">
                         <div className="flex items-center gap-2 text-slate-400">
                             <AlertTriangle className="w-4 h-4" />
-                            <span className="text-[10px] font-bold uppercase tracking-widest leading-none">Global messages require explicit authorization</span>
+                            <span className="text-[10px] font-bold uppercase tracking-widest leading-none">Global messages require administrator approval</span>
                         </div>
                         <Button 
                             onClick={handleBroadcast}
                             disabled={isSending}
                             className={cn(
-                                "h-14 px-10 rounded-2xl font-black uppercase tracking-widest text-[12px] shadow-xl transition-all",
+                                "h-14 px-10 rounded-2xl font-bold uppercase tracking-widest text-[12px] shadow-xl transition-all",
                                 priority === "URGENT" ? "bg-rose-600 hover:bg-rose-700 shadow-rose-200" : "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200"
                             )}
                         >
@@ -348,7 +348,7 @@ export function BroadcastCenter({ token }: { token: string }) {
 
             </div>
 
-            {/* HISTORY OVERLAY / TRAY */}
+            {/* ANNOUNCEMENT HISTORY */}
             <AnimatePresence>
                 {showHistory && (
                     <motion.div 
@@ -361,8 +361,8 @@ export function BroadcastCenter({ token }: { token: string }) {
                             <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
                                 <History className="w-64 h-64 text-white" />
                             </div>
-                            <h3 className="text-white text-sm font-black uppercase tracking-widest mb-6 flex items-center gap-3">
-                                <History className="w-4 h-4 text-indigo-400" /> Transmission Archives
+                            <h3 className="text-white text-sm font-bold uppercase tracking-widest mb-6 flex items-center gap-3">
+                                <History className="w-4 h-4 text-indigo-400" /> Announcement History
                             </h3>
                             
                             <div className="space-y-3 relative z-10">

@@ -12,15 +12,15 @@ import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 import { API_BASE_URL } from "@/lib/config"
 
-const DOC_TYPES = ["Contract", "Identity", "Certificate", "Offer", "Legal", "Other"]
+const DOC_TYPES = ["Aadhaar Card", "PAN Card", "Passport", "Driving License", "Voter ID", "Educational Document"]
 
 const TYPE_COLORS: Record<string, string> = {
-    Contract:    "bg-indigo-500/10 text-indigo-600 border-indigo-200",
-    Identity:    "bg-amber-500/10 text-amber-600 border-amber-200",
-    Certificate: "bg-violet-500/10 text-violet-600 border-violet-200",
-    Offer:       "bg-emerald-500/10 text-emerald-600 border-emerald-200",
-    Legal:       "bg-rose-500/10 text-rose-600 border-rose-200",
-    Other:       "bg-slate-100 text-slate-500 border-slate-200",
+    "Aadhaar Card": "bg-indigo-500/10 text-indigo-600 border-indigo-200",
+    "PAN Card": "bg-amber-500/10 text-amber-600 border-amber-200",
+    "Passport": "bg-violet-500/10 text-violet-600 border-violet-200",
+    "Driving License": "bg-emerald-500/10 text-emerald-600 border-emerald-200",
+    "Voter ID": "bg-rose-500/10 text-rose-600 border-rose-200",
+    "Educational Document": "bg-slate-100 text-slate-500 border-slate-200",
 }
 
 interface Doc {
@@ -41,7 +41,7 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
     // Form state
     const [file, setFile] = useState<File | null>(null)
     const [docName, setDocName] = useState("")
-    const [docType, setDocType] = useState("Identity")
+    const [docType, setDocType] = useState("Aadhaar Card")
     const fileRef = useRef<HTMLInputElement>(null)
 
     // ── Fetch employee's own documents ─────────────────────────────
@@ -100,7 +100,7 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
             setShowModal(false)
             setFile(null)
             setDocName("")
-            setDocType("Identity")
+            setDocType("Aadhaar Card")
             await fetchDocs()
         } catch (err: any) {
             toast.error(err.message || "Upload failed.")
@@ -179,7 +179,7 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
                         <FolderOpen className="w-5 h-5 text-indigo-600" />
                     </div>
                     <div>
-                        <h3 className="text-base font-black text-slate-900 uppercase italic tracking-tight">My Document Vault</h3>
+                        <h3 className="text-base font-bold text-slate-900 uppercase italic tracking-tight">My Document Vault</h3>
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-0.5">
                             {docs.length} Artifact{docs.length !== 1 ? "s" : ""} · Secure Manager Records
                         </p>
@@ -187,7 +187,7 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
                 </div>
                 <Button
                     onClick={() => setShowModal(true)}
-                    className="h-9 px-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest gap-2 shadow-lg shadow-indigo-100 transition-all active:scale-95"
+                    className="h-9 px-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest gap-2 shadow-lg shadow-indigo-100 transition-all active:scale-95"
                     id="upload-document-btn"
                 >
                     <Upload className="w-3.5 h-3.5" /> Upload Doc
@@ -199,7 +199,7 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
                 {loading ? (
                     <div className="h-40 flex items-center justify-center gap-3 text-slate-400">
                         <Loader2 className="w-6 h-6 animate-spin text-indigo-500" />
-                        <span className="text-[10px] font-black uppercase tracking-widest">Syncing vault...</span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest">Syncing vault...</span>
                     </div>
                 ) : docs.length === 0 ? (
                     <div className="h-48 flex flex-col items-center justify-center gap-4">
@@ -207,7 +207,7 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
                             <FileText className="w-7 h-7 text-slate-200" />
                         </div>
                         <div className="text-center">
-                            <p className="text-[12px] font-black text-slate-400 uppercase tracking-widest">No documents yet</p>
+                            <p className="text-[12px] font-bold text-slate-400 uppercase tracking-widest">No documents yet</p>
                             <p className="text-[10px] text-slate-300 mt-1">Upload your ID, contracts, or certificates</p>
                         </div>
                     </div>
@@ -224,12 +224,12 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
                                 <FileText className="w-4 h-4" />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-[13px] font-black text-slate-900 uppercase italic tracking-tight truncate group-hover:text-indigo-600 transition-colors">{doc.name}</p>
+                                <p className="text-[13px] font-bold text-slate-900 uppercase italic tracking-tight truncate group-hover:text-indigo-600 transition-colors">{doc.name}</p>
                                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mt-0.5">
                                     {new Date(doc.createdAt).toLocaleDateString()} · Synced to HR Manager Portal
                                 </p>
                             </div>
-                            <Badge className={cn("border text-[8px] font-black uppercase tracking-widest px-2 h-5 shrink-0", TYPE_COLORS[doc.type] || TYPE_COLORS.Other)}>
+                            <Badge className={cn("border text-[8px] font-bold uppercase tracking-widest px-2 h-5 shrink-0", TYPE_COLORS[doc.type] || TYPE_COLORS["Educational Document"])}>
                                 {doc.type}
                             </Badge>
                             <div className="flex items-center gap-1 shrink-0">
@@ -288,7 +288,7 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
                                         <CloudUpload className="w-5 h-5 text-white" />
                                     </div>
                                     <div>
-                                        <h2 className="text-lg font-black text-slate-900 uppercase italic tracking-tight">Upload Document</h2>
+                                        <h2 className="text-lg font-bold text-slate-900 uppercase italic tracking-tight">Upload Document</h2>
                                         <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Secure · Encrypted · ONLY HR MANAGER VISIBLE</p>
                                     </div>
                                 </div>
@@ -328,13 +328,13 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
                                     {file ? (
                                         <>
                                             <CheckCircle2 className="w-10 h-10 text-emerald-500" />
-                                            <p className="text-[12px] font-black text-slate-800 uppercase tracking-tight text-center">{file.name}</p>
+                                            <p className="text-[12px] font-bold text-slate-800 uppercase tracking-tight text-center">{file.name}</p>
                                             <p className="text-[9px] font-bold text-slate-400 uppercase">{(file.size / 1024).toFixed(0)} KB</p>
                                         </>
                                     ) : (
                                         <>
                                             <Upload className="w-10 h-10 text-slate-200" />
-                                            <p className="text-[12px] font-black text-slate-400 uppercase tracking-tight text-center">Drop file here or click to browse</p>
+                                            <p className="text-[12px] font-bold text-slate-400 uppercase tracking-tight text-center">Drop file here or click to browse</p>
                                             <p className="text-[9px] text-slate-300 font-bold uppercase tracking-widest">PDF · PNG · JPG · DOC · Max 5MB</p>
                                         </>
                                     )}
@@ -342,7 +342,7 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
 
                                 {/* Document Name */}
                                 <div>
-                                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-2">Document Name *</label>
+                                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block mb-2">Document Name *</label>
                                     <input
                                         type="text"
                                         value={docName}
@@ -355,7 +355,7 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
 
                                 {/* Document Type */}
                                 <div>
-                                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-2">Document Type *</label>
+                                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block mb-2">Document Type *</label>
                                     <div className="flex flex-wrap gap-2">
                                         {DOC_TYPES.map(t => (
                                             <button
@@ -363,7 +363,7 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
                                                 key={t}
                                                 onClick={() => setDocType(t)}
                                                 className={cn(
-                                                    "px-3 h-7 rounded-xl border text-[9px] font-black uppercase tracking-widest transition-all",
+                                                    "px-3 h-7 rounded-xl border text-[9px] font-bold uppercase tracking-widest transition-all",
                                                     docType === t
                                                         ? "bg-indigo-600 text-white border-indigo-600 shadow-lg shadow-indigo-200"
                                                         : "bg-slate-50 text-slate-500 border-slate-200 hover:border-indigo-300"
@@ -379,7 +379,7 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
                                 <div className="flex items-start gap-3 p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
                                     <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                                     <p className="text-[10px] font-bold text-emerald-700 leading-relaxed">
-                                        This document will be <span className="font-black">immediately visible</span> to the <span className="font-black text-indigo-700">HR Manager</span> for review and download.
+                                        This document will be <span className="font-bold">immediately visible</span> to the <span className="font-bold text-indigo-700">HR Manager</span> for review and download.
                                     </p>
                                 </div>
 
@@ -389,7 +389,7 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
                                         type="button"
                                         onClick={() => handleUpload()}
                                         disabled={uploading || !file}
-                                        className="w-full h-11 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg shadow-indigo-200 transition-all disabled:opacity-50"
+                                        className="w-full h-11 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-indigo-200 transition-all disabled:opacity-50"
                                     >
                                         {uploading
                                             ? <><Loader2 className="w-4 h-4 animate-spin mr-2 inline" />Uploading...</>

@@ -48,7 +48,7 @@ export default function PayrollDashboardPage() {
                         <div className="p-2 bg-indigo-600 rounded-lg shadow-md group-hover:scale-110 transition-transform">
                             <Landmark className="w-5 h-5 text-white" />
                         </div>
-                        <h2 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-tight italic">Payroll <span className="text-indigo-600">Unit</span></h2>
+                        <h2 className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-tight italic">Payroll <span className="text-indigo-600">Unit</span></h2>
                     </div>
                     <nav className="space-y-1">
                         {navItems.map((item) => {
@@ -78,7 +78,7 @@ export default function PayrollDashboardPage() {
                                 <Landmark className="w-6 h-6 text-white dark:text-black" />
                             </div>
                             <div>
-                                <h1 className="text-2xl font-black text-slate-800 dark:text-white italic uppercase">
+                                <h1 className="text-2xl font-bold text-slate-800 dark:text-white italic uppercase">
                                     {navItems.find(i => i.id === currentTab)?.label.toUpperCase() || "PAYROLL"} <span className="text-indigo-600">HUB</span>
                                 </h1>
                                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.4em] mt-1 flex items-center gap-1.5">
@@ -104,8 +104,8 @@ export default function PayrollDashboardPage() {
                                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-5 ${stat.color}`}>
                                                 <stat.icon className="w-5 h-5" />
                                             </div>
-                                            <h3 className="text-3xl font-black mb-1 tracking-tighter">{stat.value}</h3>
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
+                                            <h3 className="text-3xl font-bold mb-1 tracking-tighter">{stat.value}</h3>
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{stat.label}</p>
                                             <p className="text-[9px] text-slate-400 italic mt-1 font-bold uppercase">{stat.sub}</p>
                                         </Card>
                                     ))}
@@ -125,7 +125,7 @@ export default function PayrollDashboardPage() {
                                                     <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl">
                                                         <mod.icon className="w-5 h-5 text-indigo-600" />
                                                     </div>
-                                                    <h4 className="text-sm font-black uppercase tracking-tight group-hover:text-indigo-600 transition-colors">{mod.title}</h4>
+                                                    <h4 className="text-sm font-bold uppercase tracking-tight group-hover:text-indigo-600 transition-colors">{mod.title}</h4>
                                                 </div>
                                                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{mod.desc}</p>
                                             </Card>
@@ -147,16 +147,16 @@ export default function PayrollDashboardPage() {
                                     ].map((s, i) => (
                                         <Card key={i} className="p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm group hover:-translate-y-1 transition-all">
                                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-5 ${s.color}`}><s.icon className="w-5 h-5" /></div>
-                                            <h3 className="text-3xl font-black mb-1 tracking-tighter">{s.value}</h3>
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{s.label}</p>
+                                            <h3 className="text-3xl font-bold mb-1 tracking-tighter">{s.value}</h3>
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{s.label}</p>
                                             <p className="text-[9px] text-slate-400 italic mt-1 font-bold uppercase">{s.sub}</p>
                                         </Card>
                                     ))}
                                 </div>
                                 <Card className="p-10 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
                                     <div className="flex items-center justify-between mb-8">
-                                        <h3 className="text-lg font-black uppercase tracking-tight">Salary Component Breakdown</h3>
-                                        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-5 h-10 font-black text-[10px] uppercase tracking-widest">
+                                        <h3 className="text-lg font-bold uppercase tracking-tight">Salary Component Breakdown</h3>
+                                        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-5 h-10 font-bold text-[10px] uppercase tracking-widest">
                                             <Plus className="w-3.5 h-3.5 mr-2" /> Add Component
                                         </Button>
                                     </div>
@@ -174,25 +174,25 @@ export default function PayrollDashboardPage() {
                                                 <div className="flex items-center gap-4">
                                                     <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl"><Banknote className="w-4 h-4 text-indigo-600" /></div>
                                                     <div>
-                                                        <p className="text-sm font-black text-slate-900 dark:text-white">{item.name}</p>
+                                                        <p className="text-sm font-bold text-slate-900 dark:text-white">{item.name}</p>
                                                         <div className="flex items-center gap-2 mt-1">
-                                                            <span className={`text-[9px] font-black px-2 py-0.5 rounded-full ${
+                                                            <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${
                                                                 item.type === "FIXED" ? "bg-indigo-100 text-indigo-600" :
                                                                 item.type === "ALLOWANCE" ? "bg-emerald-100 text-emerald-600" :
                                                                 item.type === "VARIABLE" ? "bg-amber-100 text-amber-600" :
                                                                 "bg-rose-100 text-rose-600"
                                                             }`}>{item.type}</span>
-                                                            {item.taxable && <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">TAXABLE</span>}
+                                                            {item.taxable && <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">TAXABLE</span>}
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <span className={`text-sm font-black tabular-nums ${item.amount.startsWith("-") ? "text-rose-600" : "text-slate-900 dark:text-white"}`}>{item.amount}</span>
+                                                <span className={`text-sm font-bold tabular-nums ${item.amount.startsWith("-") ? "text-rose-600" : "text-slate-900 dark:text-white"}`}>{item.amount}</span>
                                             </div>
                                         ))}
                                     </div>
                                     <div className="mt-6 p-5 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 flex items-center justify-between">
-                                        <span className="text-sm font-black text-indigo-700 dark:text-indigo-300 uppercase tracking-wide">Net Take Home</span>
-                                        <span className="text-2xl font-black text-indigo-700 dark:text-indigo-300 tabular-nums">₹43,750</span>
+                                        <span className="text-sm font-bold text-indigo-700 dark:text-indigo-300 uppercase tracking-wide">Net Take Home</span>
+                                        <span className="text-2xl font-bold text-indigo-700 dark:text-indigo-300 tabular-nums">₹43,750</span>
                                     </div>
                                 </Card>
                             </div>
@@ -211,26 +211,26 @@ export default function PayrollDashboardPage() {
                                     ].map((s, i) => (
                                         <Card key={i} className="p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
                                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-5 ${s.color}`}><s.icon className="w-5 h-5" /></div>
-                                            <h3 className="text-3xl font-black mb-1 tracking-tighter">{s.value}</h3>
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{s.label}</p>
+                                            <h3 className="text-3xl font-bold mb-1 tracking-tighter">{s.value}</h3>
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{s.label}</p>
                                             <p className="text-[9px] text-slate-400 italic mt-1 font-bold uppercase">{s.sub}</p>
                                         </Card>
                                     ))}
                                 </div>
                                 <Card className="p-10 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
-                                    <h3 className="text-lg font-black uppercase tracking-tight mb-6">Tax Deduction Register — FY 2025–26</h3>
+                                    <h3 className="text-lg font-bold uppercase tracking-tight mb-6">Tax Deduction Register — FY 2025–26</h3>
                                     <div className="space-y-3">
                                         {["April", "May", "June", "July", "August", "September", "October", "November", "December", "January", "February", "March"].map((month, i) => (
                                             <div key={i} className="flex items-center justify-between p-4 rounded-2xl border border-slate-50 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-all">
                                                 <div className="flex items-center gap-4">
-                                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest w-20">{month}</span>
+                                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest w-20">{month}</span>
                                                     <div className="flex items-center gap-2">
-                                                        <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-600">TDS: ₹4,200</span>
-                                                        <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-600">PF: ₹3,000</span>
-                                                        <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-amber-100 text-amber-600">PT: ₹200</span>
+                                                        <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-600">TDS: ₹4,200</span>
+                                                        <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-600">PF: ₹3,000</span>
+                                                        <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-600">PT: ₹200</span>
                                                     </div>
                                                 </div>
-                                                <span className={`text-[9px] font-black px-2 py-1 rounded-lg ${i < 3 ? "bg-emerald-100 text-emerald-600" : "bg-slate-100 text-slate-400"}`}>
+                                                <span className={`text-[9px] font-bold px-2 py-1 rounded-lg ${i < 3 ? "bg-emerald-100 text-emerald-600" : "bg-slate-100 text-slate-400"}`}>
                                                     {i < 3 ? "FILED" : "PENDING"}
                                                 </span>
                                             </div>
@@ -246,12 +246,12 @@ export default function PayrollDashboardPage() {
                                 <Card className="p-10 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
                                     <div className="flex items-center justify-between mb-8">
                                         <div>
-                                            <h3 className="text-lg font-black uppercase tracking-tight">Employee Bank Details</h3>
+                                            <h3 className="text-lg font-bold uppercase tracking-tight">Employee Bank Details</h3>
                                             <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Salary disbursement accounts</p>
                                         </div>
                                         <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-200/50 rounded-xl">
                                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                            <span className="text-[9px] font-black uppercase text-emerald-600 tracking-widest">Bank Verified</span>
+                                            <span className="text-[9px] font-bold uppercase text-emerald-600 tracking-widest">Bank Verified</span>
                                         </div>
                                     </div>
                                     <div className="space-y-4">
@@ -264,14 +264,14 @@ export default function PayrollDashboardPage() {
                                             <div key={i} className="flex items-center justify-between p-5 rounded-2xl border border-slate-50 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-all">
                                                 <div className="flex items-center gap-4">
                                                     <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/20 flex items-center justify-center">
-                                                        <span className="text-xs font-black text-indigo-600">{emp.name[0]}</span>
+                                                        <span className="text-xs font-bold text-indigo-600">{emp.name[0]}</span>
                                                     </div>
                                                     <div>
-                                                        <p className="text-sm font-black text-slate-900 dark:text-white">{emp.name}</p>
+                                                        <p className="text-sm font-bold text-slate-900 dark:text-white">{emp.name}</p>
                                                         <p className="text-[10px] text-slate-400 font-bold mt-0.5">{emp.bank} · {emp.acct} · IFSC: {emp.ifsc}</p>
                                                     </div>
                                                 </div>
-                                                <span className="text-[9px] font-black px-3 py-1 rounded-lg bg-indigo-100 text-indigo-600">{emp.method}</span>
+                                                <span className="text-[9px] font-bold px-3 py-1 rounded-lg bg-indigo-100 text-indigo-600">{emp.method}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -290,16 +290,16 @@ export default function PayrollDashboardPage() {
                                     ].map((s, i) => (
                                         <Card key={i} className="p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
                                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-5 ${s.color}`}><s.icon className="w-5 h-5" /></div>
-                                            <h3 className="text-3xl font-black mb-1 tracking-tighter">{s.value}</h3>
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{s.label}</p>
+                                            <h3 className="text-3xl font-bold mb-1 tracking-tighter">{s.value}</h3>
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{s.label}</p>
                                             <p className="text-[9px] text-slate-400 italic mt-1 font-bold uppercase">{s.sub}</p>
                                         </Card>
                                     ))}
                                 </div>
                                 <Card className="p-10 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
                                     <div className="flex items-center justify-between mb-6">
-                                        <h3 className="text-lg font-black uppercase tracking-tight">Available Reports</h3>
-                                        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-5 h-10 font-black text-[10px] uppercase tracking-widest">
+                                        <h3 className="text-lg font-bold uppercase tracking-tight">Available Reports</h3>
+                                        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-5 h-10 font-bold text-[10px] uppercase tracking-widest">
                                             <Download className="w-3.5 h-3.5 mr-2" /> Export All
                                         </Button>
                                     </div>
@@ -314,13 +314,13 @@ export default function PayrollDashboardPage() {
                                                 <div className="flex items-center gap-4">
                                                     <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl"><BarChart3 className="w-4 h-4 text-indigo-600" /></div>
                                                     <div>
-                                                        <p className="text-sm font-black text-slate-900 dark:text-white">{report.name}</p>
+                                                        <p className="text-sm font-bold text-slate-900 dark:text-white">{report.name}</p>
                                                         <p className="text-[10px] text-slate-400 font-bold mt-0.5">{report.size}</p>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-3">
-                                                    <span className="text-[9px] font-black px-2 py-1 rounded-lg bg-slate-100 text-slate-500">{report.type}</span>
-                                                    <Button variant="outline" className="h-9 px-4 rounded-xl border-slate-200 dark:border-white/10 font-black uppercase text-[9px] tracking-widest">
+                                                    <span className="text-[9px] font-bold px-2 py-1 rounded-lg bg-slate-100 text-slate-500">{report.type}</span>
+                                                    <Button variant="outline" className="h-9 px-4 rounded-xl border-slate-200 dark:border-white/10 font-bold uppercase text-[9px] tracking-widest">
                                                         <Download className="w-3 h-3 mr-1.5" /> PDF
                                                     </Button>
                                                 </div>
@@ -334,7 +334,7 @@ export default function PayrollDashboardPage() {
                         {/* PAYROLL HISTORY */}
                         {currentTab === "history" && (
                             <Card className="p-10 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
-                                <h3 className="text-lg font-black uppercase tracking-tight mb-6">Payroll History — FY 2025-26</h3>
+                                <h3 className="text-lg font-bold uppercase tracking-tight mb-6">Payroll History — FY 2025-26</h3>
                                 <div className="space-y-3">
                                     {[
                                         { month: "March 2026", employees: 47, total: "₹2,42,500", status: "PROCESSED", date: "31 Mar 2026" },
@@ -348,14 +348,14 @@ export default function PayrollDashboardPage() {
                                             <div className="flex items-center gap-4">
                                                 <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl"><History className="w-4 h-4 text-indigo-600" /></div>
                                                 <div>
-                                                    <p className="text-sm font-black text-slate-900 dark:text-white">{record.month}</p>
+                                                    <p className="text-sm font-bold text-slate-900 dark:text-white">{record.month}</p>
                                                     <p className="text-[10px] text-slate-400 font-bold mt-0.5">{record.employees} employees · Processed on {record.date}</p>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-4">
-                                                <span className="text-sm font-black text-indigo-600 tabular-nums">{record.total}</span>
-                                                <span className="text-[9px] font-black px-2 py-1 rounded-lg bg-emerald-100 text-emerald-600">{record.status}</span>
-                                                <Button variant="outline" className="h-9 px-4 rounded-xl border-slate-200 dark:border-white/10 font-black uppercase text-[9px]">
+                                                <span className="text-sm font-bold text-indigo-600 tabular-nums">{record.total}</span>
+                                                <span className="text-[9px] font-bold px-2 py-1 rounded-lg bg-emerald-100 text-emerald-600">{record.status}</span>
+                                                <Button variant="outline" className="h-9 px-4 rounded-xl border-slate-200 dark:border-white/10 font-bold uppercase text-[9px]">
                                                     <Download className="w-3 h-3 mr-1.5" /> PDF
                                                 </Button>
                                             </div>

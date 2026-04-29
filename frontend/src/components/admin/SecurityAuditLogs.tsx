@@ -120,9 +120,9 @@ export function SecurityAuditLogs({ token }: { token: string }) {
                         <History className="w-6 h-6" />
                     </div>
                     <div>
-                        <h3 className="text-xl font-bold text-slate-900 tracking-tight font-brand">Super Admin Ledger Manifest</h3>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">
-                            {filteredLogs.length} Administrative Epochs · Live Relative Telemetry
+                        <h3 className="text-xl font-bold text-slate-800 tracking-tight font-brand">Audit Logs</h3>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+                            {filteredLogs.length} Log entries · Real-time tracking
                         </p>
                     </div>
                 </div>
@@ -136,7 +136,7 @@ export function SecurityAuditLogs({ token }: { token: string }) {
                     {loading && logs.length === 0 ? (
                         <div className="py-24 flex flex-col items-center justify-center gap-6">
                             <Loader2 className="w-10 h-10 animate-spin text-indigo-600" />
-                            <p className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-400 animate-pulse">Decrypting Shards...</p>
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Loading logs...</p>
                         </div>
                     ) : (
                         paginatedLogs.map((log, idx) => (
@@ -149,19 +149,19 @@ export function SecurityAuditLogs({ token }: { token: string }) {
                             >
                                 {/* PRIMARY IDENTITY NODE */}
                                 <div className="flex items-center gap-5 flex-1 min-w-0">
-                                    <div className="w-10 h-10 rounded-[14px] bg-slate-900 text-white flex items-center justify-center font-black shrink-0 transition-transform group-hover:scale-105">
+                                    <div className="w-10 h-10 rounded-[14px] bg-slate-900 text-white flex items-center justify-center font-bold shrink-0 transition-transform group-hover:scale-105">
                                         <Shield className="w-5 h-5 text-indigo-400" />
                                     </div>
                                     <div className="min-w-0">
                                         <div className="flex items-center gap-2.5 mb-1 text-[11px] font-body">
-                                            <span className="font-bold text-slate-900 uppercase italic tracking-tight font-brand truncate">{log.user}</span>
-                                            <Badge className="bg-slate-900 text-white text-[8px] font-black uppercase px-2 py-0.5 rounded-md border-none leading-none">
+                                            <span className="font-bold text-slate-800 tracking-tight font-brand truncate">{log.user}</span>
+                                            <Badge className="bg-slate-800 text-white text-[8px] font-bold uppercase px-2 py-0.5 rounded-md border-none leading-none">
                                                 {log.designation}
                                             </Badge>
                                         </div>
                                         <div className="flex items-center gap-3 text-[10px] text-slate-400 font-medium">
-                                            <span className="text-indigo-600 font-black tracking-widest text-[8px] bg-indigo-50 px-2 py-0.5 rounded-md">SEC_NODE: {log.id}</span>
-                                            <span className="font-bold text-slate-400 uppercase tracking-tighter italic truncate">{log.details}</span>
+                                            <span className="text-indigo-600 font-bold tracking-widest text-[8px] bg-indigo-50 px-2 py-0.5 rounded-md">LOG_ID: {log.id}</span>
+                                            <span className="font-semibold text-slate-400 uppercase tracking-tight truncate">{log.details}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -169,14 +169,14 @@ export function SecurityAuditLogs({ token }: { token: string }) {
                                 {/* ACTION TOKEN & RELATIVE TIME */}
                                 <div className="flex items-center gap-8 shrink-0">
                                     <div className="flex flex-col items-end gap-1 px-6 border-r border-slate-50">
-                                        <Badge className="bg-slate-50 text-slate-600 text-[9px] font-black uppercase tracking-[0.1em] px-3 py-1 rounded-lg border-none ring-1 ring-slate-100">
+                                        <Badge className="bg-slate-50 text-slate-600 text-[9px] font-bold uppercase tracking-widest px-3 py-1 rounded-lg border-none ring-1 ring-slate-100">
                                             {log.action}
                                         </Badge>
-                                        <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest italic leading-none">PROTOCOL VERIFIED</span>
+                                        <span className="text-[8px] font-bold text-slate-300 uppercase tracking-widest leading-none">VERIFIED</span>
                                     </div>
                                     
                                     <div className="flex flex-col items-end gap-0.5 min-w-[100px]">
-                                        <p className="text-[11px] font-black text-indigo-600 tracking-tighter uppercase font-brand leading-none">
+                                        <p className="text-[11px] font-bold text-indigo-600 tracking-tight uppercase font-brand leading-none">
                                             {getRelativeTime(log.createdAt)}
                                         </p>
                                         <p className="text-[8px] font-bold text-slate-300 uppercase tracking-widest leading-none">
@@ -201,13 +201,13 @@ export function SecurityAuditLogs({ token }: { token: string }) {
                 <div className="flex items-center gap-8">
                     <div className="flex items-center gap-2.5">
                         <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                        <span className="text-[9px] font-black text-slate-900 uppercase tracking-[0.2em] leading-none">Ledger Shards: Synchronized</span>
+                        <span className="text-[9px] font-bold text-slate-900 uppercase tracking-widest leading-none">Logs Synchronized</span>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2 mr-4">
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Shard {currentPage} of {totalPages || 1}</span>
+                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Page {currentPage} of {totalPages || 1}</span>
                     </div>
                     <div className="flex items-center gap-2 border-l border-slate-100 pl-4">
                         <Button 
@@ -228,9 +228,9 @@ export function SecurityAuditLogs({ token }: { token: string }) {
                 </div>
 
                 <div className="flex items-center gap-6">
-                    <div className="flex items-center gap-3 text-[10px] font-black text-indigo-600 uppercase tracking-widest transition-all hover:scale-105 group">
+                    <div className="flex items-center gap-3 text-[10px] font-bold text-indigo-600 uppercase tracking-widest transition-all hover:scale-105 group">
                         <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                        Live manifest
+                        System Online
                     </div>
                 </div>
             </div>

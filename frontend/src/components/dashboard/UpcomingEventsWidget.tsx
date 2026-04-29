@@ -79,10 +79,10 @@ export function UpcomingEventsWidget() {
                                 <CalendarIcon className="w-4 h-4 text-indigo-500" />
                             </div>
                             <div>
-                                <CardTitle className="text-[10px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                                <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
                                     Strategic Timeline
                                 </CardTitle>
-                                <CardDescription className="text-xl font-black text-slate-900 dark:text-white mt-0.5">Fleet Schedule</CardDescription>
+                                <CardDescription className="text-xl font-bold text-slate-900 dark:text-white mt-0.5">Fleet Schedule</CardDescription>
                             </div>
                         </div>
                         <div className="flex bg-slate-100 dark:bg-white/5 rounded-xl p-1">
@@ -90,7 +90,7 @@ export function UpcomingEventsWidget() {
                                 <button
                                     key={f}
                                     onClick={() => setFilter(f as any)}
-                                    className={`text-[9px] px-3 py-1.5 rounded-lg font-black uppercase tracking-widest transition-all ${filter === f ? 'bg-white dark:bg-indigo-600 shadow-sm text-indigo-600 dark:text-white' : 'text-muted-foreground hover:text-foreground'}`}
+                                    className={`text-[9px] px-3 py-1.5 rounded-lg font-bold uppercase tracking-widest transition-all ${filter === f ? 'bg-white dark:bg-indigo-600 shadow-sm text-indigo-600 dark:text-white' : 'text-muted-foreground hover:text-foreground'}`}
                                 >
                                     {f}
                                 </button>
@@ -107,15 +107,15 @@ export function UpcomingEventsWidget() {
                                 className="flex items-center gap-5 p-5 hover:bg-indigo-500/5 transition-all group cursor-pointer border-l-4 border-transparent hover:border-indigo-500"
                             >
                                 <div className="flex-shrink-0 w-14 text-center">
-                                    <span className="block text-[9px] font-black text-muted-foreground uppercase tracking-widest">{event.date}</span>
-                                    <span className="block text-lg font-black text-slate-900 dark:text-white mt-1">{event.time.split(' ')[0]}</span>
+                                    <span className="block text-[9px] font-bold text-muted-foreground uppercase tracking-widest">{event.date}</span>
+                                    <span className="block text-lg font-bold text-slate-900 dark:text-white mt-1">{event.time.split(' ')[0]}</span>
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-black text-slate-900 dark:text-white truncate group-hover:text-indigo-600 transition-colors">
+                                    <p className="text-sm font-bold text-slate-900 dark:text-white truncate group-hover:text-indigo-600 transition-colors">
                                         {event.title}
                                     </p>
                                     <div className="flex items-center gap-3 mt-2">
-                                        <span className={`text-[8px] px-2 py-0.5 rounded uppercase font-black tracking-widest border border-indigo-500/10 flex items-center ${getTypeColor(event.type)}`}>
+                                        <span className={`text-[8px] px-2 py-0.5 rounded uppercase font-bold tracking-widest border border-indigo-500/10 flex items-center ${getTypeColor(event.type)}`}>
                                             {getTypeIcon(event.type)}
                                             {event.type}
                                         </span>
@@ -131,13 +131,13 @@ export function UpcomingEventsWidget() {
                         ))}
                         {filteredEvents.length === 0 && (
                             <div className="p-12 text-center text-muted-foreground">
-                                <p className="text-[10px] font-black uppercase tracking-widest italic">Operational Gap Detected</p>
+                                <p className="text-[10px] font-bold uppercase tracking-widest italic">Operational Gap Detected</p>
                                 <p className="text-[10px] mt-1 opacity-50">No events in current protocol window.</p>
                             </div>
                         )}
                     </div>
                     <div className="p-4 bg-slate-50/30 dark:bg-black/20 border-t border-border/50">
-                        <Button variant="ghost" className="w-full rounded-xl font-black text-[9px] uppercase tracking-[0.2em] text-indigo-600 hover:bg-white dark:hover:bg-white/5" asChild>
+                        <Button variant="ghost" className="w-full rounded-xl font-bold text-[9px] uppercase tracking-[0.2em] text-indigo-600 hover:bg-white dark:hover:bg-white/5" asChild>
                             <Link href="/calendar">Execute Full Calendar Access</Link>
                         </Button>
                     </div>

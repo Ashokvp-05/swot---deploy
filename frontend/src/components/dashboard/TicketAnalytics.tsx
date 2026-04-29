@@ -42,7 +42,7 @@ export function TicketAnalytics({ token }: { token: string }) {
         return (
             <Card className="h-full premium-card flex flex-col items-center justify-center p-8 min-h-[300px]">
                 <Activity className="animate-pulse text-indigo-500 w-8 h-8 opacity-50" />
-                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-4">Analyzing System Health...</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-4">Analyzing System Health...</p>
             </Card>
         )
     }
@@ -64,10 +64,10 @@ export function TicketAnalytics({ token }: { token: string }) {
             <CardHeader className="pb-2 border-b border-border/50 bg-slate-50/50 dark:bg-white/5">
                 <div className="flex items-center justify-between">
                     <div className="space-y-1">
-                        <CardTitle className="text-[10px] font-black uppercase tracking-widest text-indigo-500 flex items-center gap-2">
+                        <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-indigo-500 flex items-center gap-2">
                             <Bug className="w-3.5 h-3.5" /> System Health Tracker
                         </CardTitle>
-                        <CardDescription className="text-2xl font-black text-slate-900 dark:text-white mt-1">
+                        <CardDescription className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
                             {data.total} <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-wide">Total Issues</span>
                         </CardDescription>
                     </div>
@@ -93,7 +93,7 @@ export function TicketAnalytics({ token }: { token: string }) {
                             <span className="text-xs font-bold text-rose-900 dark:text-rose-100">Open</span>
                         </div>
                         <div className="flex items-baseline gap-1">
-                            <span className="text-lg font-black text-rose-600">{openCount}</span>
+                            <span className="text-lg font-bold text-rose-600">{openCount}</span>
                             <span className="text-[10px] font-bold text-rose-600/70 uppercase">Tickets</span>
                         </div>
                     </div>
@@ -103,7 +103,7 @@ export function TicketAnalytics({ token }: { token: string }) {
                             <span className="text-xs font-bold text-emerald-900 dark:text-emerald-100">Resolved</span>
                         </div>
                         <div className="flex items-baseline gap-1">
-                            <span className="text-lg font-black text-emerald-600">{resolvedCount}</span>
+                            <span className="text-lg font-bold text-emerald-600">{resolvedCount}</span>
                             <span className="text-[10px] font-bold text-emerald-600/70 uppercase">Tickets</span>
                         </div>
                     </div>
@@ -112,7 +112,7 @@ export function TicketAnalytics({ token }: { token: string }) {
                 {/* Priority Breakdown */}
                 <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                        <h4 className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">Priority Distribution</h4>
+                        <h4 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Priority Distribution</h4>
                         {(criticalCount > 0 || highCount > 0) && (
                             <span className="text-[9px] font-bold text-rose-500 bg-rose-50 dark:bg-rose-500/10 px-2 py-0.5 rounded-full animate-pulse">
                                 {criticalCount + highCount} Critical/High

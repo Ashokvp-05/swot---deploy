@@ -163,7 +163,7 @@ export default function ForgotPasswordPage() {
                         <div className="w-24 h-24 drop-shadow-[0_0_60px_rgba(168,85,247,0.4)]">
                             <RudraticLogo className="w-full h-full" />
                         </div>
-                        <h1 className="font-brand text-[3.5rem] leading-none font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400 drop-shadow-sm tracking-tight">
+                        <h1 className="font-brand text-[3.5rem] leading-none font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400 drop-shadow-sm tracking-tight">
                             RUDRATIC
                         </h1>
                     </div>

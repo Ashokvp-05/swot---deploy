@@ -143,7 +143,7 @@ export default function HRManagerDashboardPage() {
                             {currentTab === "performance"  && (
                                 <div className="flex flex-col items-center justify-center p-20 text-center">
                                     <TrendingUp className="w-16 h-16 text-indigo-200 mb-4" />
-                                    <h2 className="text-2xl font-black text-slate-800 uppercase italic tracking-tight">Performance Tracking</h2>
+                                    <h2 className="text-2xl font-bold text-slate-800 uppercase italic tracking-tight">Performance Tracking</h2>
                                     <p className="text-sm font-bold text-slate-400 mt-2 uppercase tracking-widest">Module under construction</p>
                                 </div>
                             )}

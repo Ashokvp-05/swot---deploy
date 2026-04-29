@@ -127,15 +127,15 @@ export default function AttendanceHistoryTable({ token }: { token: string }) {
             <CardHeader className="flex flex-row items-center justify-between pb-2 bg-slate-50/50 dark:bg-slate-800/20 rounded-t-xl px-6 py-4">
                 <div className="flex flex-col">
                     <div className="flex items-center gap-2">
-                        <CardTitle className="text-sm font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400">Attendance Log</CardTitle>
+                        <CardTitle className="text-sm font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">Attendance Log</CardTitle>
                         {isCurrentMonth && (
                             <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full animate-pulse-slow">
                                 <div className="w-1 h-1 rounded-full bg-emerald-500" />
-                                <span className="text-[8px] font-black uppercase text-emerald-600 dark:text-emerald-400">Live</span>
+                                <span className="text-[8px] font-bold uppercase text-emerald-600 dark:text-emerald-400">Live</span>
                             </div>
                         )}
                     </div>
-                    <span className="text-xl font-black italic uppercase text-slate-900 dark:text-white mt-1">{monthName}</span>
+                    <span className="text-xl font-bold italic uppercase text-slate-900 dark:text-white mt-1">{monthName}</span>
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
@@ -184,11 +184,11 @@ export default function AttendanceHistoryTable({ token }: { token: string }) {
                                 <TableCell colSpan={5} className="text-center py-12">
                                     <div className="flex flex-col items-center gap-3 text-rose-500">
                                         <AlertCircle className="w-8 h-8 opacity-20" />
-                                        <p className="text-[10px] font-black uppercase tracking-[0.2em]">{error}</p>
+                                        <p className="text-[10px] font-bold uppercase tracking-[0.2em]">{error}</p>
                                         <Button 
                                             variant="outline" 
                                             size="sm" 
-                                            className="mt-2 h-7 text-[9px] font-black uppercase tracking-widest border-rose-200 text-rose-600 hover:bg-rose-50"
+                                            className="mt-2 h-7 text-[9px] font-bold uppercase tracking-widest border-rose-200 text-rose-600 hover:bg-rose-50"
                                             onClick={() => setRefreshTrigger(t => t + 1)}
                                         >
                                             Restart Node Sync
@@ -201,7 +201,7 @@ export default function AttendanceHistoryTable({ token }: { token: string }) {
                                 <TableCell colSpan={5} className="text-center text-muted-foreground py-12">
                                     <div className="flex flex-col items-center gap-2 opacity-40">
                                         <AlertCircle className="w-8 h-8" />
-                                        <p className="text-xs font-black uppercase tracking-widest">No entries found for {monthName}</p>
+                                        <p className="text-xs font-bold uppercase tracking-widest">No entries found for {monthName}</p>
                                     </div>
                                 </TableCell>
                             </TableRow>

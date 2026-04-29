@@ -38,7 +38,7 @@ export default function LandingPage() {
                         <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-600/20">
                             <Shield className="w-5 h-5 text-white" />
                         </div>
-                        <span className="text-xl font-black tracking-tighter uppercase whitespace-nowrap">
+                        <span className="text-xl font-bold tracking-tighter uppercase whitespace-nowrap">
                             Swot <span className="text-indigo-400">HR</span>
                         </span>
                     </div>
@@ -51,12 +51,12 @@ export default function LandingPage() {
 
                     <div className="flex items-center gap-4">
                         <Link href="/login">
-                            <Button variant="ghost" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-white">
+                            <Button variant="ghost" className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 hover:text-white">
                                 Sign In
                             </Button>
                         </Link>
                         <Link href="/register-company">
-                            <Button className="bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-black uppercase tracking-[0.2em] px-6 rounded-full shadow-lg shadow-indigo-600/20">
+                            <Button className="bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold uppercase tracking-[0.2em] px-6 rounded-full shadow-lg shadow-indigo-600/20">
                                 Get Started
                             </Button>
                         </Link>
@@ -72,11 +72,11 @@ export default function LandingPage() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.8, ease: "easeOut" }}
                     >
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] font-black uppercase tracking-widest mb-6">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] font-bold uppercase tracking-widest mb-6">
                             <Zap className="w-3 h-3" />
                             Next-Gen Personnel Intelligence
                         </div>
-                        <h1 className="text-6xl lg:text-8xl font-black tracking-tighter leading-[0.9] mb-8">
+                        <h1 className="text-6xl lg:text-8xl font-bold tracking-tighter leading-[0.9] mb-8">
                             The Hub of <br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-white to-fuchsia-400">
                                 Global Workforce
@@ -87,7 +87,7 @@ export default function LandingPage() {
                         </p>
                         <div className="flex flex-col sm:flex-row items-center gap-6">
                             <Link href="/register-company">
-                                <Button className="h-16 px-10 bg-white text-black hover:bg-slate-200 font-black rounded-2xl text-xs uppercase tracking-[0.2em] transition-all group shadow-xl">
+                                <Button className="h-16 px-10 bg-white text-black hover:bg-slate-200 font-bold rounded-2xl text-xs uppercase tracking-[0.2em] transition-all group shadow-xl">
                                     Start Building
                                     <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                                 </Button>
@@ -98,7 +98,7 @@ export default function LandingPage() {
                                         <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i + 10}`} alt="User" />
                                     </div>
                                 ))}
-                                <div className="w-12 h-12 rounded-full border-4 border-[#02040a] bg-indigo-600 flex items-center justify-center text-[10px] font-black">
+                                <div className="w-12 h-12 rounded-full border-4 border-[#02040a] bg-indigo-600 flex items-center justify-center text-[10px] font-bold">
                                     +2k
                                 </div>
                             </div>
@@ -128,8 +128,8 @@ export default function LandingPage() {
             <section id="features" className="py-32 px-6">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-24">
-                        <h2 className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.4em] mb-4">ENGINEERED FOR EXCELLENCE</h2>
-                        <h3 className="text-4xl md:text-5xl font-black tracking-tight">Atomic Capabilities. Enterprise Scale.</h3>
+                        <h2 className="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.4em] mb-4">ENGINEERED FOR EXCELLENCE</h2>
+                        <h3 className="text-4xl md:text-5xl font-bold tracking-tight">Atomic Capabilities. Enterprise Scale.</h3>
                     </div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -163,7 +163,7 @@ export default function LandingPage() {
                         <div className="absolute top-0 right-0 p-8 opacity-20">
                             <Globe className="w-40 h-40 text-white" />
                         </div>
-                        <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-8 max-w-2xl mx-auto">
+                        <h2 className="text-4xl md:text-6xl font-bold tracking-tighter mb-8 max-w-2xl mx-auto">
                             Transform Your Organization Into an Intelligence Powerhouse.
                         </h2>
                         <p className="text-slate-400 text-lg font-medium mb-12 max-w-xl mx-auto">
@@ -171,12 +171,12 @@ export default function LandingPage() {
                         </p>
                         <div className="flex flex-wrap justify-center gap-6">
                             <Link href="/register-company">
-                                <Button className="h-16 px-12 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-2xl text-[11px] uppercase tracking-[0.2em] shadow-xl shadow-indigo-600/30">
+                                <Button className="h-16 px-12 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl text-[11px] uppercase tracking-[0.2em] shadow-xl shadow-indigo-600/30">
                                     Onboard Your Company
                                 </Button>
                             </Link>
                             <Link href="/login">
-                                <Button variant="outline" className="h-16 px-12 border-white/10 hover:bg-white/5 text-white font-black rounded-2xl text-[11px] uppercase tracking-[0.2em]">
+                                <Button variant="outline" className="h-16 px-12 border-white/10 hover:bg-white/5 text-white font-bold rounded-2xl text-[11px] uppercase tracking-[0.2em]">
                                     Log In Now
                                 </Button>
                             </Link>
@@ -192,7 +192,7 @@ export default function LandingPage() {
                         <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
                             <Shield className="w-4 h-4 text-white" />
                         </div>
-                        <span className="text-lg font-black tracking-tighter uppercase whitespace-nowrap">
+                        <span className="text-lg font-bold tracking-tighter uppercase whitespace-nowrap">
                             Swot <span className="text-indigo-400">HR</span>
                         </span>
                     </div>
@@ -200,8 +200,8 @@ export default function LandingPage() {
                         © 2026 Swot-HR Systems. Engineered for Tactical HR Excellence.
                     </div>
                     <div className="flex items-center gap-8">
-                        <Link href="/login" className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-white transition-colors">Client Terminal</Link>
-                        <Link href="/register" className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-white transition-colors">Join Personnel</Link>
+                        <Link href="/login" className="text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-white transition-colors">Client Terminal</Link>
+                        <Link href="/register" className="text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-white transition-colors">Join Personnel</Link>
                     </div>
                 </div>
             </footer>

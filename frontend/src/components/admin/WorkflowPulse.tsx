@@ -13,8 +13,8 @@ export function WorkflowPulse({ token }: { token: string }) {
                         <Zap className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-2xl font-black text-white italic uppercase tracking-tight leading-none">Workflow Automation Engine</h3>
-                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Intelligent Lifecycle Management</p>
+                        <h3 className="text-2xl font-bold text-white tracking-tight leading-none">Workflow Automation</h3>
+                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">System Workflows</p>
                     </div>
                 </div>
             </div>
@@ -24,8 +24,8 @@ export function WorkflowPulse({ token }: { token: string }) {
                     { label: "Payroll Accrual", status: "Enabled", icon: Timer, color: "text-emerald-400" },
                     { label: "Attendance Sync", status: "Active", icon: RefreshCw, color: "text-indigo-400" },
                     { label: "Onboarding Flow", status: "Active", icon: Play, color: "text-emerald-400" },
-                    { label: "Self-Destruct (Logs)", status: "Disabled", icon: Pause, color: "text-slate-800" },
-                    { label: "Email Protocols", status: "Active", icon: Zap, color: "text-rose-400" },
+                    { label: "Log Cleanup", status: "Disabled", icon: Pause, color: "text-slate-800" },
+                    { label: "Email Notifications", status: "Active", icon: Zap, color: "text-rose-400" },
                     { label: "Policy Distribution", status: "Scheduled", icon: Layers, color: "text-amber-400" }
                 ].map((w, i) => (
                     <div key={i} className="p-6 bg-slate-950/40 border border-white/5 rounded-[32px] flex items-center justify-between group/w hover:border-amber-500/20 transition-all cursor-pointer">
@@ -34,8 +34,8 @@ export function WorkflowPulse({ token }: { token: string }) {
                                 <w.icon className={`w-5 h-5 ${w.color}`} />
                             </div>
                             <div>
-                                <p className="text-white text-xs font-black uppercase tracking-wide group-hover/w:text-amber-400 transition-colors">{w.label}</p>
-                                <p className="text-[9px] font-bold text-slate-700 uppercase tracking-widest mt-1">Runtime Lifecycle: {w.status}</p>
+                                <p className="text-white text-xs font-bold uppercase tracking-wide group-hover/w:text-amber-400 transition-colors">{w.label}</p>
+                                <p className="text-[9px] font-bold text-slate-700 uppercase tracking-widest mt-1">Status: {w.status}</p>
                             </div>
                         </div>
                         <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50" />
@@ -44,7 +44,7 @@ export function WorkflowPulse({ token }: { token: string }) {
             </div>
 
             <div className="p-10 pt-4 border-t border-white/5 bg-slate-950/40 text-center">
-                <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest italic cursor-pointer hover:text-white transition-opacity">Deploy Central Intelligence Workflow V3.1</p>
+                <p className="text-[9px] font-bold text-slate-600 uppercase tracking-widest cursor-pointer hover:text-white transition-opacity">System Version 3.1</p>
             </div>
         </div>
     )

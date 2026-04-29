@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import * as timeEntryService from '../services/timeEntry.service';
+import { triggerDashboardUpdate } from '../services/websocket.service';
 import { AuthRequest } from '../middleware/auth.middleware';
 import { ClockType } from '@prisma/client';
 import cache from '../config/cache';
@@ -32,6 +33,7 @@ export const clockIn = async (req: Request, res: Response) => {
         const clockType = type || 'IN_OFFICE'; // Default to IN_OFFICE if not specified
 
         const entry = await timeEntryService.clockIn(user.id, user.companyId, clockType as ClockType, location, isOnCall);
+        triggerDashboardUpdate();
         res.json(entry);
     } catch (error: any) {
         res.status(400).json({ error: error.message });
@@ -47,6 +49,7 @@ export const clockOut = async (req: Request, res: Response) => {
         const clockOutTime = customClockOut ? new Date(customClockOut) : undefined;
 
         const entry = await timeEntryService.clockOut(user.id, user.companyId, clockOutTime);
+        triggerDashboardUpdate();
         res.json(entry);
     } catch (error: any) {
         res.status(400).json({ error: error.message });

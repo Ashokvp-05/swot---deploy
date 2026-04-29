@@ -56,7 +56,7 @@ export function TeamAnnouncer({ token, activeCount }: TeamAnnouncerProps) {
 
     return (
         <div className="space-y-6 md:border-l md:pl-8 border-slate-100 dark:border-white/5 h-full flex flex-col">
-            <h4 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] flex items-center gap-3">
+            <h4 className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] flex items-center gap-3">
                 <Megaphone className="w-4 h-4 text-indigo-500" /> Neural Broadcast
             </h4>
 
@@ -74,7 +74,7 @@ export function TeamAnnouncer({ token, activeCount }: TeamAnnouncerProps) {
                         <button
                             onClick={() => setPriority("NORMAL")}
                             className={cn(
-                                "px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all border",
+                                "px-4 py-1.5 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all border",
                                 priority === "NORMAL"
                                     ? "bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-500/20"
                                     : "bg-white dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-white/5 hover:border-indigo-500/30"
@@ -85,7 +85,7 @@ export function TeamAnnouncer({ token, activeCount }: TeamAnnouncerProps) {
                         <button
                             onClick={() => setPriority("URGENT")}
                             className={cn(
-                                "px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all border flex items-center gap-2",
+                                "px-4 py-1.5 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all border flex items-center gap-2",
                                 priority === "URGENT"
                                     ? "bg-rose-500 text-white border-rose-400 shadow-lg shadow-rose-500/20"
                                     : "bg-white dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-white/5 hover:border-rose-500/30"
@@ -97,7 +97,7 @@ export function TeamAnnouncer({ token, activeCount }: TeamAnnouncerProps) {
 
                     <Button
                         size="sm"
-                        className="h-10 text-[9px] bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest px-6 shadow-xl shadow-indigo-500/20 rounded-xl border-0 active:scale-95 transition-all"
+                        className="h-10 text-[9px] bg-indigo-600 hover:bg-indigo-700 text-white font-bold uppercase tracking-widest px-6 shadow-xl shadow-indigo-500/20 rounded-xl border-0 active:scale-95 transition-all"
                         onClick={handlePost}
                         disabled={loading || !content.trim()}
                     >

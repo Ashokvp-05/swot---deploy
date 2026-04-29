@@ -26,11 +26,11 @@ export default function SystemStatusWidget() {
 
                 <div className="grid grid-cols-2 gap-4 pt-2">
                     <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm">
-                        <p className="text-[10px] text-indigo-100 uppercase font-black">Sync Frequency</p>
+                        <p className="text-[10px] text-indigo-100 uppercase font-bold">Sync Frequency</p>
                         <p className="text-sm font-bold">Real-time (1m)</p>
                     </div>
                     <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm">
-                        <p className="text-[10px] text-indigo-100 uppercase font-black">Privacy Mode</p>
+                        <p className="text-[10px] text-indigo-100 uppercase font-bold">Privacy Mode</p>
                         <p className="text-sm font-bold">Enhanced (SSL)</p>
                     </div>
                 </div>

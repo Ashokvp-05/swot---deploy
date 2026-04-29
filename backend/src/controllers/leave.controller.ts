@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import * as leaveService from '../services/leave.service';
+import { broadcast, triggerDashboardUpdate } from '../services/websocket.service';
 import { AuthRequest } from '../middleware/auth.middleware';
 import { LeaveType, LeaveStatus } from '@prisma/client';
 import { z } from 'zod';
@@ -33,6 +34,8 @@ export const createRequest = async (req: Request, res: Response) => {
         });
 
         res.json(request);
+        broadcast('LEAVE_CREATED', request);
+        triggerDashboardUpdate();
     } catch (error: any) {
         res.status(400).json({ error: error.message });
     }
@@ -81,6 +84,8 @@ export const approveRequest = async (req: Request, res: Response) => {
 
         const { id } = req.params;
         const request = await leaveService.updateStatus(id, LeaveStatus.APPROVED, user.id, user.companyId);
+        broadcast('LEAVE_UPDATED', request);
+        triggerDashboardUpdate();
         res.json(request);
     } catch (error: any) {
         res.status(400).json({ error: error.message });
@@ -95,6 +100,8 @@ export const rejectRequest = async (req: Request, res: Response) => {
         const { id } = req.params;
         const { reason } = req.body;
         const request = await leaveService.updateStatus(id, LeaveStatus.REJECTED, user.id, user.companyId, reason);
+        broadcast('LEAVE_UPDATED', request);
+        triggerDashboardUpdate();
         res.json(request);
     } catch (error: any) {
         res.status(400).json({ error: error.message });
