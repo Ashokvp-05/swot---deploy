@@ -137,6 +137,11 @@ app.use('/api/bi', biRoutes);
 app.use('/api/enterprise', enterpriseRoutes);
 app.use('/api/documents', documentRoutes);
 
+// Health check endpoint for Docker
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 // 404 Handler - must be after all routes
 app.use((req, res) => {
     res.status(404).json({
