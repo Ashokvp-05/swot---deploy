@@ -113,6 +113,14 @@ export const updateProfile = async (id: string, companyId: string, data: any) =>
         ...profileData
     } = data;
 
+    // Sanitize profile data to handle empty strings for date fields
+    const sanitizedProfileData = { ...profileData };
+    if (sanitizedProfileData.dob === "") {
+        sanitizedProfileData.dob = null;
+    } else if (sanitizedProfileData.dob) {
+        sanitizedProfileData.dob = new Date(sanitizedProfileData.dob);
+    }
+
     return prisma.user.update({
         where: { id, companyId },
         data: {
@@ -120,15 +128,15 @@ export const updateProfile = async (id: string, companyId: string, data: any) =>
             email,
             phone,
             discordId,
-            deptId,
-            designationId,
-            branchId,
+            deptId: deptId || undefined,
+            designationId: designationId || undefined,
+            branchId: branchId || undefined,
             timezone,
             avatarUrl,
             profile: {
                 upsert: {
-                    create: { ...profileData },
-                    update: { ...profileData }
+                    create: { ...sanitizedProfileData },
+                    update: { ...sanitizedProfileData }
                 }
             }
         } as any,

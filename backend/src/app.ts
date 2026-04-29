@@ -23,8 +23,12 @@ app.use(cors({
     origin: (origin, callback) => {
         if (!origin) return callback(null, true);
 
+        const isLocalIP = /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|\[::1\])(:\d+)?$/.test(origin);
+
         if (
             allowedOrigins.indexOf(origin) !== -1 ||
+            isLocalIP ||
+            origin.endsWith('.swotpam.com') ||
             origin.endsWith('.vercel.app') ||
             origin.endsWith('.onrender.com')
         ) {

@@ -48,18 +48,15 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - NEXT_PUBLIC_API_URL=https://hr.swotpam.com/api
+        - NEXT_PUBLIC_API_URL=/api
     container_name: hr-frontend
     restart: always
     depends_on:
       backend:
         condition: service_healthy
     environment:
-      - NEXT_PUBLIC_API_URL=https://hr.swotpam.com/api
+      - NEXT_PUBLIC_API_URL=/api
       - INTERNAL_BACKEND_URL=http://backend:4000
-      - FRONTEND_URL=${FRONTEND_URL:-https://hr.swotpam.com}
-      - NEXTAUTH_URL=${FRONTEND_URL:-https://hr.swotpam.com}
-      - AUTH_URL=${FRONTEND_URL:-https://hr.swotpam.com}
       - AUTH_SECRET=${AUTH_SECRET:-hr_system_secret_key_2026}
       - AUTH_TRUST_HOST=true
     ports:

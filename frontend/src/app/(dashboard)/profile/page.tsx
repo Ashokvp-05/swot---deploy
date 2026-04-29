@@ -971,9 +971,7 @@ export default function ProfilePage() {
                                         </Form>
                                     </DialogContent>
                                 </Dialog>
-                                <Button variant="ghost" className="w-full h-10 justify-center text-[9px] font-bold uppercase tracking-widest text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/10 rounded-xl transition-all" onClick={() => signOut()}>
-                                    Terminate Session
-                                </Button>
+
                             </CardContent>
                         </Card>
                     </div>

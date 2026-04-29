@@ -56,7 +56,7 @@ async function issueHRPayslip() {
     );
 
     console.log("Releasing payslip...");
-    await payslipService.releasePayslip(payslip.id);
+    await payslipService.releasePayslip(payslip.id, user.companyId as string);
 
     console.log(`Successfully generated and issued payslip for ${user.name} (${month} ${year})`);
     console.log(`Total Net Amount: $${totalAmount.toLocaleString()}`);
