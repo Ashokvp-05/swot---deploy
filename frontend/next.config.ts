@@ -81,7 +81,12 @@ const nextConfig: NextConfig = {
 
   // ── API Proxy Rewrites ────────────────────────────────────────────────────────
   async rewrites() {
-    const backendUrl = process.env.INTERNAL_BACKEND_URL || 'http://127.0.0.1:4000';
+    // NOTE: rewrites() is compiled at BUILD TIME in Next.js standalone mode.
+    // INTERNAL_BACKEND_URL is set at runtime by docker-compose, but NOT available
+    // at build time. So we default to 'http://backend:4000' (Docker internal DNS).
+    // Local dev: .env.local sets INTERNAL_BACKEND_URL=http://localhost:4000 ✅
+    // Docker:    falls back to http://backend:4000 ✅
+    const backendUrl = process.env.INTERNAL_BACKEND_URL || 'http://backend:4000';
     return {
       beforeFiles: [
         {
