@@ -132,7 +132,7 @@ services:
       # NEXTAUTH_URL — NextAuth v4 compat (some internals still read this)
       - NEXTAUTH_URL=https://hr.swotpam.com
     ports:
-      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:3001:3000"
     networks:
       - hr_network
     logging:
