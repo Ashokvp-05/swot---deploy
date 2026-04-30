@@ -7,9 +7,9 @@ while ! nc -z db 5432; do
 done
 echo "Database is up!"
 
-# Run migrations
-echo "Running Prisma migrations..."
-npx prisma migrate deploy
+# Push schema to DB (no migration files needed)
+echo "Running Prisma db push..."
+npx prisma db push --accept-data-loss
 
 # Start the application
 echo "Starting backend..."

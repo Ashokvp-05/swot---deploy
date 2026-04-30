@@ -38,7 +38,12 @@ COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/dist/prisma/seed.js ./prisma/seed.js
 
-RUN chown -R backend:nodejs /app/node_modules/@prisma
+RUN chown -R backend:nodejs /app/node_modules/@prisma \
+    && chown -R backend:nodejs /app/node_modules/.prisma
+
+# Create uploads directory with correct ownership BEFORE switching to non-root user
+RUN mkdir -p /app/uploads/payslips \
+    && chown -R backend:nodejs /app/uploads
 
 USER backend
 
@@ -48,4 +53,4 @@ ENV PORT 4000
 # set hostname to localhost
 ENV HOSTNAME "0.0.0.0"
 
-CMD ["sh", "-c", "npx prisma migrate deploy && node prisma/seed.js && node dist/server.js"]
+CMD ["sh", "-c", "npx prisma db push --accept-data-loss && node prisma/seed.js && node dist/server.js"]
