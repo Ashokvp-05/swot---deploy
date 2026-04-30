@@ -60,7 +60,7 @@ const nextConfig: NextConfig = {
       },
       {
         // Public assets (icons, images)
-        source: '/(:path*.(png|jpg|jpeg|webp|avif|svg|ico|woff|woff2))',
+        source: '/:path*.(png|jpg|jpeg|webp|avif|svg|ico|woff|woff2)',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=3600' },
         ],
