@@ -113,9 +113,7 @@ export default function LeaveRequestForm({ token, onSuccess }: { token: string, 
     const typeBalance = balance ? {
         CASUAL: balance.casual,
         MEDICAL: balance.sick,
-        EARNED: balance.earned,
-        OTHER: "N/A",
-        UNPAID: "N/A"
+        EARNED: balance.earned
     }[selectedType] : "..."
 
     return (
@@ -137,9 +135,7 @@ export default function LeaveRequestForm({ token, onSuccess }: { token: string, 
                                     <SelectContent>
                                         <SelectItem value="CASUAL">Casual Leave</SelectItem>
                                         <SelectItem value="MEDICAL">Medical Leave</SelectItem>
-                                        <SelectItem value="OTHER">Other</SelectItem>
                                         <SelectItem value="EARNED">Earned Leave</SelectItem>
-                                        <SelectItem value="UNPAID">Unpaid Leave</SelectItem>
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />

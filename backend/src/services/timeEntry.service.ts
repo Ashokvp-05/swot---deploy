@@ -126,6 +126,7 @@ export const getSummary = async (userId: string, companyId: string) => {
     let totalHours = 0;
     let daysWorked = new Set();
     let overtimeHours = 0; // Simple threshold > 9 hours per day
+    let lateCheckIns = 0; // Clock-in after 9:30 AM
 
     const dayMap: { [key: string]: number } = {};
     entries.forEach(entry => {
@@ -146,7 +147,15 @@ export const getSummary = async (userId: string, companyId: string) => {
         if (duration > 9) {
             overtimeHours += (duration - 9);
         }
+
+        // Detect late check-ins (after 9:30 AM)
+        const clockInTime = new Date(entry.clockIn);
+        const isLate = clockInTime.getHours() > 9 || (clockInTime.getHours() === 9 && clockInTime.getMinutes() > 30);
+        if (isLate) lateCheckIns++;
     });
+
+    const regularHours = Math.max(0, totalHours - overtimeHours);
+    const totalWeekDays = 5; // Standard work week
 
     const chartData = [];
     for (let i = 6; i >= 0; i--) {
@@ -163,7 +172,10 @@ export const getSummary = async (userId: string, companyId: string) => {
     return {
         totalHours: totalHours.toFixed(2),
         overtimeHours: overtimeHours.toFixed(2),
+        regularHours: regularHours.toFixed(2),
         daysWorked: daysWorked.size,
+        lateCheckIns,
+        totalWeekDays,
         chartData
     };
 };

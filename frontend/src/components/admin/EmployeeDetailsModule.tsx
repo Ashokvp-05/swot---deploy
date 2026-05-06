@@ -114,7 +114,34 @@ export default function EmployeeDetailsModule({ token, userRole }: { token: stri
                         <AnimatePresence>
                             {filteredUsers.map((user, i) => {
                                 const roleName = typeof user.role === 'object' ? user.role?.name : user.role;
-                                const isSuper = roleName === 'SUPER_ADMIN';
+
+                                // Avatar colors based on first letter
+                                const AVATAR_COLORS: Record<string, string> = {
+                                    A: '#6366f1', B: '#10b981', C: '#f43f5e', D: '#f59e0b', E: '#8b5cf6',
+                                    F: '#06b6d4', G: '#ec4899', H: '#14b8a6', I: '#f97316', J: '#3b82f6',
+                                    K: '#ef4444', L: '#84cc16', M: '#d946ef', N: '#0ea5e9', O: '#eab308',
+                                    P: '#a855f7', Q: '#22c55e', R: '#fb7185', S: '#818cf8', T: '#34d399',
+                                    U: '#fbbf24', V: '#a78bfa', W: '#22d3ee', X: '#f472b6', Y: '#2dd4bf',
+                                    Z: '#fb923c',
+                                }
+                                const avatarColor = AVATAR_COLORS[user.name?.[0]?.toUpperCase()] || '#94a3b8'
+
+                                // Role badge colors
+                                const ROLE_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+                                    'SUPER_ADMIN': { bg: '#fef3c7', text: '#d97706', border: '#f59e0b' },
+                                    'ADMIN': { bg: '#fce7f3', text: '#db2777', border: '#ec4899' },
+                                    'COMPANY_ADMIN': { bg: '#fce7f3', text: '#db2777', border: '#ec4899' },
+                                    'HR_MANAGER': { bg: '#dbeafe', text: '#2563eb', border: '#3b82f6' },
+                                    'HR_ADMIN': { bg: '#dbeafe', text: '#2563eb', border: '#3b82f6' },
+                                    'MANAGER': { bg: '#ffedd5', text: '#ea580c', border: '#f97316' },
+                                    'EMPLOYEE': { bg: '#d1fae5', text: '#059669', border: '#10b981' },
+                                    'AUDITOR': { bg: '#e0e7ff', text: '#4f46e5', border: '#6366f1' },
+                                    'SUPPORT_ADMIN': { bg: '#f3e8ff', text: '#7c3aed', border: '#8b5cf6' },
+                                }
+                                const roleColor = ROLE_COLORS[roleName || ''] || { bg: '#f1f5f9', text: '#64748b', border: '#94a3b8' }
+
+                                // Card top border color - alternate between blue and emerald
+                                const borderTop = i < 4 ? '#3b82f6' : '#10b981'
 
                                 return (
                                     <motion.div
@@ -123,29 +150,27 @@ export default function EmployeeDetailsModule({ token, userRole }: { token: stri
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: i * 0.05 }}
                                         onClick={() => setSelectedUser(user)}
-                                        className="bg-white rounded-[2rem] p-6 border border-slate-100 hover:border-emerald-200 transition-all cursor-pointer group shadow-sm hover:shadow-xl hover:shadow-emerald-500/5 relative overflow-hidden"
+                                        className="bg-white rounded-2xl p-6 border border-slate-100 hover:border-slate-200 transition-all cursor-pointer group shadow-sm hover:shadow-lg relative overflow-hidden"
+                                        style={{ borderTop: `3px solid ${borderTop}` }}
                                     >
-                                        <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-10 transition-all transform translate-x-4 group-hover:translate-x-0">
-                                            <Fingerprint className="w-24 h-24 text-emerald-500" />
-                                        </div>
-
-                                        <div className="flex items-start gap-4 mb-6 relative z-10">
-                                            <div className="w-16 h-16 rounded-[1.25rem] bg-slate-50 p-1 shrink-0 border border-slate-100">
-                                                {user.avatarUrl ? (
-                                                    <img src={user.avatarUrl} alt="" className="w-full h-full object-cover rounded-[1rem]" />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center bg-white rounded-[1rem]">
-                                                        <UserCircle className="w-8 h-8 text-slate-300" strokeWidth={1} />
-                                                    </div>
-                                                )}
+                                        <div className="flex items-start gap-4 mb-5 relative z-10">
+                                            {/* Colored Circle Avatar */}
+                                            <div
+                                                className="w-14 h-14 rounded-full flex items-center justify-center text-white font-bold text-base shrink-0 shadow-md"
+                                                style={{ background: avatarColor }}
+                                            >
+                                                {user.name?.substring(0, 2).toUpperCase()}
                                             </div>
                                             <div>
-                                                <h4 className="text-[14px] font-bold text-slate-800 tracking-tight leading-tight group-hover:text-emerald-600 transition-colors">{user.name}</h4>
-                                                <Badge className="mt-2 bg-slate-100 text-slate-500 hover:bg-slate-200 border-none px-2.5 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-widest">
+                                                <h4 className="text-[15px] font-bold text-slate-800 tracking-tight leading-tight group-hover:text-blue-600 transition-colors">{user.name}</h4>
+                                                <span
+                                                    className="inline-block mt-1.5 px-2.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider"
+                                                    style={{ background: roleColor.bg, color: roleColor.text }}
+                                                >
                                                     {roleName || "Employee"}
-                                                </Badge>
+                                                </span>
                                                 {user.isLive && (
-                                                    <div className="mt-2 flex items-center gap-1.5">
+                                                    <div className="mt-1.5 flex items-center gap-1.5">
                                                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                                         <span className="text-[8px] font-bold text-emerald-600 uppercase tracking-widest">Live Now</span>
                                                     </div>
@@ -153,27 +178,27 @@ export default function EmployeeDetailsModule({ token, userRole }: { token: stri
                                             </div>
                                         </div>
 
-                                        <div className="space-y-4 relative z-10">
+                                        <div className="space-y-3 relative z-10">
                                             <div className="flex items-center gap-3 text-slate-500">
-                                                <Briefcase className="w-3.5 h-3.5 shrink-0" />
-                                                <span className="text-[11px] font-bold truncate">{user.designation?.name || "Pending Designation"} • {user.department?.name || "Core"}</span>
+                                                <Briefcase className="w-3.5 h-3.5 shrink-0 text-slate-400" />
+                                                <span className="text-[11px] font-semibold truncate">{user.designation?.name || "Pending Designation"} • {user.department?.name || "Core"}</span>
                                             </div>
                                             <div className="flex items-center gap-3 text-slate-500">
-                                                <Mail className="w-3.5 h-3.5 shrink-0" />
-                                                <span className="text-[11px] font-bold truncate">{user.email}</span>
+                                                <Mail className="w-3.5 h-3.5 shrink-0 text-slate-400" />
+                                                <span className="text-[11px] font-semibold truncate text-blue-600">{user.email}</span>
                                             </div>
                                             <div className="flex items-center gap-3 text-slate-500">
-                                                <Building2 className="w-3.5 h-3.5 shrink-0" />
-                                                <span className="text-[11px] font-bold truncate">{user.branch?.name || "Global Headquarters"}</span>
+                                                <Building2 className="w-3.5 h-3.5 shrink-0 text-slate-400" />
+                                                <span className="text-[11px] font-semibold truncate">{user.branch?.name || "Global Headquarters"}</span>
                                             </div>
                                         </div>
 
-                                        <div className="mt-6 pt-5 border-t border-slate-50 flex items-center justify-between relative z-10">
+                                        <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between relative z-10">
                                             <div className="flex items-center gap-2">
-                                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                                <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Verified Employee</span>
+                                                <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                                                <span className="text-[9px] font-bold uppercase tracking-widest text-emerald-600">Verified Employee</span>
                                             </div>
-                                            <div className="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-emerald-500 group-hover:text-white transition-all">
+                                            <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-blue-500 group-hover:text-white transition-all border border-slate-100">
                                                 <Eye className="w-4 h-4" />
                                             </div>
                                         </div>

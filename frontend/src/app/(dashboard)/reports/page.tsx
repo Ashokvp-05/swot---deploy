@@ -114,10 +114,10 @@ export default function ReportsPage() {
             <div className="max-w-[1400px] mx-auto space-y-8">
                 <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 pb-6 border-b border-slate-200 dark:border-slate-800">
                     <div>
-                        <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white uppercase tracking-widest text-indigo-600">
-                            Attendance <span className="text-slate-400 dark:text-slate-500">Portfolio</span>
+                        <h2 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">
+                            Attendance Portfolio
                         </h2>
-                        <p className="text-muted-foreground mt-1 text-sm font-medium">Personalized work summaries and professional document exports.</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Personalized work summaries and professional document exports</p>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-3">
@@ -280,7 +280,7 @@ export default function ReportsPage() {
                                                     <td colSpan={4} className="p-24 text-center">
                                                         <div className="flex flex-col items-center gap-3 opacity-30">
                                                             <SearchX className="w-12 h-12" />
-                                                            <p className="text-xs font-bold uppercase tracking-widest">No Intelligence Recorded</p>
+                                                            <p className="text-xs font-bold uppercase tracking-widest">No records found</p>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -325,9 +325,9 @@ export default function ReportsPage() {
                 <div className="flex items-center justify-between pt-8 opacity-40 grayscale border-t border-slate-200 dark:border-slate-800">
                     <div className="flex items-center gap-4">
                         <History className="w-4 h-4" />
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[1em]">Rudratic Intelligence</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Rudratic Technologies</p>
                     </div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic">Audit Stability v.3.1.2</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Version 3.1.2</p>
                 </div>
             </div>
         </div>

@@ -44,7 +44,7 @@ export const getTicketAnalytics = async (req: Request, res: Response) => {
         const user = (req as AuthRequest).user;
         if (!user || !user.id || !user.companyId) return res.status(401).json({ error: 'Unauthorized' });
 
-        const canViewAll = ['ADMIN', 'SUPER_ADMIN', 'COMPANY_ADMIN', 'HR_MANAGER', 'HELPDESK_ADMIN'].includes(user.role || '');
+        const canViewAll = ['ADMIN', 'SUPER_ADMIN', 'COMPANY_ADMIN', 'HR_MANAGER', 'HELPDESK_ADMIN', 'MANAGER', 'HR', 'OPS_ADMIN', 'HR_ADMIN'].includes(user.role || '');
         const where: any = { companyId: user.companyId };
         if (!canViewAll && user.companyId) {
             where.OR = [
@@ -90,7 +90,7 @@ export const getTickets = async (req: Request, res: Response) => {
         const user = (req as AuthRequest).user;
         if (!user || !user.id || !user.companyId) return res.status(401).json({ error: 'Unauthorized' });
 
-        const canViewAll = ['ADMIN', 'SUPER_ADMIN', 'COMPANY_ADMIN', 'HR_MANAGER', 'HELPDESK_ADMIN'].includes(user.role || '');
+        const canViewAll = ['ADMIN', 'SUPER_ADMIN', 'COMPANY_ADMIN', 'HR_MANAGER', 'HELPDESK_ADMIN', 'MANAGER', 'HR', 'OPS_ADMIN', 'HR_ADMIN'].includes(user.role || '');
 
         const where: any = { companyId: user.companyId };
         if (!canViewAll && user.companyId) {
@@ -129,6 +129,10 @@ export const updateTicket = async (req: Request, res: Response) => {
 
         const where: any = { id, companyId: user.companyId };
 
+        // Fetch existing ticket to get the reporter userId
+        const existingTicket = await prisma.ticket.findUnique({ where: { id }, select: { userId: true, title: true, status: true, ticketNumber: true, companyId: true } });
+        if (!existingTicket) return res.status(404).json({ error: 'Ticket not found' });
+
         const data: any = {};
         if (status) data.status = status;
         if (priority) data.priority = priority;
@@ -138,6 +142,28 @@ export const updateTicket = async (req: Request, res: Response) => {
             where,
             data
         });
+
+        // Send notification to the employee who raised the ticket (if status changed by someone else)
+        if (status && status !== existingTicket.status && existingTicket.userId !== user.id) {
+            const statusLabels: Record<string, string> = {
+                OPEN: 'reopened',
+                IN_PROGRESS: 'being worked on',
+                RESOLVED: 'resolved',
+                CLOSED: 'closed',
+            };
+            const statusLabel = statusLabels[status] || status.toLowerCase();
+            const notifType = status === 'RESOLVED' || status === 'CLOSED' ? 'SUCCESS' : 'INFO';
+
+            await prisma.notification.create({
+                data: {
+                    userId: existingTicket.userId,
+                    companyId: existingTicket.companyId,
+                    title: `Ticket #${existingTicket.ticketNumber || ''} ${statusLabel}`,
+                    message: `Your ticket "${existingTicket.title}" has been ${statusLabel} by the support team.`,
+                    type: notifType as any,
+                }
+            });
+        }
 
         res.json(ticket);
     } catch (error: any) {

@@ -45,7 +45,7 @@ export default function LeaveBalance({ token, refreshTrigger = 0 }: { token: str
             <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-6">
                 <div className="space-y-3">
                     <div className="flex justify-between items-center text-sm">
-                        <span className="font-medium text-slate-600 dark:text-slate-400">Sick / Medical</span>
+                        <span className="font-medium text-slate-600 dark:text-slate-400">Medical Leave</span>
                         <span className="font-bold text-indigo-600 dark:text-indigo-400">{balance.sickUsed} <span className="text-slate-400 font-normal">/ {balance.sick}</span></span>
                     </div>
                     <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">

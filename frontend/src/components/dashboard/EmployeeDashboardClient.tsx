@@ -5,9 +5,9 @@ import { format, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay } from "da
 import { cn } from "@/lib/utils"
 import {
     Clock, Calendar, Loader2, LogIn, LogOut, StopCircle,
-    Bell, BarChart3, TrendingUp, CheckCircle2,
-    Target, ShieldCheck, Building2, MapPin,
-    ChevronRight, Activity, Zap
+    BarChart3, CheckCircle2,
+    Target, ShieldCheck, Building2,
+    ChevronRight
 } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -32,10 +32,13 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
     const [userData, setUserData] = useState(user)
     const [timerParts, setTimerParts] = useState({ h: "00", m: "00", s: "00" })
     const [mounted, setMounted] = useState(false)
-    const [summary, setSummary] = useState(initialData?.summary || { totalHours: "0", overtimeHours: "0", daysWorked: 0, chartData: [] })
+    const [summary, setSummary] = useState(initialData?.summary || { totalHours: "0", overtimeHours: "0", regularHours: "0", daysWorked: 0, lateCheckIns: 0, totalWeekDays: 5, chartData: [] })
     const announcements = initialData?.announcements || []
     const [latestPayslip, setLatestPayslip] = useState(initialData?.latestPayslip || null)
     const [liveTime, setLiveTime] = useState<Date | null>(null)
+    const [pulseView, setPulseView] = useState<'MONTH' | 'YEAR'>('MONTH')
+    const [monthlySummary, setMonthlySummary] = useState(initialData?.monthlySummary || { present: 0, businessDays: 21, totalHours: '0', lateCheckIns: 0, ratio: 0, monthName: 'May', year: 2026 })
+    const [yearlySummary, setYearlySummary] = useState(initialData?.yearlySummary || { months: [], totalPresent: 0, totalBusinessDays: 0, year: 2026 })
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -92,6 +95,8 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
             if (res.ok) {
                 const data = await res.json()
                 if (data.summary) setSummary(data.summary)
+                if (data.monthlySummary) setMonthlySummary(data.monthlySummary)
+                if (data.yearlySummary) setYearlySummary(data.yearlySummary)
                 if (data.latestPayslip) setLatestPayslip(data.latestPayslip)
             }
         } catch (e: any) {
@@ -103,10 +108,10 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
         const controller = new AbortController()
         fetchLiveData(controller.signal)
         
-        // Polling for live updates every 10 seconds
+        // Polling for live updates every 5 seconds
         pollRef.current = setInterval(() => {
             fetchLiveData()
-        }, 10000)
+        }, 5000)
 
         return () => {
             controller.abort()
@@ -160,6 +165,8 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                     setStartTime(null)
                     toast.success("Clocked Out", { description: "Your shift has been saved." })
                 }
+                // Immediately refresh dashboard data
+                fetchLiveData()
             } else {
                 const err = await res.json().catch(() => ({}))
                 toast.error(err.message || err.error || "Something went wrong")
@@ -173,12 +180,15 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
             setStatus(isIn ? 'IDLE' : 'ACTIVE')
             toast.error("Connection error. Please try again.")
         }
-    }, [status, token, clockType])
+    }, [status, token, clockType, fetchLiveData])
 
     const attendancePercent = Math.min(100, Math.round(((summary.daysWorked || 0) / 5) * 100))
     const firstName = (userData?.name || user?.name || "Employee").split(" ")[0]
     const roleName = (typeof userData?.role === 'string' ? userData.role : userData?.role?.name || user?.role || 'Employee').replace(/_/g, ' ')
     const initials = (userData?.name || user?.name || "EM").substring(0, 2).toUpperCase()
+
+    // Monthly presence pulse — use real API data
+    const monthlyStats = monthlySummary
 
     return (
         <div className="min-h-screen bg-[#F4F6FA]">
@@ -374,63 +384,60 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                     {/* ════ RIGHT COLUMN ════ */}
                     <div className="lg:col-span-8 xl:col-span-9 space-y-6">
 
-                        {/* Stat Cards */}
+                        {/* ── WEEKLY STATS CARDS ── */}
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            {[
-                                {
-                                    label: "Total Hours",
-                                    value: `${summary.totalHours}h`,
-                                    icon: Clock,
-                                    accent: "indigo",
-                                    sub: "This week"
-                                },
-                                {
-                                    label: "Attendance Rate",
-                                    value: `${attendancePercent}%`,
-                                    icon: CheckCircle2,
-                                    accent: "emerald",
-                                    sub: "Weekly target"
-                                },
-                                {
-                                    label: "Days Worked",
-                                    value: summary.daysWorked,
-                                    icon: TrendingUp,
-                                    accent: "amber",
-                                    sub: "This week"
-                                },
-                            ].map((stat, i) => (
-                                <motion.div
-                                    key={i}
-                                    initial={{ opacity: 0, y: 12 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: i * 0.07 }}
-                                    className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex items-start justify-between group hover:shadow-md transition-shadow"
-                                >
-                                    <div className="flex-1">
-                                        <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                                            {stat.label}
-                                        </p>
-                                        <p className="text-3xl font-bold text-slate-900 tabular-nums leading-none">
-                                            {stat.value}
-                                        </p>
-                                        <p className="text-[10px] text-slate-400 font-medium mt-1">{stat.sub}</p>
-                                    </div>
-                                    <div className={cn(
-                                        "w-10 h-10 rounded-xl flex items-center justify-center shrink-0",
-                                        stat.accent === 'indigo' && "bg-indigo-50",
-                                        stat.accent === 'emerald' && "bg-emerald-50",
-                                        stat.accent === 'amber' && "bg-amber-50",
-                                    )}>
-                                        <stat.icon className={cn(
-                                            "w-5 h-5",
-                                            stat.accent === 'indigo' && "text-indigo-500",
-                                            stat.accent === 'emerald' && "text-emerald-500",
-                                            stat.accent === 'amber' && "text-amber-500",
-                                        )} />
-                                    </div>
-                                </motion.div>
-                            ))}
+                            {/* Total Hours */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 12 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.4, delay: 0.1 }}
+                                className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex items-start justify-between"
+                            >
+                                <div>
+                                    <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mb-1">Total Hours</p>
+                                    <p className="text-3xl font-extrabold text-slate-900 tabular-nums leading-none">{summary.totalHours || '0'}<span className="text-lg font-bold text-slate-400 ml-0.5">h</span></p>
+                                    <p className="text-[10px] text-slate-400 font-medium mt-1.5">This week</p>
+                                </div>
+                                <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center shrink-0">
+                                    <Clock className="w-5 h-5 text-indigo-500" />
+                                </div>
+                            </motion.div>
+
+                            {/* Attendance Rate */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 12 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.4, delay: 0.2 }}
+                                className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex items-start justify-between"
+                            >
+                                <div>
+                                    <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1">Attendance Rate</p>
+                                    <p className="text-3xl font-extrabold text-slate-900 tabular-nums leading-none">{attendancePercent}<span className="text-lg font-bold text-slate-400 ml-0.5">%</span></p>
+                                    <p className="text-[10px] text-slate-400 font-medium mt-1.5">Weekly target</p>
+                                </div>
+                                <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
+                                    <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                                </div>
+                            </motion.div>
+
+                            {/* Days Worked */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 12 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.4, delay: 0.3 }}
+                                className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex items-start justify-between"
+                            >
+                                <div>
+                                    <p className="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-1">Days Worked</p>
+                                    <p className="text-3xl font-extrabold text-slate-900 tabular-nums leading-none">{summary.daysWorked || 0}</p>
+                                    <p className="text-[10px] text-slate-400 font-medium mt-1.5">This week</p>
+                                </div>
+                                <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center shrink-0">
+                                    <BarChart3 className="w-5 h-5 text-amber-500" />
+                                </div>
+                            </motion.div>
                         </div>
+
 
 
                         {/* Weekly Calendar */}

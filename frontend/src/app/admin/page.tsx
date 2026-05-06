@@ -53,7 +53,7 @@ const OrganizationControlCenter = dynamic(() => import("@/components/admin/Organ
 const SecurityAuditLogs = dynamic(() => import("@/components/admin/SecurityAuditLogs").then(m => m.SecurityAuditLogs), { ssr: false })
 const SystemSettingsCenter = dynamic(() => import("@/components/admin/SystemSettingsCenter").then(m => m.SystemSettingsCenter), { ssr: false })
 const ExecutiveHub = dynamic(() => import("@/components/admin/ExecutiveHub"), { ssr: false })
-const SupportControlCenter = dynamic(() => import("@/components/admin/SupportControlCenter"), { ssr: false })
+const AdminKanbanBoard = dynamic(() => import("@/components/admin/AdminKanbanBoard"), { ssr: false })
 const DocumentsModule = dynamic(() => import("@/components/admin/DocumentsModule"), { ssr: false })
 const UserProfileView = dynamic(() => import("@/components/admin/UserProfileView"), { ssr: false })
 const PayrollControlCenter = dynamic(() => import("@/components/admin/PayrollControlCenter"), { ssr: false })
@@ -221,7 +221,7 @@ function AdminDashboardContent() {
     })
 
     return (
-        <div className="min-h-screen bg-[#fcfcfd] flex font-body overflow-hidden">
+        <div className="min-h-screen bg-[#fcfcfd] flex font-body overflow-hidden" suppressHydrationWarning>
             <GlobalStyles />
             
             {/* ── 🛡️ EXECUTIVE SIDEBAR ── */}
@@ -408,7 +408,7 @@ function AdminDashboardContent() {
                             {currentTab === "documents" && <DocumentsModule token={token} />}
                             {currentTab === "employee-details" && <EmployeeDetailsModule token={token} userRole={role} />}
                             {currentTab === "reports"      && <ManagerReports token={token} />}
-                            {currentTab === "support"      && <SupportControlCenter token={token} />}
+                            {currentTab === "support"      && <AdminKanbanBoard token={token} />}
                             {currentTab === "user-management"   && <SecurityAuditLogs token={token} />}
                             {currentTab === "settings"     && <SystemSettingsCenter token={token} />}
                             {currentTab === "broadcasts"   && <BroadcastCenter token={token} />}

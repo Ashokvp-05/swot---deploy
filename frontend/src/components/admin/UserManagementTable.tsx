@@ -5,10 +5,10 @@ import useSWR from "swr"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
     Search, Plus, Filter, MoreHorizontal, 
-    Edit3, Trash2, UserPlus, ShieldAlert,
+    Edit3, UserX, UserPlus, ShieldAlert,
     Building2, Briefcase, Mail, Phone,
     ChevronRight, Loader2, RefreshCcw,
-    UserCheck, ShieldCheck, FileDown
+    UserCheck, ShieldCheck, FileDown, Power
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -38,7 +38,7 @@ export default function UserManagementTable({ token, userRole }: { token: string
     const canManage = !['HR', 'HR_ADMIN', 'AUDITOR'].includes(userRole.toUpperCase())
     const [search, setSearch] = useState("")
     const [editUser, setEditUser] = useState<any>(null)
-    const [deleteUser, setDeleteUser] = useState<any>(null)
+    const [deactivateUser, setDeactivateUser] = useState<any>(null)
     const [isAddOpen, setIsAddOpen] = useState(false)
     const [deptFilter, setDeptFilter] = useState("ALL")
     const [statusFilter, setStatusFilter] = useState("ALL")
@@ -239,10 +239,16 @@ export default function UserManagementTable({ token, userRole }: { token: string
                                         <Edit3 className="w-5 h-5" />
                                     </button>
                                     <button
-                                        onClick={(e) => { e.stopPropagation(); setDeleteUser(user); }}
-                                        className="h-11 w-11 flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-white rounded-[14px] transition-all shadow-sm border border-transparent hover:border-rose-100"
+                                        onClick={(e) => { e.stopPropagation(); setDeactivateUser(user); }}
+                                        title={user.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
+                                        className={cn(
+                                            "h-11 w-11 flex items-center justify-center rounded-[14px] transition-all shadow-sm border border-transparent",
+                                            user.status === 'ACTIVE'
+                                                ? "text-slate-400 hover:text-amber-600 hover:bg-white hover:border-amber-100"
+                                                : "text-slate-400 hover:text-emerald-600 hover:bg-white hover:border-emerald-100"
+                                        )}
                                     >
-                                        <Trash2 className="w-5 h-5" />
+                                        <Power className="w-5 h-5" />
                                     </button>
                                     <button 
                                         onClick={(e) => {
@@ -283,7 +289,7 @@ export default function UserManagementTable({ token, userRole }: { token: string
             </div>
 
             <AnimatePresence>
-                {(isAddOpen || editUser || deleteUser) && (
+                {(isAddOpen || editUser || deactivateUser) && (
                     <div className="fixed inset-0 z-[300] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md">
                         <motion.div 
                             initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -306,20 +312,34 @@ export default function UserManagementTable({ token, userRole }: { token: string
                                     }} 
                                 />
                             )}
-                            {deleteUser && (
+                            {deactivateUser && (() => {
+                                const isCurrentlyActive = deactivateUser.status === 'ACTIVE';
+                                const newStatus = isCurrentlyActive ? 'INACTIVE' : 'ACTIVE';
+                                return (
                                 <div className="bg-white rounded-[48px] p-12 max-w-md mx-auto border border-slate-100 shadow-[0_32px_80px_rgba(0,0,0,0.1)]">
-                                    <div className="w-24 h-24 bg-rose-50 rounded-[32px] flex items-center justify-center mb-10 mx-auto">
-                                        <ShieldAlert className="w-12 h-12 text-rose-600" />
+                                    <div className={cn(
+                                        "w-24 h-24 rounded-[32px] flex items-center justify-center mb-10 mx-auto",
+                                        isCurrentlyActive ? "bg-amber-50" : "bg-emerald-50"
+                                    )}>
+                                        {isCurrentlyActive 
+                                            ? <UserX className="w-12 h-12 text-amber-600" />
+                                            : <UserCheck className="w-12 h-12 text-emerald-600" />
+                                        }
                                     </div>
-                                    <h3 className="text-2xl font-bold text-slate-900 text-center tracking-tight font-brand mb-4 leading-none">Delete Staff Member?</h3>
+                                    <h3 className="text-2xl font-bold text-slate-900 text-center tracking-tight font-brand mb-4 leading-none">
+                                        {isCurrentlyActive ? 'Deactivate' : 'Reactivate'} Staff Member?
+                                    </h3>
                                     <p className="text-[13px] text-slate-500 text-center mb-10 font-medium leading-relaxed">
-                                        You are about to remove <span className="font-bold text-slate-900 uppercase">{deleteUser.name}</span>. This cannot be undone.
+                                        {isCurrentlyActive 
+                                            ? <>You are about to deactivate <span className="font-bold text-slate-900 uppercase">{deactivateUser.name}</span>. Their account will be disabled but all data will be preserved.</>
+                                            : <>You are about to reactivate <span className="font-bold text-slate-900 uppercase">{deactivateUser.name}</span>. They will regain full system access.</>
+                                        }
                                     </p>
                                     
                                     <div className="grid grid-cols-2 gap-6">
                                         <Button 
                                             variant="outline"
-                                            onClick={() => setDeleteUser(null)}
+                                            onClick={() => setDeactivateUser(null)}
                                             className="h-16 rounded-[22px] text-[10px] font-bold uppercase tracking-widest border-slate-100 hover:bg-slate-50 transition-all"
                                         >
                                             Cancel
@@ -327,25 +347,35 @@ export default function UserManagementTable({ token, userRole }: { token: string
                                         <Button 
                                             onClick={async () => {
                                                 try {
-                                                    const res = await fetch(`${API}/admin/users/${deleteUser.id}`, {
-                                                        method: 'DELETE',
-                                                        headers: { "Authorization": `Bearer ${token}` }
+                                                    const res = await fetch(`${API}/admin/users/${deactivateUser.id}/status`, {
+                                                        method: 'PATCH',
+                                                        headers: { 
+                                                            "Authorization": `Bearer ${token}`,
+                                                            "Content-Type": "application/json"
+                                                        },
+                                                        body: JSON.stringify({ status: newStatus })
                                                     })
                                                     if (!res.ok) throw new Error()
-                                                    toast.success("Employee deleted")
-                                                    setDeleteUser(null)
+                                                    toast.success(isCurrentlyActive ? "Employee deactivated" : "Employee reactivated")
+                                                    setDeactivateUser(null)
                                                     fetchUsers()
                                                 } catch {
                                                     toast.error("Operation failed")
                                                 }
                                             }}
-                                            className="h-16 bg-rose-600 hover:bg-black text-white rounded-[22px] text-[10px] font-bold uppercase tracking-widest shadow-2xl shadow-rose-100 transition-all"
+                                            className={cn(
+                                                "h-16 text-white rounded-[22px] text-[10px] font-bold uppercase tracking-widest shadow-2xl transition-all",
+                                                isCurrentlyActive 
+                                                    ? "bg-amber-600 hover:bg-black shadow-amber-100" 
+                                                    : "bg-emerald-600 hover:bg-black shadow-emerald-100"
+                                            )}
                                         >
-                                            Confirm Delete
+                                            {isCurrentlyActive ? 'Confirm Deactivate' : 'Confirm Activate'}
                                         </Button>
                                     </div>
                                 </div>
-                            )}
+                                );
+                            })()}
                         </motion.div>
                     </div>
                 )}

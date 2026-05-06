@@ -94,7 +94,9 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use((req, res, next) => {
     const start = Date.now();
     res.on('finish', () => {
-        res.setHeader('X-Response-Time', `${Date.now() - start}ms`);
+        if (!res.headersSent) {
+            res.setHeader('X-Response-Time', `${Date.now() - start}ms`);
+        }
     });
     next();
 });
@@ -171,6 +173,7 @@ import lifecycleRoutes from './routes/lifecycle.routes';
 import biRoutes from './routes/bi.routes';
 import enterpriseRoutes from './routes/enterprise.routes';
 import documentRoutes from './routes/document.routes';
+import leaveEmailActionRoutes from './routes/leave-email-action.routes';
 import { initCronJobs } from './services/cron.service';
 
 // Initialize Scheduled Tasks
@@ -203,6 +206,7 @@ app.use('/api/lifecycle', lifecycleRoutes);
 app.use('/api/bi', biRoutes);
 app.use('/api/enterprise', enterpriseRoutes);
 app.use('/api/documents', documentRoutes);
+app.use('/api/leave-email-action', leaveEmailActionRoutes);
 
 // Health check endpoint for Docker
 app.get('/health', (req, res) => {

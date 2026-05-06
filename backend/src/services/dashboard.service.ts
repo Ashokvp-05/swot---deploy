@@ -18,7 +18,10 @@ export const getEmployeeDashboardData = async (userId: string, companyId: string
     const todayIso = format(todayDate, 'yyyy-MM-dd');
 
     // Fetch all data in parallel
-    const [summary, leaveBalances, payslips, calendar, activeEntry, announcements] = await Promise.all([
+    const monthStart = startOfMonth(todayDate);
+    const monthEnd = new Date(todayDate.getFullYear(), todayDate.getMonth() + 1, 0, 23, 59, 59, 999);
+
+    const [summary, leaveBalances, payslips, calendar, activeEntry, announcements, monthlyEntries] = await Promise.all([
         timeService.getSummary(userId, companyId),
         (prisma as any).leaveBalance.findMany({
             where: { userId, companyId, year: todayDate.getFullYear() },
@@ -29,7 +32,7 @@ export const getEmployeeDashboardData = async (userId: string, companyId: string
             where: {
                 companyId,
                 date: {
-                    gte: startOfMonth(todayDate),
+                    gte: monthStart,
                     lte: todayDate
                 }
             }
@@ -45,8 +48,91 @@ export const getEmployeeDashboardData = async (userId: string, companyId: string
             },
             orderBy: { createdAt: 'desc' },
             take: 5
+        }),
+        // Monthly time entries for presence pulse
+        prisma.timeEntry.findMany({
+            where: {
+                userId,
+                companyId,
+                clockIn: { gte: monthStart, lte: monthEnd },
+                status: { in: ['COMPLETED', 'ACTIVE'] }
+            }
         })
     ]);
+
+    // Compute monthly summary
+    const monthlyDaysSet = new Set<string>();
+    let monthlyTotalHours = 0;
+    let monthlyLateCheckIns = 0;
+    monthlyEntries.forEach((entry: any) => {
+        const dayKey = entry.clockIn.toISOString().split('T')[0];
+        monthlyDaysSet.add(dayKey);
+        monthlyTotalHours += entry.hoursWorked ? Number(entry.hoursWorked) : 0;
+        const cHour = entry.clockIn.getHours();
+        const cMin = entry.clockIn.getMinutes();
+        if (cHour > 9 || (cHour === 9 && cMin > 30)) monthlyLateCheckIns++;
+    });
+    // Business days in month (Mon-Fri)
+    let monthlyBusinessDays = 0;
+    const tmpDate = new Date(monthStart);
+    while (tmpDate <= monthEnd) {
+        const dow = tmpDate.getDay();
+        if (dow !== 0 && dow !== 6) monthlyBusinessDays++;
+        tmpDate.setDate(tmpDate.getDate() + 1);
+    }
+    const monthlySummary = {
+        present: monthlyDaysSet.size,
+        businessDays: monthlyBusinessDays,
+        totalHours: monthlyTotalHours.toFixed(2),
+        lateCheckIns: monthlyLateCheckIns,
+        ratio: monthlyBusinessDays > 0 ? Math.round((monthlyDaysSet.size / monthlyBusinessDays) * 100) : 0,
+        monthName: format(todayDate, 'MMMM'),
+        year: todayDate.getFullYear()
+    };
+
+    // Yearly month-by-month breakdown
+    const yearStart = new Date(todayDate.getFullYear(), 0, 1);
+    const yearEnd = new Date(todayDate.getFullYear(), 11, 31, 23, 59, 59, 999);
+    const yearlyEntries = await prisma.timeEntry.findMany({
+        where: {
+            userId,
+            companyId,
+            clockIn: { gte: yearStart, lte: yearEnd },
+            status: { in: ['COMPLETED', 'ACTIVE'] }
+        }
+    });
+
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const yearlyMonths = monthNames.map((name, idx) => {
+        const mStart = new Date(todayDate.getFullYear(), idx, 1);
+        const mEnd = new Date(todayDate.getFullYear(), idx + 1, 0);
+        // Business days for this month
+        let bDays = 0;
+        const t = new Date(mStart);
+        while (t <= mEnd) {
+            const d = t.getDay();
+            if (d !== 0 && d !== 6) bDays++;
+            t.setDate(t.getDate() + 1);
+        }
+        // Present days for this month
+        const daysSet = new Set<string>();
+        yearlyEntries.forEach((entry: any) => {
+            const entryMonth = entry.clockIn.getMonth();
+            if (entryMonth === idx) {
+                daysSet.add(entry.clockIn.toISOString().split('T')[0]);
+            }
+        });
+        return { month: name, present: daysSet.size, businessDays: bDays };
+    });
+
+    // Only include months up to current month
+    const currentMonthIdx = todayDate.getMonth();
+    const yearlySummary = {
+        months: yearlyMonths.slice(0, currentMonthIdx + 1),
+        totalPresent: yearlyMonths.slice(0, currentMonthIdx + 1).reduce((a, m) => a + m.present, 0),
+        totalBusinessDays: yearlyMonths.slice(0, currentMonthIdx + 1).reduce((a, m) => a + m.businessDays, 0),
+        year: todayDate.getFullYear()
+    };
 
     let latestPayslip = null;
     if (Array.isArray(payslips) && payslips.length > 0) {
@@ -62,6 +148,8 @@ export const getEmployeeDashboardData = async (userId: string, companyId: string
 
     const data = {
         summary,
+        monthlySummary,
+        yearlySummary,
         leaveBalances,
         latestPayslip,
         calendar,
@@ -70,8 +158,8 @@ export const getEmployeeDashboardData = async (userId: string, companyId: string
         timestamp: new Date()
     };
 
-    // Cache for 5 seconds for real-time responsiveness
-    cache.set(cacheKey, data, 5);
+    // Cache for 2 seconds for real-time responsiveness
+    cache.set(cacheKey, data, 2);
 
     return data;
 };

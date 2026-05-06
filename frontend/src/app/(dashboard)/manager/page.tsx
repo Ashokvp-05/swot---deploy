@@ -32,7 +32,7 @@ const AddEmployeeModal = dynamic(() => import("@/components/admin/AddEmployeeMod
 const DocumentsModule = dynamic(() => import("@/components/admin/DocumentsModule"), { ssr: false })
 const DepartmentManager = dynamic(() => import("@/components/manager/ManagerDepartmentView"), { ssr: false })
 const UserManagementTable = dynamic(() => import("@/components/admin/UserManagementTable"), { ssr: false })
-const SupportControlCenter = dynamic(() => import("@/components/admin/SupportControlCenter"), { ssr: false })
+const AdminKanbanBoard = dynamic(() => import("@/components/admin/AdminKanbanBoard"), { ssr: false })
 const SecurityAuditLogs = dynamic(() => import("@/components/admin/SecurityAuditLogs").then(m => m.SecurityAuditLogs), { ssr: false })
 const SystemSettingsCenter = dynamic(() => import("@/components/admin/SystemSettingsCenter").then(m => m.SystemSettingsCenter), { ssr: false })
 const BroadcastCenter = dynamic(() => import("@/components/admin/BroadcastCenter").then(m => m.BroadcastCenter), { ssr: false })
@@ -151,7 +151,7 @@ export default function HRManagerDashboardPage() {
                             {currentTab === "announcements" && <BroadcastCenter token={token} />}
                             {currentTab === "documents" && <DocumentsModule token={token} />}
                             {currentTab === "reports" && <ManagerReports token={token} />}
-                            {currentTab === "support"      && <SupportControlCenter token={token} />}
+                            {currentTab === "support"      && <AdminKanbanBoard token={token} />}
                             {currentTab === "user-management"   && <SecurityAuditLogs token={token} />}
                             {currentTab === "settings"     && <SystemSettingsCenter token={token} />}
                         </div>

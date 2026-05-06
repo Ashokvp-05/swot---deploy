@@ -32,15 +32,15 @@ export default function AttendancePage() {
                         <ScanLine className="w-8 h-8 text-white" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tighter text-slate-900 dark:text-white uppercase italic leading-none">Temporal Audit</h1>
-                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-2">Live synchronization of shifts, attendance, and biometric logs.</p>
+                        <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">Attendance</h1>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Track your shifts, attendance, and work logs</p>
                     </div>
                 </div>
 
                 <div className="relative z-10">
                     <div className="flex items-center gap-3 px-4 py-2 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/5">
                         <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-[10px] font-bold uppercase text-slate-600 dark:text-slate-400 tracking-widest">Shard: Live-01</span>
+                        <span className="text-[10px] font-bold uppercase text-slate-600 dark:text-slate-400 tracking-widest">Live Sync</span>
                     </div>
                 </div>
             </div>

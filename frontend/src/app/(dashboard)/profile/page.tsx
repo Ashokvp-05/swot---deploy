@@ -86,6 +86,8 @@ const profileSchema = z.object({
             return year >= 1900 && year <= new Date().getFullYear() - 16;
         }, "Enter a valid date of birth (must be a real past date)."),
     maritalStatus: z.string().optional(),
+    fatherName: z.string().optional(),
+    motherName: z.string().optional(),
     bloodGroup: z.string().regex(/^(A|B|AB|O)[+-]$/, "Enter a valid blood group (e.g. O+, AB-)").optional().or(z.literal("")),
 
     // 2. Contact
@@ -159,6 +161,8 @@ export default function ProfilePage() {
             gender: "",
             dob: "",
             maritalStatus: "",
+            fatherName: "",
+            motherName: "",
             bloodGroup: "",
             personalEmail: "",
             secondaryPhone: "",
@@ -215,6 +219,8 @@ export default function ProfilePage() {
                         gender: p.gender || "",
                         dob: p.dob ? format(new Date(p.dob), "yyyy-MM-dd") : "",
                         maritalStatus: p.maritalStatus || "",
+                        fatherName: p.fatherName || "",
+                        motherName: p.motherName || "",
                         bloodGroup: p.bloodGroup || "",
                         personalEmail: p.personalEmail || "",
                         secondaryPhone: p.secondaryPhone || "",
@@ -559,7 +565,7 @@ export default function ProfilePage() {
 
                         <div className="space-y-1">
                             <div className="flex items-center gap-3">
-                                <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight uppercase tracking-widest leading-none">
+                                <h1 className="text-2xl font-semibold text-slate-900 dark:text-white tracking-tight leading-none">
                                     {userData?.name || <Skeleton className="h-6 w-48" />}
                                 </h1>
                                 <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-none px-2.5 py-0.5 font-bold uppercase tracking-[0.1em] text-[9px]">
@@ -667,12 +673,22 @@ export default function ProfilePage() {
                                                      )} />
                                                       <FormField control={form.control} name="maritalStatus" render={({ field }) => (
                                                           <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Marital Status</FormLabel><FormControl>
-                                                              <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
+                                                               <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="e.g. Single, Married" {...field} />
+                                                          </FormControl><FormMessage /></FormItem>
+                                                      )} />
+                                                      <FormField control={form.control} name="fatherName" render={({ field }) => (
+                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Father's Name</FormLabel><FormControl>
+                                                               <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="Father's Name" {...field} value={field.value || ""} />
+                                                          </FormControl><FormMessage /></FormItem>
+                                                      )} />
+                                                      <FormField control={form.control} name="motherName" render={({ field }) => (
+                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Mother's Name</FormLabel><FormControl>
+                                                               <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="Mother's Name" {...field} value={field.value || ""} />
                                                           </FormControl><FormMessage /></FormItem>
                                                       )} />
                                                      <FormField control={form.control} name="bloodGroup" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Blood Group</FormLabel><FormControl>
-                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="e.g. O+ive" {...field} />
+                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="e.g. O+, AB-, B+" {...field} />
                                                          </FormControl></FormItem>
                                                      )} />
                                                  </div>
@@ -911,7 +927,7 @@ export default function ProfilePage() {
                                                     <Lock className="w-5 h-5 text-white" />
                                                 </div>
                                                 <div>
-                                                    <DialogTitle className="text-lg font-bold text-slate-900 uppercase italic tracking-tight">Password Reset</DialogTitle>
+                                                    <DialogTitle className="text-lg font-semibold text-slate-900 tracking-tight">Password Reset</DialogTitle>
                                                     <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Please confirm your password</p>
                                                 </div>
                                             </div>

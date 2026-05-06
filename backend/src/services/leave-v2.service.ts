@@ -62,7 +62,7 @@ export const requestLeaveV2 = async (userId: string, companyId: string, data: { 
         throw new Error('Insufficient leave balance');
     }
 
-    return prisma.$transaction(async (tx) => {
+    const request = await prisma.$transaction(async (tx) => {
         // Update pending balance
         await (tx as any).leaveBalance.update({
             where: { id: balance.id },
@@ -76,9 +76,44 @@ export const requestLeaveV2 = async (userId: string, companyId: string, data: { 
                 userId,
                 companyId,
                 status: 'PENDING'
-            }
+            },
+            include: { user: true, leaveTypeConfig: true }
         });
     });
+
+    try {
+        const { sendLeaveRequestNotification } = await import('./email.service');
+        const { generateLeaveActionToken, buildLeaveActionUrl } = await import('../routes/leave-email-action.routes');
+        const superAdmins = await (prisma as any).user.findMany({
+            where: { companyId, role: { name: 'SUPER_ADMIN' } }
+        });
+
+        const employeeName = (request.user as any)?.name || 'Employee';
+        const leaveTypeName = request.leaveTypeConfig?.name || 'Leave';
+
+        for (const admin of superAdmins) {
+            if (admin.email) {
+                const approveToken = generateLeaveActionToken(request.id, admin.id, companyId, 'approve');
+                const rejectToken = generateLeaveActionToken(request.id, admin.id, companyId, 'reject');
+                const approveUrl = buildLeaveActionUrl(approveToken);
+                const rejectUrl = buildLeaveActionUrl(rejectToken);
+
+                await sendLeaveRequestNotification(
+                    admin.email,
+                    employeeName,
+                    leaveTypeName,
+                    new Date(data.startDate).toDateString(),
+                    new Date(data.endDate).toDateString(),
+                    approveUrl,
+                    rejectUrl
+                ).catch((err: any) => console.error("Failed to send leave notification email:", err));
+            }
+        }
+    } catch (error) {
+        console.error("Error notifying super admins:", error);
+    }
+
+    return request;
 };
 
 export const approveLeaveV2 = async (requestId: string, companyId: string, approvedBy: string) => {

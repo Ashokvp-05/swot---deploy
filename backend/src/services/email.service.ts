@@ -165,3 +165,53 @@ export const sendDailyAttendanceReport = async (email: string, stats: any) => {
     `;
     return sendEmail(email, subject, html);
 };
+
+export const sendLeaveRequestNotification = async (
+    email: string, 
+    employeeName: string, 
+    leaveType: string, 
+    startDate: string, 
+    endDate: string,
+    approveUrl?: string,
+    rejectUrl?: string
+) => {
+    const subject = `New Leave Request - ${employeeName}`;
+    
+    const actionButtons = (approveUrl && rejectUrl) ? `
+            <div style="margin: 32px 0; text-align: center;">
+                <a href="${approveUrl}" style="background: #10b981; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px; display: inline-block; margin-right: 12px;">✅ Approve</a>
+                <a href="${rejectUrl}" style="background: #ef4444; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px; display: inline-block;">❌ Reject</a>
+            </div>
+            <div style="margin: 16px 0; text-align: center;">
+                <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/admin?tab=leave" style="color: #4f46e5; font-size: 13px; font-weight: 600; text-decoration: underline;">Or view in Dashboard</a>
+            </div>` : `
+            <div style="margin: 32px 0;">
+                <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/admin?tab=leave" style="background: #4f46e5; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px; display: inline-block;">View Request in Dashboard</a>
+            </div>`;
+
+    const html = `
+        <div style="font-family: sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px;">
+            <h2 style="color: #4f46e5; text-transform: uppercase; letter-spacing: 0.1em; font-size: 20px;">New Leave Request</h2>
+            <p style="color: #475569; font-size: 16px; line-height: 1.6;"><strong>${employeeName}</strong> has submitted a new leave request.</p>
+            <table border="1" cellpadding="10" style="border-collapse: collapse; width: 100%; margin-bottom: 20px;">
+                <tr style="background: #f8fafc;">
+                    <td style="width: 30%;"><strong>Leave Type</strong></td>
+                    <td>${leaveType}</td>
+                </tr>
+                <tr>
+                    <td><strong>Start Date</strong></td>
+                    <td>${startDate}</td>
+                </tr>
+                <tr style="background: #f8fafc;">
+                    <td><strong>End Date</strong></td>
+                    <td>${endDate}</td>
+                </tr>
+            </table>
+            ${actionButtons}
+            <p style="font-size: 12px; color: #94a3b8;">This is an automated notification for Super Admins. Action links expire in 7 days.</p>
+            <hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 24px 0;" />
+            <p style="font-size: 10px; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.2em;">Rudratic Personnel Core</p>
+        </div>
+    `;
+    return sendEmail(email, subject, html);
+};

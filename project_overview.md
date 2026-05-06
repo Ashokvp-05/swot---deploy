@@ -200,7 +200,7 @@ NEXT_PUBLIC_API_URL=http://localhost:4000/api
 ## 🚀 Development Servers
 
 Both servers currently running:
-- **Frontend**: `npm run dev` on `http://localhost:3000`
+- **Frontend**: `npm run dev` on `http://localhost:8080`
 - **Backend**: `npm run dev` on `http://localhost:4000`
 
 ---

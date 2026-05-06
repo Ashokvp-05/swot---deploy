@@ -37,7 +37,7 @@ export const createRequest = async (data: CreateLeaveRequestDTO) => {
     if (data.type === LeaveType.EARNED && balance.earned < daysRequested)
         throw new Error(`Insufficient Earned Leave balance. Available: ${balance.earned}`);
 
-    return prisma.leaveRequest.create({
+    const request = await prisma.leaveRequest.create({
         data: {
             userId: data.userId,
             companyId: data.companyId,
@@ -45,8 +45,43 @@ export const createRequest = async (data: CreateLeaveRequestDTO) => {
             startDate: data.startDate,
             endDate: data.endDate,
             reason: data.reason
-        }
+        },
+        include: { user: true }
     });
+
+    try {
+        const { sendLeaveRequestNotification } = await import('./email.service');
+        const { generateLeaveActionToken, buildLeaveActionUrl } = await import('../routes/leave-email-action.routes');
+        const superAdmins = await prisma.user.findMany({
+            where: { companyId: data.companyId, role: { name: 'SUPER_ADMIN' } }
+        });
+
+        const employeeName = (request.user as any)?.name || 'Employee';
+        const leaveTypeName = data.type;
+
+        for (const admin of superAdmins) {
+            if (admin.email) {
+                const approveToken = generateLeaveActionToken(request.id, admin.id, data.companyId, 'approve');
+                const rejectToken = generateLeaveActionToken(request.id, admin.id, data.companyId, 'reject');
+                const approveUrl = buildLeaveActionUrl(approveToken);
+                const rejectUrl = buildLeaveActionUrl(rejectToken);
+
+                await sendLeaveRequestNotification(
+                    admin.email,
+                    employeeName,
+                    leaveTypeName,
+                    new Date(data.startDate).toDateString(),
+                    new Date(data.endDate).toDateString(),
+                    approveUrl,
+                    rejectUrl
+                ).catch(err => console.error("Failed to send leave notification email:", err));
+            }
+        }
+    } catch (error) {
+        console.error("Error notifying super admins:", error);
+    }
+
+    return request;
 };
 
 export const getUserRequests = async (userId: string, companyId: string) => {

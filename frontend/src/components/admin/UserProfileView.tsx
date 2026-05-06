@@ -474,6 +474,8 @@ export default function UserProfileView({ user: initialUser, token, onClose, onE
                                                 <FieldRow icon={Heart} label="Gender" value={val(profile?.gender)} />
                                                 <FieldRow icon={Users} label="Marital Status" value={val(profile?.maritalStatus)} />
                                                 <FieldRow icon={Droplets} label="Blood Group" value={val(profile?.bloodGroup)} />
+                                                <FieldRow icon={User} label="Father's Name" value={val(profile?.fatherName)} />
+                                                <FieldRow icon={User} label="Mother's Name" value={val(profile?.motherName)} />
                                             </div>
 
                                             {/* ID & Compliance */}

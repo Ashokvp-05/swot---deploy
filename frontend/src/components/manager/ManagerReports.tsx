@@ -158,7 +158,7 @@ export default function ManagerReports({ token }: { token: string }) {
                             <BarChart3 className="w-7 h-7" />
                         </div>
                         <div>
-                            <h1 className="text-[26px] font-bold text-slate-900 tracking-tighter font-brand uppercase italic leading-none">
+                            <h1 className="text-[26px] font-bold text-slate-800 tracking-tight font-brand leading-none">
                                 Reports & Analytics
                             </h1>
                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mt-2">
@@ -190,11 +190,14 @@ export default function ManagerReports({ token }: { token: string }) {
                 <div id="reports-manifest" className="space-y-12">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {kpis.map((kpi, i) => (
-                            <motion.div key={i} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} className={cn("p-8 rounded-[32px] border border-slate-100 shadow-sm relative overflow-hidden group", kpi.bg)}>
+                            <motion.div key={i} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} className="p-8 rounded-[28px] border border-slate-100 bg-white shadow-sm hover:shadow-md transition-all group relative overflow-hidden">
                                 <div className="relative z-10">
-                                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-4 group-hover:text-indigo-600 transition-colors" style={{ color: kpi.accent }}>{kpi.label}</p>
-                                    <h2 className="text-4xl font-bold tracking-tighter" style={{ color: kpi.accent }}>{loading ? "—" : kpi.value}{kpi.suffix}</h2>
-                                    <p className="text-[10px] font-bold mt-2 opacity-60" style={{ color: kpi.accent }}>{kpi.sub}</p>
+                                    <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform", kpi.bg)}>
+                                        <kpi.icon className="w-5 h-5" style={{ color: kpi.accent }} />
+                                    </div>
+                                    <h2 className="text-4xl font-bold tracking-tight text-slate-900 mb-2">{loading ? "—" : kpi.value}{kpi.suffix}</h2>
+                                    <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">{kpi.label}</p>
+                                    <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-wider">{kpi.sub}</p>
                                 </div>
                             </motion.div>
                         ))}
@@ -202,7 +205,7 @@ export default function ManagerReports({ token }: { token: string }) {
 
                     <div className="space-y-6">
                         <div className="flex items-center justify-between px-2">
-                            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-[0.2em]">Departmental Performance</h3>
+                            <h3 className="text-[22px] font-bold text-slate-800 tracking-tight font-brand leading-none">Department Analytics</h3>
                             <div className="h-px flex-1 mx-8 bg-slate-100" />
                             <Badge className="bg-indigo-50 text-indigo-600 border-none font-bold text-[10px] px-4 py-1.5 rounded-full">{data.departments.length} Units</Badge>
                         </div>

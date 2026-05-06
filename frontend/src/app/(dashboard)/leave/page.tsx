@@ -23,14 +23,15 @@ export default async function LeavePage() {
                         <Palmtree className="w-8 h-8 text-white" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white uppercase italic">Workforce Absence</h1>
-                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Orchestrate personal entitlement and strategic leave cycles.</p>
+                        <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">Leave Management</h1>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Manage your leave requests and balances</p>
+
                     </div>
                 </div>
                 <div className="relative z-10 flex gap-4">
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-[10px] font-bold uppercase text-emerald-600 dark:text-emerald-400">Policy Synchronized</span>
+                        <span className="text-[10px] font-bold uppercase text-emerald-600 dark:text-emerald-400">Active</span>
                     </div>
                 </div>
             </div>

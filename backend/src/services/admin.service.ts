@@ -241,10 +241,17 @@ export const getDashboardOverview = async (companyId: string, managerId?: string
         payroll: { total: totalPayroll, paid: paidEmployees, pending: pendingPayments },
         hiring: { activeJobs: jobPostings, applicants },
         distribution: performance,
-        health: { server: 'online', db: 'connected', apiLatency: '18ms' }
+        health: { server: 'online', db: 'connected', apiLatency: '18ms' },
+        liveSessions: activeSessions.map((s: any) => ({
+            id: s.user?.id,
+            name: s.user?.name,
+            department: s.user?.department?.name,
+            clockIn: s.clockIn,
+            clockType: s.clockType,
+        }))
     };
 
-    // Cache for 60 seconds
-    cache.set(cacheKey, result, 60);
+    // Cache for 10 seconds (near real-time)
+    cache.set(cacheKey, result, 10);
     return result;
 };

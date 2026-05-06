@@ -173,6 +173,8 @@ model Profile {
   gender                String?
   dob                   DateTime?
   maritalStatus         String?   @map("marital_status")
+  fatherName            String?   @map("father_name")
+  motherName            String?   @map("mother_name")
   bloodGroup            String?   @map("blood_group")
   secondaryPhone        String?   @map("secondary_phone")
   workPhone             String?   @map("work_phone")

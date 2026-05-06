@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { jsPDF } from "jspdf"
 import autoTable from "jspdf-autotable"
 import { motion, AnimatePresence } from "framer-motion"
-import { CreditCard, DollarSign, Loader2, Play, CheckCircle2, AlertCircle, FileText, ChevronRight, Lock, Unlock, Download, Send, Plus, Activity, Users, Clock, TrendingUp, ShieldCheck, Settings, Save, Trash2, Zap, Eye, Calendar, Search } from "lucide-react"
+import { CreditCard, DollarSign, Loader2, Play, CheckCircle2, AlertCircle, FileText, ChevronRight, Lock, Unlock, Download, Send, Plus, Activity, Users, Clock, TrendingUp, ShieldCheck, Settings, Save, Trash2, Zap, Eye, Calendar, Search, ClipboardList, FileCheck, FileBarChart } from "lucide-react"
 import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
@@ -199,29 +199,37 @@ export default function PayrollControlCenter({ token }: { token: string }) {
                 </div>
 
                 {/* ── SUMMARY DASHBOARD ── */}
-                {!statsLoading && stats && (
+                {!statsLoading && (
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        {[
-                            { label: 'Total Pay Amount', value: `₹${(stats.estimatedExpenditure / 100000).toFixed(2)}L`, sub: 'Current Active Payments', icon: TrendingUp, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-                            { label: 'Employees Paid', value: `${stats.configuredEmployees}`, sub: `Total Staff: ${stats.totalEmployees}`, icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-                            { label: 'Pending Payments', value: stats.missingConfig > 0 ? stats.missingConfig : 0, sub: 'Needs Calculation', icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
-                            { label: 'Tax & Deductions', value: `₹${((stats.estimatedExpenditure * 0.12) / 1000).toFixed(1)}k`, sub: 'Estimated Government Tax', icon: Activity, color: 'text-rose-600', bg: 'bg-rose-50' },
-                        ].map((s, i) => (
-                            <motion.div 
-                                key={i} 
-                                initial={{ opacity: 0, y: 15 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: i * 0.05 }}
-                                className="bg-white rounded-[32px] border border-slate-100 p-8 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all group"
-                            >
-                                <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:rotate-6", s.bg)}>
-                                    <s.icon className={cn("w-5 h-5", s.color)} />
-                                </div>
-                                <h3 className="text-2xl font-bold text-slate-800 tracking-tight font-brand leading-none">{s.value}</h3>
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">{s.label}</p>
-                                <p className="text-[9px] font-semibold text-slate-300 uppercase mt-3">{s.sub}</p>
-                            </motion.div>
-                        ))}
+                        {(() => {
+                            const totalReports = batches.length
+                            const releasedSlips = batches.filter((b: any) => b.status === 'RELEASED').reduce((sum: number, b: any) => sum + (b._count?.payslips || 0), 0)
+                            const pendingSlips = batches.filter((b: any) => b.status === 'DRAFT').reduce((sum: number, b: any) => sum + (b._count?.payslips || 0), 0)
+                            const draftReports = batches.filter((b: any) => b.status === 'DRAFT').length
+                            const totalStaff = stats?.totalEmployees || users.length
+
+                            return [
+                                { label: 'Total Reports', value: totalReports, sub: 'This Month', icon: ClipboardList, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+                                { label: 'Payslips Issued', value: releasedSlips || stats?.configuredEmployees || 0, sub: `Total Staff: ${totalStaff}`, icon: FileCheck, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+                                { label: 'Pending Payslips', value: pendingSlips || stats?.missingConfig || 0, sub: 'Needs Review', icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
+                                { label: 'Draft Reports', value: draftReports, sub: 'Not Published', icon: FileBarChart, color: 'text-rose-600', bg: 'bg-rose-50' },
+                            ].map((s, i) => (
+                                <motion.div 
+                                    key={i} 
+                                    initial={{ opacity: 0, y: 15 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: i * 0.05 }}
+                                    className="bg-white rounded-[28px] border border-slate-100 p-8 shadow-sm hover:shadow-md transition-all group"
+                                >
+                                    <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110", s.bg)}>
+                                        <s.icon className={cn("w-5 h-5", s.color)} />
+                                    </div>
+                                    <h3 className="text-4xl font-bold text-slate-900 tracking-tight leading-none mb-2">{s.value}</h3>
+                                    <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">{s.label}</p>
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1">{s.sub}</p>
+                                </motion.div>
+                            ))
+                        })()}
                     </div>
                 )}
 

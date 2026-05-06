@@ -56,6 +56,7 @@ const getNavItems = (role?: string) => {
             { name: "Employee Details", href: "/admin/employee-details", icon: User, group: "company" },
             { name: "Reports", href: "/admin/reports", icon: BarChart3, group: "company" },
             { name: "Announcements", href: "/admin/announcements", icon: Megaphone, group: "company" },
+            { name: "Help Desk", href: "/help", icon: HelpCircle, group: "admin" },
             { name: "Audit Logs", href: "/admin/audit-logs", icon: ShieldCheck, group: "admin" },
             { name: "Settings", href: "/admin/settings", icon: Settings, group: "admin" },
             KIBANA_LINK,
@@ -92,6 +93,7 @@ const getNavItems = (role?: string) => {
         { name: "Leaves", href: "/leave", icon: Calendar, group: "finance" },
         { name: "Reports", href: "/reports", icon: BarChart3, group: "company" },
         { name: "Payslips", href: "/payslip", icon: CreditCard, group: "finance" },
+        { name: "Help Desk", href: "/help", icon: HelpCircle, group: "company" },
         KIBANA_LINK,
     ]
 }
