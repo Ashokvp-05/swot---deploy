@@ -1,0 +1,156 @@
+services:
+
+  # ─────────────────────────────────────────────
+  # DATABASE  (internal only — never exposed)
+  # ─────────────────────────────────────────────
+  db:
+    image: postgres:15-alpine
+    container_name: hr-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres_password}
+      POSTGRES_DB: ${POSTGRES_DB:-antigravity_db}
+      # ── PostgreSQL Performance Tuning ──────────────────────────────────────
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+      PGDATA: /var/lib/postgresql/data/pgdata
+    command: >
+      postgres
+        -c shared_buffers=256MB
+        -c effective_cache_size=512MB
+        -c work_mem=16MB
+        -c maintenance_work_mem=64MB
+        -c max_connections=100
+        -c wal_compression=on
+        -c synchronous_commit=off
+        -c checkpoint_completion_target=0.9
+        -c random_page_cost=1.1
+        -c effective_io_concurrency=200
+        -c log_min_duration_statement=1000
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-postgres} -d $${POSTGRES_DB:-antigravity_db}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - hr_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  # ─────────────────────────────────────────────
+  # BACKEND  →  localhost:4001
+  # ─────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hr-backend
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres_password}@db:5432/${POSTGRES_DB:-antigravity_db}?schema=public
+      - PORT=4000
+      - NODE_ENV=production
+      - NODE_OPTIONS=--max-old-space-size=512
+      - JWT_SECRET=${JWT_SECRET:-hr_system_secret_key_2026}
+      # ── Production Domain: hr.swotpam.com ─────────────────────────────────────
+      # CORS_ORIGINS: every URL that is allowed to call the backend API.
+      # Includes production domain + localhost for health checks / local debugging.
+      # *.trycloudflare.com and *.swotpam.com are also wildcard-allowed in app.ts.
+      - CORS_ORIGINS=https://hr.swotpam.com,http://localhost:8080,http://localhost:4001,http://127.0.0.1:8080
+      - FRONTEND_URL=https://hr.swotpam.com
+    ports:
+      - "127.0.0.1:4001:4000"
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:4000/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - hr_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "5"
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: "1.0"
+        reservations:
+          memory: 256M
+          cpus: "0.25"
+
+  # ─────────────────────────────────────────────
+  # FRONTEND  →  localhost:8080
+  # ─────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # MUST be relative /api — baked into JS bundle at build time.
+        # If absolute (http://localhost:4000), browsers on Cloudflare tunnel
+        # call their own localhost → all API calls fail.
+        - NEXT_PUBLIC_API_URL=/api
+    container_name: hr-frontend
+    restart: always
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      # NOTE: NEXT_PUBLIC_* runtime env vars have NO effect — compiled at build time.
+      # INTERNAL_BACKEND_URL — Next.js server-side SSR / rewrite proxy inside Docker network.
+      - INTERNAL_BACKEND_URL=http://backend:4000
+      - NODE_ENV=production
+      - NODE_OPTIONS=--max-old-space-size=512
+      - AUTH_SECRET=${AUTH_SECRET:-hr_system_auth_secret_2026}
+      # AUTH_TRUST_HOST — Required to trust Cloudflare's X-Forwarded-Host header.
+      # Without this NextAuth rejects callbacks from hr.swotpam.com.
+      - AUTH_TRUST_HOST=true
+      # AUTH_URL — Canonical public URL of the app.
+      # NextAuth uses this to generate correct callback/redirect URLs.
+      # Without this, sign-in callbacks point to localhost instead of hr.swotpam.com.
+      - AUTH_URL=https://hr.swotpam.com
+      # NEXTAUTH_URL — NextAuth v4 compat (some internals still read this)
+      - NEXTAUTH_URL=https://hr.swotpam.com
+    ports:
+      - "127.0.0.1:8080:3000"
+    networks:
+      - hr_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "5"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"
+        reservations:
+          memory: 128M
+          cpus: "0.25"
+
+networks:
+  hr_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
