@@ -60,13 +60,14 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
     }, [])
 
     useEffect(() => {
+        if (status !== 'LOADING') return
         if (initialData?.activeEntry) {
             setStatus('ACTIVE')
             setStartTime(initialData.activeEntry.clockIn)
         } else {
             setStatus('IDLE')
         }
-    }, [initialData])
+    }, [initialData, status])
 
     useEffect(() => {
         if (status !== 'ACTIVE' || !startTime) {
@@ -98,6 +99,15 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                 if (data.monthlySummary) setMonthlySummary(data.monthlySummary)
                 if (data.yearlySummary) setYearlySummary(data.yearlySummary)
                 if (data.latestPayslip) setLatestPayslip(data.latestPayslip)
+                
+                // Sync clock status with backend
+                if (data.activeEntry) {
+                    setStatus('ACTIVE')
+                    setStartTime(data.activeEntry.clockIn)
+                } else {
+                    setStatus('IDLE')
+                    setStartTime(null)
+                }
             }
         } catch (e: any) {
             if (e?.name !== 'AbortError') {}
