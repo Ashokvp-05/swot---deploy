@@ -39,7 +39,7 @@ export const sendEmail = async (to: string, subject: string, html: string, compa
         const transporter = nodemailer.createTransport({
             host: smtpConfig.server,
             port: Number(smtpConfig.port),
-            secure: smtpConfig.enableTls === true || Number(smtpConfig.port) === 465,
+            secure: Number(smtpConfig.port) === 465,
             auth: smtpConfig.username ? {
                 user: smtpConfig.username,
                 pass: smtpConfig.password

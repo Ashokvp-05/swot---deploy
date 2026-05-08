@@ -92,7 +92,7 @@ router.post('/test-smtp', authenticate, authorize(['SUPER_ADMIN']), async (req: 
         const transporter = nodemailer.createTransport({
             host: server,
             port: Number(port),
-            secure: enableTls === true,
+            secure: Number(port) === 465,
             auth: username ? { user: username, pass: finalPassword } : undefined
         });
 
