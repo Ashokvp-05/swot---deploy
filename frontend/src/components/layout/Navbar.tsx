@@ -193,34 +193,50 @@ export default function Navbar({ role, token, companyName }: { role?: string; to
                                         }
 
                                         const isExternal = 'external' in item && (item as any).external
+                                        const forceExternal = isExternal || item.href.startsWith('http')
 
-                                        return (
-                                            <button
-                                                key={item.href}
-                                                onClick={() => {
-                                                    const forceExternal = isExternal || item.href.startsWith('http')
-                                                    if (forceExternal) {
-                                                        window.open(item.href, '_blank')
-                                                    } else {
-                                                        router.push(item.href)
-                                                    }
-                                                }}
-                                                title={item.name}
-                                                className={cn(
-                                                    "w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 group relative outline-none",
-                                                    isActive
-                                                        ? (isLight ? "bg-indigo-50 text-indigo-700 font-bold" : "bg-indigo-600 text-white shadow-md shadow-indigo-600/25")
-                                                        : (isLight ? "text-slate-500 hover:bg-slate-50 hover:text-indigo-700" : "text-slate-400 hover:bg-white/5 hover:text-white")
-                                                )}
-                                            >
+                                        const linkContent = (
+                                            <>
                                                 <div className="flex items-center justify-center lg:justify-start gap-3.5 w-full">
                                                     <Icon className={cn("w-[18px] h-[18px] shrink-0 transition-colors duration-200", isActive ? (isLight ? "text-indigo-600" : "text-white") : (isLight ? "text-slate-400 group-hover:text-indigo-600" : "text-slate-500 group-hover:text-white"))} strokeWidth={isActive ? 2.5 : 1.8} />
                                                     <span className="hidden lg:inline-block text-left truncate">{item.name}</span>
-                                                    {isExternal && <ExternalLink className={cn("hidden lg:block w-3.5 h-3.5 shrink-0 ml-auto", isActive ? (isLight ? "text-indigo-400" : "text-indigo-200") : (isLight ? "text-slate-400 group-hover:text-indigo-600" : "text-slate-500 group-hover:text-white"))} />}
+                                                    {forceExternal && <ExternalLink className={cn("hidden lg:block w-3.5 h-3.5 shrink-0 ml-auto", isActive ? (isLight ? "text-indigo-400" : "text-indigo-200") : (isLight ? "text-slate-400 group-hover:text-indigo-600" : "text-slate-500 group-hover:text-white"))} />}
                                                 </div>
                                                 {isActive && (
                                                     <motion.div layoutId="globalActiveSidebarIndicator" className={cn("hidden lg:block absolute -left-[5px] top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full", isLight ? "bg-indigo-600" : "bg-indigo-400")} />
                                                 )}
+                                            </>
+                                        )
+
+                                        const commonClassName = cn(
+                                            "w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 group relative outline-none",
+                                            isActive
+                                                ? (isLight ? "bg-indigo-50 text-indigo-700 font-bold" : "bg-indigo-600 text-white shadow-md shadow-indigo-600/25")
+                                                : (isLight ? "text-slate-500 hover:bg-slate-50 hover:text-indigo-700" : "text-slate-400 hover:bg-white/5 hover:text-white")
+                                        )
+
+                                        if (forceExternal) {
+                                            return (
+                                                <a 
+                                                    key={item.href} 
+                                                    href={item.href} 
+                                                    target="_blank" 
+                                                    rel="noopener noreferrer"
+                                                    className={commonClassName}
+                                                >
+                                                    {linkContent}
+                                                </a>
+                                            )
+                                        }
+
+                                        return (
+                                            <button
+                                                key={item.href}
+                                                onClick={() => router.push(item.href)}
+                                                title={item.name}
+                                                className={commonClassName}
+                                            >
+                                                {linkContent}
                                             </button>
                                         )
                                     })}
