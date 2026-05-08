@@ -200,7 +200,7 @@ export default function Navbar({ role, token, companyName }: { role?: string; to
                                                 onClick={() => {
                                                     const forceExternal = isExternal || item.href.startsWith('http')
                                                     if (forceExternal) {
-                                                        window.open(item.href, "_blank", "noopener,noreferrer")
+                                                        window.location.href = item.href
                                                     } else {
                                                         router.push(item.href)
                                                     }
