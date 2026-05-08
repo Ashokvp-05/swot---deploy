@@ -7,8 +7,9 @@ const router = express.Router();
 
 router.get('/email', authenticate, authorize(['SUPER_ADMIN']), async (req: AuthRequest, res) => {
     try {
-        const companyId = req.user?.companyId;
-        if (!companyId) return res.status(400).json({ error: 'Company ID required' });
+        const user = req.user;
+        if (!user || !user.companyId) return res.status(400).json({ error: 'Company ID required' });
+        const companyId = user.companyId;
 
         const config = await prisma.systemConfig.findUnique({
             where: { key_companyId: { key: 'SMTP_SETTINGS', companyId } }
@@ -36,8 +37,9 @@ router.get('/email', authenticate, authorize(['SUPER_ADMIN']), async (req: AuthR
 
 router.put('/email', authenticate, authorize(['SUPER_ADMIN']), async (req: AuthRequest, res) => {
     try {
-        const companyId = req.user?.companyId;
-        if (!companyId) return res.status(400).json({ error: 'Company ID required' });
+        const user = req.user;
+        if (!user || !user.companyId) return res.status(400).json({ error: 'Company ID required' });
+        const companyId = user.companyId;
 
         const { server, port, username, password, senderEmail, enableTls } = req.body;
 
@@ -80,9 +82,10 @@ router.post('/test-smtp', authenticate, authorize(['SUPER_ADMIN']), async (req: 
         }
 
         let finalPassword = password;
-        if (!password && req.user?.companyId) {
+        const user = req.user;
+        if (!password && user && user.companyId) {
              const existing = await prisma.systemConfig.findUnique({
-                 where: { key_companyId: { key: 'SMTP_SETTINGS', companyId: req.user.companyId } }
+                 where: { key_companyId: { key: 'SMTP_SETTINGS', companyId: user.companyId } }
              });
              if (existing && (existing.value as any).password) {
                  finalPassword = (existing.value as any).password;
