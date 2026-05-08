@@ -24,6 +24,7 @@ import Link from "next/link"
 import dynamic from 'next/dynamic'
 import Image from "next/image"
 import { toast } from "sonner"
+import { useWebSocket } from "@/hooks/useWebSocket"
 import { API_BASE_URL } from "@/lib/config"
 import { motion, AnimatePresence } from "framer-motion"
 import {
@@ -143,11 +144,24 @@ function AdminDashboardContent() {
     }, [token])
 
     useEffect(() => {
-        if (!leaveDropOpen) return
+        const isAttendanceTab = currentTab === 'attendance-present' || currentTab === 'attendance-absent'
+        if (!leaveDropOpen && !isAttendanceTab) return
+        
         fetchSidebarAttendance()
-        const iv = setInterval(fetchSidebarAttendance, 30000)
+        const iv = setInterval(fetchSidebarAttendance, 60000) // Backup poll
         return () => clearInterval(iv)
-    }, [leaveDropOpen, fetchSidebarAttendance])
+    }, [leaveDropOpen, currentTab, fetchSidebarAttendance])
+
+    // ── WebSocket Real-time Triggers ──
+    useWebSocket({
+        onMessage: (msg) => {
+            if (msg.type === "DASHBOARD_STATS") {
+                // When any dashboard stat changes (clock-in, clock-out, etc), refresh our list
+                fetchSidebarAttendance()
+            }
+        },
+        enabled: !!token
+    })
 
     const sidebarAbsentIds = new Set(sidebarLeaves.map((l: any) => l.userId || l.user?.id))
     const sidebarActive = sidebarEmployees.filter(e => e.status === 'ACTIVE' || !e.status)
@@ -430,18 +444,20 @@ function AdminDashboardContent() {
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-1 gap-4">
+                                    <div className="grid grid-cols-1 gap-6">
                                         {(currentTab === 'attendance-present' ? sidebarPresent : sidebarAbsent).map((emp, i) => (
                                             <motion.div
                                                 key={emp.id || i}
                                                 initial={{ opacity: 0, x: -20 }}
                                                 animate={{ opacity: 1, x: 0 }}
                                                 transition={{ delay: i * 0.02 }}
-                                                className="bg-white border border-slate-50 rounded-[32px] p-6 shadow-sm hover:shadow-2xl hover:shadow-slate-200/40 hover:border-indigo-100 transition-all group flex items-center justify-between gap-10"
+                                                className="bg-white border border-slate-100/80 rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_50px_rgba(79,70,229,0.12)] hover:border-indigo-300/30 transition-all duration-500 group flex items-center justify-between gap-10"
                                             >
-                                                <div className="flex items-center gap-6 min-w-0 flex-1">
-                                                    <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center text-xl font-bold shadow-sm group-hover:rotate-6 transition-all shrink-0",
-                                                        currentTab === 'attendance-present' ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600")}>
+                                                <div className="flex items-center gap-8 min-w-0 flex-1">
+                                                    <div className={cn("w-16 h-16 rounded-[22px] flex items-center justify-center text-2xl font-black shadow-lg group-hover:rotate-12 group-hover:scale-110 transition-all duration-500 shrink-0",
+                                                        currentTab === 'attendance-present' 
+                                                            ? "bg-gradient-to-br from-emerald-400 to-teal-500 text-white shadow-emerald-200/50" 
+                                                            : "bg-gradient-to-br from-rose-400 to-pink-500 text-white shadow-rose-200/50")}>
                                                         {(emp.name || 'E')[0].toUpperCase()}
                                                     </div>
                                                     <div className="min-w-0 flex flex-col md:flex-row md:items-center gap-2 md:gap-10 flex-1">
