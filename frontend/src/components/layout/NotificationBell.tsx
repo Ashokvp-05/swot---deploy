@@ -100,18 +100,10 @@ export default function NotificationBell({ token }: { token: string }) {
         SUCCESS: <CheckCircle className="h-4 w-4 text-emerald-500" />
     }
 
-    if (!mounted) {
-        return (
-            <Button variant="ghost" size="icon" className="relative rounded-full hover:bg-muted">
-                <Bell className="h-5 w-5 text-muted-foreground" />
-            </Button>
-        )
-    }
-
     return (
         <Popover>
             <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative rounded-full hover:bg-muted">
+                <Button suppressHydrationWarning variant="ghost" size="icon" className="relative rounded-full hover:bg-muted">
                     <Bell className="h-5 w-5 text-muted-foreground" />
                     {unreadCount > 0 && (
                         <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-600 text-[10px] border-2 border-background">

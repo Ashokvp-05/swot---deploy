@@ -39,10 +39,9 @@ export default function TopHeader({
                 <div className="flex items-center gap-2 pl-4 border-l border-slate-100">
                     <NotificationBell token={token} />
                     
-                    {mounted && (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <button className="flex items-center gap-2.5 pl-2.5 pr-3.5 py-1.5 bg-white border border-slate-200 rounded-xl hover:border-indigo-200 transition-all shadow-sm group">
+                                <button suppressHydrationWarning className="flex items-center gap-2.5 pl-2.5 pr-3.5 py-1.5 bg-white border border-slate-200 rounded-xl hover:border-indigo-200 transition-all shadow-sm group">
                                     <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-semibold text-xs shrink-0">
                                         {(session?.user?.name || "A")[0].toUpperCase()}
                                     </div>
@@ -73,7 +72,6 @@ export default function TopHeader({
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
-                    )}
                 </div>
             </div>
         </header>
