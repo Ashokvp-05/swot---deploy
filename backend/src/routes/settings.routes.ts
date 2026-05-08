@@ -101,7 +101,23 @@ router.post('/test-smtp', authenticate, authorize(['SUPER_ADMIN']), async (req: 
 
         await transporter.verify();
 
-        res.json({ message: 'SMTP connection successful' });
+        // Actually send a test email to verify delivery
+        await transporter.sendMail({
+            from: `"${user?.name || 'Swot HR'}" <${senderEmail}>`,
+            to: senderEmail,
+            subject: 'SMTP Test Successful - Swot HR',
+            html: `
+                <div style="font-family: sans-serif; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
+                    <h2 style="color: #4f46e5;">SMTP Connection Verified!</h2>
+                    <p>This is a test email from your Swot HR system.</p>
+                    <p>If you are reading this, your email configuration is 100% correct and ready to use.</p>
+                    <hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 20px 0;" />
+                    <p style="font-size: 10px; color: #94a3b8; text-transform: uppercase;">Secure Personnel Protocol Activated</p>
+                </div>
+            `
+        });
+
+        res.json({ message: 'SMTP connection successful and test email sent!' });
     } catch (error: any) {
         console.error('SMTP test failed:', error);
         res.status(400).json({ error: 'SMTP connection failed: ' + error.message });
