@@ -24,6 +24,11 @@ interface Notification {
 export default function NotificationBell({ token }: { token: string }) {
     const [notifications, setNotifications] = useState<Notification[]>([])
     const [unreadCount, setUnreadCount] = useState(0)
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
 
     useEffect(() => {
         if (!token) return
@@ -93,6 +98,14 @@ export default function NotificationBell({ token }: { token: string }) {
         WARNING: <AlertTriangle className="h-4 w-4 text-amber-500" />,
         ALERT: <AlertTriangle className="h-4 w-4 text-red-500" />,
         SUCCESS: <CheckCircle className="h-4 w-4 text-emerald-500" />
+    }
+
+    if (!mounted) {
+        return (
+            <Button variant="ghost" size="icon" className="relative rounded-full hover:bg-muted">
+                <Bell className="h-5 w-5 text-muted-foreground" />
+            </Button>
+        )
     }
 
     return (
