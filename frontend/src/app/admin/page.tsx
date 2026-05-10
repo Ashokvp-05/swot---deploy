@@ -656,7 +656,10 @@ function AdminDashboardContent() {
 
                                                             {/* Action */}
                                                             <div className="col-span-2 md:col-span-1 flex items-center justify-end">
-                                                                <button className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white transition-all hover:bg-black hover:scale-110 shadow-lg shadow-indigo-200">
+                                                                <button 
+                                                                    onClick={() => router.push(`/admin?tab=employee-details&userId=${emp.id}`)}
+                                                                    className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white transition-all hover:bg-black hover:scale-110 shadow-lg shadow-indigo-200"
+                                                                >
                                                                     <ArrowUpRight className="w-5 h-5" />
                                                                 </button>
                                                             </div>
