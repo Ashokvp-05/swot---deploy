@@ -3,6 +3,7 @@
 import { useSession, signOut } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Suspense, useState, useEffect, useCallback } from "react"
+import { format } from "date-fns"
 import { 
     Building2, Users, Shield, Crown, Activity, CreditCard, AlertTriangle, Eye, Settings,
     Ticket, Megaphone, Database, CheckCircle2, XCircle, Server, TrendingUp, MessageSquare,
@@ -104,9 +105,13 @@ function AdminDashboardContent() {
 
     // ── Leave sidebar dropdown state ──
     const [leaveDropOpen, setLeaveDropOpen] = useState(false)
-    const [leaveDropTab, setLeaveDropTab] = useState<'present' | 'absent'>('present')
     const [sidebarEmployees, setSidebarEmployees] = useState<any[]>([])
     const [sidebarLeaves, setSidebarLeaves] = useState<any[]>([])
+
+    // ── Attendance View Filtering State ──
+    const [attSearch, setAttSearch] = useState("")
+    const [attDept, setAttDept] = useState("ALL")
+    const [attStatus, setAttStatus] = useState("ALL")
 
     const currentTab = searchParams.get("tab") || "dashboard"
     const role = (session?.user?.role || "USER").toUpperCase()
@@ -166,8 +171,41 @@ function AdminDashboardContent() {
 
     const sidebarAbsentIds = new Set(sidebarLeaves.map((l: any) => l.userId || l.user?.id))
     const sidebarActive = sidebarEmployees.filter(e => e.status === 'ACTIVE' || !e.status)
-    const sidebarPresent = sidebarActive.filter(e => !sidebarAbsentIds.has(e.id))
-    const sidebarAbsent = sidebarActive.filter(e => sidebarAbsentIds.has(e.id))
+    const sidebarPresentRaw = sidebarActive.filter(e => !sidebarAbsentIds.has(e.id))
+    const sidebarAbsentRaw = sidebarActive.filter(e => sidebarAbsentIds.has(e.id))
+
+    // ── Apply Filters to Attendance Lists ──
+    const filterList = (list: any[]) => list.filter(e => {
+        const matchesSearch = !attSearch || 
+            e.name?.toLowerCase().includes(attSearch.toLowerCase()) || 
+            e.email?.toLowerCase().includes(attSearch.toLowerCase())
+        const matchesDept = attDept === "ALL" || e.department?.name === attDept
+        const matchesStatus = attStatus === "ALL" || e.status === attStatus
+        return matchesSearch && matchesDept && matchesStatus
+    })
+
+    const sidebarPresent = filterList(sidebarPresentRaw)
+    const sidebarAbsent = filterList(sidebarAbsentRaw)
+    const departments = Array.from(new Set(sidebarEmployees.map(e => e.department?.name).filter(Boolean)))
+
+    const handleDownloadAttendance = (type: 'present' | 'absent') => {
+        const data = type === 'present' ? sidebarPresent : sidebarAbsent
+        if (data.length === 0) return toast.error("No records to export")
+        
+        const headers = ["Name", "Email", "Role", "Department", "Status"]
+        const rows = data.map(e => [
+            `"${e.name}"`, `"${e.email}"`, `"${e.role}"`, `"${e.department?.name || 'N/A'}"`, `"${e.status || 'ACTIVE'}"`
+        ])
+        
+        const csv = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(r => r.join(","))].join("\n")
+        const link = document.createElement("a")
+        link.setAttribute("href", encodeURI(csv))
+        link.setAttribute("download", `attendance_${type}_${format(new Date(), 'yyyy-MM-dd')}.csv`)
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        toast.success(`Exported ${data.length} records`)
+    }
 
     // Auth Protection
     useEffect(() => {
@@ -475,6 +513,8 @@ function AdminDashboardContent() {
                                                 <div className="relative">
                                                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-indigo-600 transition-colors" />
                                                     <Input 
+                                                        value={attSearch}
+                                                        onChange={(e) => setAttSearch(e.target.value)}
                                                         placeholder="Search People..."
                                                         className="h-11 pl-11 bg-slate-50/50 border border-slate-200/50 rounded-2xl text-[12px] font-bold placeholder:text-slate-400 focus-visible:ring-4 focus-visible:ring-indigo-50 transition-all"
                                                     />
@@ -482,11 +522,16 @@ function AdminDashboardContent() {
                                             </div>
                                             <div className="hidden sm:flex items-center gap-3">
                                                 <select 
+                                                    value={attDept}
+                                                    onChange={(e) => setAttDept(e.target.value)}
                                                     className="h-11 px-6 pr-10 rounded-2xl text-[10px] font-bold uppercase tracking-widest border border-slate-200/60 bg-white hover:bg-slate-50 text-slate-500 outline-none appearance-none cursor-pointer transition-all shadow-sm"
                                                 >
                                                     <option value="ALL">All Departments</option>
+                                                    {departments.map((d: any) => <option key={d} value={d}>{d}</option>)}
                                                 </select>
                                                 <select 
+                                                    value={attStatus}
+                                                    onChange={(e) => setAttStatus(e.target.value)}
                                                     className="h-11 px-6 pr-10 rounded-2xl text-[10px] font-bold uppercase tracking-widest border border-slate-200/60 bg-white hover:bg-slate-50 text-slate-500 outline-none appearance-none cursor-pointer transition-all shadow-sm"
                                                 >
                                                     <option value="ALL">All Status</option>
@@ -497,11 +542,14 @@ function AdminDashboardContent() {
                                         </div>
 
                                         <div className="flex items-center gap-3 w-full lg:w-auto justify-end">
-                                            <Button variant="outline" className="h-11 px-6 rounded-2xl text-[10px] font-bold uppercase tracking-widest border-indigo-200 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-2 group">
+                                            <Button 
+                                                onClick={() => handleDownloadAttendance(currentTab === 'attendance-present' ? 'present' : 'absent')}
+                                                variant="outline" className="h-11 px-6 rounded-2xl text-[10px] font-bold uppercase tracking-widest border-indigo-200 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-2 group">
                                                 <FileDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
                                                 Download List
                                             </Button>
                                             <Button 
+                                                onClick={() => router.push('/admin?tab=employees')}
                                                 className="h-11 bg-indigo-600 hover:bg-black text-white rounded-2xl px-8 text-[10px] font-bold uppercase tracking-widest shadow-lg shadow-indigo-100 transition-all active:scale-95 whitespace-nowrap"
                                             >
                                                 <Plus className="w-4 h-4 mr-2" />
