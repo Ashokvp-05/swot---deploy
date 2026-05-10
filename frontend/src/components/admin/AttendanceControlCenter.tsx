@@ -122,10 +122,10 @@ export default function AttendanceControlCenter({ token }: { token: string }) {
             {/* ── Stat Cards Matrix ── */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                    { label: "Operational Force", value: totalStaff, icon: Users, color: "text-white", bg: "bg-slate-900/50", border: "border-slate-800" },
-                    { label: "Active Personnel", value: checkedIn, icon: CheckCircle2, color: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
-                    { label: "Zero Signature", value: absent, icon: XCircle, color: "text-rose-400", bg: "bg-rose-500/10", border: "border-rose-500/20" },
-                    { label: "Extended Leave", value: onLeave, icon: AlertCircle, color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/20" },
+                    { label: "Total Workforce", value: totalStaff, icon: Users, color: "text-white", bg: "bg-slate-900/50", border: "border-slate-800" },
+                    { label: "Active Now", value: checkedIn, icon: CheckCircle2, color: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
+                    { label: "Absent Today", value: absent, icon: XCircle, color: "text-rose-400", bg: "bg-rose-500/10", border: "border-rose-500/20" },
+                    { label: "On Leave", value: onLeave, icon: AlertCircle, color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/20" },
                 ].map((stat, i) => (
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -164,7 +164,7 @@ export default function AttendanceControlCenter({ token }: { token: string }) {
                         <div>
                             <h2 className="text-2xl font-bold text-white tracking-tight flex items-center gap-3">
                                 <Clock className="w-6 h-6 text-indigo-500" />
-                                Deployment Log
+                                Attendance Log
                             </h2>
                             <p className="text-slate-500 text-sm mt-1">Real-time personnel synchronization data</p>
                         </div>
@@ -373,7 +373,13 @@ export default function AttendanceControlCenter({ token }: { token: string }) {
                         <div className="relative z-10">
                             <h4 className="text-xl font-black italic tracking-tighter uppercase mb-2">Sync Protocol</h4>
                             <p className="text-indigo-100 text-xs font-medium opacity-80 mb-6 leading-relaxed">Ensure all operational personnel are synchronized with the central hive.</p>
-                            <Button className="w-full bg-white text-indigo-600 hover:bg-indigo-50 rounded-2xl h-12 font-bold uppercase tracking-widest text-[10px]">
+                            <Button 
+                                onClick={() => {
+                                    fetchData();
+                                    toast.success("Synchronizing with central hive...");
+                                }}
+                                className="w-full bg-white text-indigo-600 hover:bg-indigo-50 rounded-2xl h-12 font-bold uppercase tracking-widest text-[10px]"
+                            >
                                 Force Synchronization
                             </Button>
                         </div>
