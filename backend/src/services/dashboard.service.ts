@@ -21,44 +21,46 @@ export const getEmployeeDashboardData = async (userId: string, companyId: string
     const monthStart = startOfMonth(todayDate);
     const monthEnd = new Date(todayDate.getFullYear(), todayDate.getMonth() + 1, 0, 23, 59, 59, 999);
 
-    const [summary, leaveBalances, payslips, calendar, activeEntry, announcements, monthlyEntries] = await Promise.all([
-        timeService.getSummary(userId, companyId),
-        (prisma as any).leaveBalance.findMany({
-            where: { userId, companyId, year: todayDate.getFullYear() },
-            include: { leaveTypeConfig: true }
-        }),
-        payslipService.getMyPayslips(userId, companyId),
-        prisma.holiday.findMany({
-            where: {
-                companyId,
-                date: {
-                    gte: monthStart,
-                    lte: todayDate
-                }
-            }
-        }),
-        timeService.getActiveEntry(userId, companyId),
-        prisma.announcement.findMany({
-            where: {
-                companyId,
-                OR: [
-                    { expiresAt: null },
-                    { expiresAt: { gte: new Date() } }
-                ]
-            },
-            orderBy: { createdAt: 'desc' },
-            take: 5
-        }),
-        // Monthly time entries for presence pulse
-        prisma.timeEntry.findMany({
-            where: {
-                userId,
-                companyId,
-                clockIn: { gte: monthStart, lte: monthEnd },
-                status: { in: ['COMPLETED', 'ACTIVE'] }
-            }
-        })
-    ]);
+    let summary = { totalHours: "0.00", daysWorked: 0, overtimeHours: "0", regularHours: "0", lateCheckIns: 0, totalWeekDays: 5, chartData: [] };
+    let leaveBalances = [];
+    let payslips = [];
+    let calendar = [];
+    let activeEntry = null;
+    let announcements = [];
+    let monthlyEntries = [];
+
+    try {
+        const results = await Promise.all([
+            timeService.getSummary(userId, companyId).catch((e) => { console.error("Dashboard summary err:", e); return summary; }),
+            (prisma as any).leaveBalance.findMany({
+                where: { userId, companyId, year: todayDate.getFullYear() },
+                include: { leaveTypeConfig: true }
+            }).catch((e: any) => []),
+            payslipService.getMyPayslips(userId, companyId).catch((e) => []),
+            prisma.holiday.findMany({
+                where: { companyId, date: { gte: monthStart, lte: todayDate } }
+            }).catch((e) => []),
+            timeService.getActiveEntry(userId, companyId).catch((e) => { console.error("Dashboard getActiveEntry error:", e); return null; }),
+            prisma.announcement.findMany({
+                where: { companyId, OR: [{ expiresAt: null }, { expiresAt: { gte: new Date() } }] },
+                orderBy: { createdAt: 'desc' },
+                take: 5
+            }).catch((e) => []),
+            prisma.timeEntry.findMany({
+                where: { userId, companyId, clockIn: { gte: monthStart, lte: monthEnd }, status: { in: ['COMPLETED', 'ACTIVE'] } }
+            }).catch((e) => [])
+        ]);
+
+        summary = results[0] as any;
+        leaveBalances = results[1] as any;
+        payslips = results[2] as any;
+        calendar = results[3] as any;
+        activeEntry = results[4] as any;
+        announcements = results[5] as any;
+        monthlyEntries = results[6] as any;
+    } catch (e) {
+        console.error("Dashboard fetch error:", e);
+    }
 
     // Compute monthly summary
     const monthlyDaysSet = new Set<string>();

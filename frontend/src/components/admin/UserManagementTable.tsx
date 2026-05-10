@@ -136,14 +136,14 @@ export default function UserManagementTable({ token, userRole }: { token: string
                 </div>
 
                 <div className="flex items-center gap-4 w-full lg:w-auto justify-end">
-                    <Button onClick={handleExport} variant="outline" className="h-14 px-8 rounded-[20px] text-[10px] font-bold uppercase tracking-widest border-slate-100 hover:bg-slate-900 hover:text-white transition-all flex items-center gap-3 group">
+                    <Button onClick={handleExport} variant="outline" className="h-14 px-8 rounded-[20px] text-[10px] font-bold uppercase tracking-widest border-indigo-100 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-3 group">
                         <FileDown className="w-4.5 h-4.5 group-hover:translate-y-0.5 transition-transform" />
                         Download List
                     </Button>
                     {canManage && (
                         <Button 
                             onClick={() => setIsAddOpen(true)}
-                            className="h-14 bg-indigo-600 hover:bg-black text-white rounded-[20px] px-10 text-[10px] font-bold uppercase tracking-widest shadow-2xl shadow-indigo-100 transition-all active:scale-95 whitespace-nowrap"
+                            className="h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[20px] px-10 text-[10px] font-bold uppercase tracking-widest shadow-2xl shadow-indigo-100 transition-all active:scale-95 whitespace-nowrap"
                         >
                             <Plus className="w-5 h-5 mr-2" />
                             Add New
@@ -255,7 +255,7 @@ export default function UserManagementTable({ token, userRole }: { token: string
                                             e.stopPropagation()
                                             router.push(`/admin?tab=employee-details&userId=${user.id}`)
                                         }}
-                                        className="ml-2 w-11 h-11 rounded-[14px] bg-slate-900 border border-slate-900 flex items-center justify-center text-white transition-all shadow-xl shadow-slate-100 active:scale-95"
+                                        className="ml-2 w-11 h-11 rounded-[14px] bg-indigo-600 border border-indigo-600 flex items-center justify-center text-white transition-all shadow-xl shadow-indigo-100 active:scale-95"
                                     >
                                         <ChevronRight className="w-5 h-5" />
                                     </button>

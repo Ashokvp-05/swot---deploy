@@ -11,7 +11,7 @@ import {
     Globe, Zap, Cpu, HardDrive, ShieldAlert, Layers, BarChart3, Rocket, Laptop, ClipboardList, Briefcase,
     Search as SearchIcon, Moon, Sun, MoreHorizontal, Power, LogOut,
     UserPlus, Sparkles, FileText, Share2, ClipboardCheck, History, Check, UserCheck,
-    Monitor, ExternalLink
+    Monitor, ExternalLink, FileDown
 } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -19,6 +19,7 @@ import TopHeader from "@/components/layout/TopHeader"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import dynamic from 'next/dynamic'
@@ -426,67 +427,196 @@ function AdminDashboardContent() {
                             {currentTab === "broadcasts"   && <BroadcastCenter token={token} />}
                             {currentTab === "dept-reports" && <DepartmentReports token={token} />}
 
-                            {/* ── HIGH-FIDELITY ATTENDANCE LISTS ── */}
+                            {/* ── BREATHTAKING ATTENDANCE LISTS ── */}
                             {(currentTab === "attendance-present" || currentTab === "attendance-absent") && (
-                                <div className="space-y-12">
-                                    <div className="flex items-center gap-6">
-                                        <div className={cn("w-16 h-16 rounded-[24px] flex items-center justify-center text-white shadow-2xl transition-transform hover:scale-110",
-                                            currentTab === 'attendance-present' ? "bg-emerald-600 shadow-emerald-100" : "bg-rose-600 shadow-rose-100")}>
-                                            {currentTab === 'attendance-present' ? <UserCheck className="w-8 h-8" /> : <AlertTriangle className="w-8 h-8" />}
-                                        </div>
-                                        <div className="space-y-2">
-                                            <h1 className="text-2xl font-bold text-slate-800 tracking-tight leading-none">
-                                                {currentTab === 'attendance-present' ? 'Present Today' : 'Absent Today'}
-                                            </h1>
-                                            <p className="text-[11px] font-medium text-slate-400 uppercase tracking-[0.2em]">
-                                                Current List · {currentTab === 'attendance-present' ? sidebarPresent.length : sidebarAbsent.length} People
+                                <div className="w-full space-y-8 mt-4 pb-20 animate-in fade-in slide-in-from-bottom-8 duration-700">
+                                    
+                                    {/* Aligned Header Section */}
+                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
+                                        <div>
+                                            <div className="flex items-center gap-3 mb-2">
+                                                <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-lg transition-transform hover:scale-110",
+                                                    currentTab === 'attendance-present' ? "bg-emerald-600 shadow-emerald-200/50" : "bg-rose-600 shadow-rose-200/50")}>
+                                                    {currentTab === 'attendance-present' ? <UserCheck className="w-5 h-5" strokeWidth={2.5} /> : <AlertTriangle className="w-5 h-5" strokeWidth={2.5} />}
+                                                </div>
+                                                <h1 className="text-3xl font-bold text-slate-800 font-brand tracking-tight">
+                                                    {currentTab === 'attendance-present' ? 'Active People' : 'Absent People'}
+                                                </h1>
+                                            </div>
+                                            <p className="text-slate-500 font-medium text-sm ml-[52px]">
+                                                Live monitoring of today's attendance roster
+                                                <span className="mx-3 opacity-20">|</span>
+                                                <span className="text-indigo-600 font-bold uppercase tracking-widest text-[10px]">{currentTab === 'attendance-present' ? sidebarPresent.length : sidebarAbsent.length} Records Detected</span>
                                             </p>
+                                        </div>
+                                        
+                                        <div className="flex gap-4">
+                                            <div className="bg-white px-6 py-3 rounded-2xl border border-slate-200/60 flex items-center gap-4 shadow-sm hover:shadow-md transition-all min-w-[140px]">
+                                                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)] animate-pulse" />
+                                                <div>
+                                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Present</p>
+                                                    <p className="text-xl font-black text-slate-800 leading-none">{sidebarPresent.length}</p>
+                                                </div>
+                                            </div>
+                                            <div className="bg-white px-6 py-3 rounded-2xl border border-slate-200/60 flex items-center gap-4 shadow-sm hover:shadow-md transition-all min-w-[140px]">
+                                                <div className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.4)]" />
+                                                <div>
+                                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Absent</p>
+                                                    <p className="text-xl font-black text-slate-800 leading-none">{sidebarAbsent.length}</p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-1 gap-6">
-                                        {(currentTab === 'attendance-present' ? sidebarPresent : sidebarAbsent).map((emp, i) => (
-                                            <motion.div
-                                                key={emp.id || i}
-                                                initial={{ opacity: 0, x: -20 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                transition={{ delay: i * 0.02 }}
-                                                className="bg-white border border-slate-100/80 rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_50px_rgba(79,70,229,0.12)] hover:border-indigo-300/30 transition-all duration-500 group flex items-center justify-between gap-10"
-                                            >
-                                                <div className="flex items-center gap-8 min-w-0 flex-1">
-                                                    <div className={cn("w-16 h-16 rounded-[22px] flex items-center justify-center text-2xl font-black shadow-lg group-hover:rotate-12 group-hover:scale-110 transition-all duration-500 shrink-0",
-                                                        currentTab === 'attendance-present' 
-                                                            ? "bg-gradient-to-br from-emerald-400 to-teal-500 text-white shadow-emerald-200/50" 
-                                                            : "bg-gradient-to-br from-rose-400 to-pink-500 text-white shadow-rose-200/50")}>
-                                                        {(emp.name || 'E')[0].toUpperCase()}
-                                                    </div>
-                                                    <div className="min-w-0 flex flex-col md:flex-row md:items-center gap-2 md:gap-10 flex-1">
-                                                        <div className="min-w-[240px]">
-                                                            <h3 className="text-[17px] font-bold text-slate-800 tracking-tight font-brand group-hover:text-indigo-600 transition-colors truncate">
-                                                                {emp.name}
-                                                            </h3>
-                                                            <p className="text-[11px] font-bold text-slate-400 truncate mt-1">{emp.email}</p>
-                                                        </div>
-                                                        
-                                                        <div className="hidden xl:flex items-center gap-4 text-slate-200">
-                                                            <div className="w-1.5 h-1.5 rounded-full bg-slate-100" />
-                                                            <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-300">ID</span>
-                                                            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{emp.id?.split('-')[0] || 'SYS'}</span>
-                                                        </div>
-                                                    </div>
+                                    {/* 🛠️ STRATEGIC COMMAND BAR */}
+                                    <div className="bg-white border border-slate-200/60 rounded-[28px] p-4 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 shadow-sm relative z-10">
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-1 w-full">
+                                            <div className="flex-1 w-full max-w-md group">
+                                                <div className="relative">
+                                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-indigo-600 transition-colors" />
+                                                    <Input 
+                                                        placeholder="Search People..."
+                                                        className="h-11 pl-11 bg-slate-50/50 border border-slate-200/50 rounded-2xl text-[12px] font-bold placeholder:text-slate-400 focus-visible:ring-4 focus-visible:ring-indigo-50 transition-all"
+                                                    />
                                                 </div>
+                                            </div>
+                                            <div className="hidden sm:flex items-center gap-3">
+                                                <select 
+                                                    className="h-11 px-6 pr-10 rounded-2xl text-[10px] font-bold uppercase tracking-widest border border-slate-200/60 bg-white hover:bg-slate-50 text-slate-500 outline-none appearance-none cursor-pointer transition-all shadow-sm"
+                                                >
+                                                    <option value="ALL">All Departments</option>
+                                                </select>
+                                                <select 
+                                                    className="h-11 px-6 pr-10 rounded-2xl text-[10px] font-bold uppercase tracking-widest border border-slate-200/60 bg-white hover:bg-slate-50 text-slate-500 outline-none appearance-none cursor-pointer transition-all shadow-sm"
+                                                >
+                                                    <option value="ALL">All Status</option>
+                                                    <option value="ACTIVE">Active</option>
+                                                    <option value="INACTIVE">Inactive</option>
+                                                </select>
+                                            </div>
+                                        </div>
 
-                                                <div className="flex items-center gap-8 shrink-0">
-                                                    <Badge className={cn("text-[9px] font-bold uppercase tracking-widest px-6 py-2.5 rounded-full border-none shadow-sm",
-                                                        currentTab === 'attendance-present' ? "bg-emerald-600 text-white" : "bg-rose-600 text-white")}>
-                                                        {currentTab === 'attendance-present' ? 'Present' : 'Absent'}
-                                                    </Badge>
-                                                    <button className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-slate-900 group-hover:text-white transition-all shadow-sm">
-                                                        <ChevronRight className="w-5 h-5" />
-                                                    </button>
+                                        <div className="flex items-center gap-3 w-full lg:w-auto justify-end">
+                                            <Button variant="outline" className="h-11 px-6 rounded-2xl text-[10px] font-bold uppercase tracking-widest border-indigo-200 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-2 group">
+                                                <FileDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
+                                                Download List
+                                            </Button>
+                                            <Button 
+                                                className="h-11 bg-indigo-600 hover:bg-black text-white rounded-2xl px-8 text-[10px] font-bold uppercase tracking-widest shadow-lg shadow-indigo-100 transition-all active:scale-95 whitespace-nowrap"
+                                            >
+                                                <Plus className="w-4 h-4 mr-2" />
+                                                Add New
+                                            </Button>
+                                        </div>
+                                    </div>
+
+                                    {/* Data Grid */}
+                                    <div className="bg-white border border-slate-200/60 rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden relative">
+                                        <div className="grid grid-cols-12 gap-4 px-8 py-5 bg-slate-50/50 border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                                            <div className="col-span-4 lg:col-span-3">Employee Profile</div>
+                                            <div className="col-span-4 lg:col-span-3">Contact Information</div>
+                                            <div className="hidden lg:block col-span-3">Role & Department</div>
+                                            <div className="col-span-2 text-center">Status</div>
+                                            <div className="col-span-2 md:col-span-1 text-right">Action</div>
+                                        </div>
+                                        
+                                        <div className="divide-y divide-slate-100">
+                                            {(currentTab === 'attendance-present' ? sidebarPresent : sidebarAbsent).length === 0 ? (
+                                                <div className="p-12 text-center flex flex-col items-center justify-center text-slate-400">
+                                                    <ClipboardList className="w-12 h-12 mb-4 text-slate-200" />
+                                                    <p className="font-semibold text-slate-500">No records found for this category.</p>
                                                 </div>
-                                            </motion.div>
-                                        ))}
+                                            ) : (
+                                                (currentTab === 'attendance-present' ? sidebarPresent : sidebarAbsent).map((emp, i) => {
+                                                    const roleName = (emp.role && typeof emp.role === 'string') ? emp.role.replace('_', ' ') : 'Employee';
+                                                    const deptName = emp.department?.name || 'General';
+                                                    const isPresent = currentTab === 'attendance-present';
+                                                    
+                                                    return (
+                                                        <motion.div
+                                                            key={emp.id || i}
+                                                            initial={{ opacity: 0, y: 10 }}
+                                                            animate={{ opacity: 1, y: 0 }}
+                                                            transition={{ delay: i * 0.03, duration: 0.3 }}
+                                                            className="grid grid-cols-12 gap-4 px-8 py-5 items-center hover:bg-slate-50/80 transition-colors duration-200 group"
+                                                        >
+                                                            {/* Employee Profile */}
+                                                            <div className="col-span-4 lg:col-span-3 flex items-center gap-4 min-w-0">
+                                                                {emp.avatarUrl || emp.avatar ? (
+                                                                    <div className="w-12 h-12 rounded-[16px] shadow-lg shrink-0 overflow-hidden transition-transform duration-300 group-hover:scale-110 bg-slate-100 border border-slate-200/50">
+                                                                        <img 
+                                                                            src={emp.avatarUrl || emp.avatar} 
+                                                                            alt={emp.name || 'User'} 
+                                                                            className="w-full h-full object-cover"
+                                                                            onError={(e) => {
+                                                                                (e.target as any).style.display = 'none';
+                                                                                (e.target as any).nextSibling.style.display = 'flex';
+                                                                            }}
+                                                                        />
+                                                                        <div className={cn("w-full h-full flex items-center justify-center text-lg font-black",
+                                                                            isPresent ? "bg-emerald-600 text-white" : "bg-rose-600 text-white")} 
+                                                                            style={{ display: 'none' }}>
+                                                                            {(emp.name || 'E')[0].toUpperCase()}
+                                                                        </div>
+                                                                    </div>
+                                                                ) : (
+                                                                    <div className={cn("w-12 h-12 rounded-[16px] flex items-center justify-center text-lg font-black shadow-md shrink-0 transition-transform duration-300 group-hover:scale-110",
+                                                                        isPresent 
+                                                                            ? "bg-emerald-600 text-white" 
+                                                                            : "bg-rose-600 text-white")}>
+                                                                        {(emp.name || 'E')[0].toUpperCase()}
+                                                                    </div>
+                                                                )}
+                                                                <div className="min-w-0">
+                                                                    <h3 className="text-[15px] font-bold text-slate-800 tracking-tight leading-snug truncate group-hover:text-indigo-600 transition-colors">
+                                                                        {emp.name || 'Unknown User'}
+                                                                    </h3>
+                                                                    <p className="text-[11px] font-bold text-slate-400 mt-0.5 tracking-wider uppercase">
+                                                                        ID: {emp.id?.split('-')[0] || 'N/A'}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Contact Info */}
+                                                            <div className="col-span-4 lg:col-span-3 flex flex-col justify-center min-w-0">
+                                                                <span className="text-[13px] font-semibold text-slate-600 truncate">{emp.email || 'No email provided'}</span>
+                                                                <span className="text-[11px] font-medium text-slate-400 truncate mt-1">
+                                                                    {emp.phone || 'No phone number'}
+                                                                </span>
+                                                            </div>
+
+                                                            {/* Role & Dept */}
+                                                            <div className="hidden lg:flex col-span-3 flex-col items-start justify-center">
+                                                                <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-widest border-slate-200 text-slate-600 bg-slate-50">
+                                                                    {roleName}
+                                                                </Badge>
+                                                                <span className="text-[12px] font-medium text-slate-500 mt-1.5 truncate flex items-center gap-1.5">
+                                                                    <Briefcase className="w-3.5 h-3.5 opacity-70" />
+                                                                    {deptName}
+                                                                </span>
+                                                            </div>
+
+                                                            {/* Status */}
+                                                            <div className="col-span-2 flex items-center justify-center">
+                                                                <div className={cn("inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-bold tracking-widest uppercase",
+                                                                    isPresent ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700")}>
+                                                                    <div className={cn("w-2 h-2 rounded-full animate-pulse",
+                                                                        isPresent ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" : "bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]")} />
+                                                                    {isPresent ? 'Active' : 'Offline'}
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Action */}
+                                                            <div className="col-span-2 md:col-span-1 flex items-center justify-end">
+                                                                <button className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white transition-all hover:bg-black hover:scale-110 shadow-lg shadow-indigo-200">
+                                                                    <ArrowUpRight className="w-5 h-5" />
+                                                                </button>
+                                                            </div>
+                                                        </motion.div>
+                                                    )
+                                                })
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             )}

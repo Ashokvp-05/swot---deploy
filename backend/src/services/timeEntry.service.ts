@@ -6,7 +6,7 @@ export const getActiveEntry = async (userId: string, companyId: string) => {
         where: {
             userId,
             companyId,
-            status: TimeEntryStatus.ACTIVE
+            status: 'ACTIVE' as any
         }
     });
 };
@@ -119,7 +119,7 @@ export const getSummary = async (userId: string, companyId: string) => {
             clockIn: {
                 gte: startOfWeek
             },
-            status: { in: [TimeEntryStatus.COMPLETED, TimeEntryStatus.ACTIVE] }
+            status: { in: ['COMPLETED' as any, 'ACTIVE' as any] }
         }
     });
 
@@ -133,7 +133,7 @@ export const getSummary = async (userId: string, companyId: string) => {
         let duration = entry.hoursWorked ? Number(entry.hoursWorked) : 0;
         
         // If entry is ACTIVE, calculate its current duration to make the summary "live"
-        if (entry.status === TimeEntryStatus.ACTIVE) {
+        if (entry.status === 'ACTIVE') {
             const diffInMs = new Date().getTime() - entry.clockIn.getTime();
             duration = Math.max(0, diffInMs / (1000 * 60 * 60));
         }
@@ -190,7 +190,7 @@ export const getReport = async (companyId: string, startDate: Date, endDate: Dat
                 gte: startDate,
                 lte: endDate
             },
-            status: { in: [TimeEntryStatus.COMPLETED, TimeEntryStatus.ACTIVE] }
+            status: { in: ['COMPLETED' as any, 'ACTIVE' as any] }
         },
         include: {
             user: {
@@ -205,7 +205,7 @@ export const getAllActiveUsers = async (companyId: string) => {
     return prisma.timeEntry.findMany({
         where: {
             companyId,
-            status: TimeEntryStatus.ACTIVE
+            status: 'ACTIVE' as any
         },
         include: {
             user: {
@@ -242,7 +242,7 @@ export const getMonthlyWorkStats = async (userId: string, companyId: string, mon
                 gte: startDate,
                 lte: endDate
             },
-            status: { in: [TimeEntryStatus.COMPLETED, TimeEntryStatus.ACTIVE] }
+            status: { in: ['COMPLETED' as any, 'ACTIVE' as any] }
         }
     });
 
