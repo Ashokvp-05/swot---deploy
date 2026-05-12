@@ -272,11 +272,11 @@ function AdminDashboardContent() {
     })
 
     return (
-        <div className="min-h-screen bg-[#fcfcfd] flex font-body overflow-hidden" suppressHydrationWarning>
+        <div className="min-h-screen gradient-mesh flex font-body overflow-hidden" suppressHydrationWarning>
             <GlobalStyles />
             
             {/* ── 🛡️ EXECUTIVE SIDEBAR ── */}
-            <aside className="w-[72px] lg:w-[280px] bg-white flex flex-col h-screen sticky top-0 z-[100] shrink-0 border-r border-slate-200/80 shadow-[2px_0_20px_rgba(0,0,0,0.04)]">
+            <aside className="w-[72px] lg:w-[280px] bg-white flex flex-col h-screen sticky top-0 z-[100] shrink-0 border-r border-slate-100 shadow-[2px_0_24px_rgba(99,102,241,0.06)]">
                 {/* Background Glow */}
                 <div className="absolute top-0 left-0 w-full h-[300px] bg-gradient-to-b from-indigo-500/[0.03] to-transparent pointer-events-none" />
 
@@ -431,7 +431,7 @@ function AdminDashboardContent() {
             </aside>
 
             {/* ── 📝 COMMAND STAGE ── */}
-            <main className="flex-1 overflow-y-auto h-screen bg-[#fcfcfd] custom-scrollbar">
+            <main className="flex-1 overflow-y-auto h-screen gradient-mesh custom-scrollbar">
                 <TopHeader 
                     token={token} 
                     searchQuery={searchQuery} 

@@ -1,10 +1,10 @@
 "use client"
 
-import { Search, MoreHorizontal, User, LogOut } from "lucide-react"
-import NotificationBell from "./NotificationBell"
+import { Bell, MoreHorizontal, User, LogOut, ChevronDown } from "lucide-react"
 import { useSession, signOut } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { useState, useEffect } from "react"
+import dynamic from "next/dynamic"
+import { cn } from "@/lib/utils"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -13,58 +13,92 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import dynamic from "next/dynamic"
 
 const DynamicNotificationBell = dynamic(() => import("./NotificationBell"), { ssr: false })
 
-export default function TopHeader({ 
-    token, 
-    searchQuery, 
-    setSearchQuery 
-}: { 
+export default function TopHeader({
+    token,
+    searchQuery,
+    setSearchQuery
+}: {
     token: string,
     searchQuery?: string,
     setSearchQuery?: (val: string) => void
 }) {
     const { data: session } = useSession()
     const router = useRouter()
-    
+    const role = (session?.user?.role || "").replace(/_/g, ' ')
+    const initials = (session?.user?.name || "A").split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
+
     return (
-        <header className="px-8 py-4 flex items-center justify-end sticky top-0 z-[50] bg-[#f8fafc]/90 backdrop-blur-md border-b border-slate-100/60 transition-all">
-            <div className="flex items-center gap-4 pointer-events-auto">
-                <div className="flex items-center gap-2 pl-4 border-l border-slate-100">
-                    <DynamicNotificationBell token={token} />
-                    
+        <header className="sticky top-0 z-[50] bg-white/80 backdrop-blur-xl border-b border-slate-100 transition-all">
+            <div className="px-8 py-3.5 flex items-center justify-between">
+
+                {/* Left: breadcrumb / page context */}
+                <div className="flex items-center gap-2 text-[11px] font-bold text-slate-400 uppercase tracking-widest select-none">
+                    <span className="text-indigo-500">Admin</span>
+                    <span className="opacity-40">/</span>
+                    <span>Dashboard</span>
+                </div>
+
+                {/* Right: actions */}
+                <div className="flex items-center gap-3">
+
+                    {/* Notification Bell */}
+                    <div className="relative">
+                        <DynamicNotificationBell token={token} />
+                    </div>
+
+                    {/* Divider */}
+                    <div className="w-px h-6 bg-slate-200 rounded-full" />
+
+                    {/* User pill */}
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <button className="flex items-center gap-2.5 pl-2.5 pr-3.5 py-1.5 bg-white border border-slate-200 rounded-xl hover:border-indigo-200 transition-all shadow-sm group">
-                                <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-semibold text-xs shrink-0">
-                                    {(session?.user?.name || "A")[0].toUpperCase()}
+                            <button className="flex items-center gap-2.5 pl-1.5 pr-3 py-1.5 bg-white border border-slate-200 hover:border-indigo-300 hover:shadow-md hover:shadow-indigo-50 rounded-2xl transition-all duration-200 group outline-none">
+                                {/* Avatar */}
+                                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-white font-black text-[11px] shrink-0 shadow-md shadow-indigo-200 select-none">
+                                    {initials}
                                 </div>
-                                <div className="flex flex-col items-start text-left">
-                                    <span className="text-[12.5px] font-medium text-slate-800 leading-none truncate max-w-[90px]">{session?.user?.name?.split(' ')[0] || "User"}</span>
-                                    <span className="text-[10px] font-normal text-slate-400 mt-0.5">{session?.user?.role?.replace('_', ' ') || "Agent"}</span>
+                                <div className="flex flex-col items-start text-left leading-none hidden sm:flex">
+                                    <span className="text-[12px] font-bold text-slate-800 truncate max-w-[90px]">
+                                        {session?.user?.name?.split(' ')[0] || "Admin"}
+                                    </span>
+                                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-0.5 truncate max-w-[90px]">
+                                        {role || "Super Admin"}
+                                    </span>
                                 </div>
-                                <MoreHorizontal className="w-3.5 h-3.5 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                                <ChevronDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors ml-0.5 hidden sm:block" />
                             </button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56 bg-white border border-slate-100 rounded-2xl p-2 shadow-xl mt-3 animate-in slide-in-from-top-2 duration-200" align="end">
-                            <DropdownMenuLabel className="px-3 py-2">
-                                <p className="text-[11px] font-normal text-slate-400 leading-none mb-1">Logged in as</p>
-                                <p className="text-[13px] font-medium text-slate-900 truncate">{session?.user?.email || "user@hr.com"}</p>
-                            </DropdownMenuLabel>
-                            <DropdownMenuSeparator className="bg-slate-100 my-1" />
-                            <DropdownMenuItem onClick={() => router.push("/profile")} className="rounded-xl px-3 py-2 focus:bg-indigo-50 cursor-pointer text-[13px] font-medium text-slate-700 focus:text-indigo-700 transition-colors gap-2.5">
+
+                        <DropdownMenuContent
+                            className="w-60 bg-white border border-slate-100 rounded-[20px] p-2 shadow-2xl shadow-slate-200/60 mt-2 animate-in slide-in-from-top-2 duration-200"
+                            align="end"
+                        >
+                            {/* Identity block */}
+                            <div className="px-4 py-3 mb-1 bg-slate-50 rounded-[14px]">
+                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1.5">Logged In As</p>
+                                <p className="text-[13px] font-bold text-slate-900 truncate">{session?.user?.name || "Admin"}</p>
+                                <p className="text-[11px] font-medium text-slate-400 truncate mt-0.5">{session?.user?.email || "admin@hr.com"}</p>
+                            </div>
+
+                            <DropdownMenuItem
+                                onClick={() => router.push("/admin?tab=profile")}
+                                className="rounded-xl px-3.5 py-2.5 focus:bg-indigo-50 cursor-pointer text-[12px] font-semibold text-slate-700 focus:text-indigo-700 transition-colors gap-3 mt-1"
+                            >
                                 <User className="w-4 h-4 text-slate-400" />
                                 My Profile
                             </DropdownMenuItem>
-                            <DropdownMenuSeparator className="bg-slate-100 my-1" />
-                            <DropdownMenuItem 
-                                onClick={() => signOut({ callbackUrl: '/login' })} 
-                                className="rounded-xl px-3 py-2 focus:bg-rose-50 cursor-pointer text-[13px] font-medium text-rose-500 focus:text-rose-600 transition-colors gap-2.5"
+
+                            <DropdownMenuSeparator className="bg-slate-100 my-1.5" />
+
+                            <DropdownMenuItem
+                                onClick={() => signOut({ callbackUrl: '/login' })}
+                                className="rounded-xl px-3.5 py-2.5 focus:bg-rose-50 cursor-pointer text-[12px] font-semibold text-rose-500 focus:text-rose-600 transition-colors gap-3"
                             >
                                 <LogOut className="w-4 h-4 text-rose-400" />
-                                Logout
+                                Sign Out
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
