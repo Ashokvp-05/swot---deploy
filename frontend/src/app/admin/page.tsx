@@ -4,6 +4,7 @@ import { useSession, signOut } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Suspense, useState, useEffect, useCallback } from "react"
 import { format } from "date-fns"
+import { getProfileLinkByRole } from "@/lib/role-redirect"
 import { 
     Building2, Users, Shield, Crown, Activity, CreditCard, AlertTriangle, Eye, Settings,
     Ticket, Megaphone, Database, CheckCircle2, XCircle, Server, TrendingUp, MessageSquare,

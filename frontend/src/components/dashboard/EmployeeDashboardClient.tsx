@@ -105,12 +105,16 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                     setStatus('ACTIVE')
                     setStartTime(data.activeEntry.clockIn)
                 } else {
-                    setStatus('IDLE')
+                    setStatus(prev => prev === 'LOADING' ? 'IDLE' : prev === 'ACTIVE' ? 'IDLE' : prev)
                     setStartTime(null)
                 }
+            } else {
+                console.warn(`Dashboard poll returned ${res.status}`)
             }
         } catch (e: any) {
-            if (e?.name !== 'AbortError') {}
+            if (e?.name !== 'AbortError') {
+                console.warn('Dashboard poll error:', e?.message)
+            }
         }
     }, [token])
 
@@ -179,16 +183,21 @@ export default function EmployeeDashboardClient({ user, token, initialData }: Pr
                 fetchLiveData()
             } else {
                 const err = await res.json().catch(() => ({}))
-                toast.error(err.message || err.error || "Something went wrong")
-                if (err.message === 'Already clocked in') {
-                    // Force refresh to sync state
-                    window.location.reload()
+                const errorMsg = err.message || err.error || 'Unable to process your request. Please try again.'
+                if (err.message === 'Already clocked in' || err.error === 'Already clocked in') {
+                    // Sync state from server instead of full reload
+                    toast.info("Session already active. Syncing status...", { duration: 2000 })
+                    fetchLiveData()
+                } else if (res.status === 401) {
+                    toast.error("Session expired. Please log in again.")
+                } else {
+                    toast.error(errorMsg)
                 }
                 setStatus(isIn ? 'IDLE' : 'ACTIVE')
             }
-        } catch {
+        } catch (e: any) {
             setStatus(isIn ? 'IDLE' : 'ACTIVE')
-            toast.error("Connection error. Please try again.")
+            toast.error("Connection error. Please check your network and try again.")
         }
     }, [status, token, clockType, fetchLiveData])
 

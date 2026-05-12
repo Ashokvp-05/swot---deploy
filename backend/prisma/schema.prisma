@@ -17,11 +17,11 @@ model Company {
   status                String                 @default("ACTIVE")
   createdAt             DateTime               @default(now()) @map("created_at")
   updatedAt             DateTime               @updatedAt @map("updated_at")
-  planId                String?                @map("plan_id")
   address               String?
   email                 String?
   industry              String?
   phone                 String?
+  planId                String?                @map("plan_id")
   announcements         Announcement[]
   assets                Asset[]
   attendanceCorrections AttendanceCorrection[]
@@ -173,8 +173,6 @@ model Profile {
   gender                String?
   dob                   DateTime?
   maritalStatus         String?   @map("marital_status")
-  fatherName            String?   @map("father_name")
-  motherName            String?   @map("mother_name")
   bloodGroup            String?   @map("blood_group")
   secondaryPhone        String?   @map("secondary_phone")
   workPhone             String?   @map("work_phone")
@@ -757,7 +755,7 @@ model ApprovalStep {
   processedAt  DateTime?     @map("processed_at")
   createdAt    DateTime      @default(now()) @map("created_at")
   approver     User          @relation(fields: [approverId], references: [id])
-  expenseClaim ExpenseClaim?  @relation(fields: [claimId], references: [id], onDelete: Cascade, map: "approval_steps_expense_claim_fk")
+  expenseClaim  ExpenseClaim?  @relation(fields: [claimId], references: [id], onDelete: Cascade, map: "approval_steps_expense_claim_fk")
   salaryAdvance SalaryAdvance? @relation(fields: [claimId], references: [id], onDelete: Cascade, map: "approval_steps_salary_advance_fk")
 
   @@map("approval_steps")

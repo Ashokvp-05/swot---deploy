@@ -1,6 +1,7 @@
 import prisma from '../config/db';
 import cache from '../config/cache';
 import { format, parseISO, isWithinInterval } from 'date-fns';
+import { AppError } from '../middleware/error.middleware';
 
 export const createShift = async (companyId: string, data: { name: string, startTime: string, endTime: string, workDays: number[] }) => {
     return (prisma as any).shift.create({
@@ -52,7 +53,7 @@ export const clockInV2 = async (userId: string, companyId: string, location?: { 
         where: { userId, companyId, status: 'ACTIVE' }
     });
 
-    if (activeEntry) throw new Error('Already clocked in');
+    if (activeEntry) throw new AppError('Already clocked in', 400);
     
     // Invalidate dashboard cache
     cache.del(`dashboard_data_${userId}`);
@@ -78,7 +79,7 @@ export const clockOutV2 = async (userId: string, companyId: string) => {
     });
 
     if (!activeEntry) {
-        throw new Error('No active session found for this synchronization relay.');
+        throw new AppError('No active session found. Please refresh the dashboard.', 404);
     }
 
     const clockOut = new Date();

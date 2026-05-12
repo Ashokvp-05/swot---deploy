@@ -10,7 +10,8 @@ export const getEmployeeDashboard = async (req: Request, res: Response) => {
         const data = await dashboardService.getEmployeeDashboardData(user.id, user.companyId);
         res.status(200).json(data);
     } catch (error: any) {
-        res.status(400).json({ error: error.message });
+        console.error('Employee dashboard error:', error?.message || error);
+        res.status(500).json({ error: 'Dashboard data temporarily unavailable', message: error.message });
     }
 };
 
