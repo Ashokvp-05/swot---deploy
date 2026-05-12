@@ -37,7 +37,7 @@ import {
     MoreHorizontal,
 } from "lucide-react"
 
-import { getDashboardByRole } from "@/lib/role-redirect"
+import { getDashboardByRole, getProfileLinkByRole } from "@/lib/role-redirect"
 
 // ─────────────────────────────────────────────
 //  ROUTE DEFINITIONS
@@ -268,7 +268,10 @@ export default function Navbar({ role, token, companyName }: { role?: string; to
                             <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-2">Email Address</p>
                             <p className="text-[13px] font-bold text-slate-900 truncate font-brand">{session?.user?.email || "employee@company.com"}</p>
                         </div>
-                        <DropdownMenuItem onClick={() => router.push("/profile")} className="rounded-xl px-4 py-3 focus:bg-slate-50 group cursor-pointer text-slate-600 transition-all">
+                        <DropdownMenuItem 
+                            onClick={() => router.push(getProfileLinkByRole(roleString))} 
+                            className="rounded-xl px-4 py-3 focus:bg-slate-50 group cursor-pointer text-slate-600 transition-all"
+                        >
                             <User className="w-4 h-4 mr-3 text-slate-400 group-hover:text-slate-900" />
                             <span className="text-[11px] font-bold uppercase tracking-widest">My Profile</span>
                         </DropdownMenuItem>

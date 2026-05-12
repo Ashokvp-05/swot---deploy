@@ -17,11 +17,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { signOut, useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { getProfileLinkByRole } from "@/lib/role-redirect"
 
 export function UserNav() {
     const { data: session } = useSession()
     const router = useRouter()
     const user = session?.user
+    const role = (user as any)?.role
 
     const handleLogout = async () => {
         await signOut({ callbackUrl: "/login" })
@@ -47,7 +49,7 @@ export function UserNav() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <DropdownMenuItem onClick={() => router.push("/profile")}>
+                    <DropdownMenuItem onClick={() => router.push(getProfileLinkByRole(role))}>
                         Profile
                         <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
                     </DropdownMenuItem>

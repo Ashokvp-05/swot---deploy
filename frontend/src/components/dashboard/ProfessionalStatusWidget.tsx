@@ -15,6 +15,8 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { useSession } from "next-auth/react"
+import { getProfileLinkByRole } from "@/lib/role-redirect"
 
 interface Ticket {
     id: string
@@ -24,6 +26,8 @@ interface Ticket {
 }
 
 export default function ProfessionalStatusWidget({ token }: { token: string }) {
+    const { data: session } = useSession()
+    const role = (session?.user as any)?.role
     const [tickets, setTickets] = useState<Ticket[]>([])
     const [profileScore, setProfileScore] = useState(75) // Example hardcoded, ideally from API
     const [loading, setLoading] = useState(true)
@@ -47,6 +51,8 @@ export default function ProfessionalStatusWidget({ token }: { token: string }) {
         fetchTickets()
     }, [token])
 
+    const profileLink = getProfileLinkByRole(role)
+
     return (
         <Card className="premium-card shadow-2xl ring-1 ring-slate-200 dark:ring-indigo-500/10 h-full overflow-hidden">
             <CardHeader className="pb-4 border-b border-border/50 bg-slate-50/30 dark:bg-black/20">
@@ -68,7 +74,7 @@ export default function ProfessionalStatusWidget({ token }: { token: string }) {
                             <div className="text-3xl font-bold mt-1 text-slate-900 dark:text-white">{profileScore}<span className="text-lg text-indigo-500">%</span></div>
                         </div>
                         <Button variant="link" className="text-[9px] font-bold uppercase text-indigo-600 p-0 h-auto hover:no-underline" asChild>
-                            <Link href="/profile">Execute Full Audit</Link>
+                            <Link href={profileLink}>Execute Full Audit</Link>
                         </Button>
                     </div>
                     <div className="h-1.5 w-full bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">

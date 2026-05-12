@@ -416,7 +416,7 @@ function AdminDashboardContent() {
                                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-2">Logged In</p>
                                 <p className="text-[13px] font-semibold text-slate-900 truncate">{session?.user?.email || "admin@hr.com"}</p>
                             </div>
-                            <DropdownMenuItem onClick={() => router.push("/admin?tab=profile")} className="rounded-xl px-4 py-3 focus:bg-slate-50 group cursor-pointer text-slate-600 transition-all">
+                            <DropdownMenuItem onClick={() => router.push(getProfileLinkByRole(role))} className="rounded-xl px-4 py-3 focus:bg-slate-50 group cursor-pointer text-slate-600 transition-all">
                                 <User className="w-4 h-4 mr-3 text-slate-400 group-hover:text-slate-900" />
                                 <span className="text-[11px] font-bold uppercase tracking-widest">My Profile</span>
                             </DropdownMenuItem>

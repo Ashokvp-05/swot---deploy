@@ -3,6 +3,7 @@
 import * as React from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
+import { getProfileLinkByRole } from "@/lib/role-redirect"
 import { Command } from "cmdk"
 import {
     LayoutDashboard,
@@ -238,7 +239,7 @@ function CommandGroup({ role, router, runCommand }: { role: string, router: any,
             </Command.Item>
 
             <Command.Item
-                onSelect={() => runCommand(() => router.push("/profile"))}
+                onSelect={() => runCommand(() => router.push(getProfileLinkByRole(role)))}
                 className="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 rounded-lg cursor-pointer aria-selected:bg-indigo-50 dark:aria-selected:bg-indigo-900/20 aria-selected:text-indigo-600 dark:aria-selected:text-indigo-400 transition-colors"
             >
                 <User className="h-4 w-4" />

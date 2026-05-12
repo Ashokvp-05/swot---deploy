@@ -38,3 +38,26 @@ export const getDashboardByRole = (role?: string): string => {
             return "/employee"
     }
 }
+
+/**
+ * getProfileLinkByRole
+ * Returns the correct profile URL based on role.
+ */
+export const getProfileLinkByRole = (role?: string): string => {
+    const r = role?.trim().toUpperCase().replace(/[\s-]/g, '_') || "USER"
+    
+    // Admin & Manager families use the tab system within their dashboard
+    const shardRoles = [
+        "SUPER_ADMIN", "ADMIN", "COMPANY_ADMIN", "OPS_ADMIN", 
+        "FINANCE_ADMIN", "HR_ADMIN", "VIEWER_ADMIN",
+        "MANAGER", "HR_MANAGER", "HR",
+        "AUDITOR", "SUPPORT_ADMIN", "PAYROLL_ADMIN"
+    ]
+
+    if (shardRoles.includes(r)) {
+        const dashboard = getDashboardByRole(r)
+        return `${dashboard}?tab=profile`
+    }
+
+    return "/profile"
+}

@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { Bell, MoreHorizontal, User, LogOut, ChevronDown } from "lucide-react"
 import { useSession, signOut } from "next-auth/react"
 import { useRouter } from "next/navigation"
@@ -14,21 +15,40 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
+import { getProfileLinkByRole } from "@/lib/role-redirect"
+
 const DynamicNotificationBell = dynamic(() => import("./NotificationBell"), { ssr: false })
 
 export default function TopHeader({
     token,
     searchQuery,
-    setSearchQuery
+    setSearchQuery,
+    breadcrumb = { parent: "Admin", page: "Dashboard" }
 }: {
     token: string,
     searchQuery?: string,
-    setSearchQuery?: (val: string) => void
+    setSearchQuery?: (val: string) => void,
+    breadcrumb?: { parent: string, page: string }
 }) {
+    const [mounted, setMounted] = React.useState(false)
     const { data: session } = useSession()
     const router = useRouter()
-    const role = (session?.user?.role || "").replace(/_/g, ' ')
+
+    React.useEffect(() => {
+        setMounted(true)
+    }, [])
+
+    const roleString = session?.user?.role || ""
+    const role = roleString.replace(/_/g, ' ')
     const initials = (session?.user?.name || "A").split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
+
+    // Determine if we are in admin view or standard view
+    const isEmployeeView = !["ADMIN", "COMPANY_ADMIN", "SUPER_ADMIN", "HR_ADMIN"].includes(roleString.toUpperCase())
+    
+    // Use a stable breadcrumb during hydration to prevent mismatch
+    const displayBreadcrumb = (!mounted) 
+        ? breadcrumb 
+        : (isEmployeeView ? { parent: "Employee", page: "Dashboard" } : breadcrumb)
 
     return (
         <header className="sticky top-0 z-[50] bg-white/80 backdrop-blur-xl border-b border-slate-100 transition-all">
@@ -36,9 +56,9 @@ export default function TopHeader({
 
                 {/* Left: breadcrumb / page context */}
                 <div className="flex items-center gap-2 text-[11px] font-bold text-slate-400 uppercase tracking-widest select-none">
-                    <span className="text-indigo-500">Admin</span>
+                    <span className="text-indigo-500">{displayBreadcrumb.parent}</span>
                     <span className="opacity-40">/</span>
-                    <span>Dashboard</span>
+                    <span>{displayBreadcrumb.page}</span>
                 </div>
 
                 {/* Right: actions */}
@@ -84,7 +104,7 @@ export default function TopHeader({
                             </div>
 
                             <DropdownMenuItem
-                                onClick={() => router.push("/admin?tab=profile")}
+                                onClick={() => router.push(getProfileLinkByRole(roleString))}
                                 className="rounded-xl px-3.5 py-2.5 focus:bg-indigo-50 cursor-pointer text-[12px] font-semibold text-slate-700 focus:text-indigo-700 transition-colors gap-3 mt-1"
                             >
                                 <User className="w-4 h-4 text-slate-400" />

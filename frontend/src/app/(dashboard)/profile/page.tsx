@@ -201,7 +201,15 @@ export default function ProfilePage() {
         const fetchUserData = async () => {
             const token = (session?.user as any)?.accessToken
             const userId = (session?.user as any)?.id
-            if (!token) return
+            
+            if (!token) {
+                // If we've been trying to load for a while and still no token, stop the spinner
+                // though usually the layout redirect will catch this
+                if (session === undefined) return; // Still loading session
+                setFetchLoading(false);
+                return;
+            }
+
             try {
                 const res = await fetch(`${API_BASE_URL}/profile`, {
                     headers: { Authorization: `Bearer ${token}` }
