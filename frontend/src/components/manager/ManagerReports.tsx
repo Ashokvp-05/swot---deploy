@@ -255,69 +255,6 @@ export default function ManagerReports({ token }: { token: string }) {
             });
             y += 32;
 
-            // ── DEPARTMENT ANALYTICS TABLE ──
-            if (data.departments.length > 0) {
-                pdf.setTextColor(30, 41, 59);
-                pdf.setFontSize(14);
-                pdf.setFont("helvetica", "bold");
-                pdf.text("Department Analytics", margin, y);
-                y += 3;
-                pdf.setDrawColor(79, 70, 229);
-                pdf.setLineWidth(0.8);
-                pdf.line(margin, y, margin + 50, y);
-                y += 6;
-
-                autoTable(pdf, {
-                    startY: y,
-                    margin: { left: margin, right: margin },
-                    head: [["#", "Department", "Personnel", "Attendance", "Leave Usage", "Status"]],
-                    body: data.departments.map((d, i) => [
-                        String(i + 1),
-                        d.name,
-                        `${d.staff} Staff`,
-                        `${d.attendance}%`,
-                        `${d.leavedays} Days`,
-                        d.attendance >= 90 ? "Optimal" : "Review Needed"
-                    ]),
-                    theme: "grid",
-                    headStyles: {
-                        fillColor: [79, 70, 229],
-                        textColor: [255, 255, 255],
-                        fontStyle: "bold",
-                        fontSize: 8,
-                        cellPadding: 4,
-                        halign: "center",
-                    },
-                    bodyStyles: {
-                        fontSize: 8,
-                        cellPadding: 4,
-                        textColor: [30, 41, 59],
-                    },
-                    alternateRowStyles: {
-                        fillColor: [248, 250, 252],
-                    },
-                    columnStyles: {
-                        0: { halign: "center", cellWidth: 10 },
-                        1: { fontStyle: "bold" },
-                        2: { halign: "center" },
-                        3: { halign: "center" },
-                        4: { halign: "center" },
-                        5: { halign: "center" },
-                    },
-                    didParseCell: (hookData: any) => {
-                        if (hookData.section === "body" && hookData.column.index === 5) {
-                            if (hookData.cell.raw === "Optimal") {
-                                hookData.cell.styles.textColor = [5, 150, 105];
-                                hookData.cell.styles.fontStyle = "bold";
-                            } else {
-                                hookData.cell.styles.textColor = [217, 119, 6];
-                                hookData.cell.styles.fontStyle = "bold";
-                            }
-                        }
-                    }
-                });
-                y = (pdf as any).lastAutoTable.finalY + 12;
-            }
 
             // ── EMPLOYEE DIRECTORY TABLE ──
             if (employees.length > 0) {
@@ -476,47 +413,6 @@ export default function ManagerReports({ token }: { token: string }) {
                         ))}
                     </div>
 
-                    <div className="space-y-6">
-                        <div className="flex items-center justify-between px-2">
-                            <h3 className="text-[22px] font-bold text-slate-800 tracking-tight font-brand leading-none">Department Analytics</h3>
-                            <div className="h-px flex-1 mx-8 bg-slate-100" />
-                            <Badge className="bg-indigo-50 text-indigo-600 border-none font-bold text-[10px] px-4 py-1.5 rounded-full">{data.departments.length} Units</Badge>
-                        </div>
-
-                        <div className="grid grid-cols-1 gap-4">
-                            {data.departments.map((dept, i) => (
-                                <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 + i * 0.05 }} className="bg-white border border-slate-100 p-8 rounded-[32px] hover:shadow-xl hover:shadow-slate-200/50 transition-all group relative overflow-hidden">
-                                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 relative z-10">
-                                        <div className="flex items-center gap-6">
-                                            <div className="w-14 h-14 bg-slate-50 border border-slate-100 rounded-[20px] flex items-center justify-center text-xl font-bold text-indigo-600 group-hover:scale-110 transition-transform">{dept.name[0]}</div>
-                                            <div>
-                                                <div className="flex items-center gap-3 mb-2">
-                                                    <h4 className="text-lg font-bold text-slate-900 uppercase italic tracking-tight">{dept.name}</h4>
-                                                    <Badge className={cn("text-[9px] font-bold uppercase px-3 py-1 rounded-lg border-none", dept.attendance >= 90 ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600")}>{dept.attendance >= 90 ? "Optimal" : "Review Needed"}</Badge>
-                                                </div>
-                                                <div className="flex items-center gap-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                                                    <span className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5" /> {dept.staff} Personnel</span>
-                                                    <div className="w-1 h-1 rounded-full bg-slate-200" />
-                                                    <span className="text-indigo-500 font-bold tracking-tight underline underline-offset-4">ID: DEPT-{100 + i}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="flex flex-wrap items-center gap-4">
-                                            <div className="bg-slate-50 px-5 py-2.5 rounded-2xl border border-slate-100 flex flex-col items-center">
-                                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Attendance</span>
-                                                <span className={cn("text-sm font-bold", dept.attendance >= 90 ? "text-emerald-600" : "text-amber-600")}>{dept.attendance}%</span>
-                                            </div>
-                                            <div className="bg-slate-50 px-5 py-2.5 rounded-2xl border border-slate-100 flex flex-col items-center">
-                                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Leave Usage</span>
-                                                <span className="text-sm font-bold text-slate-700">{dept.leavedays} Days</span>
-                                            </div>
-                                            <button className="h-14 px-8 bg-slate-100 hover:bg-slate-200 text-slate-900 text-[10px] font-bold uppercase tracking-[0.3em] rounded-2xl transition-all ml-4">Drill Down</button>
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </div>
 
                     {/* ── EMPLOYEE DIRECTORY ── */}
                     <div className="space-y-6 pt-4">
