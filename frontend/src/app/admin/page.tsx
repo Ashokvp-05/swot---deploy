@@ -11,7 +11,7 @@ import {
     Bell, Clock, Lock, Search, Filter, HelpCircle, User, ChevronRight, Home, Plus,
     MoreVertical, Download, Calendar, ArrowUpRight, Info, LayoutDashboard, ShieldCheck,
     Globe, Zap, Cpu, HardDrive, ShieldAlert, Layers, BarChart3, Rocket, Laptop, ClipboardList, Briefcase,
-    Search as SearchIcon, Moon, Sun, MoreHorizontal, Power, LogOut,
+    Search as SearchIcon, Moon, Sun, Ellipsis, Power, LogOut,
     UserPlus, Sparkles, FileText, Share2, ClipboardCheck, History, Check, UserCheck,
     Monitor, ExternalLink, FileDown
 } from "lucide-react"
@@ -323,17 +323,30 @@ function AdminDashboardContent() {
                                             const Icon = item.icon
                                             const isExternal = 'external' in item && (item as any).external
                                             const isActive = !isExternal && currentTab === item.tab
-                                            const isLeaveItem = item.id === 'leave'
+                                            const isAttendanceItem = item.id === 'attendance'
 
                                             return (
                                                 <div key={item.id}>
-                                                    <button
+                                                    <div
+                                                        role="button"
+                                                        tabIndex={0}
+                                                        onKeyDown={(e) => {
+                                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                                e.preventDefault();
+                                                                if (isExternal) {
+                                                                    window.location.href = (item as any).href
+                                                                } else {
+                                                                    router.push(`/admin?tab=${item.tab}`)
+                                                                    if (isAttendanceItem) setLeaveDropOpen(prev => !prev)
+                                                                }
+                                                            }
+                                                        }}
                                                         onClick={() => {
                                                             if (isExternal) {
                                                                 window.location.href = (item as any).href
                                                             } else {
                                                                 router.push(`/admin?tab=${item.tab}`)
-                                                                if (isLeaveItem) setLeaveDropOpen(prev => !prev)
+                                                                if (isAttendanceItem) setLeaveDropOpen(prev => !prev)
                                                             }
                                                         }}
                                                         title={item.label}
@@ -348,15 +361,15 @@ function AdminDashboardContent() {
                                                             <Icon className={cn("w-[18px] h-[18px] shrink-0 transition-colors duration-200", isActive ? "text-white" : "text-slate-400 group-hover:text-slate-700")} strokeWidth={isActive ? 2.5 : 1.8} />
                                                             <span className="hidden lg:inline-block text-left truncate">{item.label}</span>
                                                             {isExternal && <ExternalLink className="hidden lg:block w-3.5 h-3.5 text-slate-400 group-hover:text-slate-700 shrink-0 ml-auto" />}
-                                                            {isLeaveItem && <ChevronRight className={cn("hidden lg:block w-3.5 h-3.5 ml-auto shrink-0 transition-transform duration-300 text-slate-400", leaveDropOpen && "rotate-90 text-indigo-500")} />}
+                                                            {isAttendanceItem && <ChevronRight className={cn("hidden lg:block w-3.5 h-3.5 ml-auto shrink-0 transition-transform duration-300 text-slate-400", leaveDropOpen && "rotate-90 text-indigo-500")} />}
                                                         </div>
                                                         {isActive && (
                                                             <motion.div layoutId="activeSidebarIndicator" className="hidden lg:block absolute -left-[5px] top-1/2 -translate-y-1/2 w-[3px] h-5 bg-indigo-400 rounded-r-full" />
                                                         )}
-                                                    </button>
+                                                    </div>
 
-                                                    {/* ── LEAVE DROPDOWN: Present / Absent ── */}
-                                                    {isLeaveItem && (
+                                                    {/* ── ATTENDANCE DROPDOWN: Present / Absent ── */}
+                                                    {isAttendanceItem && (
                                                         <AnimatePresence>
                                                             {leaveDropOpen && (
                                                                 <motion.div
@@ -367,20 +380,38 @@ function AdminDashboardContent() {
                                                                     className="overflow-hidden hidden lg:block ml-4 mt-1 border-l border-slate-200"
                                                                 >
                                                                     <div className="pl-4 space-y-0.5 pb-1">
-                                                                        <button onClick={() => router.push('/admin?tab=attendance-present')}
-                                                                            className={cn("w-full flex items-center gap-3 px-4 py-2 rounded-lg text-[11px] font-semibold transition-all",
+                                                                        <div
+                                                                            role="button"
+                                                                            tabIndex={0}
+                                                                            onKeyDown={(e) => {
+                                                                                if (e.key === 'Enter' || e.key === ' ') {
+                                                                                    e.preventDefault();
+                                                                                    router.push('/admin?tab=attendance-present');
+                                                                                }
+                                                                            }}
+                                                                            onClick={() => router.push('/admin?tab=attendance-present')}
+                                                                            className={cn("w-full flex items-center gap-3 px-4 py-2 rounded-lg text-[11px] font-semibold transition-all cursor-pointer",
                                                                                 currentTab === 'attendance-present' ? "text-emerald-600 bg-emerald-50" : "text-slate-400 hover:text-slate-700")}>
                                                                             <div className={cn("w-1.5 h-1.5 rounded-full", currentTab === 'attendance-present' ? "bg-emerald-500 shadow-[0_0_6px_rgba(52,211,153,0.4)]" : "bg-slate-300")} />
                                                                             Present
                                                                             <span className="ml-auto text-[10px] opacity-60">{sidebarPresent.length}</span>
-                                                                        </button>
-                                                                        <button onClick={() => router.push('/admin?tab=attendance-absent')}
-                                                                            className={cn("w-full flex items-center gap-3 px-4 py-2 rounded-lg text-[11px] font-semibold transition-all",
+                                                                        </div>
+                                                                        <div
+                                                                            role="button"
+                                                                            tabIndex={0}
+                                                                            onKeyDown={(e) => {
+                                                                                if (e.key === 'Enter' || e.key === ' ') {
+                                                                                    e.preventDefault();
+                                                                                    router.push('/admin?tab=attendance-absent');
+                                                                                }
+                                                                            }}
+                                                                            onClick={() => router.push('/admin?tab=attendance-absent')}
+                                                                            className={cn("w-full flex items-center gap-3 px-4 py-2 rounded-lg text-[11px] font-semibold transition-all cursor-pointer",
                                                                                 currentTab === 'attendance-absent' ? "text-rose-600 bg-rose-50" : "text-slate-400 hover:text-slate-700")}>
                                                                             <div className={cn("w-1.5 h-1.5 rounded-full", currentTab === 'attendance-absent' ? "bg-rose-500 shadow-[0_0_6px_rgba(251,113,133,0.4)]" : "bg-slate-300")} />
                                                                             Absent
                                                                             <span className="ml-auto text-[10px] opacity-60">{sidebarAbsent.length}</span>
-                                                                        </button>
+                                                                        </div>
                                                                     </div>
                                                                 </motion.div>
                                                             )}
@@ -651,7 +682,7 @@ function AdminDashboardContent() {
                                                                     isPresent ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700")}>
                                                                     <div className={cn("w-2 h-2 rounded-full animate-pulse",
                                                                         isPresent ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" : "bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]")} />
-                                                                    {isPresent ? 'Active' : 'Offline'}
+                                                                    {isPresent ? 'Present' : 'Absent'}
                                                                 </div>
                                                             </div>
 
@@ -707,3 +738,4 @@ export default function CompanyAdminPage() {
         </Suspense>
     )
 }
+

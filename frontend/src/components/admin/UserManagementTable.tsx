@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import useSWR from "swr"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
-    Search, Plus, Filter, MoreHorizontal, 
+    Search, Plus, Filter, Ellipsis, 
     Edit3, UserX, UserPlus, ShieldAlert,
     Building2, Briefcase, Mail, Phone,
     ChevronRight, Loader2, RefreshCcw,
@@ -383,4 +383,5 @@ export default function UserManagementTable({ token, userRole }: { token: string
         </div>
     )
 }
+
 

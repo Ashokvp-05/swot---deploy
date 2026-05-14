@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
     Building2, Users, Plus, Search, 
-    MoreHorizontal, Loader2, Target,
+    Ellipsis, Loader2, Target,
     ExternalLink, Activity, TrendingUp,
     BarChart3, RefreshCcw, UserCheck, Briefcase,
     ChevronRight, Globe, Shield, Mail, UserCircle
@@ -249,7 +249,7 @@ export default function ManagerDepartmentView({ token }: { token: string }) {
                                                 </div>
                                             </div>
                                             <Button variant="ghost" size="icon" className="rounded-xl h-9 w-9 text-slate-300 hover:text-slate-600">
-                                                <MoreHorizontal className="w-4 h-4" />
+                                                <Ellipsis className="w-4 h-4" />
                                             </Button>
                                         </div>
 
@@ -462,3 +462,4 @@ export default function ManagerDepartmentView({ token }: { token: string }) {
         </div>
     )
 }
+

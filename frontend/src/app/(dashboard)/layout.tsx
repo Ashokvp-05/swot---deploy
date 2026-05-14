@@ -28,7 +28,15 @@ export default async function DashboardLayout({
 
             {/* 🏗️ MAIN CONTENT STAGE */}
             <main className="flex-1 w-full min-w-0 bg-[#f8fafc] h-screen overflow-y-auto">
-                <TopHeader token={token} />
+                <TopHeader 
+                    token={token} 
+                    breadcrumb={{ 
+                        parent: !["ADMIN", "COMPANY_ADMIN", "SUPER_ADMIN", "HR_ADMIN"].includes((session.user?.role || "").toUpperCase()) 
+                            ? "Employee" 
+                            : "Admin", 
+                        page: "Dashboard" 
+                    }} 
+                />
                 <PageTransition>
                     {children}
                 </PageTransition>

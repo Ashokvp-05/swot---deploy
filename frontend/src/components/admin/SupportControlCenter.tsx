@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
     Ticket, MessageSquare, Clock, AlertCircle, CheckCircle2, 
-    Filter, Search, User, UserPlus, ChevronRight, MoreHorizontal,
+    Filter, Search, User, UserPlus, ChevronRight, Ellipsis,
     Send, Info, ShieldAlert, Activity, BarChart3, TrendingUp,
     Settings, Play, Download, Plus, Loader2, Save, Trash2,
     Bug, Lock, Unlock, Zap, Headphones, Cpu, AlertTriangle,
@@ -527,3 +527,4 @@ function TicketDetailSheet({ ticket, token, onUpdate }: { ticket: TicketData, to
         </Sheet>
     )
 }
+

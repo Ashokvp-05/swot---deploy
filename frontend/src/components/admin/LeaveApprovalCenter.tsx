@@ -8,7 +8,7 @@ import {
     MessageSquare, ChevronDown, Filter, Search, ArrowRight,
     Briefcase, ShieldCheck, Zap, RefreshCcw, UserCheck,
     CalendarDays, CornerDownRight, CloudOff, Info,
-    ArrowUpDown, MoreHorizontal, ChevronLeft, ChevronRight,
+    ArrowUpDown, Ellipsis, ChevronLeft, ChevronRight,
     ChevronsLeft, ChevronsRight, Download
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -386,7 +386,7 @@ export default function LeaveApprovalCenter({ token }: { token: string }) {
                                                     {/* Action */}
                                                     <td className="px-4 py-4">
                                                         <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-400 hover:text-slate-600">
-                                                            <MoreHorizontal className="w-4 h-4" />
+                                                            <Ellipsis className="w-4 h-4" />
                                                         </button>
                                                     </td>
                                                 </motion.tr>
@@ -502,3 +502,4 @@ export default function LeaveApprovalCenter({ token }: { token: string }) {
         </div>
     )
 }
+

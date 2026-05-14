@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Monitor, Laptop, Smartphone, HardDrive, Plus, Loader2, User, CheckCircle2, AlertCircle, Search, Filter, Hash, MoreHorizontal } from "lucide-react"
+import { Monitor, Laptop, Smartphone, HardDrive, Plus, Loader2, User, CheckCircle2, AlertCircle, Search, Filter, Hash, Ellipsis } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
@@ -109,7 +109,7 @@ export default function AssetManager({ token }: { token: string }) {
                                         <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">Unassigned</span>
                                     )}
                                     <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-emerald-500">
-                                        <MoreHorizontal className="w-4 h-4" />
+                                        <Ellipsis className="w-4 h-4" />
                                     </Button>
                                 </div>
                             </CardContent>
@@ -120,3 +120,4 @@ export default function AssetManager({ token }: { token: string }) {
         </div>
     )
 }
+

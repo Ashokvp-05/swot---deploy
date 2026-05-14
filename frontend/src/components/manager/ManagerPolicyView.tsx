@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { 
     FileText, Shield, Plus, Search, Filter, 
-    Loader2, Download, ExternalLink, MoreHorizontal,
+    Loader2, Download, ExternalLink, Ellipsis,
     Megaphone, Eye, Trash2, Edit2, CheckCircle2,
     Clock, Archive, AlertCircle
 } from "lucide-react"
@@ -79,7 +79,7 @@ export default function ManagerPolicyView({ token }: { token: string }) {
                                     <h3 className="text-xl font-bold text-slate-900 dark:text-white uppercase tracking-tight italic mt-1">{policy.title}</h3>
                                 </div>
                             </div>
-                            <Button variant="ghost" size="icon" className="rounded-xl"><MoreHorizontal className="w-5 h-5 text-slate-400" /></Button>
+                            <Button variant="ghost" size="icon" className="rounded-xl"><Ellipsis className="w-5 h-5 text-slate-400" /></Button>
                         </div>
 
                         <div className="grid grid-cols-3 gap-4 mb-8">
@@ -130,3 +130,4 @@ export default function ManagerPolicyView({ token }: { token: string }) {
         </div>
     )
 }
+

@@ -34,7 +34,7 @@ import {
     Megaphone,
     Monitor,
     ExternalLink,
-    MoreHorizontal,
+    Ellipsis,
 } from "lucide-react"
 
 import { getDashboardByRole, getProfileLinkByRole } from "@/lib/role-redirect"
@@ -286,4 +286,5 @@ export default function Navbar({ role, token, companyName }: { role?: string; to
         </aside>
     )
 }
+
 

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { 
     UserMinus, ShieldCheck, Clock, FileText, 
     Search, Filter, Loader2, Archive, ShieldAlert,
-    Trash2, ExternalLink, MoreHorizontal
+    Trash2, ExternalLink, Ellipsis
 } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -123,3 +123,4 @@ export default function ManagerOffboardingView({ token }: { token: string }) {
         </div>
     )
 }
+

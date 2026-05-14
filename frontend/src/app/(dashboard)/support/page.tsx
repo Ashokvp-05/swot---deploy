@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { 
     Search, Filter, CheckCircle2, XCircle, 
-    MoreHorizontal, SearchCheck, MessageSquare, 
+    Ellipsis, SearchCheck, MessageSquare, 
     AlertTriangle, ShieldCheck, Zap, Globe, 
     ChevronRight, Ticket, User, LifeBuoy, Database,
     LayoutDashboard, UserCircle, Activity, Settings,
@@ -453,3 +453,4 @@ export default function SupportAdminDashboard() {
         </div>
     )
 }
+

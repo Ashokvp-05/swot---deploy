@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge"
 import {
     Search, Ticket, Plus, X, Clock, AlertTriangle, CheckCircle2,
     Archive, Send, MessageSquare, User, Loader2, Flame,
-    ArrowUpRight, ChevronDown, MoreHorizontal
+    ArrowUpRight, ChevronDown, Ellipsis
 } from "lucide-react"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
@@ -321,3 +321,4 @@ function AdminKanbanBoard({ token }: { token: string }) {
         </div>
     )
 }
+

@@ -105,3 +105,4 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+// Cache invalidated

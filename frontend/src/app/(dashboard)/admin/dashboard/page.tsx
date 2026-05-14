@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react"
 import { 
-    ShieldCheck, Activity, Globe, Plus, Building2, MoreHorizontal
+    ShieldCheck, Activity, Globe, Plus, Building2, Ellipsis
 } from "lucide-react"
 
 import { Card } from "@/components/ui/card"
@@ -38,3 +38,4 @@ export default function AdminDashboardPage() {
         </AdminOnly>
     )
 }
+

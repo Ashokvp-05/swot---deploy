@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { 
     UserPlus, FileText, CheckCircle2, Circle, 
     ArrowRight, Search, Filter, Loader2, Sparkles, 
-    Clock, ShieldCheck, Mail, Phone, MoreHorizontal,
+    Clock, ShieldCheck, Mail, Phone, Ellipsis,
     UserCircle, ClipboardCheck, Fingerprint, Shield,
     Activity, GraduationCap, Laptop, ChevronRight,
     Zap, AlertCircle, TrendingUp, BellRing, Target, LayoutGrid, List
@@ -351,3 +351,4 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
         </div>
     )
 }
+
