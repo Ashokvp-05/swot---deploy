@@ -294,16 +294,19 @@ export const createEmployee = async (req: Request, res: Response) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Sanitize FK fields: empty strings → null (prevents FK constraint violations)
+        const safeFK = (val: any) => (val && val.trim() !== '') ? val : null;
+
         const employee = await prisma.user.create({
             data: {
                 name,
                 email,
                 password: hashedPassword,
                 companyId,
-                roleId: roleId || null,
-                deptId: deptId || null,
-                designationId: designationId || null,
-                managerId: managerId || null,
+                roleId: safeFK(roleId),
+                deptId: safeFK(deptId),
+                designationId: safeFK(designationId),
+                managerId: safeFK(managerId),
                 phone: phone || null,
                 joiningDate: joiningDate ? new Date(joiningDate) : new Date(),
                 status: 'ACTIVE',
@@ -341,17 +344,20 @@ export const updateEmployee = async (req: Request, res: Response) => {
         const { id: adminId, companyId } = (req as any).user;
         const { name, email, phone, status, roleId, deptId, designationId, managerId, employmentType } = req.body;
 
+        // Sanitize FK fields: empty strings → null (prevents FK constraint violations)
+        const safeFK = (val: any) => (val && val.trim() !== '') ? val : null;
+
         const updated = await prisma.user.update({
             where: { id, companyId },
             data: {
                 ...(name && { name }),
                 ...(email && { email }),
-                ...(phone !== undefined && { phone }),
+                ...(phone !== undefined && { phone: phone || null }),
                 ...(status && { status }),
-                ...(roleId !== undefined && { roleId }),
-                ...(deptId !== undefined && { deptId }),
-                ...(designationId !== undefined && { designationId }),
-                ...(managerId !== undefined && { managerId }),
+                ...(roleId !== undefined && { roleId: safeFK(roleId) }),
+                ...(deptId !== undefined && { deptId: safeFK(deptId) }),
+                ...(designationId !== undefined && { designationId: safeFK(designationId) }),
+                ...(managerId !== undefined && { managerId: safeFK(managerId) }),
                 ...(employmentType && {
                     profile: {
                         upsert: {
@@ -369,6 +375,7 @@ export const updateEmployee = async (req: Request, res: Response) => {
         const { password: _, ...safe } = updated as any;
         res.json(safe);
     } catch (error: any) {
+        console.error('[Admin] Employee update failed:', error.message);
         res.status(500).json({ error: error.message });
     }
 };
