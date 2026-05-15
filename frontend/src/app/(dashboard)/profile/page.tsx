@@ -676,14 +676,9 @@ export default function ProfilePage() {
                                                       )} />
                                                      <FormField control={form.control} name="dob" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Date of Birth</FormLabel><FormControl>
-                                                              <Input type="date" max={new Date(new Date().setFullYear(new Date().getFullYear() - 16)).toISOString().split('T')[0]} min="1900-01-01" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
+                                                              <Input type="date" max={new Date(new Date().setFullYear(new Date().getFullYear() - 16)).toISOString().split('T')[0]} min="1900-01-01" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
                                                          </FormControl><FormMessage className="text-[9px] uppercase font-bold" /></FormItem>
                                                      )} />
-                                                      <FormField control={form.control} name="maritalStatus" render={({ field }) => (
-                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Marital Status</FormLabel><FormControl>
-                                                               <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="e.g. Single, Married" {...field} />
-                                                          </FormControl><FormMessage /></FormItem>
-                                                      )} />
                                                       <FormField control={form.control} name="fatherName" render={({ field }) => (
                                                           <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Father's Name</FormLabel><FormControl>
                                                                <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="Father's Name" {...field} value={field.value || ""} />
@@ -692,6 +687,11 @@ export default function ProfilePage() {
                                                       <FormField control={form.control} name="motherName" render={({ field }) => (
                                                           <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Mother's Name</FormLabel><FormControl>
                                                                <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="Mother's Name" {...field} value={field.value || ""} />
+                                                          </FormControl><FormMessage /></FormItem>
+                                                      )} />
+                                                      <FormField control={form.control} name="maritalStatus" render={({ field }) => (
+                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Marital Status</FormLabel><FormControl>
+                                                               <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="e.g. Single, Married" {...field} />
                                                           </FormControl><FormMessage /></FormItem>
                                                       )} />
                                                      <FormField control={form.control} name="bloodGroup" render={({ field }) => (
@@ -891,17 +891,18 @@ export default function ProfilePage() {
                                              {/* 7. DOCUMENTS */}
                                              <TabsContent value="documents" className="space-y-6 animate-in slide-in-from-left-2 duration-300">
                                                  <EmployeeDocumentVault token={(session?.user as any)?.accessToken || ""} />
+                                                 <div className="flex justify-end pt-4 border-t border-slate-100 dark:border-slate-800">
+                                                     <Button type="submit" disabled={loading} className="h-11 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-bold uppercase tracking-widest text-[10px] rounded-xl shadow-lg shadow-indigo-500/30 active:scale-95 transition-all">
+                                                         {loading ? <Loader2 className="w-3 h-3 animate-spin mr-2" /> : <Save className="w-3 h-3 mr-2" />}
+                                                         Save Changes
+                                                     </Button>
+                                                 </div>
                                              </TabsContent>
 
 
                                          </Tabs>
 
-                                         <div className="flex justify-end pt-4 border-t border-slate-100 dark:border-slate-800">
-                                             <Button type="submit" disabled={loading} className="h-11 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-bold uppercase tracking-widest text-[10px] rounded-xl shadow-lg shadow-indigo-500/30 active:scale-95 transition-all">
-                                                 {loading ? <Loader2 className="w-3 h-3 animate-spin mr-2" /> : <Save className="w-3 h-3 mr-2" />}
-                                                 Save Global Profile
-                                             </Button>
-                                         </div>
+
                                      </form>
                                  </Form>
                             </CardContent>

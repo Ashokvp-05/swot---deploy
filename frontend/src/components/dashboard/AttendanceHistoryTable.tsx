@@ -135,7 +135,7 @@ export default function AttendanceHistoryTable({ token }: { token: string }) {
                             </div>
                         )}
                     </div>
-                    <span className="text-xl font-bold italic uppercase text-slate-900 dark:text-white mt-1">{monthName}</span>
+                    <span className="text-xl font-bold uppercase text-slate-900 dark:text-white mt-1">{monthName}</span>
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">

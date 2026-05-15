@@ -284,8 +284,8 @@ function AdminDashboardContent() {
                 {/* BRAND HEADER */}
                 <div className="pt-10 pb-10 px-6 lg:px-8 relative z-10">
                     <div className="hidden lg:flex items-center gap-4">
-                        <div className="w-12 h-12 bg-indigo-600 rounded-[18px] flex items-center justify-center shadow-lg shadow-indigo-500/30 transition-transform hover:scale-110 active:scale-95 cursor-pointer" onClick={() => router.push('/admin')}>
-                            <Shield className="w-6 h-6 text-white" strokeWidth={2.5} />
+                        <div className="w-12 h-12 rounded-[18px] overflow-hidden shadow-lg shadow-indigo-500/30 transition-transform hover:scale-110 active:scale-95 cursor-pointer shrink-0" onClick={() => router.push('/admin')}>
+                            <img src="/hrms-logo.png" alt="HRMS" className="w-full h-full object-cover" />
                         </div>
                         <div>
                             <h2 className="text-xl font-bold text-slate-800 tracking-tight leading-none">Rudratic</h2>
@@ -293,8 +293,8 @@ function AdminDashboardContent() {
                         </div>
                     </div>
                     <div className="lg:hidden flex items-center justify-center">
-                        <div className="w-11 h-11 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30" onClick={() => router.push('/admin')}>
-                            <Shield className="w-5 h-5 text-white" />
+                        <div className="w-11 h-11 rounded-2xl overflow-hidden shadow-lg shadow-indigo-500/30 cursor-pointer" onClick={() => router.push('/admin')}>
+                            <img src="/hrms-logo.png" alt="HRMS" className="w-full h-full object-cover" />
                         </div>
                     </div>
                 </div>

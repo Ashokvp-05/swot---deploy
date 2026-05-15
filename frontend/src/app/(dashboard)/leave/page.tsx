@@ -2,7 +2,7 @@ import { auth } from "@/auth"
 import { redirect } from "next/navigation"
 import LeaveDashboard from "@/components/leave/LeaveDashboard"
 import TeamCalendar from "@/components/dashboard/TeamCalendar"
-import { Palmtree, Calendar, MapPin, Activity } from "lucide-react"
+import { CalendarDays, Calendar, MapPin, Activity } from "lucide-react"
 
 export default async function LeavePage() {
     const session = await auth()
@@ -20,7 +20,7 @@ export default async function LeavePage() {
                 <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-indigo-500/10 transition-colors" />
                 <div className="relative z-10 flex items-center gap-4">
                     <div className="p-4 bg-indigo-600 rounded-2xl shadow-lg shadow-indigo-600/20">
-                        <Palmtree className="w-8 h-8 text-white" />
+                        <CalendarDays className="w-8 h-8 text-white" />
                     </div>
                     <div>
                         <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">Leave Management</h1>

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
 import { redirect } from "next/navigation"
 import AttendanceHistoryTable from "@/components/dashboard/AttendanceHistoryTable"
-import { CalendarCheck, Clock, Activity, Zap, Cpu, ScanLine } from "lucide-react"
+import { CalendarCheck, Clock, Activity, Zap, Cpu } from "lucide-react"
 import AttendanceCalendar from "@/components/dashboard/AttendanceCalendar"
 import AttendanceMonthlyPulse from "@/components/dashboard/AttendanceMonthlyPulse"
 import { format } from "date-fns"
@@ -29,7 +29,7 @@ export default function AttendancePage() {
                 
                 <div className="relative z-10 flex items-center gap-6">
                     <div className="p-5 bg-indigo-600 rounded-[1.5rem] shadow-2xl shadow-indigo-600/20">
-                        <ScanLine className="w-8 h-8 text-white" />
+                        <Clock className="w-8 h-8 text-white" />
                     </div>
                     <div>
                         <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">Attendance</h1>

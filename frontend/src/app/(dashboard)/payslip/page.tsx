@@ -240,7 +240,7 @@ export default function PayslipPage() {
     if (loading) return (
         <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
             <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Neutralizing Data Layer...</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Loading payslips...</span>
         </div>
     )
 
@@ -253,7 +253,7 @@ export default function PayslipPage() {
                     <h1 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-white">Payslips</h1>
                     <p className="text-sm font-semibold text-slate-500 mt-1 uppercase tracking-[0.2em] flex items-center gap-2">
                         <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                        {canManage ? (isHR ? "Human Resources Financial Command" : "Executive Administrative Console") : "Secure Document Vault"}
+                        {canManage ? (isHR ? "HR Payroll Management" : "Admin Payroll Console") : "Your Payslips"}
                     </p>
                 </div>
                 {canIssue && (
@@ -287,10 +287,10 @@ export default function PayslipPage() {
                             <Card className="border-none bg-white dark:bg-slate-900 shadow-xl shadow-slate-200/40 dark:shadow-black/60 rounded-[2.5rem] overflow-hidden">
                                 <CardHeader className="p-10 border-b border-slate-50 dark:border-white/5 flex flex-row items-center justify-between">
                                     <div>
-                                        <CardTitle className="text-xl font-bold">Electronic Archive</CardTitle>
-                                        <CardDescription className="font-bold text-[10px] uppercase tracking-widest mt-1">Authorized User View</CardDescription>
+                                        <CardTitle className="text-xl font-bold">My Payslips</CardTitle>
+                                        <CardDescription className="font-bold text-[10px] uppercase tracking-widest mt-1">Your released payslips</CardDescription>
                                     </div>
-                                    <Badge variant="secondary" className="rounded-lg px-2 h-6 text-[9px] font-bold uppercase bg-slate-100 dark:bg-slate-800 text-slate-500 border-none tracking-widest">Sync: STABLE</Badge>
+                                    <Badge variant="secondary" className="rounded-lg px-2 h-6 text-[9px] font-bold uppercase bg-slate-100 dark:bg-slate-800 text-slate-500 border-none tracking-widest">Up to date</Badge>
                                 </CardHeader>
                                 <CardContent className="p-0">
                                     <ScrollArea className="w-full">
@@ -301,8 +301,8 @@ export default function PayslipPage() {
                                                         <FileText className="w-8 h-8 text-slate-200 dark:text-slate-700" />
                                                     </div>
                                                     <h3 className="text-sm font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest leading-none">No Released Payslips</h3>
-                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Synchronizing with HR Manager Vault</p>
-                                                    <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest italic pt-4">Your payslips will appear here once released by HR.</p>
+                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">No payslips available yet</p>
+                                                    <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest pt-4">Your payslips will appear here once released by HR.</p>
                                                 </div>
                                             ) : (
                                                 <table className="w-full text-left">
@@ -344,12 +344,12 @@ export default function PayslipPage() {
                             <Card className="border-none bg-slate-900 dark:bg-black text-white rounded-[2.5rem] p-10 space-y-8 relative overflow-hidden">
                                 <History className="absolute bottom-0 right-0 w-40 h-40 text-white/5 -mb-10 -mr-10" />
                                 <div className="relative z-10">
-                                    <Badge className="bg-indigo-600 hover:bg-indigo-600 text-white border-none rounded-lg px-2 h-6 text-[9px] font-bold uppercase tracking-widest mb-4">Storage Protocol</Badge>
-                                    <h3 className="text-2xl font-bold">Archival Discovery</h3>
-                                    <p className="text-sm font-medium text-slate-400 mt-3 leading-relaxed">Documents older than 12 months trigger compliance retrieval procedures.</p>
+                                    <Badge className="bg-indigo-600 hover:bg-indigo-600 text-white border-none rounded-lg px-2 h-6 text-[9px] font-bold uppercase tracking-widest mb-4">Old Records</Badge>
+                                    <h3 className="text-2xl font-bold">Need Older Payslips?</h3>
+                                    <p className="text-sm font-medium text-slate-400 mt-3 leading-relaxed">Payslips older than 12 months can be requested from HR. Click below to send a request.</p>
                                 </div>
-                                <Button onClick={handleRequestLegacy} disabled={requestingLegacy} className="w-full h-14 bg-white hover:bg-slate-100 text-slate-900 rounded-2xl font-bold uppercase text-[10px] tracking-widest shadow-2xl relative z-10">
-                                    {requestingLegacy ? "Initiating..." : "Request Records Clearance"}
+                                <Button onClick={handleRequestLegacy} disabled={requestingLegacy} className="w-full h-14 bg-white hover:bg-indigo-600 hover:text-white text-slate-900 rounded-2xl font-bold uppercase text-[10px] tracking-widest shadow-2xl relative z-10 transition-all duration-300 active:scale-95 hover:shadow-indigo-500/30">
+                                    {requestingLegacy ? "Sending Request..." : "Request Old Payslips"}
                                 </Button>
                             </Card>
                         </aside>
