@@ -103,9 +103,11 @@ export function SystemSettingsCenter({ token }: { token: string }) {
                 setIsHolidayModalOpen(false)
                 setHolidayForm({ name: "", date: "" })
                 const updatedRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api"}/holidays`, { headers: { "Authorization": `Bearer ${token}` }})
-                setHolidays(await updatedRes.json())
+                const updatedData = await updatedRes.json()
+                setHolidays(Array.isArray(updatedData) ? updatedData : (updatedData.holidays || []))
             } else {
-                toast.error("Failed to add holiday")
+                const errData = await res.json().catch(() => ({ error: "Unknown server error" }))
+                toast.error(errData.error || `Failed to add holiday (${res.status})`)
             }
         } catch (err) {
             toast.error("Network connection error")

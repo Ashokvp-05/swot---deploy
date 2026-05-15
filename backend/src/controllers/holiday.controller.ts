@@ -35,40 +35,56 @@ export const create = async (req: Request, res: Response) => {
         if (!user?.companyId) return res.status(401).json({ error: 'Unauthorized' });
 
         const { name, date, year, isFloater } = req.body;
+
+        if (!name || !date) {
+            return res.status(400).json({ error: 'Holiday name and date are required' });
+        }
+
+        const parsedDate = new Date(date);
+        if (isNaN(parsedDate.getTime())) {
+            return res.status(400).json({ error: 'Invalid date format' });
+        }
+
         const holiday = await holidayService.createHoliday({
             name,
-            date: new Date(date),
-            year: year || new Date(date).getFullYear(),
-            isFloater,
+            date: parsedDate,
+            year: year || parsedDate.getFullYear(),
+            isFloater: isFloater ?? false,
             companyId: user.companyId
         });
 
         // Broadcast to all active users so it shows in the Notification Bell
-        const users = await prisma.user.findMany({
-            where: { companyId: user.companyId, status: 'ACTIVE' },
-            select: { id: true }
-        });
-
-        if (users.length > 0) {
-            const notifications = users.map(u => ({
-                userId: u.id,
-                companyId: user.companyId,
-                title: `New Holiday Added: ${name}`,
-                message: `A new holiday '${name}' has been added on ${new Date(date).toDateString()}.`,
-                type: 'INFO' as any
-            }));
-            await prisma.notification.createMany({
-                data: notifications,
-                skipDuplicates: true
+        try {
+            const users = await prisma.user.findMany({
+                where: { companyId: user.companyId, status: 'ACTIVE' },
+                select: { id: true }
             });
+
+            if (users.length > 0) {
+                const notifications = users.map(u => ({
+                    userId: u.id,
+                    companyId: user.companyId!,
+                    title: `New Holiday Added: ${name}`,
+                    message: `A new holiday '${name}' has been added on ${parsedDate.toDateString()}.`,
+                    type: 'INFO' as any
+                }));
+                await prisma.notification.createMany({
+                    data: notifications,
+                    skipDuplicates: true
+                });
+            }
+        } catch (notifError: any) {
+            console.error('[Holiday] Notification broadcast failed:', notifError.message);
+            // Don't fail the holiday creation because of notification issues
         }
 
         res.status(201).json(holiday);
     } catch (error: any) {
+        console.error('[Holiday] Create failed:', error.message, error.code);
         if (error.code === 'P2002') {
             return res.status(400).json({ error: 'A holiday already exists on this date' });
         }
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message || 'Failed to create holiday' });
     }
 };
 
