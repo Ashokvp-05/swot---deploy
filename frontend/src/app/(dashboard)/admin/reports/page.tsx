@@ -530,7 +530,7 @@ export default function AdminReportsPage() {
                                                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{row.user.email}</span>
                                                         </div>
                                                     </td>
-                                                    <td className="p-5 text-sm font-bold text-slate-600 dark:text-slate-400 italic">
+                                                    <td className="p-5 text-sm font-bold text-slate-600 dark:text-slate-400">
                                                         {format(new Date(row.clockIn), "dd MMM, yyyy")}
                                                     </td>
                                                     <td className="p-5 text-center">
@@ -589,7 +589,7 @@ export default function AdminReportsPage() {
                     <TrendingUp className="w-4 h-4" />
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[1em]">Rudratic Intelligence System</p>
                 </div>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic">Admin Protocol Stability v.4.0.1</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Admin Protocol Stability v.4.0.1</p>
             </div>
         </div>
     )

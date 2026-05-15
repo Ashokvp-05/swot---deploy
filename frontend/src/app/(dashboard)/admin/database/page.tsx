@@ -43,7 +43,7 @@ export default async function DatabaseExplorerPage() {
                             <Database className="w-8 h-8 text-white" />
                         </div>
                         <div>
-                            <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white uppercase italic">Infrastructure Core</h2>
+                            <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white uppercase">Infrastructure Core</h2>
                             <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Direct system-level insights from the PostgreSQL persistence layer.</p>
                         </div>
                     </div>
@@ -143,7 +143,7 @@ export default async function DatabaseExplorerPage() {
                                 </div>
                             </div>
                             <div className="py-4 border-t border-slate-100 dark:border-slate-800">
-                                <p className="text-[9px] font-medium text-slate-400 italic">Instance is currently serving 12 active modules without latency spikes.</p>
+                                <p className="text-[9px] font-medium text-slate-400">Instance is currently serving 12 active modules without latency spikes.</p>
                             </div>
                         </CardContent>
                     </Card>

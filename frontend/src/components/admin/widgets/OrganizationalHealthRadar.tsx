@@ -14,7 +14,7 @@ export function OrganizationalHealthRadar({ token }: { token: string }) {
                     <Activity className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
                 </div>
                 <div>
-                    <h3 className="text-slate-900 dark:text-white font-bold uppercase text-sm tracking-widest italic leading-none">Resource Radar</h3>
+                    <h3 className="text-slate-900 dark:text-white font-bold uppercase text-sm tracking-widest leading-none">Resource Radar</h3>
                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Live Organizational Health</p>
                 </div>
             </div>
@@ -53,7 +53,7 @@ export function OrganizationalHealthRadar({ token }: { token: string }) {
             <div className="pt-6 border-t border-border">
                 <div className="flex items-center justify-between px-2">
                     <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Protocol Alignment</span>
-                    <span className="text-[9px] font-bold text-emerald-500 italic font-mono uppercase">Optimal</span>
+                    <span className="text-[9px] font-bold text-emerald-500 font-mono uppercase">Optimal</span>
                 </div>
             </div>
 

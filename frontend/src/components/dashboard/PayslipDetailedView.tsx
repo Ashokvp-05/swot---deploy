@@ -213,7 +213,7 @@ export function PayslipDetailedView({ data }: { data: PayslipData }) {
                     <p className="text-[13px] font-bold text-slate-900">
                         Total Net Payable: {formatCurrency(data.netSalary).replace('₹', 'Indian Rupee ')} Only
                     </p>
-                    <p className="text-[10px] font-medium text-slate-400 italic">
+                    <p className="text-[10px] font-medium text-slate-400">
                         **Total Net Payable = Gross Earnings - Total Deductions
                     </p>
                 </div>

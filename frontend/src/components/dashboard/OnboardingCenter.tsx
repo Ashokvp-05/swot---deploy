@@ -74,7 +74,7 @@ export default function OnboardingCenter({ token }: { token: string }) {
                             <Rocket className="w-8 h-8 text-white" />
                         </div>
                         <div>
-                            <h2 className="text-3xl font-bold italic uppercase tracking-tighter">Mission <span className="underline decoration-indigo-300 decoration-4">Onboarding</span></h2>
+                            <h2 className="text-3xl font-bold uppercase tracking-tighter">Mission <span className="underline decoration-indigo-300 decoration-4">Onboarding</span></h2>
                             <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-indigo-100 opacity-60">Identity realization protocol in progress</p>
                         </div>
                     </div>
@@ -82,7 +82,7 @@ export default function OnboardingCenter({ token }: { token: string }) {
                     <div className="space-y-4 max-w-xl">
                         <div className="flex justify-between items-end px-1">
                             <p className="text-[10px] font-bold uppercase tracking-[0.2em]">{completedCount} of {tasks.length} Segments Resolved</p>
-                            <p className="text-2xl font-bold italic">{Math.round(progress)}%</p>
+                            <p className="text-2xl font-bold">{Math.round(progress)}%</p>
                         </div>
                         <Progress value={progress} className="h-3 bg-white/10 rounded-full" />
                     </div>

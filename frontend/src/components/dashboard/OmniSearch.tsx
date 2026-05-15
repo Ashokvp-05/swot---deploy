@@ -83,7 +83,7 @@ export default function OmniSearch() {
                                 <input
                                     autoFocus
                                     placeholder="Search command palette..."
-                                    className="flex-1 bg-transparent border-none outline-none text-xl font-bold italic uppercase tracking-tight text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-700"
+                                    className="flex-1 bg-transparent border-none outline-none text-xl font-bold uppercase tracking-tight text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-700"
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
                                 />

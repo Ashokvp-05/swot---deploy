@@ -289,7 +289,7 @@ export default function PerformancePage() {
                             <CardHeader className="p-0 mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
                                 <div className="space-y-1">
                                     <CardTitle className="text-2xl font-bold">Competency Spectrum</CardTitle>
-                                    <CardDescription className="max-w-md font-medium italic">Audit of technical and leadership proficiencies based on project performance and peer reviews.</CardDescription>
+                                    <CardDescription className="max-w-md font-medium">Audit of technical and leadership proficiencies based on project performance and peer reviews.</CardDescription>
                                 </div>
                                 <Button variant="ghost" className="text-indigo-600 font-bold gap-2 hover:bg-indigo-50 rounded-xl">
                                     Full Proficiency Audit <ChevronRight className="w-4 h-4" />

@@ -93,7 +93,7 @@ export default function HRManagerDashboardHub({ token, onNavigate }: ManagerDash
             {/* 🚀 Header & Command Center */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div className="space-y-1">
-                    <h1 className="text-4xl font-bold text-slate-900 tracking-tighter italic uppercase leading-none">Workforce Intelligence</h1>
+                    <h1 className="text-4xl font-bold text-slate-900 tracking-tighter uppercase leading-none">Workforce Intelligence</h1>
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.4em] ml-1">Real-time Organizational Telemetry</p>
                 </div>
                 <div className="flex items-center gap-4">
@@ -144,7 +144,7 @@ export default function HRManagerDashboardHub({ token, onNavigate }: ManagerDash
                     <Card className="rounded-[3.5rem] border border-slate-100 shadow-xl shadow-slate-200/30 bg-white overflow-hidden flex flex-col h-[600px]">
                         <div className="p-10 border-b border-slate-50 flex justify-between items-center">
                             <div>
-                                <h3 className="text-xl font-bold text-slate-900 uppercase italic tracking-tight">Departmental Matrix</h3>
+                                <h3 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Departmental Matrix</h3>
                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">Unit Distribution Protocol</p>
                             </div>
                             <Button variant="ghost" className="h-12 px-6 rounded-2xl text-[10px] font-bold uppercase tracking-widest text-purple-600 hover:bg-purple-50" onClick={() => onNavigate?.('employees')}>
@@ -200,7 +200,7 @@ export default function HRManagerDashboardHub({ token, onNavigate }: ManagerDash
                     <Card className="rounded-[3.5rem] border border-slate-100 shadow-xl shadow-slate-200/30 bg-white overflow-hidden flex flex-col h-[600px] relative">
                         <div className="p-10 border-b border-slate-50 flex justify-between items-center">
                             <div>
-                                <h3 className="text-xl font-bold text-slate-900 uppercase italic tracking-tight">Signal Stream</h3>
+                                <h3 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Signal Stream</h3>
                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">Live Audit Relay</p>
                             </div>
                             <div className="flex h-3 w-3 relative">

@@ -269,7 +269,7 @@ export default function UserProfileView({ user: initialUser, token, onClose, onE
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-1">{label}</p>
                 <p className={cn(
                     "text-[14px] font-semibold text-slate-800 leading-snug break-words",
-                    value === "—" && "text-slate-300 italic"
+                    value === "—" && "text-slate-300"
                 )}>
                     {value}
                 </p>

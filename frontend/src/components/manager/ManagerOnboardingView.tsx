@@ -110,7 +110,7 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
             {/* ── HIGH-FIDELITY LIFECYCLE HEADER ── */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div className="space-y-1">
-                    <h2 className="text-3xl font-bold text-slate-900 uppercase italic tracking-tighter font-brand leading-none">Onboarding <span className="text-indigo-600">People</span></h2>
+                    <h2 className="text-3xl font-bold text-slate-900 uppercase tracking-tighter font-brand leading-none">Onboarding <span className="text-indigo-600">People</span></h2>
                     <div className="flex items-center gap-3">
                         <Badge className="bg-indigo-50 text-indigo-600 border-none text-[9px] font-bold uppercase tracking-widest px-2.5 py-1.5 leading-none">Phase 3</Badge>
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Verify Identity & Setup New Members</p>
@@ -140,7 +140,7 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                                 <s.icon className={cn("w-5 h-5", s.color)} />
                             </div>
                             <div className="space-y-1">
-                                <h3 className="text-4xl font-bold text-slate-900 tabular-nums italic tracking-tighter leading-none">{s.value}</h3>
+                                <h3 className="text-4xl font-bold text-slate-900 tabular-nums tracking-tighter leading-none">{s.value}</h3>
                                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] whitespace-nowrap">{s.label}</p>
                             </div>
                         </div>
@@ -157,7 +157,7 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                              <ShieldCheck className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-bold text-slate-900 uppercase italic tracking-tighter leading-none font-brand">Setup <span className="text-indigo-600">Status</span></h3>
+                            <h3 className="text-xl font-bold text-slate-900 uppercase tracking-tighter leading-none font-brand">Setup <span className="text-indigo-600">Status</span></h3>
                             <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5 flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
                                 System Status: 100% Operational
@@ -180,7 +180,7 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                                     </div>
                                     <Badge className="bg-indigo-50 text-indigo-600 border-none text-[8px] font-bold uppercase px-2 py-0.5">Ready</Badge>
                                 </div>
-                                <p className="text-[10px] font-bold text-slate-800 uppercase tracking-tight italic mt-1 font-brand">{item.label}</p>
+                                <p className="text-[10px] font-bold text-slate-800 uppercase tracking-tight mt-1 font-brand">{item.label}</p>
                             </div>
                         ))}
                     </div>
@@ -194,12 +194,12 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                 {loading ? (
                     <div className="col-span-full py-40 flex flex-col items-center justify-center gap-6">
                         <Loader2 className="w-12 h-12 animate-spin text-indigo-500" />
-                        <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-slate-300 italic">Syncing Operational Shards...</p>
+                        <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-slate-300">Syncing Operational Shards...</p>
                     </div>
                 ) : employees.length === 0 ? (
                     <div className="col-span-full py-40 text-center bg-slate-50/30 rounded-[3rem] border-2 border-dashed border-slate-100">
                         <UserCircle className="w-20 h-20 text-slate-100 mx-auto mb-8" />
-                        <h4 className="text-[15px] font-bold text-slate-300 uppercase tracking-[0.4em] italic">Personnel Manifest Validated</h4>
+                        <h4 className="text-[15px] font-bold text-slate-300 uppercase tracking-[0.4em]">Personnel Manifest Validated</h4>
                         <p className="text-[10px] font-bold text-slate-300 mt-3 uppercase tracking-widest">No pending lifecycle nodes detected.</p>
                     </div>
                 ) : viewMode === 'table' ? (
@@ -218,8 +218,8 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                                     <tr key={emp.id} className="border-b border-slate-50 hover:bg-slate-50/100 transition-colors cursor-pointer group" onClick={() => setSelectedUser(emp)}>
                                         <td className="p-6">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold italic text-xs shadow-md group-hover:scale-105 transition-transform">{emp.name[0]}{emp.name[1]}</div>
-                                                <span className="font-bold text-sm tracking-tight text-slate-900 italic font-brand uppercase">{emp.name}</span>
+                                                <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-md group-hover:scale-105 transition-transform">{emp.name[0]}{emp.name[1]}</div>
+                                                <span className="font-bold text-sm tracking-tight text-slate-900 font-brand uppercase">{emp.name}</span>
                                             </div>
                                         </td>
                                         <td className="p-6 text-[11px] font-bold text-slate-500 uppercase tracking-widest">{emp.designation?.name || "Standard Personnel"}</td>
@@ -250,11 +250,11 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                             <Card className="p-7 rounded-[40px] border border-slate-100 bg-white shadow-sm hover:shadow-2xl hover:border-indigo-100 transition-all duration-500 group relative">
                                 <div className="flex justify-between items-start mb-10">
                                     <div className="flex items-center gap-7">
-                                        <div className="w-20 h-20 rounded-[32px] bg-slate-950 flex items-center justify-center text-2xl font-bold text-indigo-400 italic shadow-2xl shadow-slate-200 font-brand transition-transform group-hover:scale-105">
+                                        <div className="w-20 h-20 rounded-[32px] bg-slate-950 flex items-center justify-center text-2xl font-bold text-indigo-400 shadow-2xl shadow-slate-200 font-brand transition-transform group-hover:scale-105">
                                             {emp.name[0]}{emp.name[1]}
                                         </div>
                                         <div>
-                                            <h4 className="text-2xl font-bold text-slate-900 uppercase italic font-brand tracking-tighter leading-none">{emp.name}</h4>
+                                            <h4 className="text-2xl font-bold text-slate-900 uppercase font-brand tracking-tighter leading-none">{emp.name}</h4>
                                             <div className="grid grid-cols-2 gap-x-6 gap-y-2 mt-4">
                                                 <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-slate-300 rounded-full" /><p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">ID: EMP-00{idx + 1}</p></div>
                                                 <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-slate-300 rounded-full" /><p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{emp.department?.name || 'Operations'}</p></div>
@@ -274,7 +274,7 @@ export default function ManagerOnboardingView({ token, onAddEmployee }: ManagerO
                                     <div className="space-y-4">
                                         <div className="flex justify-between items-center px-1">
                                             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em]">Lifecycle Manifest completion</span>
-                                            <span className="text-[12px] font-bold text-indigo-600 italic tracking-tighter">{emp.progress || 48}% VALIDATED</span>
+                                            <span className="text-[12px] font-bold text-indigo-600 tracking-tighter">{emp.progress || 48}% VALIDATED</span>
                                         </div>
                                         <div className="h-2.5 rounded-full bg-slate-50 overflow-hidden border border-slate-100 p-0.5">
                                             <motion.div 

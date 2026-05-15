@@ -155,7 +155,7 @@ export default function PoliciesPage() {
                             </DialogTrigger>
                             <DialogContent className="sm:max-w-[500px] rounded-[32px] p-10">
                                 <DialogHeader>
-                                    <DialogTitle className="text-2xl font-bold text-slate-900 uppercase italic tracking-tighter mb-2">
+                                    <DialogTitle className="text-2xl font-bold text-slate-900 uppercase tracking-tighter mb-2">
                                         {policy.title}
                                     </DialogTitle>
                                     <DialogDescription className="text-indigo-600 font-bold text-[10px] uppercase tracking-widest mb-6">
@@ -164,7 +164,7 @@ export default function PoliciesPage() {
                                 </DialogHeader>
                                 <div className="space-y-6">
                                     <div className="p-6 bg-slate-50 dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800">
-                                        <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium italic">
+                                        <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
                                             "{policy.desc}"
                                         </p>
                                     </div>

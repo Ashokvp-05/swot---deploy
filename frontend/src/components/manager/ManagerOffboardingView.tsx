@@ -39,7 +39,7 @@ export default function ManagerOffboardingView({ token }: { token: string }) {
         <div className="space-y-10">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white uppercase tracking-tighter italic">Lifecycle <span className="text-rose-600">Offboarding</span></h2>
+                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white uppercase tracking-tighter">Lifecycle <span className="text-rose-600">Offboarding</span></h2>
                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Manage personnel resignation & exit protocols</p>
                 </div>
                 <Button className="h-14 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl px-10 text-[11px] font-bold uppercase tracking-widest gap-3 shadow-xl shadow-rose-600/20">
@@ -57,9 +57,9 @@ export default function ManagerOffboardingView({ token }: { token: string }) {
                         <div className={`w-10 h-10 rounded-2xl flex items-center justify-center mb-6 ${s.bg}`}>
                             <s.icon className={`w-5 h-5 ${s.color}`} />
                         </div>
-                        <h3 className="text-4xl font-bold text-slate-900 dark:text-white mb-1 tracking-tighter italic">{s.value}</h3>
+                        <h3 className="text-4xl font-bold text-slate-900 dark:text-white mb-1 tracking-tighter">{s.value}</h3>
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{s.label}</p>
-                        <p className="text-[9px] font-bold text-slate-400 uppercase italic mt-1">{s.sub}</p>
+                        <p className="text-[9px] font-bold text-slate-400 uppercase mt-1">{s.sub}</p>
                     </Card>
                 ))}
             </div>
@@ -78,7 +78,7 @@ export default function ManagerOffboardingView({ token }: { token: string }) {
                                     {res.name[0]}
                                 </div>
                                 <div>
-                                    <h4 className="text-lg font-bold text-slate-900 dark:text-white uppercase italic tracking-tighter">{res.name}</h4>
+                                    <h4 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-tighter">{res.name}</h4>
                                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{res.designation}</p>
                                 </div>
                             </div>

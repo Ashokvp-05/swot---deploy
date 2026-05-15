@@ -131,7 +131,7 @@ export function UpcomingEventsWidget() {
                         ))}
                         {filteredEvents.length === 0 && (
                             <div className="p-12 text-center text-muted-foreground">
-                                <p className="text-[10px] font-bold uppercase tracking-widest italic">Operational Gap Detected</p>
+                                <p className="text-[10px] font-bold uppercase tracking-widest">Operational Gap Detected</p>
                                 <p className="text-[10px] mt-1 opacity-50">No events in current protocol window.</p>
                             </div>
                         )}

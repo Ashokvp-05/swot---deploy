@@ -77,7 +77,7 @@ export default function LeaveHistoryList({ token, refreshTrigger = 0 }: { token:
                                     {format(new Date(req.startDate), "MMM d, yyyy")} - {format(new Date(req.endDate), "MMM d, yyyy")}
                                 </div>
                                 {req.reason && (
-                                    <p className="text-xs text-slate-400 mt-2 italic max-w-sm">"{req.reason}"</p>
+                                    <p className="text-xs text-slate-400 mt-2 max-w-sm">"{req.reason}"</p>
                                 )}
                             </div>
                         </div>

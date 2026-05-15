@@ -113,7 +113,7 @@ export function AnnouncementBanner({ token }: { token: string }) {
                             transition={{ duration: 0.4 }}
                             className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3"
                         >
-                            <span className="font-bold uppercase tracking-widest text-[10px] bg-white/20 px-1.5 py-0.5 rounded italic">
+                            <span className="font-bold uppercase tracking-widest text-[10px] bg-white/20 px-1.5 py-0.5 rounded">
                                 Announcement
                             </span>
                             <span className="font-bold text-sm truncate">

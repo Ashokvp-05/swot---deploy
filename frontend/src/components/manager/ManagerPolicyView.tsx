@@ -40,7 +40,7 @@ export default function ManagerPolicyView({ token }: { token: string }) {
         <div className="space-y-10">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white uppercase tracking-tighter italic">Strategic <span className="text-indigo-600">Governance</span></h2>
+                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white uppercase tracking-tighter">Strategic <span className="text-indigo-600">Governance</span></h2>
                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Manage & disseminate organizational policies and guidelines</p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -76,7 +76,7 @@ export default function ManagerPolicyView({ token }: { token: string }) {
                                     }`}>
                                         {policy.status}
                                     </Badge>
-                                    <h3 className="text-xl font-bold text-slate-900 dark:text-white uppercase tracking-tight italic mt-1">{policy.title}</h3>
+                                    <h3 className="text-xl font-bold text-slate-900 dark:text-white uppercase tracking-tight mt-1">{policy.title}</h3>
                                 </div>
                             </div>
                             <Button variant="ghost" size="icon" className="rounded-xl"><Ellipsis className="w-5 h-5 text-slate-400" /></Button>
@@ -93,7 +93,7 @@ export default function ManagerPolicyView({ token }: { token: string }) {
                             </div>
                             <div className="flex flex-col gap-1">
                                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Global Reach</p>
-                                <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest italic">{policy.views} Accesses</p>
+                                <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">{policy.views} Accesses</p>
                             </div>
                         </div>
 
@@ -118,7 +118,7 @@ export default function ManagerPolicyView({ token }: { token: string }) {
                     <div className="space-y-4">
                         <div className="flex items-center gap-4">
                             <Shield className="w-10 h-10" />
-                            <h4 className="text-3xl font-bold uppercase tracking-tighter italic leading-none">Security Compliance <br /> <span className="opacity-50">Audit Active</span></h4>
+                            <h4 className="text-3xl font-bold uppercase tracking-tighter leading-none">Security Compliance <br /> <span className="opacity-50">Audit Active</span></h4>
                         </div>
                         <p className="text-xs uppercase font-bold tracking-[0.2em] opacity-80 max-w-lg">All organizational policies currently meet the ISO-27001 requirements for digital identity and governance security.</p>
                     </div>

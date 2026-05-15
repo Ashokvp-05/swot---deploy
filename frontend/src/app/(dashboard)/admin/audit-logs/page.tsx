@@ -37,7 +37,7 @@ export default function AuditLogsPage() {
                         <ShieldAlert className="w-8 h-8 text-white" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white uppercase italic">Security Audit Telemetry</h1>
+                        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white uppercase">Security Audit Telemetry</h1>
                         <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Real-time surveillance of administrative operations and system-level mutations.</p>
                     </div>
                 </div>
@@ -54,8 +54,8 @@ export default function AuditLogsPage() {
                     <Card className="border-0 shadow-xl bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden">
                         <CardHeader className="p-8 border-b border-slate-50 dark:border-white/5 flex flex-row items-center justify-between bg-slate-50/50 dark:bg-black/10">
                             <div className="space-y-1">
-                                <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-tight">System Event <span className="text-indigo-600 italic">Feed</span></CardTitle>
-                                <CardDescription className="text-xs font-bold text-slate-400 italic font-medium">Monitoring the last 50 high-criticality administrative interventions.</CardDescription>
+                                <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-tight">System Event <span className="text-indigo-600">Feed</span></CardTitle>
+                                <CardDescription className="text-xs font-bold text-slate-400 font-medium">Monitoring the last 50 high-criticality administrative interventions.</CardDescription>
                             </div>
                             <div className="p-4 bg-slate-100 dark:bg-slate-800 rounded-2xl">
                                 <Cpu className="w-5 h-5 text-slate-500" />
@@ -80,7 +80,7 @@ export default function AuditLogsPage() {
                                         </thead>
                                         <tbody className="divide-y divide-slate-50 dark:divide-white/5">
                                             {logs.length === 0 ? (
-                                                <tr><td colSpan={4} className="p-20 text-center text-slate-400 font-bold italic">No event signatures recorded in current buffer.</td></tr>
+                                                <tr><td colSpan={4} className="p-20 text-center text-slate-400 font-bold">No event signatures recorded in current buffer.</td></tr>
                                             ) : logs.map(log => (
                                                 <tr key={log.id} className="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-all group">
                                                     <td className="p-6">
@@ -97,7 +97,7 @@ export default function AuditLogsPage() {
                                                                 {log.admin?.name?.charAt(0) || '?'}
                                                             </div>
                                                             <div>
-                                                                <div className="font-bold text-slate-900 dark:text-white uppercase tracking-tight italic group-hover:text-indigo-600 transition-colors">{log.admin?.name || 'ROOT'}</div>
+                                                                <div className="font-bold text-slate-900 dark:text-white uppercase tracking-tight group-hover:text-indigo-600 transition-colors">{log.admin?.name || 'ROOT'}</div>
                                                                 <div className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">{log.admin?.designation || 'SYSTEM_ADMIN'}</div>
                                                             </div>
                                                         </div>
@@ -128,7 +128,7 @@ export default function AuditLogsPage() {
                         </div>
                         <div className="relative z-10 space-y-8">
                             <div className="space-y-4">
-                                <h4 className="text-xl font-bold uppercase tracking-tighter italic">Integrity Verification</h4>
+                                <h4 className="text-xl font-bold uppercase tracking-tighter">Integrity Verification</h4>
                                 <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest leading-relaxed">Cryptographic proof of all administrative operations.</p>
                             </div>
 
@@ -154,7 +154,7 @@ export default function AuditLogsPage() {
                             <Eye className="w-24 h-24" />
                         </div>
                         <p className="text-[10px] font-bold uppercase tracking-widest text-indigo-200 mb-2">Omnipresence Core</p>
-                        <h4 className="text-xl font-bold italic uppercase leading-tight">Every system mutation is captured and indexed for permanent record.</h4>
+                        <h4 className="text-xl font-bold uppercase leading-tight">Every system mutation is captured and indexed for permanent record.</h4>
                     </div>
                 </div>
             </div>

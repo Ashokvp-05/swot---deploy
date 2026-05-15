@@ -72,7 +72,7 @@ export default function WorkflowPortal({ token }: { token: string }) {
             {/* HUD HEADER */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white uppercase tracking-tighter italic">Workflow <span className="text-indigo-600">Portal</span></h2>
+                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white uppercase tracking-tighter">Workflow <span className="text-indigo-600">Portal</span></h2>
                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Personnel liquidity & reimbursement protocol</p>
                 </div>
                 <div className="flex gap-4">
@@ -172,7 +172,7 @@ export default function WorkflowPortal({ token }: { token: string }) {
                             className="w-full max-w-xl bg-slate-900 border border-white/10 rounded-[40px] shadow-xl overflow-hidden p-10 space-y-8"
                         >
                             <div className="flex justify-between items-center">
-                                <h3 className="text-xl font-bold text-white italic uppercase tracking-tight">Incentivize {showModal === 'EXPENSE' ? 'Reimbursement' : 'Liquidity'}</h3>
+                                <h3 className="text-xl font-bold text-white uppercase tracking-tight">Incentivize {showModal === 'EXPENSE' ? 'Reimbursement' : 'Liquidity'}</h3>
                                 <Button size="icon" variant="ghost" className="text-slate-500 hover:text-white" onClick={() => setShowModal(null)}>
                                     <XCircle className="w-6 h-6" />
                                 </Button>

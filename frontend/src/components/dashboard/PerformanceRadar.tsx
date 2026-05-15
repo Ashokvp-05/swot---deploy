@@ -44,7 +44,7 @@ export default function PerformanceRadar({ token }: { token: string }) {
                         </div>
                         <div>
                             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Aggregate Velocity</p>
-                            <h3 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tighter italic">
+                            <h3 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tighter">
                                 {latestReview ? latestReview.overallRating : "0.00"}
                             </h3>
                         </div>
@@ -59,7 +59,7 @@ export default function PerformanceRadar({ token }: { token: string }) {
                         </div>
                         <div>
                             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">KPI Realization</p>
-                            <h3 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tighter italic">
+                            <h3 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tighter">
                                 {latestReview ? latestReview.ratings.length : "0"} / 5
                             </h3>
                         </div>
@@ -74,7 +74,7 @@ export default function PerformanceRadar({ token }: { token: string }) {
                         </div>
                         <div>
                             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Growth Vector</p>
-                            <h3 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tighter italic">OPTIMAL</h3>
+                            <h3 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tighter">OPTIMAL</h3>
                         </div>
                     </div>
                     <div className="flex gap-1">
@@ -89,7 +89,7 @@ export default function PerformanceRadar({ token }: { token: string }) {
             <div className="space-y-6">
                 <div className="flex items-center justify-between px-2">
                     <div>
-                        <h3 className="text-xl font-bold text-slate-900 dark:text-white uppercase tracking-tight italic">Review <span className="text-indigo-600">History</span></h3>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white uppercase tracking-tight">Review <span className="text-indigo-600">History</span></h3>
                         <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Chronological performance snapshots</p>
                     </div>
                     <Button variant="ghost" className="text-[10px] font-bold uppercase text-indigo-500 tracking-widest">View Full Archive</Button>
@@ -136,7 +136,7 @@ export default function PerformanceRadar({ token }: { token: string }) {
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-2xl font-bold text-slate-900 dark:text-white tracking-tighter italic">{review.overallRating}</p>
+                                        <p className="text-2xl font-bold text-slate-900 dark:text-white tracking-tighter">{review.overallRating}</p>
                                         <p className="text-[8px] font-bold text-emerald-500 uppercase tracking-[0.2em]">FINALIZED</p>
                                     </div>
                                     <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-indigo-500 transition-colors" />

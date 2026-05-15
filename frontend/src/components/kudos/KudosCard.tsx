@@ -67,7 +67,7 @@ export function KudosCard({ kudos }: { kudos: Kudos }) {
 
                 <div className="relative">
                     <span className="absolute -top-2 -left-2 text-4xl text-primary/10 font-serif leading-none">“</span>
-                    <p className="text-sm text-foreground/80 leading-relaxed pl-3 italic">
+                    <p className="text-sm text-foreground/80 leading-relaxed pl-3">
                         {kudos.message}
                     </p>
                 </div>

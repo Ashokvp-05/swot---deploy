@@ -95,7 +95,7 @@ export default function PerformanceReviewForm({ token, userId, userName, onClose
                             <Target className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-bold text-white italic uppercase tracking-tight">Performance Audit</h3>
+                            <h3 className="text-xl font-bold text-white uppercase tracking-tight">Performance Audit</h3>
                             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none mt-1">Personnel Identity: {userName}</p>
                         </div>
                     </div>
@@ -126,13 +126,13 @@ export default function PerformanceReviewForm({ token, userId, userName, onClose
                         {fetchingKpis ? (
                             <div className="py-10 flex justify-center"><Loader2 className="animate-spin text-rose-500/30" /></div>
                         ) : kpis.length === 0 ? (
-                            <p className="text-xs text-slate-500 italic p-6 bg-slate-950 rounded-2xl border border-dashed border-white/5">No organizational KPIs configured. Contact Admin.</p>
+                            <p className="text-xs text-slate-500 p-6 bg-slate-950 rounded-2xl border border-dashed border-white/5">No organizational KPIs configured. Contact Admin.</p>
                         ) : kpis.map((kpi) => (
                             <div key={kpi.id} className="p-6 bg-slate-950 rounded-[30px] border border-white/5 space-y-6">
                                 <div className="flex items-start justify-between">
                                     <div className="space-y-1">
                                         <h4 className="text-sm font-bold text-white uppercase tracking-wider">{kpi.name}</h4>
-                                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest italic leading-relaxed">{kpi.description}</p>
+                                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-relaxed">{kpi.description}</p>
                                     </div>
                                     <div className="flex gap-2">
                                         {[1, 2, 3, 4, 5].map(v => (

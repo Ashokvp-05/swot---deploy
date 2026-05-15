@@ -93,7 +93,7 @@ export default function HolidaysPage() {
                         <CalendarIcon className="w-8 h-8 text-white" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white uppercase italic">Temporal Policy</h1>
+                        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white uppercase">Temporal Policy</h1>
                         <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Configure global rest cycles and administrative rest nodes.</p>
                     </div>
                 </div>
@@ -110,7 +110,7 @@ export default function HolidaysPage() {
                 <div className="md:col-span-4">
                     <Card className="border-0 shadow-xl bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden sticky top-8">
                         <CardHeader className="bg-slate-900 p-8 text-white">
-                            <CardTitle className="text-xl font-bold uppercase tracking-tight italic">Initialize <span className="text-indigo-400">Rest Node</span></CardTitle>
+                            <CardTitle className="text-xl font-bold uppercase tracking-tight">Initialize <span className="text-indigo-400">Rest Node</span></CardTitle>
                             <CardDescription className="text-indigo-200 text-[10px] font-bold uppercase tracking-widest opacity-80 mt-1">Global Temporal Configuration</CardDescription>
                         </CardHeader>
                         <CardContent className="p-8 space-y-6">
@@ -155,8 +155,8 @@ export default function HolidaysPage() {
                     <Card className="border-0 shadow-xl bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden flex-1">
                         <CardHeader className="p-8 border-b border-slate-50 dark:border-white/5 flex flex-row items-center justify-between bg-slate-50/50 dark:bg-black/10">
                             <div className="space-y-1">
-                                <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-tight">Active <span className="text-indigo-600 italic">Rest Nodes</span></CardTitle>
-                                <CardDescription className="text-xs font-bold text-slate-400 italic">Temporal checkpoints for the current organizational cycle.</CardDescription>
+                                <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-tight">Active <span className="text-indigo-600">Rest Nodes</span></CardTitle>
+                                <CardDescription className="text-xs font-bold text-slate-400">Temporal checkpoints for the current organizational cycle.</CardDescription>
                             </div>
                             <Globe className="w-6 h-6 text-indigo-500 opacity-20" />
                         </CardHeader>
@@ -170,7 +170,7 @@ export default function HolidaysPage() {
                                 <div className="grid gap-4">
                                     {holidays.length === 0 ? (
                                         <div className="p-20 text-center border-2 border-dashed border-slate-100 dark:border-slate-800 rounded-3xl">
-                                            <p className="text-slate-400 font-bold italic">No rest nodes detected in current cycle.</p>
+                                            <p className="text-slate-400 font-bold">No rest nodes detected in current cycle.</p>
                                         </div>
                                     ) :
                                         holidays.map((h) => (
@@ -181,7 +181,7 @@ export default function HolidaysPage() {
                                                         <span className="block text-3xl font-bold text-slate-900 group-hover:text-white tracking-tighter tabular-nums">{format(new Date(h.date), 'dd')}</span>
                                                     </div>
                                                     <div>
-                                                        <h4 className="text-lg font-bold text-slate-900 dark:text-white uppercase italic tracking-tight">{h.name}</h4>
+                                                        <h4 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-tight">{h.name}</h4>
                                                         <div className="flex items-center gap-3 mt-1">
                                                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                                                                 <MapPin className="w-3 h-3" /> {format(new Date(h.date), 'EEEE, yyyy')}
@@ -206,7 +206,7 @@ export default function HolidaysPage() {
                         </div>
                         <div className="relative z-10">
                             <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-indigo-400">Policy Integrity</p>
-                            <h4 className="text-xl font-bold italic uppercase leading-tight mt-1">All temporal nodes synchronized across organizational terminals.</h4>
+                            <h4 className="text-xl font-bold uppercase leading-tight mt-1">All temporal nodes synchronized across organizational terminals.</h4>
                         </div>
                         <div className="relative z-10 p-4 bg-white/5 rounded-2xl border border-white/5">
                             <Globe className="w-6 h-6 text-indigo-400" />

@@ -191,7 +191,7 @@ function DepartmentChart({ token }: { token: string }) {
                     ))}
                 </div>
             </div>
-            {fallback && <p className="text-[10px] text-slate-400 mt-3 text-center italic">Sample data — add employees to see real distribution</p>}
+            {fallback && <p className="text-[10px] text-slate-400 mt-3 text-center">Sample data — add employees to see real distribution</p>}
         </motion.div>
     )
 }

@@ -313,7 +313,7 @@ export default function LeaveApprovalCenter({ token }: { token: string }) {
 
                                                     {/* Leave Type */}
                                                     <td className="px-4 py-4">
-                                                        <span className={cn("text-sm font-semibold italic", TYPE_COLORS[leave.type] || "text-slate-500")}>
+                                                        <span className={cn("text-sm font-semibold", TYPE_COLORS[leave.type] || "text-slate-500")}>
                                                             {formatLeaveType(leave.type)}
                                                         </span>
                                                     </td>

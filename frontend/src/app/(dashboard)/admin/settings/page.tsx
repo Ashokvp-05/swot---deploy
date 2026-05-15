@@ -90,7 +90,7 @@ export default function AdminSettingsPage() {
                         <Settings className="w-8 h-8 text-white" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white uppercase italic text-indigo-600">Core Configuration</h1>
+                        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white uppercase text-indigo-600">Core Configuration</h1>
                         <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Global administrative flags and organizational master parameters.</p>
                     </div>
                 </div>
@@ -116,7 +116,7 @@ export default function AdminSettingsPage() {
                                         <Building className="w-5 h-5" />
                                     </div>
                                     <div>
-                                        <CardTitle className="text-lg font-bold uppercase tracking-tight italic">Organization</CardTitle>
+                                        <CardTitle className="text-lg font-bold uppercase tracking-tight">Organization</CardTitle>
                                         <CardDescription className="text-[10px] font-bold uppercase tracking-widest opacity-60">Identity & Branding</CardDescription>
                                     </div>
                                 </div>
@@ -149,7 +149,7 @@ export default function AdminSettingsPage() {
                                         <Globe className="w-5 h-5" />
                                     </div>
                                     <div>
-                                        <CardTitle className="text-lg font-bold uppercase tracking-tight italic">Temporal</CardTitle>
+                                        <CardTitle className="text-lg font-bold uppercase tracking-tight">Temporal</CardTitle>
                                         <CardDescription className="text-[10px] font-bold uppercase tracking-widest opacity-60">Regional Synchronization</CardDescription>
                                     </div>
                                 </div>
@@ -183,7 +183,7 @@ export default function AdminSettingsPage() {
                                     <Shield className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <CardTitle className="text-lg font-bold uppercase tracking-tight italic">Governance</CardTitle>
+                                    <CardTitle className="text-lg font-bold uppercase tracking-tight">Governance</CardTitle>
                                     <CardDescription className="text-[10px] font-bold uppercase tracking-widest opacity-60">Security & Operational Overrides</CardDescription>
                                 </div>
                             </div>
@@ -191,7 +191,7 @@ export default function AdminSettingsPage() {
                         <CardContent className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="flex items-center justify-between p-6 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/5 transition-all hover:bg-white dark:hover:bg-slate-800 shadow-sm hover:shadow-md">
                                 <div>
-                                    <p className="text-sm font-bold uppercase tracking-tight text-slate-900 dark:text-white italic">Remote Authorization</p>
+                                    <p className="text-sm font-bold uppercase tracking-tight text-slate-900 dark:text-white">Remote Authorization</p>
                                     <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Allow personnel to clock-in via mobile nodes.</p>
                                 </div>
                                 <Button
@@ -205,7 +205,7 @@ export default function AdminSettingsPage() {
 
                             <div className="flex items-center justify-between p-6 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/5 transition-all hover:bg-white dark:hover:bg-slate-800 shadow-sm hover:shadow-md">
                                 <div>
-                                    <p className="text-sm font-bold uppercase tracking-tight text-slate-900 dark:text-white italic text-rose-600">Maintenance Protocol</p>
+                                    <p className="text-sm font-bold uppercase tracking-tight text-slate-900 dark:text-white text-rose-600">Maintenance Protocol</p>
                                     <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1 text-rose-400/60">Restrict system access to ROOT only.</p>
                                 </div>
                                 <Button
@@ -227,7 +227,7 @@ export default function AdminSettingsPage() {
                         </div>
                         <div className="relative z-10 space-y-8">
                             <div className="space-y-4">
-                                <h4 className="text-xl font-bold uppercase tracking-tighter italic">System Nucleus</h4>
+                                <h4 className="text-xl font-bold uppercase tracking-tighter">System Nucleus</h4>
                                 <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest leading-relaxed">Modification of these parameters will propagate across all terminal nodes instantly.</p>
                             </div>
 
@@ -249,7 +249,7 @@ export default function AdminSettingsPage() {
                             <Zap className="w-24 h-24" />
                         </div>
                         <p className="text-[10px] font-bold uppercase tracking-widest text-indigo-200 mb-2">Protocol Pulse</p>
-                        <h4 className="text-xl font-bold italic uppercase leading-tight">System re-synchronization occurs on every configuration save.</h4>
+                        <h4 className="text-xl font-bold uppercase leading-tight">System re-synchronization occurs on every configuration save.</h4>
                     </div>
                 </div>
             </div>

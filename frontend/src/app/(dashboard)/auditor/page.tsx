@@ -219,7 +219,7 @@ export default function AuditorDashboardPage() {
                                              <SearchCheck className="w-8 h-8 text-white" />
                                          </div>
                                          <div>
-                                             <h2 className="text-2xl font-bold tracking-tighter text-slate-900 dark:text-white uppercase leading-none italic">Global Event <span className="text-indigo-600">Registry</span></h2>
+                                             <h2 className="text-2xl font-bold tracking-tighter text-slate-900 dark:text-white uppercase leading-none">Global Event <span className="text-indigo-600">Registry</span></h2>
                                              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.4em] mt-3">Historical Compliance Stream // SEC-AUD-01</p>
                                          </div>
                                      </div>
@@ -234,21 +234,21 @@ export default function AuditorDashboardPage() {
                                  <div className="space-y-4 px-6 relative z-10 pb-6 min-h-[500px]">
                                      {auditLogs.length === 0 ? (
                                          <div className="p-20 text-center rounded-[3rem] bg-slate-50/20 border-2 border-dashed border-slate-100">
-                                             <h3 className="text-xl font-bold text-slate-900 uppercase italic tracking-tighter">Initializing Data Shards</h3>
+                                             <h3 className="text-xl font-bold text-slate-900 uppercase tracking-tighter">Initializing Data Shards</h3>
                                          </div>
                                      ) : (
                                          auditLogs.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((log, i) => (
                                              <div key={log.id} className="group p-8 rounded-[2.5rem] bg-slate-50/30 dark:bg-slate-800/20 border border-transparent hover:border-indigo-100 hover:bg-white transition-all duration-500">
                                                  <div className="flex items-center justify-between">
                                                      <div className="flex items-center gap-8">
-                                                         <span className="text-[11px] font-bold text-slate-400 tabular-nums italic shrink-0 leading-none">[{log.time}]</span>
+                                                         <span className="text-[11px] font-bold text-slate-400 tabular-nums shrink-0 leading-none">[{log.time}]</span>
                                                          <div className="flex items-center gap-4">
                                                              <Badge className="bg-indigo-50 text-indigo-600 border-none px-4 py-1 font-bold rounded-lg uppercase text-[9px] tracking-[0.1em]">AUDIT</Badge>
-                                                             <p className="text-[15px] font-bold text-slate-900 uppercase italic tracking-tight leading-none">&gt; {log.msg}</p>
+                                                             <p className="text-[15px] font-bold text-slate-900 uppercase tracking-tight leading-none">&gt; {log.msg}</p>
                                                          </div>
                                                      </div>
                                                      <div className="text-right">
-                                                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic group-hover:text-indigo-500 transition-colors">{log.user}</p>
+                                                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-indigo-500 transition-colors">{log.user}</p>
                                                          <p className="text-[9px] font-bold text-slate-300 uppercase tracking-widest mt-1 tabular-nums">{log.id}</p>
                                                      </div>
                                                  </div>
@@ -290,7 +290,7 @@ export default function AuditorDashboardPage() {
                                              Next
                                          </Button>
                                      </div>
-                                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic">
+                                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                                          Showing {Math.min(auditLogs.length, (currentPage - 1) * pageSize + 1)}-{Math.min(auditLogs.length, currentPage * pageSize)} of {auditLogs.length} Records
                                      </p>
                                  </div>
@@ -301,7 +301,7 @@ export default function AuditorDashboardPage() {
                             <Card className="p-12 rounded-[4rem] border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl shadow-indigo-100/20">
                                  <div className="flex items-center justify-between mb-12">
                                      <div>
-                                         <h2 className="text-2xl font-bold italic text-slate-900 dark:text-white tracking-tighter uppercase">Governance Integrity</h2>
+                                         <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tighter uppercase">Governance Integrity</h2>
                                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">Verified organizational policy adherence</p>
                                      </div>
                                      <Badge className="bg-emerald-50 text-emerald-600 border-none px-6 py-2.5 font-bold rounded-xl uppercase text-[10px] tracking-widest shadow-sm">Optimal Mode</Badge>
@@ -318,7 +318,7 @@ export default function AuditorDashboardPage() {
                                                         <c.icon className="w-6 h-6 text-indigo-600" />
                                                     </div>
                                                     <div>
-                                                        <h4 className="text-[15px] font-bold text-slate-900 dark:text-white uppercase tracking-tight italic">{c.label}</h4>
+                                                        <h4 className="text-[15px] font-bold text-slate-900 dark:text-white uppercase tracking-tight">{c.label}</h4>
                                                         <p className="text-[9px] text-slate-400 font-bold mt-1.5 uppercase tracking-widest">{c.date}</p>
                                                     </div>
                                                </div>

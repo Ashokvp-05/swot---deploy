@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useSession, signOut } from "next-auth/react"
 import { cn } from "@/lib/utils"
@@ -141,8 +142,8 @@ export default function Navbar({ role, token, companyName }: { role?: string; to
             {/* BRAND HEADER */}
             <div className="pt-10 pb-10 px-6 lg:px-8 relative z-10">
                 <div className="hidden lg:flex items-center gap-4">
-                    <div className="w-12 h-12 bg-indigo-600 rounded-[18px] flex items-center justify-center shadow-lg shadow-indigo-500/30 transition-transform hover:scale-110 active:scale-95 cursor-pointer" onClick={() => router.push('/')}>
-                        <Shield className="w-6 h-6 text-white" strokeWidth={2.5} />
+                    <div className="w-12 h-12 rounded-[18px] flex items-center justify-center shadow-lg shadow-indigo-500/30 transition-transform hover:scale-110 active:scale-95 cursor-pointer overflow-hidden" onClick={() => router.push('/')}>
+                        <Image src="/rudratic-logo.png" alt="Rudratic" width={48} height={48} className="w-full h-full object-cover" />
                     </div>
                     <div>
                         <h2 className={cn("text-xl font-bold tracking-tight leading-none", isLight ? "text-slate-900" : "text-white")}>Rudratic</h2>
@@ -150,8 +151,8 @@ export default function Navbar({ role, token, companyName }: { role?: string; to
                     </div>
                 </div>
                 <div className="lg:hidden flex items-center justify-center">
-                    <div className="w-11 h-11 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30" onClick={() => router.push('/')}>
-                        <Shield className="w-5 h-5 text-white" />
+                    <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30 overflow-hidden" onClick={() => router.push('/')}>
+                        <Image src="/rudratic-logo.png" alt="Rudratic" width={44} height={44} className="w-full h-full object-cover" />
                     </div>
                 </div>
             </div>

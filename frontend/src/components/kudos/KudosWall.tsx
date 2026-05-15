@@ -45,7 +45,7 @@ export default function KudosWall({ token }: { token: string }) {
             {/* HERO BAR */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white uppercase tracking-tighter italic">Recognition <span className="text-indigo-600">Wall</span></h2>
+                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white uppercase tracking-tighter">Recognition <span className="text-indigo-600">Wall</span></h2>
                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Immutable proof of excellence</p>
                 </div>
                 <Button
@@ -87,7 +87,7 @@ export default function KudosWall({ token }: { token: string }) {
                                         <div className="flex gap-4">
                                             <div className="relative h-14 w-14">
                                                 <div className="absolute inset-0 bg-indigo-500/10 rounded-2xl animate-pulse" />
-                                                <div className="relative h-full w-full rounded-2xl bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500 font-bold text-xl italic uppercase">
+                                                <div className="relative h-full w-full rounded-2xl bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500 font-bold text-xl uppercase">
                                                     {kudos.toUser.name.charAt(0)}
                                                 </div>
                                             </div>
@@ -102,12 +102,12 @@ export default function KudosWall({ token }: { token: string }) {
                                     </div>
 
                                     <div className="p-6 bg-slate-50 dark:bg-black/20 rounded-[28px] border border-slate-100 dark:border-white/5 mb-8">
-                                        <p className="text-slate-600 dark:text-slate-300 text-xs font-bold leading-relaxed italic">"{kudos.message}"</p>
+                                        <p className="text-slate-600 dark:text-slate-300 text-xs font-bold leading-relaxed">"{kudos.message}"</p>
                                     </div>
 
                                     <div className="flex items-center justify-between pt-6 border-t border-slate-100 dark:border-white/5">
                                         <div className="flex items-center gap-2">
-                                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest italic">From:</span>
+                                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">From:</span>
                                             <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-tight">{kudos.fromUser.name}</span>
                                         </div>
                                         <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{formatDistanceToNow(new Date(kudos.createdAt))} ago</span>

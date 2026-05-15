@@ -13,7 +13,7 @@ export function QuickActionBar() {
                     <Zap className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
                 </div>
                 <div>
-                    <h3 className="text-slate-900 dark:text-white font-bold uppercase text-sm tracking-widest italic leading-none">Command Hub</h3>
+                    <h3 className="text-slate-900 dark:text-white font-bold uppercase text-sm tracking-widest leading-none">Command Hub</h3>
                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Direct Infrastructure Actions</p>
                 </div>
             </div>

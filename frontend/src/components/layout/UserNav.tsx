@@ -42,7 +42,7 @@ export function UserNav() {
                 <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
                         <p className="text-sm font-medium leading-none">Personnel</p>
-                        <p className="text-xs leading-none text-muted-foreground italic">
+                        <p className="text-xs leading-none text-muted-foreground">
                             Authentication Active
                         </p>
                     </div>

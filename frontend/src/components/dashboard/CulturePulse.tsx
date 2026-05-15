@@ -65,7 +65,7 @@ export default function CulturePulse({ token }: { token: string }) {
 
             {/* ATMOSPHERE CHECK-IN */}
             <Card className="bg-card p-8 rounded-2xl border border-border/40 shadow-sm">
-                <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-6 text-center italic">Personal Atmosphere Check-in</h4>
+                <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-6 text-center">Personal Atmosphere Check-in</h4>
                 <div className="flex flex-wrap justify-center gap-4">
                     <MoodButton type="Exstatic" icon={Trophy} color="rose" />
                     <MoodButton type="Optimal" icon={Smile} color="indigo" />
@@ -84,7 +84,7 @@ export default function CulturePulse({ token }: { token: string }) {
                 ) : Array.isArray(polls) && polls.map((poll) => (
                     <motion.div key={poll.id} layout className="bg-card p-8 rounded-2xl border border-border/40 shadow-sm space-y-6">
                         <div>
-                            <Badge variant="secondary" className="h-6 px-3 rounded-md text-[8px] font-bold bg-rose-500/5 text-rose-500 border-rose-500/10 uppercase mb-4 tracking-widest italic">Survey Active</Badge>
+                            <Badge variant="secondary" className="h-6 px-3 rounded-md text-[8px] font-bold bg-rose-500/5 text-rose-500 border-rose-500/10 uppercase mb-4 tracking-widest">Survey Active</Badge>
                             <h4 className="text-lg font-bold text-foreground tracking-tight">{poll.title}</h4>
                             <p className="text-xs font-medium text-muted-foreground mt-2">{poll.question}</p>
                         </div>

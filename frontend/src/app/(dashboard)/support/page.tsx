@@ -251,7 +251,7 @@ export default function SupportAdminDashboard() {
                                          <div className={cn("w-12 h-12 rounded-[1.25rem] flex items-center justify-center mb-6 transition-transform group-hover:scale-110", stat.bg)}>
                                              <stat.icon className={cn("w-6 h-6", stat.color)} />
                                          </div>
-                                         <h3 className="text-3xl font-bold text-slate-900 dark:text-white mb-1 tabular-nums italic tracking-tighter leading-none">{stat.value}</h3>
+                                         <h3 className="text-3xl font-bold text-slate-900 dark:text-white mb-1 tabular-nums tracking-tighter leading-none">{stat.value}</h3>
                                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">{stat.label}</p>
                                      </Card>
                                  ))}
@@ -266,7 +266,7 @@ export default function SupportAdminDashboard() {
                                             <SearchCheck className="w-8 h-8 text-white" />
                                         </div>
                                         <div>
-                                             <h2 className="text-2xl font-bold tracking-tighter text-slate-900 dark:text-white uppercase leading-none italic">Ticket <span className="text-indigo-600">List</span></h2>
+                                             <h2 className="text-2xl font-bold tracking-tighter text-slate-900 dark:text-white uppercase leading-none">Ticket <span className="text-indigo-600">List</span></h2>
                                              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.4em] mt-3">Active Issues to Solve</p>
                                         </div>
                                     </div>
@@ -294,10 +294,10 @@ export default function SupportAdminDashboard() {
                                             <div className={cn("w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6", filterState === 'RESOLVED' ? 'bg-indigo-50' : 'bg-emerald-50')}>
                                                 {filterState === 'RESOLVED' ? <Clock className="w-10 h-10 text-indigo-400" /> : <CheckCircle2 className="w-10 h-10 text-emerald-500" />}
                                             </div>
-                                             <h3 className="text-xl font-bold text-slate-900 uppercase italic tracking-tighter">
+                                             <h3 className="text-xl font-bold text-slate-900 uppercase tracking-tighter">
                                                  {filterState === 'RESOLVED' ? 'No Finished Work' : 'Everything is Solved'}
                                              </h3>
-                                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2 italic">
+                                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">
                                                  {filterState === 'RESOLVED' ? 'You have no resolved tickets yet' : 'The system is running perfectly'}
                                              </p>
                                         </div>
@@ -314,21 +314,21 @@ export default function SupportAdminDashboard() {
                                                         </div>
                                                         <div>
                                                             <div className="flex items-center gap-3">
-                                                                <h4 className="text-[16px] font-bold text-slate-900 uppercase italic tracking-tight">{ticket.user}</h4>
+                                                                <h4 className="text-[16px] font-bold text-slate-900 uppercase tracking-tight">{ticket.user}</h4>
                                                                 <Badge className={cn("border-none px-4 py-1 font-bold rounded-lg uppercase text-[9px] tracking-[0.1em]", ticket.status === 'RESOLVED' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600')}>{ticket.status === 'RESOLVED' ? 'RESOLVED' : ticket.priority}</Badge>
                                                             </div>
-                                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2 italic">
+                                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">
                                                                 {ticket.email} <span className="mx-2 opacity-30">•</span> {ticket.unit}
                                                             </p>
                                                         </div>
                                                     </div>
                                                     <div className="text-right">
                                                         <p className="text-[9px] font-bold text-slate-300 uppercase tracking-[0.2em] mb-1.5">Tracking</p>
-                                                        <p className="text-[13px] font-bold text-indigo-500 uppercase tracking-tighter tabular-nums italic">{ticket.id}</p>
+                                                        <p className="text-[13px] font-bold text-indigo-500 uppercase tracking-tighter tabular-nums">{ticket.id}</p>
                                                     </div>
                                                 </div>
                                                 <div className="mt-10 p-10 rounded-[2.5rem] bg-indigo-50/20 border-l-4 border-indigo-500/50 relative overflow-hidden group-hover:bg-indigo-50/40 transition-colors">
-                                                    <p className="text-[14px] text-slate-600 font-medium italic leading-relaxed relative z-10 pr-12">
+                                                    <p className="text-[14px] text-slate-600 font-medium leading-relaxed relative z-10 pr-12">
                                                         "{ticket.description}"
                                                     </p>
                                                 </div>
@@ -362,10 +362,10 @@ export default function SupportAdminDashboard() {
                                     )}
                                 </div>
                                 <div className="mt-12 pt-8 border-t border-slate-50 flex items-center justify-between">
-                                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2 leading-none italic">
+                                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2 leading-none">
                                          <Database className="w-3.5 h-3.5" /> All issues checked: 100%
                                      </p>
-                                     <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest italic">Secure Support Session</p>
+                                     <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Secure Support Session</p>
                                 </div>
                             </Card>
                         )}
@@ -374,7 +374,7 @@ export default function SupportAdminDashboard() {
                              <Card className="p-12 rounded-[4rem] bg-white dark:bg-slate-900 border border-slate-100 shadow-2xl shadow-indigo-100/10">
                                  <div className="flex items-center justify-between mb-12">
                                      <div>
-                                         <h2 className="text-2xl font-bold italic text-slate-900 uppercase tracking-tighter">Staff List</h2>
+                                         <h2 className="text-2xl font-bold text-slate-900 uppercase tracking-tighter">Staff List</h2>
                                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">Managing 1,248 Team Members</p>
                                      </div>
                                      <Button variant="outline" className="rounded-2xl font-bold uppercase text-[9px] tracking-widest px-8 h-12 border-slate-100">
@@ -395,7 +395,7 @@ export default function SupportAdminDashboard() {
                                                      <UserCircle className="w-7 h-7 text-indigo-400" />
                                                  </div>
                                                  <div>
-                                                     <h4 className="text-[15px] font-bold text-slate-900 uppercase italic leading-none">{user.name}</h4>
+                                                     <h4 className="text-[15px] font-bold text-slate-900 uppercase leading-none">{user.name}</h4>
                                                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-2">{user.role}</p>
                                                  </div>
                                              </div>
@@ -418,7 +418,7 @@ export default function SupportAdminDashboard() {
                                      <div className="flex items-center gap-5">
                                          <div className="w-4 h-4 rounded-full bg-indigo-500 animate-pulse shadow-lg shadow-indigo-500/20" />
                                          <div>
-                                             <h2 className="text-sm font-bold text-slate-900 uppercase tracking-[0.2em] italic leading-none">System Logs</h2>
+                                             <h2 className="text-sm font-bold text-slate-900 uppercase tracking-[0.2em] leading-none">System Logs</h2>
                                              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">Real-time updates // Monitoring</p>
                                          </div>
                                      </div>
@@ -427,7 +427,7 @@ export default function SupportAdminDashboard() {
                                              <div className="w-2 h-2 rounded-full bg-emerald-500" />
                                              <span className="text-[9px] font-bold text-emerald-600 uppercase tracking-widest">Connected</span>
                                          </div>
-                                         <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest italic">{logs.length} Logged Activities</span>
+                                         <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{logs.length} Logged Activities</span>
                                      </div>
                                  </div>
                                  <div className="flex-1 overflow-y-auto p-12 space-y-4 no-scrollbar font-mono relative z-10">
@@ -439,7 +439,7 @@ export default function SupportAdminDashboard() {
                                              <span className="text-slate-400 font-bold shrink-0 tabular-nums">[{log.time}]</span>
                                              <span className="font-bold flex-1 tracking-tight">
                                                  <span className={cn("px-2 py-0.5 rounded-md mr-3 text-[9px] font-bold", log.type === 'WARN' ? "bg-amber-100 text-amber-700" : "bg-indigo-100 text-indigo-700")}>{log.type}</span>
-                                                 &gt; {log.msg} <span className="text-slate-300 italic ml-3 opacity-0 group-hover:opacity-100 transition-opacity">-- log_id:{log.id}</span>
+                                                 &gt; {log.msg} <span className="text-slate-300 ml-3 opacity-0 group-hover:opacity-100 transition-opacity">-- log_id:{log.id}</span>
                                              </span>
                                          </div>
                                      ))}

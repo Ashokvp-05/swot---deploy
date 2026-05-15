@@ -48,7 +48,7 @@ export default function PayrollDashboardPage() {
                         <div className="p-2 bg-indigo-600 rounded-lg shadow-md group-hover:scale-110 transition-transform">
                             <Landmark className="w-5 h-5 text-white" />
                         </div>
-                        <h2 className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-tight italic">Payroll <span className="text-indigo-600">Unit</span></h2>
+                        <h2 className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-tight">Payroll <span className="text-indigo-600">Unit</span></h2>
                     </div>
                     <nav className="space-y-1">
                         {navItems.map((item) => {
@@ -78,7 +78,7 @@ export default function PayrollDashboardPage() {
                                 <Landmark className="w-6 h-6 text-white dark:text-black" />
                             </div>
                             <div>
-                                <h1 className="text-2xl font-bold text-slate-800 dark:text-white italic uppercase">
+                                <h1 className="text-2xl font-bold text-slate-800 dark:text-white uppercase">
                                     {navItems.find(i => i.id === currentTab)?.label.toUpperCase() || "PAYROLL"} <span className="text-indigo-600">HUB</span>
                                 </h1>
                                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.4em] mt-1 flex items-center gap-1.5">
@@ -106,7 +106,7 @@ export default function PayrollDashboardPage() {
                                             </div>
                                             <h3 className="text-3xl font-bold mb-1 tracking-tighter">{stat.value}</h3>
                                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{stat.label}</p>
-                                            <p className="text-[9px] text-slate-400 italic mt-1 font-bold uppercase">{stat.sub}</p>
+                                            <p className="text-[9px] text-slate-400 mt-1 font-bold uppercase">{stat.sub}</p>
                                         </Card>
                                     ))}
                                 </div>
@@ -149,7 +149,7 @@ export default function PayrollDashboardPage() {
                                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-5 ${s.color}`}><s.icon className="w-5 h-5" /></div>
                                             <h3 className="text-3xl font-bold mb-1 tracking-tighter">{s.value}</h3>
                                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{s.label}</p>
-                                            <p className="text-[9px] text-slate-400 italic mt-1 font-bold uppercase">{s.sub}</p>
+                                            <p className="text-[9px] text-slate-400 mt-1 font-bold uppercase">{s.sub}</p>
                                         </Card>
                                     ))}
                                 </div>
@@ -213,7 +213,7 @@ export default function PayrollDashboardPage() {
                                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-5 ${s.color}`}><s.icon className="w-5 h-5" /></div>
                                             <h3 className="text-3xl font-bold mb-1 tracking-tighter">{s.value}</h3>
                                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{s.label}</p>
-                                            <p className="text-[9px] text-slate-400 italic mt-1 font-bold uppercase">{s.sub}</p>
+                                            <p className="text-[9px] text-slate-400 mt-1 font-bold uppercase">{s.sub}</p>
                                         </Card>
                                     ))}
                                 </div>
@@ -292,7 +292,7 @@ export default function PayrollDashboardPage() {
                                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-5 ${s.color}`}><s.icon className="w-5 h-5" /></div>
                                             <h3 className="text-3xl font-bold mb-1 tracking-tighter">{s.value}</h3>
                                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{s.label}</p>
-                                            <p className="text-[9px] text-slate-400 italic mt-1 font-bold uppercase">{s.sub}</p>
+                                            <p className="text-[9px] text-slate-400 mt-1 font-bold uppercase">{s.sub}</p>
                                         </Card>
                                     ))}
                                 </div>

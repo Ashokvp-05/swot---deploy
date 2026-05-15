@@ -179,7 +179,7 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
                         <FolderOpen className="w-5 h-5 text-indigo-600" />
                     </div>
                     <div>
-                        <h3 className="text-base font-bold text-slate-900 uppercase italic tracking-tight">My Document Vault</h3>
+                        <h3 className="text-base font-bold text-slate-900 uppercase tracking-tight">My Document Vault</h3>
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-0.5">
                             {docs.length} Artifact{docs.length !== 1 ? "s" : ""} · Secure Manager Records
                         </p>
@@ -224,7 +224,7 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
                                 <FileText className="w-4 h-4" />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-[13px] font-bold text-slate-900 uppercase italic tracking-tight truncate group-hover:text-indigo-600 transition-colors">{doc.name}</p>
+                                <p className="text-[13px] font-bold text-slate-900 uppercase tracking-tight truncate group-hover:text-indigo-600 transition-colors">{doc.name}</p>
                                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mt-0.5">
                                     {new Date(doc.createdAt).toLocaleDateString()} · Synced to HR Manager Portal
                                 </p>
@@ -288,7 +288,7 @@ export default function EmployeeDocumentVault({ token }: { token: string }) {
                                         <CloudUpload className="w-5 h-5 text-white" />
                                     </div>
                                     <div>
-                                        <h2 className="text-lg font-bold text-slate-900 uppercase italic tracking-tight">Upload Document</h2>
+                                        <h2 className="text-lg font-bold text-slate-900 uppercase tracking-tight">Upload Document</h2>
                                         <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Secure · Encrypted · ONLY HR MANAGER VISIBLE</p>
                                     </div>
                                 </div>

@@ -661,17 +661,17 @@ export default function ProfilePage() {
                                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
                                                      <FormField control={form.control} name="name" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Full Name</FormLabel><FormControl>
-                                                             <div className="relative group"><User className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 group-focus-within:text-indigo-500" /><Input className="h-10 pl-9 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} /></div>
+                                                             <div className="relative group"><User className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 group-focus-within:text-indigo-500" /><Input className="h-10 pl-9 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} /></div>
                                                          </FormControl><FormMessage className="text-[9px] uppercase font-bold" /></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="employeeId" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Employee ID</FormLabel><FormControl>
-                                                             <div className="relative group"><Hash className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 group-focus-within:text-indigo-500" /><Input className="h-10 pl-9 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} /></div>
+                                                             <div className="relative group"><Hash className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 group-focus-within:text-indigo-500" /><Input className="h-10 pl-9 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} /></div>
                                                          </FormControl><FormMessage /></FormItem>
                                                      )} />
                                                       <FormField control={form.control} name="gender" render={({ field }) => (
                                                           <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Gender</FormLabel><FormControl>
-                                                              <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="Male, Female, etc." {...field} />
+                                                              <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="Male, Female, etc." {...field} />
                                                           </FormControl><FormMessage /></FormItem>
                                                       )} />
                                                      <FormField control={form.control} name="dob" render={({ field }) => (
@@ -681,22 +681,22 @@ export default function ProfilePage() {
                                                      )} />
                                                       <FormField control={form.control} name="fatherName" render={({ field }) => (
                                                           <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Father's Name</FormLabel><FormControl>
-                                                               <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="Father's Name" {...field} value={field.value || ""} />
+                                                               <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="Father's Name" {...field} value={field.value || ""} />
                                                           </FormControl><FormMessage /></FormItem>
                                                       )} />
                                                       <FormField control={form.control} name="motherName" render={({ field }) => (
                                                           <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Mother's Name</FormLabel><FormControl>
-                                                               <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="Mother's Name" {...field} value={field.value || ""} />
+                                                               <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="Mother's Name" {...field} value={field.value || ""} />
                                                           </FormControl><FormMessage /></FormItem>
                                                       )} />
                                                       <FormField control={form.control} name="maritalStatus" render={({ field }) => (
                                                           <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Marital Status</FormLabel><FormControl>
-                                                               <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="e.g. Single, Married" {...field} />
+                                                               <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="e.g. Single, Married" {...field} />
                                                           </FormControl><FormMessage /></FormItem>
                                                       )} />
                                                      <FormField control={form.control} name="bloodGroup" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Blood Group</FormLabel><FormControl>
-                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="e.g. O+, AB-, B+" {...field} />
+                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="e.g. O+, AB-, B+" {...field} />
                                                          </FormControl></FormItem>
                                                      )} />
                                                  </div>
@@ -707,27 +707,27 @@ export default function ProfilePage() {
                                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
                                                      <FormField control={form.control} name="phone" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Primary Phone</FormLabel><FormControl>
-                                                             <Input placeholder="e.g. 9876543210" type="tel" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} onChange={(e) => field.onChange(e.target.value.replace(/\D/g, '').slice(0, 10))} />
+                                                             <Input placeholder="e.g. 9876543210" type="tel" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} onChange={(e) => field.onChange(e.target.value.replace(/\D/g, '').slice(0, 10))} />
                                                          </FormControl><FormMessage className="text-[9px] uppercase font-bold" /></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="secondaryPhone" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Secondary Phone</FormLabel><FormControl>
-                                                             <Input placeholder="e.g. 9876543210" type="tel" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} onChange={(e) => field.onChange(e.target.value.replace(/\D/g, '').slice(0, 10))} />
+                                                             <Input placeholder="e.g. 9876543210" type="tel" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} onChange={(e) => field.onChange(e.target.value.replace(/\D/g, '').slice(0, 10))} />
                                                          </FormControl><FormMessage className="text-[9px] uppercase font-bold" /></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="workPhone" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Work Phone</FormLabel><FormControl>
-                                                             <Input placeholder="e.g. 9876543210" type="tel" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} onChange={(e) => field.onChange(e.target.value.replace(/\D/g, '').slice(0, 10))} />
+                                                             <Input placeholder="e.g. 9876543210" type="tel" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} onChange={(e) => field.onChange(e.target.value.replace(/\D/g, '').slice(0, 10))} />
                                                          </FormControl><FormMessage className="text-[9px] uppercase font-bold" /></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="personalEmail" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Personal Email</FormLabel><FormControl>
-                                                             <Input type="email" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
+                                                             <Input type="email" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
                                                          </FormControl></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="discordId" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Discord ID</FormLabel><FormControl>
-                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
+                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
                                                          </FormControl></FormItem>
                                                      )} />
                                                  </div>
@@ -738,28 +738,28 @@ export default function ProfilePage() {
                                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
                                                      <FormField control={form.control} name="emergencyName" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Contact Name</FormLabel><FormControl>
-                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
+                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
                                                          </FormControl></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="emergencyRelationship" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Relationship</FormLabel><FormControl>
-                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="Father, Spouse, etc." {...field} />
+                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm" placeholder="Father, Spouse, etc." {...field} />
                                                          </FormControl></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="emergencyPhone" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Emergency Phone 1</FormLabel><FormControl>
-                                                             <Input type="tel" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} onChange={(e) => field.onChange(e.target.value.replace(/\D/g, '').slice(0, 10))} />
+                                                             <Input type="tel" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} onChange={(e) => field.onChange(e.target.value.replace(/\D/g, '').slice(0, 10))} />
                                                          </FormControl></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="emergencyPhoneSec" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Emergency Phone 2</FormLabel><FormControl>
-                                                             <Input type="tel" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} onChange={(e) => field.onChange(e.target.value.replace(/\D/g, '').slice(0, 10))} />
+                                                             <Input type="tel" className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} onChange={(e) => field.onChange(e.target.value.replace(/\D/g, '').slice(0, 10))} />
                                                          </FormControl></FormItem>
                                                      )} />
                                                      <div className="md:col-span-2">
                                                          <FormField control={form.control} name="emergencyAddress" render={({ field }) => (
                                                              <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Emergency Contact Address</FormLabel><FormControl>
-                                                                 <textarea className="flex min-h-[80px] w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20 px-3 py-2 text-sm font-bold focus:ring-0 focus:border-indigo-500" {...field} />
+                                                                 <textarea className="flex min-h-[80px] w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20 px-3 py-2 text-sm font-normal focus:ring-0 focus:border-indigo-500" {...field} />
                                                              </FormControl></FormItem>
                                                          )} />
                                                      </div>
@@ -772,35 +772,35 @@ export default function ProfilePage() {
                                                      <div className="md:col-span-2">
                                                          <FormField control={form.control} name="currentAddress" render={({ field }) => (
                                                              <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Current Address</FormLabel><FormControl>
-                                                                 <textarea className="flex min-h-[80px] w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20 px-3 py-2 text-sm font-bold" {...field} />
+                                                                 <textarea className="flex min-h-[80px] w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20 px-3 py-2 text-sm font-normal" {...field} />
                                                              </FormControl></FormItem>
                                                          )} />
                                                      </div>
                                                      <div className="md:col-span-2">
                                                          <FormField control={form.control} name="permanentAddress" render={({ field }) => (
                                                              <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Permanent Address</FormLabel><FormControl>
-                                                                 <textarea className="flex min-h-[80px] w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20 px-3 py-2 text-sm font-bold" {...field} />
+                                                                 <textarea className="flex min-h-[80px] w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20 px-3 py-2 text-sm font-normal" {...field} />
                                                              </FormControl></FormItem>
                                                          )} />
                                                      </div>
                                                      <FormField control={form.control} name="city" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">City</FormLabel><FormControl>
-                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
+                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
                                                          </FormControl></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="state" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">State</FormLabel><FormControl>
-                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
+                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
                                                          </FormControl></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="country" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Country</FormLabel><FormControl>
-                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
+                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
                                                          </FormControl></FormItem>
                                                      )} />
                                                      <FormField control={form.control} name="zipCode" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">ZIP / Pincode</FormLabel><FormControl>
-                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
+                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
                                                          </FormControl></FormItem>
                                                      )} />
                                                  </div>
@@ -811,7 +811,7 @@ export default function ProfilePage() {
                                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
                                                      <FormField control={form.control} name="employmentType" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Employment Type</FormLabel><FormControl>
-                                                             <select className="flex h-10 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20 px-3 py-2 text-sm font-bold focus:ring-0 focus:border-indigo-500" {...field}>
+                                                             <select className="flex h-10 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20 px-3 py-2 text-sm font-normal focus:ring-0 focus:border-indigo-500" {...field}>
                                                                  <option value="FULL_TIME">Full-time</option>
                                                                  <option value="CONTRACT">Contract</option>
                                                                  <option value="INTERN">Intern</option>
@@ -820,16 +820,16 @@ export default function ProfilePage() {
                                                      )} />
                                                      <FormField control={form.control} name="workLocation" render={({ field }) => (
                                                          <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Work Location</FormLabel><FormControl>
-                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
+                                                             <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm" {...field} />
                                                          </FormControl></FormItem>
                                                      )} />
                                                      <div className="space-y-1.5">
                                                          <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Department</label>
-                                                         <Input disabled className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-100/50 dark:bg-slate-800/40 text-sm opacity-70" value={userData?.department?.name || "Operations"} />
+                                                         <Input disabled className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-100/50 dark:bg-slate-800/40 text-sm opacity-70" value={userData?.department?.name || "Operations"} />
                                                      </div>
                                                      <div className="space-y-1.5">
                                                          <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Designation</label>
-                                                         <Input disabled className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-100/50 dark:bg-slate-800/40 text-sm opacity-70" value={roleName} />
+                                                         <Input disabled className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-100/50 dark:bg-slate-800/40 text-sm opacity-70" value={roleName} />
                                                      </div>
                                                  </div>
                                              </TabsContent>
@@ -841,7 +841,7 @@ export default function ProfilePage() {
                                                           <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Aadhaar Number</FormLabel><FormControl>
                                                               <div className="relative group">
                                                                   <Input 
-                                                                      className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm tracking-widest" 
+                                                                      className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm tracking-widest" 
                                                                       {...field} 
                                                                       onChange={(e) => {
                                                                           const val = e.target.value.replace(/\D/g, "");
@@ -859,7 +859,7 @@ export default function ProfilePage() {
                                                       <FormField control={form.control} name="panNumber" render={({ field }) => (
                                                           <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">PAN Number</FormLabel><FormControl>
                                                               <div className="relative group">
-                                                                  <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm tracking-widest uppercase" {...field} />
+                                                                  <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm tracking-widest uppercase" {...field} />
                                                                   <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
                                                                       <Binary className="h-3.5 w-3.5" />
                                                                   </div>
@@ -869,7 +869,7 @@ export default function ProfilePage() {
                                                       <FormField control={form.control} name="passportNumber" render={({ field }) => (
                                                           <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Passport Number</FormLabel><FormControl>
                                                               <div className="relative group">
-                                                                  <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm tracking-widest uppercase" {...field} />
+                                                                  <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm tracking-widest uppercase" {...field} />
                                                                   <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
                                                                       <Globe2 className="h-3.5 w-3.5" />
                                                                   </div>
@@ -879,7 +879,7 @@ export default function ProfilePage() {
                                                       <FormField control={form.control} name="drivingLicense" render={({ field }) => (
                                                           <FormItem className="space-y-1.5"><FormLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Driving License</FormLabel><FormControl>
                                                               <div className="relative group">
-                                                                  <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/50 dark:bg-slate-800/20 text-sm tracking-widest uppercase" {...field} />
+                                                                  <Input className="h-10 border-slate-200 dark:border-slate-800 rounded-xl font-normal bg-slate-50/50 dark:bg-slate-800/20 text-sm tracking-widest uppercase" {...field} />
                                                                   <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
                                                                       <CreditCard className="h-3.5 w-3.5" />
                                                                   </div>
@@ -923,7 +923,7 @@ export default function ProfilePage() {
                                 <Dialog open={isPasswordModalOpen} onOpenChange={setIsPasswordModalOpen}>
                                     <DialogTrigger asChild>
                                         <Button variant="outline" className="w-full h-10 justify-between border-slate-200 dark:border-slate-800 rounded-xl font-bold bg-slate-50/30 hover:bg-white dark:hover:bg-slate-800 transition-all shadow-none text-xs">
-                                            <div className="flex items-center gap-2 italic">
+                                            <div className="flex items-center gap-2">
                                                 <Lock className="w-3.5 h-3.5 text-indigo-500" /> Reset Password
                                             </div>
                                             <ArrowUpRight className="w-3 h-3 text-slate-300" />
@@ -950,7 +950,7 @@ export default function ProfilePage() {
                                                         <FormItem className="space-y-1">
                                                             <FormLabel className="text-[9px] font-bold text-slate-400 uppercase">Current Password</FormLabel>
                                                             <FormControl>
-                                                                <Input type={showPassword ? "text" : "password"} className="h-10 border-slate-200 rounded-xl bg-slate-50 font-bold" {...field} />
+                                                                <Input type={showPassword ? "text" : "password"} className="h-10 border-slate-200 rounded-xl bg-slate-50 font-normal" {...field} />
                                                             </FormControl>
                                                             <FormMessage className="text-[9px]" />
                                                         </FormItem>
@@ -964,7 +964,7 @@ export default function ProfilePage() {
                                                             <FormItem className="space-y-1">
                                                                 <FormLabel className="text-[9px] font-bold text-slate-400 uppercase">New Password</FormLabel>
                                                                 <FormControl>
-                                                                    <Input type={showPassword ? "text" : "password"} className="h-10 border-slate-200 rounded-xl bg-slate-50 font-bold" {...field} />
+                                                                    <Input type={showPassword ? "text" : "password"} className="h-10 border-slate-200 rounded-xl bg-slate-50 font-normal" {...field} />
                                                                 </FormControl>
                                                                 <FormMessage className="text-[9px]" />
                                                             </FormItem>
@@ -977,7 +977,7 @@ export default function ProfilePage() {
                                                             <FormItem className="space-y-1">
                                                                 <FormLabel className="text-[9px] font-bold text-slate-400 uppercase">Confirm Password</FormLabel>
                                                                 <FormControl>
-                                                                    <Input type={showPassword ? "text" : "password"} className="h-10 border-slate-200 rounded-xl bg-slate-50 font-bold" {...field} />
+                                                                    <Input type={showPassword ? "text" : "password"} className="h-10 border-slate-200 rounded-xl bg-slate-50 font-normal" {...field} />
                                                                 </FormControl>
                                                                 <FormMessage className="text-[9px]" />
                                                             </FormItem>
@@ -1002,14 +1002,6 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                {/* MINI AUDIT FOOTER */}
-                <div className="flex flex-col md:flex-row items-center justify-between pt-4 opacity-20 hover:opacity-100 transition-opacity grayscale border-t border-slate-100 dark:border-slate-800">
-                    <div className="flex items-center gap-3">
-                        <Fingerprint className="w-3 h-3 text-slate-400" />
-                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.8em]">Personnel Node Identity</p>
-                    </div>
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest italic mt-2 md:mt-0">Protocol Stability v.6.0.0-Compact</p>
-                </div>
             </div>
         </div>
     )

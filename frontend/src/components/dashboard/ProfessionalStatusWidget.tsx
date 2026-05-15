@@ -153,7 +153,7 @@ export default function ProfessionalStatusWidget({ token }: { token: string }) {
                         </div>
                     ) : tickets.length === 0 ? (
                         <div className="py-8 text-center bg-slate-50/30 dark:bg-black/20 border border-dashed border-border/50 rounded-2xl">
-                            <p className="text-[10px] text-muted-foreground font-bold uppercase italic">Ecosystem Clear</p>
+                            <p className="text-[10px] text-muted-foreground font-bold uppercase">Ecosystem Clear</p>
                         </div>
                     ) : (
                         <div className="space-y-3">

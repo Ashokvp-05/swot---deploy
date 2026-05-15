@@ -35,7 +35,7 @@ export function WellnessWidget({ score }: { score: number }) {
                     </div>
                 </div>
                 <Progress value={score} className="h-2" indicatorClassName={status.bg} />
-                <p className="text-[10px] text-muted-foreground mt-3 italic">
+                <p className="text-[10px] text-muted-foreground mt-3">
                     AI Analysis: {score > 80 ? "Great balance! Keep it up." : "High workload detected. Consider taking a break."}
                 </p>
             </CardContent>

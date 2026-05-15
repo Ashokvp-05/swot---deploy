@@ -99,7 +99,7 @@ export default function GiveKudosModal({ token, onClose, onSuccess }: any) {
                             <Heart className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-bold text-white italic uppercase tracking-tight">Grant Kudos</h3>
+                            <h3 className="text-xl font-bold text-white uppercase tracking-tight">Grant Kudos</h3>
                             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Public recognition protocol</p>
                         </div>
                     </div>

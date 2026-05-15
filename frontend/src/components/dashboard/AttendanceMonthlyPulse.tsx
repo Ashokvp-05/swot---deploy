@@ -78,11 +78,11 @@ export default function AttendanceMonthlyPulse({ token }: AttendanceMonthlyPulse
             
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-8 relative z-10">
                 <div>
-                    <h3 className="text-sm font-bold uppercase italic tracking-tight text-white flex items-center gap-2">
+                    <h3 className="text-sm font-bold uppercase tracking-tight text-white flex items-center gap-2">
                         <Zap className="w-3.5 h-3.5 text-indigo-400 group-hover:scale-110 transition-transform" />
                         {viewMode === 'MONTH' ? 'Monthly' : 'Yearly'} Presence Pulse
                     </h3>
-                    <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1 italic">Real-Time Analytics Shard</p>
+                    <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">Real-Time Analytics Shard</p>
                 </div>
                 
                 <div className="flex bg-white/5 p-1 rounded-2xl border border-white/5 shadow-inner self-stretch sm:self-auto">
@@ -159,7 +159,7 @@ export default function AttendanceMonthlyPulse({ token }: AttendanceMonthlyPulse
                         </div>
                         <div className="flex items-baseline gap-2">
                             <span className="text-3xl font-bold tracking-tighter">{totalPresent}</span>
-                            <span className="text-[11px] text-slate-600 font-bold uppercase italic">Days</span>
+                            <span className="text-[11px] text-slate-600 font-bold uppercase">Days</span>
                         </div>
                     </div>
                     
@@ -170,7 +170,7 @@ export default function AttendanceMonthlyPulse({ token }: AttendanceMonthlyPulse
                         </div>
                         <div className="flex items-baseline gap-2">
                             <span className="text-3xl font-bold tracking-tighter">{totalAbsent}</span>
-                            <span className="text-[11px] text-slate-600 font-bold uppercase italic">Days</span>
+                            <span className="text-[11px] text-slate-600 font-bold uppercase">Days</span>
                         </div>
                     </div>
                 </div>
