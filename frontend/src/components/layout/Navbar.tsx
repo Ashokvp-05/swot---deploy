@@ -55,6 +55,7 @@ const getNavItems = (role?: string) => {
             { name: "Admin Hub", href: "/admin/dashboard", icon: LayoutDashboard, group: "core" },
             { name: "Organization", href: "/admin/organization", icon: Building2, group: "company" },
             { name: "Employee Details", href: "/admin/employee-details", icon: User, group: "company" },
+            { name: "Documents", href: "/documents", icon: FileText, group: "company" },
             { name: "Reports", href: "/admin/reports", icon: BarChart3, group: "company" },
             { name: "Announcements", href: "/admin/announcements", icon: Megaphone, group: "company" },
             { name: "Help Desk", href: "/help", icon: HelpCircle, group: "admin" },
@@ -94,6 +95,7 @@ const getNavItems = (role?: string) => {
         { name: "Leaves", href: "/leave", icon: Calendar, group: "finance" },
         { name: "Reports", href: "/reports", icon: BarChart3, group: "company" },
         { name: "Payslips", href: "/payslip", icon: CreditCard, group: "finance" },
+        { name: "Documents", href: "/documents", icon: FileText, group: "company" },
         { name: "Help Desk", href: "/help", icon: HelpCircle, group: "company" },
         KIBANA_LINK,
     ]
@@ -118,7 +120,7 @@ export default function Navbar({ role, token, companyName }: { role?: string; to
     if (!isMounted) return <aside className={`w-[72px] lg:w-[280px] ${isLight ? 'bg-white border-r border-slate-200' : 'bg-[#1a1f36]'} flex flex-col h-screen sticky top-0 shrink-0`} />
 
     return (
-        <aside className={`w-[72px] lg:w-[280px] ${isLight ? 'bg-white border-r border-slate-200' : 'bg-[#1a1f36]'} flex flex-col h-screen sticky top-0 z-[100] shrink-0 ${isLight ? 'custom-scrollbar-sidebar-light' : 'custom-scrollbar-sidebar'} shadow-[4px_0_30px_rgba(0,0,0,0.15)] overflow-hidden`}>
+        <aside className={`w-[72px] lg:w-[280px] ${isLight ? 'bg-white border-r border-slate-200' : 'bg-[#1a1f36]'} flex flex-col h-screen sticky top-0 z-40 shrink-0 ${isLight ? 'custom-scrollbar-sidebar-light' : 'custom-scrollbar-sidebar'} shadow-[4px_0_30px_rgba(0,0,0,0.15)] overflow-hidden`}>
             <style jsx global>{`
                 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
                 .font-brand { font-family: 'Plus Jakarta Sans', sans-serif; }

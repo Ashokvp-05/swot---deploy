@@ -112,15 +112,21 @@ export default function ReportsPage() {
         <div className="flex-1 min-h-screen bg-slate-50/50 dark:bg-slate-950/50 p-6 md:p-12 animate-in fade-in duration-500">
             {/* HARMONIZED HEADER (Same as Admin/Manager) */}
             <div className="max-w-[1400px] mx-auto space-y-8">
-                <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 pb-6 border-b border-slate-200 dark:border-slate-800">
-                    <div>
-                        <h2 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">
-                            Attendance Portfolio
-                        </h2>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Personalized work summaries and professional document exports</p>
+                <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xl relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-indigo-500/10 transition-colors" />
+                    <div className="relative z-10 flex items-center gap-4">
+                        <div className="p-4 bg-indigo-600 rounded-2xl shadow-lg shadow-indigo-600/20">
+                            <FileText className="w-8 h-8 text-white" />
+                        </div>
+                        <div>
+                            <h2 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">
+                                Attendance Portfolio
+                            </h2>
+                            <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Personalized work summaries and professional document exports</p>
+                        </div>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-3">
+                    <div className="relative z-10 flex flex-wrap items-center gap-3">
                         <Popover>
                             <PopoverTrigger asChild>
                                 <Button variant="outline" className="h-11 px-6 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 rounded-xl font-bold shadow-sm hover:border-indigo-200 transition-colors">

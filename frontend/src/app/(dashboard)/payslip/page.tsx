@@ -248,22 +248,29 @@ export default function PayslipPage() {
         <div className="max-w-7xl mx-auto px-4 lg:px-8 py-10 space-y-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
 
             {/* CLEAN HEADER */}
-            <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-                <div>
-                    <h1 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-white">Payslips</h1>
-                    <p className="text-sm font-semibold text-slate-500 mt-1 uppercase tracking-[0.2em] flex items-center gap-2">
-                        <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                        {canManage ? (isHR ? "HR Payroll Management" : "Admin Payroll Console") : "Your Payslips"}
-                    </p>
+            <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xl relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-indigo-500/10 transition-colors" />
+                <div className="relative z-10 flex items-center gap-4">
+                    <div className="p-4 bg-indigo-600 rounded-2xl shadow-lg shadow-indigo-600/20">
+                        <FileText className="w-8 h-8 text-white" />
+                    </div>
+                    <div>
+                        <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">Payslips</h1>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                            {canManage ? (isHR ? "HR Payroll Management" : "Admin Payroll Console") : "Your Payslips"}
+                        </p>
+                    </div>
                 </div>
                 {canIssue && (
-                    <Button
-                        onClick={() => setShowGenerateModal(true)}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6 h-12 font-bold uppercase text-[10px] tracking-widest shadow-xl shadow-indigo-600/20"
-                    >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Issue Document
-                    </Button>
+                    <div className="relative z-10">
+                        <Button
+                            onClick={() => setShowGenerateModal(true)}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6 h-12 font-bold uppercase text-[10px] tracking-widest shadow-xl shadow-indigo-600/20"
+                        >
+                            <Plus className="w-4 h-4 mr-2" />
+                            Issue Document
+                        </Button>
+                    </div>
                 )}
             </header>
 

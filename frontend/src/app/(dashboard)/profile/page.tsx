@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useRef, useCallback } from "react"
 import { useSession, signOut } from "next-auth/react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -140,6 +140,12 @@ export default function ProfilePage() {
     const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
     const [mount, setMount] = useState(false)
+
+    // Autosave state
+    const [activeTab, setActiveTab] = useState("personal")
+    const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle")
+    const autoSaveTimer = useRef<NodeJS.Timeout | null>(null)
+    const isInitialLoad = useRef(true)
 
     // Attendance state
     const [clockType, setClockType] = useState<"IN_OFFICE" | "REMOTE">("IN_OFFICE")
@@ -437,8 +443,9 @@ export default function ProfilePage() {
         }
     }
 
-    async function onSubmit(data: z.infer<typeof profileSchema>) {
-        setLoading(true)
+    async function saveProfile(data: z.infer<typeof profileSchema>, silent = false) {
+        if (!silent) setLoading(true)
+        if (silent) setAutoSaveStatus("saving")
         try {
             const token = (session?.user as any)?.accessToken
             
@@ -468,13 +475,58 @@ export default function ProfilePage() {
                 }
             })
 
-            toast.success("Personnel identity saved successfully")
+            if (silent) {
+                setAutoSaveStatus("saved")
+                setTimeout(() => setAutoSaveStatus("idle"), 2500)
+            } else {
+                toast.success("Personnel identity saved successfully")
+            }
         } catch (error: any) {
-            toast.error(error.message || "Registry update failed - Connection unstable")
+            if (silent) {
+                setAutoSaveStatus("error")
+                setTimeout(() => setAutoSaveStatus("idle"), 3000)
+            } else {
+                toast.error(error.message || "Registry update failed - Connection unstable")
+            }
         } finally {
             setLoading(false)
         }
     }
+
+    async function onSubmit(data: z.infer<typeof profileSchema>) {
+        return saveProfile(data, false)
+    }
+
+    // Autosave: watch all form fields and debounce save
+    useEffect(() => {
+        const subscription = form.watch(() => {
+            // Skip autosave during initial form population
+            if (isInitialLoad.current) return
+
+            if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current)
+            autoSaveTimer.current = setTimeout(async () => {
+                const isValid = await form.trigger()
+                if (isValid) {
+                    const values = form.getValues()
+                    saveProfile(values, true)
+                }
+            }, 1500)
+        })
+        return () => {
+            subscription.unsubscribe()
+            if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current)
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [form, session])
+
+    // Mark initial load complete after form is populated
+    useEffect(() => {
+        if (!fetchLoading && userData) {
+            // Small delay to let form.reset() settle before enabling autosave
+            const t = setTimeout(() => { isInitialLoad.current = false }, 500)
+            return () => clearTimeout(t)
+        }
+    }, [fetchLoading, userData])
 
     async function onPasswordSubmit(data: z.infer<typeof passwordSchema>) {
         setPasswordLoading(true)
@@ -513,6 +565,23 @@ export default function ProfilePage() {
 
     return (
         <div className="flex-1 min-h-screen bg-slate-50/50 dark:bg-slate-950/50 p-6 lg:p-8 animate-in fade-in duration-500 overflow-y-auto">
+            {/* Floating Autosave Status Indicator */}
+            {autoSaveStatus !== "idle" && (
+                <div className="fixed bottom-6 right-6 z-50 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                    <div className={`flex items-center gap-2 px-4 py-2.5 rounded-full shadow-lg border backdrop-blur-sm text-xs font-bold uppercase tracking-widest transition-all ${
+                        autoSaveStatus === "saving"
+                            ? "bg-indigo-50/90 border-indigo-200 text-indigo-600"
+                            : autoSaveStatus === "saved"
+                            ? "bg-emerald-50/90 border-emerald-200 text-emerald-600"
+                            : "bg-red-50/90 border-red-200 text-red-600"
+                    }`}>
+                        {autoSaveStatus === "saving" && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                        {autoSaveStatus === "saved" && <CheckCircle2 className="w-3.5 h-3.5" />}
+                        {autoSaveStatus === "error" && <Activity className="w-3.5 h-3.5" />}
+                        {autoSaveStatus === "saving" ? "Saving..." : autoSaveStatus === "saved" ? "All changes saved" : "Save failed"}
+                    </div>
+                </div>
+            )}
             <div className="max-w-[1240px] h-full mx-auto space-y-6">
 
                 {/* COMPACT PREMIUM PROFILE HEADER */}
@@ -607,7 +676,7 @@ export default function ProfilePage() {
                                             <CircleUser className="w-4 h-4" />
                                         </div>
                                         <div>
-                                            <CardTitle className="text-xs font-bold uppercase tracking-[0.1em] text-primary">Personal Details</CardTitle>
+                                            <CardTitle className="text-sm font-semibold tracking-tight text-slate-900 dark:text-white">Personal Details</CardTitle>
                                             <CardDescription className="text-[10px] font-medium text-muted-foreground">Manage your official contact information and identifiers.</CardDescription>
                                         </div>
                                     </div>
@@ -618,12 +687,30 @@ export default function ProfilePage() {
                                 </div>
                             </CardHeader>
                             <CardContent className="p-6">
-                                 <Form {...form}>
+                                  <Form {...form}>
                                      <form onSubmit={form.handleSubmit(onSubmit, (errors) => {
-                                         const errorMessages = Object.values(errors).map((err: any) => err.message).filter(Boolean);
-                                         toast.error(`Validation failed: ${errorMessages.length > 0 ? errorMessages[0] : "Please check all fields across all tabs."}`);
+                                         const fieldToTabMap: Record<string, string> = {
+                                             name: "personal", gender: "personal", dob: "personal", maritalStatus: "personal", fatherName: "personal", motherName: "personal", bloodGroup: "personal",
+                                             email: "contact", personalEmail: "contact", phone: "contact", secondaryPhone: "contact", workPhone: "contact", discordId: "contact",
+                                             emergencyName: "emergency", emergencyRelationship: "emergency", emergencyPhone: "emergency", emergencyPhoneSec: "emergency", emergencyAddress: "emergency",
+                                             currentAddress: "address", permanentAddress: "address", city: "address", state: "address", country: "address", zipCode: "address",
+                                             employeeId: "job", employmentType: "job", workLocation: "job",
+                                             aadhaarNumber: "identity", panNumber: "identity", passportNumber: "identity", drivingLicense: "identity"
+                                         };
+                                         const errorKeys = Object.keys(errors);
+                                         if (errorKeys.length > 0) {
+                                             const firstErrorKey = errorKeys[0];
+                                             const targetTab = fieldToTabMap[firstErrorKey];
+                                             if (targetTab) {
+                                                 setActiveTab(targetTab);
+                                             }
+                                             const firstErrorMessage = (errors as any)[firstErrorKey]?.message || "Validation failed";
+                                             toast.error(`Validation error in ${targetTab?.toUpperCase()} tab: ${firstErrorMessage}`);
+                                         } else {
+                                             toast.error("Validation failed. Please check all fields.");
+                                         }
                                      })} className="space-y-6">
-                                         <Tabs defaultValue="personal" className="w-full">
+                                         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                                              <TabsList className="w-full justify-start h-12 bg-slate-50 dark:bg-slate-800/50 p-1 mb-8 overflow-x-auto no-scrollbar">
                                                  <TabsTrigger value="personal" className="relative px-5 h-10 text-[11px] font-bold uppercase tracking-widest leading-none gap-2 data-[state=active]:text-indigo-600 transition-all duration-300 group overflow-hidden">
                                                      <User className="w-3 h-3 group-data-[state=active]:scale-110 transition-transform" /> Personal
@@ -891,17 +978,17 @@ export default function ProfilePage() {
                                              {/* 7. DOCUMENTS */}
                                              <TabsContent value="documents" className="space-y-6 animate-in slide-in-from-left-2 duration-300">
                                                  <EmployeeDocumentVault token={(session?.user as any)?.accessToken || ""} />
-                                                 <div className="flex justify-end pt-4 border-t border-slate-100 dark:border-slate-800">
-                                                     <Button type="submit" disabled={loading} className="h-11 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-bold uppercase tracking-widest text-[10px] rounded-xl shadow-lg shadow-indigo-500/30 active:scale-95 transition-all">
-                                                         {loading ? <Loader2 className="w-3 h-3 animate-spin mr-2" /> : <Save className="w-3 h-3 mr-2" />}
-                                                         Save Changes
-                                                     </Button>
-                                                 </div>
                                              </TabsContent>
 
 
                                          </Tabs>
 
+                                          <div className="flex justify-end pt-6 border-t border-slate-100 dark:border-slate-800">
+                                              <Button type="submit" disabled={loading} className="h-11 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-bold uppercase tracking-widest text-[10px] rounded-xl shadow-lg shadow-indigo-500/30 active:scale-95 transition-all">
+                                                  {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-2" /> : <Save className="w-3.5 h-3.5 mr-2" />}
+                                                  Save Changes
+                                              </Button>
+                                          </div>
 
                                      </form>
                                  </Form>

@@ -67,6 +67,9 @@ const EmployeeDetailsModule = dynamic(() => import("@/components/admin/EmployeeD
 const ManagerReports = dynamic(() => import("@/components/manager/ManagerReports"), { ssr: false })
 const OnboardingSuite = dynamic(() => import("@/components/admin/OnboardingSuite"), { ssr: false })
 const PerformanceHub = dynamic(() => import("@/components/admin/PerformanceHub"), { ssr: false })
+const CompanyDocumentsPage = dynamic(() => import("@/app/(dashboard)/documents/page"), { ssr: false })
+const AccountVault = dynamic(() => import("@/components/admin/AccountVault"), { ssr: false })
+const EmployeeSkills = dynamic(() => import("@/components/admin/EmployeeSkills"), { ssr: false })
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  GLOBAL STYLES (Admin Hub Aesthetics)
@@ -242,8 +245,10 @@ function AdminDashboardContent() {
         { id: "performance", label: "Performance",         tab: "performance", icon: TrendingUp,      roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","MANAGER"], group: "company" },
         // 8. Departments / Organization
         { id: "departments", label: "Departments",         tab: "departments", icon: Building2,       roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN"], group: "company" },
-        // 9. Documents
-        { id: "documents",   label: "Documents",           tab: "documents",   icon: FileText,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","AUDITOR"], group: "company" },
+        // 9. Employee Documents
+        { id: "emp-documents", label: "Employee Docs", tab: "emp-documents", icon: FileText, roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","AUDITOR"], group: "company" },
+        // 9.5 Company Resources
+        { id: "company-documents", label: "Company Resources", tab: "company-documents", icon: Share2, roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN"], group: "company" },
         // Employee Details (Secure Record View)
         { id: "employee-details", label: "Employee Info", tab: "employee-details", icon: UserCheck, roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER","AUDITOR"], group: "company" },
         // 10. Reports & Analytics
@@ -255,17 +260,26 @@ function AdminDashboardContent() {
         { id: "settings",    label: "Settings",            tab: "settings",    icon: Settings,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN"], group: "admin" },
         // 14. Announcements
         { id: "announcements", label: "Announcements",     tab: "broadcasts",  icon: Megaphone,       roles: ["SUPER_ADMIN"], group: "company" },
-        // 16. Task Dashboard (External - Kibana)
+        // 15. Account Vault
+        { id: "account-vault", label: "Account Vault",     tab: "account-vault", icon: Lock,          roles: ["SUPER_ADMIN"], group: "admin", strictSuperAdmin: true },
+        // 16. Employee Skills
+        { id: "employee-skills", label: "Employee Skills", tab: "employee-skills", icon: Sparkles,    roles: ["SUPER_ADMIN"], group: "hr", strictSuperAdmin: true },
+        // 17. Task Dashboard (External - Kibana)
         { id: "task-dashboard", label: "Task Dashboard",   tab: "task-dashboard", icon: Monitor,        roles: ["ADMIN","COMPANY_ADMIN","HR_ADMIN","HR","SUPER_ADMIN","MANAGER"], group: "tools", external: true, href: "https://task.swotpam.com/" },
     ]
 
     const navItems = allNavItems.filter(item => {
-        // First check if role is allowed
-        const isAllowedByRole = item.roles.includes(role) || role === "ADMIN" || role === "COMPANY_ADMIN";
+        // First check if role is allowed (ADMIN family usually gets everything)
+        let isAllowedByRole = item.roles.includes(role) || role === "ADMIN" || role === "COMPANY_ADMIN";
+        
+        // Ensure highly classified items are strictly for SUPER_ADMIN
+        if ((item as any).strictSuperAdmin && role !== "SUPER_ADMIN") {
+            isAllowedByRole = false;
+        }
         
         // Then apply specific exclusions for SUPER_ADMIN
         if (role === "SUPER_ADMIN") {
-            const exclusions = ["policies", "onboarding", "payroll", "departments", "performance", "documents"];
+            const exclusions = ["policies", "onboarding", "payroll", "departments", "performance"];
             if (exclusions.includes(item.id)) return false;
         }
         
@@ -277,15 +291,15 @@ function AdminDashboardContent() {
             <GlobalStyles />
             
             {/* ── 🛡️ EXECUTIVE SIDEBAR ── */}
-            <aside className="w-[72px] lg:w-[280px] bg-white flex flex-col h-screen sticky top-0 z-[100] shrink-0 border-r border-slate-100 shadow-[2px_0_24px_rgba(99,102,241,0.06)]">
+            <aside className="w-[72px] lg:w-[280px] bg-white flex flex-col h-screen sticky top-0 z-40 shrink-0 border-r border-slate-100 shadow-[2px_0_24px_rgba(99,102,241,0.06)]">
                 {/* Background Glow */}
                 <div className="absolute top-0 left-0 w-full h-[300px] bg-gradient-to-b from-indigo-500/[0.03] to-transparent pointer-events-none" />
 
                 {/* BRAND HEADER */}
                 <div className="pt-10 pb-10 px-6 lg:px-8 relative z-10">
                     <div className="hidden lg:flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-[18px] overflow-hidden shadow-lg shadow-indigo-500/30 transition-transform hover:scale-110 active:scale-95 cursor-pointer shrink-0" onClick={() => router.push('/admin')}>
-                            <img src="/hrms-logo.png" alt="HRMS" className="w-full h-full object-cover" />
+                        <div className="w-12 h-12 rounded-[18px] bg-white flex items-center justify-center shadow-lg shadow-indigo-500/30 transition-transform hover:scale-110 active:scale-95 cursor-pointer overflow-hidden p-1.5 shrink-0" onClick={() => router.push('/admin')}>
+                            <img src="/rudratic-logo.png" alt="Rudratic" className="w-full h-full object-contain drop-shadow-md" />
                         </div>
                         <div>
                             <h2 className="text-xl font-bold text-slate-800 tracking-tight leading-none">Rudratic</h2>
@@ -293,8 +307,8 @@ function AdminDashboardContent() {
                         </div>
                     </div>
                     <div className="lg:hidden flex items-center justify-center">
-                        <div className="w-11 h-11 rounded-2xl overflow-hidden shadow-lg shadow-indigo-500/30 cursor-pointer" onClick={() => router.push('/admin')}>
-                            <img src="/hrms-logo.png" alt="HRMS" className="w-full h-full object-cover" />
+                        <div className="w-11 h-11 rounded-2xl bg-white flex items-center justify-center shadow-lg shadow-indigo-500/30 cursor-pointer overflow-hidden p-1.5" onClick={() => router.push('/admin')}>
+                            <img src="/rudratic-logo.png" alt="Rudratic" className="w-full h-full object-contain drop-shadow-md" />
                         </div>
                     </div>
                 </div>
@@ -488,7 +502,8 @@ function AdminDashboardContent() {
                             {currentTab === "payroll"      && <PayrollControlCenter token={token} />}
                             {currentTab === "performance"  && <PerformanceHub token={token} />}
                             {currentTab === "departments"  && <OrganizationControlCenter token={token} />}
-                            {currentTab === "documents" && <DocumentsModule token={token} />}
+                            {currentTab === "emp-documents" && <DocumentsModule token={token} />}
+                            {currentTab === "company-documents" && <CompanyDocumentsPage />}
                             {currentTab === "employee-details" && <EmployeeDetailsModule token={token} userRole={role} />}
                             {currentTab === "reports"      && <ManagerReports token={token} />}
                             {currentTab === "support"      && <AdminKanbanBoard token={token} />}
@@ -496,6 +511,8 @@ function AdminDashboardContent() {
                             {currentTab === "settings"     && <SystemSettingsCenter token={token} />}
                             {currentTab === "broadcasts"   && <BroadcastCenter token={token} />}
                             {currentTab === "dept-reports" && <DepartmentReports token={token} />}
+                            {currentTab === "account-vault" && <AccountVault token={token} />}
+                            {currentTab === "employee-skills" && <EmployeeSkills token={token} />}
 
                             {/* ── BREATHTAKING ATTENDANCE LISTS ── */}
                             {(currentTab === "attendance-present" || currentTab === "attendance-absent") && (

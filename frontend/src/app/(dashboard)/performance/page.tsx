@@ -73,7 +73,7 @@ export default function PerformancePage() {
                             <span className="text-[8px] font-bold uppercase text-emerald-500 tracking-tighter">Live Audit Active</span>
                         </div>
                     </div>
-                    <h1 className="text-4xl font-bold tracking-tight text-white mb-2">Growth Matrix</h1>
+                    <h1 className="text-2xl font-semibold tracking-tight text-white mb-2">Growth Matrix</h1>
                     <p className="text-slate-400 font-medium max-w-md">Hello {userName}, analyze your professional evolution and set strategic milestones for the next quarter.</p>
                 </div>
 

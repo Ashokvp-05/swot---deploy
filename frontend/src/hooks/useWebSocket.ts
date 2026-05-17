@@ -30,6 +30,12 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
 
     const getWsUrl = () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"
+        if (apiUrl.startsWith("/")) {
+            // Absolute ws/wss URL relative to the browser's current host
+            const protocol = typeof window !== "undefined" && window.location.protocol === "https:" ? "wss:" : "ws:"
+            const host = typeof window !== "undefined" ? window.location.host : "localhost:3000"
+            return `${protocol}//${host}${apiUrl.replace(/\/api$/, "").replace(/\/api\/v\d+$/, "")}/ws`
+        }
         return apiUrl.replace(/^http/, "ws").replace(/\/api$/, "").replace(/\/api\/v\d+$/, "") + "/ws"
     }
 

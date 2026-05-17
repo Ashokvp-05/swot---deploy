@@ -104,7 +104,7 @@ export default function EmployeeTicketView({ token }: { token: string }) {
                             <Ticket className="w-5 h-5 text-white" />
                         </div>
                         <div>
-                            <h1 className="text-xl font-bold text-slate-900 tracking-tight">My Tickets</h1>
+                            <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">My Tickets</h1>
                             <p className="text-xs text-slate-500 mt-0.5">Raise and track your support requests</p>
                         </div>
                     </div>

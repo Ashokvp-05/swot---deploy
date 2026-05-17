@@ -176,9 +176,14 @@ import documentRoutes from './routes/document.routes';
 import leaveEmailActionRoutes from './routes/leave-email-action.routes';
 import settingsRoutes from './routes/settings.routes';
 import { initCronJobs } from './services/cron.service';
+import { setupSwagger } from './config/swagger';
+import companyDocumentRoutes from './routes/company-document.routes';
 
 // Initialize Scheduled Tasks
 initCronJobs();
+
+// Setup Swagger UI
+setupSwagger(app);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
@@ -207,6 +212,7 @@ app.use('/api/lifecycle', lifecycleRoutes);
 app.use('/api/bi', biRoutes);
 app.use('/api/enterprise', enterpriseRoutes);
 app.use('/api/documents', documentRoutes);
+app.use('/api/company-documents', companyDocumentRoutes);
 app.use('/api/leave-email-action', leaveEmailActionRoutes);
 app.use('/api/settings', settingsRoutes);
 

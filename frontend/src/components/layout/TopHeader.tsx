@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Bell, User, LogOut, ChevronDown } from "lucide-react"
 import { useSession, signOut } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import dynamic from "next/dynamic"
 import { cn } from "@/lib/utils"
 import {
@@ -23,7 +23,7 @@ export default function TopHeader({
     token,
     searchQuery,
     setSearchQuery,
-    breadcrumb = { parent: "Admin", page: "Dashboard" }
+    breadcrumb
 }: {
     token: string,
     searchQuery?: string,
@@ -32,10 +32,26 @@ export default function TopHeader({
 }) {
     const { data: session } = useSession()
     const router = useRouter()
+    const pathname = usePathname()
 
     const roleString = session?.user?.role || ""
     const role = roleString.replace(/_/g, ' ')
     const initials = (session?.user?.name || "A").split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
+
+    // Determine parent context
+    const isEmployee = !["ADMIN", "COMPANY_ADMIN", "SUPER_ADMIN", "HR_ADMIN"].includes(roleString.toUpperCase())
+    const parentContext = breadcrumb?.parent || (isEmployee ? "Employee" : "Admin")
+
+    // Determine current page dynamically from pathname
+    let currentPage = breadcrumb?.page || "Dashboard"
+    if (!breadcrumb?.page || breadcrumb.page === "Dashboard") {
+        const segments = pathname.split('/').filter(Boolean)
+        if (segments.length > 0) {
+            const lastSegment = segments[segments.length - 1]
+            // Format segment (e.g. "company-documents" -> "Company Documents")
+            currentPage = lastSegment.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+        }
+    }
 
     return (
         <header className="sticky top-0 z-[50] bg-white/80 backdrop-blur-xl border-b border-slate-100 transition-all">
@@ -43,9 +59,9 @@ export default function TopHeader({
 
                 {/* Left: breadcrumb / page context */}
                 <div className="flex items-center gap-2 text-[11px] font-bold text-slate-400 uppercase tracking-widest select-none">
-                    <span className="text-indigo-500">{breadcrumb.parent}</span>
+                    <span className="text-indigo-500">{parentContext}</span>
                     <span className="opacity-40">/</span>
-                    <span>{breadcrumb.page}</span>
+                    <span>{currentPage}</span>
                 </div>
 
                 {/* Right: actions */}

@@ -43,7 +43,7 @@ export default function GenerateReportPage() {
         <div className="flex-1 space-y-8 p-8 pt-6 max-w-4xl mx-auto animate-in fade-in duration-500">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Generate Reports</h2>
+                    <h2 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">Generate Reports</h2>
                     <p className="text-muted-foreground mt-1">Export detailed system data for analysis and compliance.</p>
                 </div>
             </div>

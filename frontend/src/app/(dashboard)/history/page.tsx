@@ -72,7 +72,7 @@ export default function HistoryPage() {
                     <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-indigo-200">
                         <Zap className="w-4 h-4" />
                     </div>
-                    <h1 className="text-3xl font-bold text-slate-900 dark:text-white uppercase tracking-tighter">
+                    <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">
                         Activity <span className="text-indigo-600">History</span>
                     </h1>
                     <div className="flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/30 px-3 py-1 rounded-full border border-emerald-100 dark:border-emerald-800/50">

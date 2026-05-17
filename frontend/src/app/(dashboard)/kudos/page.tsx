@@ -45,7 +45,7 @@ export default async function KudosPage() {
                             <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
                             <span>Employee Recognition Program</span>
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
+                        <h1 className="text-2xl font-semibold tracking-tight leading-tight">
                             The Wall of Fame <br />
                             <span className="text-white/50">Celebrating Excellence.</span>
                         </h1>

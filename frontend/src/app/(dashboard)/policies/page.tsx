@@ -103,7 +103,7 @@ export default function PoliciesPage() {
                 {/* Simple Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b pb-8">
                     <div>
-                        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Policies & Documents</h1>
+                        <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">Policies & Documents</h1>
                         <p className="text-slate-500 mt-1">Read and acknowledge company protocols.</p>
                     </div>
                     

@@ -7,7 +7,7 @@ import {
     Calendar, Filter, MoreVertical, Archive,
     Shield, RefreshCcw, Eye, Lock, Zap, File,
     Database, ShieldCheck, Fingerprint, MapPin, 
-    GraduationCap, Briefcase, CheckCircle2, AlertCircle,
+    GraduationCap, Briefcase, CheckCircle2,
     Info, Upload, Check, X
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -30,46 +30,29 @@ const API = process.env.NEXT_PUBLIC_API_URL
 
 const GlobalStyles = () => (
     <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600;700&display=swap');
-        .font-brand { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .font-body { font-family: 'Inter', sans-serif; }
-
         .focus-shard {
-            background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
-            border-color: #6366f1 !important;
-            box-shadow: 0 40px 80px -20px rgba(99, 102, 241, 0.12), 0 0 0 1px rgba(99, 102, 241, 0.1);
+            background: #ffffff;
+            border-color: #cbd5e1 !important;
+            box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
         }
 
         .matrix-gradient {
-            background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.03), transparent 400px),
-                        radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.02), transparent 400px);
+            background: #fbfbfb;
         }
 
         .vault-card {
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .vault-card:hover:not(.focus-shard) {
-            transform: translateY(-2px);
-            border-color: #e2e8f0;
-            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.05);
+            transform: translateY(-1px);
+            border-color: #cbd5e1;
+            box-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.03);
         }
 
         .glass-slot {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-        }
-
-        .status-pulse-red {
-            box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.4);
-            animation: pulse-red 2s infinite;
-        }
-
-        @keyframes pulse-red {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(244, 63, 94, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
         }
     `}</style>
 )
@@ -294,65 +277,61 @@ export default function DocumentsModule({ token }: { token: string }) {
                                                 className="border-t border-slate-100"
                                             >
                                                 <div className="matrix-gradient p-10 space-y-10">
-                                                    
-                                                    {/* CRITICAL DOCUMENTS */}
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                                                                                        {/* CRITICAL DOCUMENTS */}
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                                                         {criticalSlots.map((slot) => {
                                                             const docObj = userDocs.find(d => d.type === slot.category || d.name?.includes(slot.label));
                                                             const exists = !!docObj;
                                                             return (
-                                                                <div key={slot.id} className={cn(
-                                                                    "p-7 rounded-[32px] transition-all duration-300 flex flex-col gap-6 group/slot",
-                                                                    exists ? "bg-white border border-slate-100 shadow-sm hover:border-emerald-200" : "bg-white/40 border border-rose-100/50 hover:border-rose-200"
-                                                                )}>
-                                                                    <div className="flex items-center justify-between">
+                                                                <div key={slot.id} className="p-6 bg-white border border-slate-200/80 rounded-2xl flex flex-col justify-between min-h-[140px] hover:border-slate-300 transition-all shadow-sm">
+                                                                    <div className="flex items-start justify-between">
+                                                                        <div className="flex items-center gap-3">
+                                                                            <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400">
+                                                                                <slot.icon className="w-5 h-5" />
+                                                                            </div>
+                                                                            <div>
+                                                                                <h5 className="text-[13px] font-bold text-slate-800 leading-tight">{slot.label}</h5>
+                                                                                <p className="text-[10px] font-medium text-slate-400 mt-0.5">{slot.category}</p>
+                                                                            </div>
+                                                                        </div>
+                                                                        
                                                                         <div className={cn(
-                                                                            "w-12 h-12 rounded-2xl flex items-center justify-center transition-colors",
-                                                                            exists ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-500"
+                                                                            "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold border",
+                                                                            exists 
+                                                                                ? "bg-emerald-50/50 text-emerald-700 border-emerald-200/60" 
+                                                                                : "bg-slate-50 text-slate-500 border-slate-200"
                                                                         )}>
-                                                                            <slot.icon className="w-6 h-6" />
+                                                                            <div className={cn("w-1.5 h-1.5 rounded-full", exists ? "bg-emerald-500" : "bg-slate-400")} />
+                                                                            {exists ? "Verified" : "Missing"}
                                                                         </div>
+                                                                    </div>
+                                                                    
+                                                                    <div className="mt-5">
                                                                         {exists ? (
-                                                                            <div className="w-7 h-7 bg-emerald-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-emerald-100">
-                                                                                <Check className="w-4 h-4" />
-                                                                            </div>
+                                                                            <Button 
+                                                                                onClick={() => triggerDownload(docObj.fileUrl, docObj.name)}
+                                                                                className="w-full h-10 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-bold shadow-sm transition-all flex items-center justify-center gap-2"
+                                                                            >
+                                                                                <Eye className="w-3.5 h-3.5" /> View Document
+                                                                            </Button>
                                                                         ) : (
-                                                                            <div className="w-7 h-7 bg-rose-500 rounded-full flex items-center justify-center text-white status-pulse-red">
-                                                                                <AlertCircle className="w-4 h-4" />
+                                                                            <div className="w-full h-10 rounded-xl bg-slate-50 border border-slate-200/50 flex items-center justify-center text-slate-400 text-[11px] font-bold select-none cursor-not-allowed">
+                                                                                <Lock className="w-3.5 h-3.5 mr-1.5" /> Upload Pending
                                                                             </div>
                                                                         )}
                                                                     </div>
-                                                                    <div>
-                                                                        <h5 className="text-[13px] font-bold text-slate-800 font-brand tracking-tight mb-1">{slot.label}</h5>
-                                                                        <div className="flex items-center gap-2">
-                                                                            <div className={cn("w-1.5 h-1.5 rounded-full", exists ? "bg-emerald-500" : "bg-rose-500 animate-pulse")} />
-                                                                            <span className={cn("text-[9px] font-bold uppercase tracking-widest", exists ? "text-emerald-600" : "text-rose-500")}>
-                                                                                {exists ? "Verified" : "Missing"}
-                                                                            </span>
-                                                                        </div>
-                                                                    </div>
-                                                                    <Button 
-                                                                        disabled={!exists}
-                                                                        onClick={() => exists && triggerDownload(docObj.fileUrl, docObj.name)}
-                                                                        className={cn(
-                                                                            "w-full h-12 rounded-2xl text-[9px] font-bold uppercase tracking-widest gap-2 transition-all shadow-lg",
-                                                                            exists ? "bg-slate-900 text-white border-none hover:bg-slate-800" : "bg-slate-100 border border-slate-200 text-slate-300 cursor-not-allowed"
-                                                                        )}
-                                                                    >
-                                                                        {exists ? <><Eye className="w-4 h-4 text-white" /> View Document</> : <><Lock className="w-4 h-4" /> Pending</>}
-                                                                    </Button>
                                                                 </div>
                                                             )
                                                         })}
                                                     </div>
-
+ 
                                                     {/* STANDARD DOCUMENT REGISTER */}
                                                     <div className="space-y-4">
-                                                        <h5 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-brand ml-1">Employee Document Registry</h5>
+                                                        <h5 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Employee Document Registry</h5>
                                                         {userDocs.length === 0 ? (
-                                                            <div className="py-16 flex flex-col items-center justify-center gap-4 bg-white rounded-[32px] border border-dashed border-slate-200">
-                                                                <Archive className="w-12 h-12 text-slate-100" />
-                                                                <p className="text-[11px] font-bold uppercase tracking-widest text-slate-300">System Synchronized: No Documents Found</p>
+                                                            <div className="py-12 flex flex-col items-center justify-center gap-3 bg-slate-50/40 rounded-2xl border border-slate-200/60">
+                                                                <Archive className="w-8 h-8 text-slate-300" />
+                                                                <p className="text-[12px] font-medium text-slate-400">No additional documents uploaded to this employee's registry.</p>
                                                             </div>
                                                         ) : (
                                                             <div className="bg-white rounded-[32px] border border-slate-100 overflow-hidden shadow-sm">

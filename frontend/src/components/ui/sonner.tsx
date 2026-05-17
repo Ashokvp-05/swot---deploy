@@ -1,17 +1,27 @@
 "use client"
 
 import { useTheme } from "next-themes"
-import { Toaster as Sonner } from "sonner"
+import { Toaster as Sonner, toast } from "sonner"
+import { useEffect } from "react"
 
 type ToasterProps = React.ComponentProps<typeof Sonner>
 
 const Toaster = ({ ...props }: ToasterProps) => {
     const { theme = "system" } = useTheme()
 
+    useEffect(() => {
+        const handleGlobalClick = () => {
+            toast.dismiss()
+        }
+        document.addEventListener("click", handleGlobalClick)
+        return () => document.removeEventListener("click", handleGlobalClick)
+    }, [])
+
     return (
         <Sonner
             theme={theme as ToasterProps["theme"]}
             className="toaster group"
+            duration={3000}
             toastOptions={{
                 classNames: {
                     toast:

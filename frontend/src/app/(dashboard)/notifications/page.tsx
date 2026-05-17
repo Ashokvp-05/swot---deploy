@@ -100,7 +100,7 @@ export default function NotificationsPage() {
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-2xl font-bold tracking-tight">Notifications</h2>
+                    <h2 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">Notifications</h2>
                     <p className="text-muted-foreground">Stay updated with your latest alerts and messages.</p>
                 </div>
                 <div className="flex items-center gap-2">
